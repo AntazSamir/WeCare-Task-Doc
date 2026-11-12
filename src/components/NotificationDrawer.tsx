@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   UserCheck,
   FileText,
+  FileCheck2,
   X,
 } from 'lucide-react';
 import { InAppNotification } from '../types/pms';
@@ -148,7 +149,8 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
                       {n.type === 'task_assigned' && <UserCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />}
                       {n.type === 'task_completed' && <CheckCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
                       {n.type === 'deadline_warning' && <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
-                      {n.type === 'visa_update' && <FileText className="w-3.5 h-3.5 text-purple-500 shrink-0" />}
+                      {n.type === 'visa_update' && n.targetEntity !== 'handover' && <FileText className="w-3.5 h-3.5 text-purple-500 shrink-0" />}
+                      {n.targetEntity === 'handover' && <FileCheck2 className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 shrink-0" />}
                       <span className="truncate">{n.title}</span>
                     </div>
                     {isUnread && (

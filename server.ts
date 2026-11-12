@@ -3,13 +3,31 @@ import fs from 'fs';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { db, initDatabase, createBackupSnapshot } from './server/db';
+import {
+  acknowledgeDocumentHandover,
+  createDocumentHandover,
+  getHandoverById,
+  getHandoverStats,
+  HandoverError,
+  listHandovers,
+  submitHandoverFollowUp,
+} from './server/handoverService';
+import {
+  processSheetsOutbox,
+  recoverInterruptedSyncJobs,
+  setRuntimeOAuthAccessToken,
+} from './server/sheetsQueue';
 
 const portArgIndex = process.argv.indexOf('--port');
 const portFromArg = portArgIndex !== -1 ? parseInt(process.argv[portArgIndex + 1], 10) : NaN;
 const PORT = !isNaN(portFromArg) ? portFromArg : (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000);
 
-// Initialize relational SQLite database
+// Initialize relational SQLite database & recover any interrupted outbox jobs
 initDatabase();
+const recoveredJobs = recoverInterruptedSyncJobs(db, 0, true);
+if (recoveredJobs > 0) {
+  console.log(`[Sheets Outbox] Recovered ${recoveredJobs} interrupted sync job(s) on startup.`);
+}
 
 // SSE Connected Clients (userId -> Set<Response>)
 const sseClients = new Map<string, Set<Response>>();
@@ -42,24 +60,32 @@ interface AuthenticatedRequest extends Request {
     id: string;
     name: string;
     role: 'Admission_Manager' | 'Consultant';
+    team: 'Admission Team' | 'Counseling Team' | string;
   };
 }
 
 function authMiddleware(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
   const userId = (req.headers['x-user-id'] as string) || 'USR-ADMIN';
-  const userRow = db.prepare('SELECT id, name, role FROM users WHERE id = ?').get(userId) as any;
+  const userRow = db.prepare("SELECT id, name, role, COALESCE(team, 'Admission Team') as team FROM users WHERE id = ?").get(userId) as any;
+
+  const sheetsToken = req.headers['x-sheets-access-token'] as string | undefined;
+  if (sheetsToken) {
+    setRuntimeOAuthAccessToken(sheetsToken);
+  }
 
   if (userRow) {
     req.user = {
       id: userRow.id,
       name: userRow.name,
       role: userRow.role,
+      team: userRow.team || 'Admission Team',
     };
   } else {
     req.user = {
       id: 'USR-ADMIN',
       name: 'Samiul Alam',
       role: 'Admission_Manager',
+      team: 'Admission Team',
     };
   }
   next();
@@ -1811,12 +1837,16 @@ async function startServer() {
     }
 
     if (connection) {
+      if (connection.oauthAccessToken) {
+        setRuntimeOAuthAccessToken(connection.oauthAccessToken);
+      }
       db.prepare(`
         UPDATE google_sheets_config SET
           selected_spreadsheet_id = COALESCE(?, selected_spreadsheet_id),
           selected_spreadsheet_title = COALESCE(?, selected_spreadsheet_title),
           selected_worksheet = COALESCE(?, selected_worksheet),
           sync_status = COALESCE(?, sync_status),
+          auth_mode = COALESCE(?, auth_mode),
           last_synced_at = ?
         WHERE id = 'config_main'
       `).run(
@@ -1824,12 +1854,342 @@ async function startServer() {
         connection.selectedSpreadsheetTitle,
         connection.selectedWorksheet,
         connection.syncStatus,
+        connection.authMode || null,
         now
       );
     }
 
     res.json({ ok: true, lastSyncedAt: now });
   });
+
+  // ==========================================
+  // DOCUMENT HANDOVER & ACKNOWLEDGEMENT API
+  // ==========================================
+  app.get('/api/handovers/context', (_req: AuthenticatedRequest, res: Response) => {
+    const students = db
+      .prepare(
+        `SELECT s.id, s.full_name, s.passport_number, s.intake_term, s.degree_level,
+                s.assigned_consultant_id, u.name_en as university_name
+         FROM student_applications s
+         LEFT JOIN universities u ON s.applied_university_id = u.id
+         ORDER BY s.full_name ASC`
+      )
+      .all() as any[];
+
+    const admissionTeam = db
+      .prepare(
+        `SELECT id, name, email, role, title, avatar, COALESCE(team, 'Admission Team') as team
+         FROM users
+         WHERE COALESCE(team, 'Admission Team') = 'Admission Team'
+         ORDER BY role DESC, name ASC`
+      )
+      .all();
+
+    const counselingTeam = db
+      .prepare(
+        `SELECT id, name, email, role, title, avatar, COALESCE(team, 'Admission Team') as team
+         FROM users
+         WHERE team = 'Counseling Team'
+         ORDER BY name ASC`
+      )
+      .all();
+
+    res.json({
+      students: students.map((s) => ({
+        id: s.id,
+        fullName: s.full_name,
+        passportNumber: s.passport_number,
+        intakeTerm: s.intake_term,
+        degreeLevel: s.degree_level,
+        assignedConsultantId: s.assigned_consultant_id,
+        universityName: s.university_name || '',
+      })),
+      admissionTeam,
+      counselingTeam,
+    });
+  });
+
+  app.get('/api/handovers/stats', (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const stats = getHandoverStats(db, req.user!);
+      res.json(stats);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to compute handover stats' });
+    }
+  });
+
+  app.get('/api/handovers/sync-outbox', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+    const statusFilter = (req.query.status as string) || 'all';
+    let query = `
+      SELECT q.*, h.student_id, h.counselor_name, h.receiving_employee_name, h.status as handover_status
+      FROM sheets_sync_queue q
+      LEFT JOIN document_handovers h ON q.handover_id = h.id
+    `;
+    const params: any[] = [];
+    if (statusFilter !== 'all') {
+      query += ' WHERE q.status = ?';
+      params.push(statusFilter);
+    }
+    query += ' ORDER BY q.id DESC LIMIT 150';
+
+    const jobs = db.prepare(query).all(...params) as any[];
+    const tabRows = db
+      .prepare('SELECT * FROM google_sheet_tab_rows ORDER BY worksheet_title ASC, row_number ASC LIMIT 200')
+      .all() as any[];
+
+    res.json({
+      jobs: jobs.map((j) => ({
+        id: j.id,
+        handoverId: j.handover_id,
+        handoverVersion: j.handover_version,
+        targetType: j.target_type,
+        worksheetTitle: j.worksheet_title,
+        employeeId: j.employee_id,
+        status: j.status,
+        retryCount: j.retry_count,
+        maxRetries: j.max_retries,
+        nextRetryAt: j.next_retry_at,
+        lockedBy: j.locked_by,
+        lockedAt: j.locked_at,
+        errorMessage: j.error_message,
+        createdAt: j.created_at,
+        lastAttemptAt: j.last_attempt_at,
+        syncedAt: j.synced_at,
+        counselorName: j.counselor_name,
+        receiverName: j.receiving_employee_name,
+        handoverStatus: j.handover_status,
+      })),
+      syncedTabRows: tabRows.map((r) => ({
+        spreadsheetId: r.spreadsheet_id,
+        worksheetTitle: r.worksheet_title,
+        handoverId: r.handover_id,
+        handoverVersion: r.handover_version,
+        rowNumber: r.row_number,
+        rowValues: JSON.parse(r.row_payload_json || '[]'),
+        syncedAt: r.synced_at,
+      })),
+    });
+  });
+
+  app.post('/api/handovers/sync-outbox/:jobId/retry', requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+    const jobId = parseInt(req.params.jobId, 10);
+    if (isNaN(jobId)) {
+      return res.status(400).json({ error: 'Invalid outbox job ID' });
+    }
+
+    const job = db.prepare('SELECT * FROM sheets_sync_queue WHERE id = ?').get(jobId) as any;
+    if (!job) {
+      return res.status(404).json({ error: 'Sync outbox job not found' });
+    }
+    if (job.status === 'synced' || job.status === 'superseded') {
+      return res.status(400).json({ error: `Job is already in terminal state "${job.status}".` });
+    }
+
+    const nowIso = new Date().toISOString();
+    db.prepare(
+      `UPDATE sheets_sync_queue
+       SET status = 'pending',
+           retry_count = 0,
+           locked_by = NULL,
+           locked_at = NULL,
+           next_retry_at = ?,
+           error_message = NULL
+       WHERE id = ?`
+    ).run(nowIso, jobId);
+
+    const col =
+      job.target_type === 'counselor_tab'
+        ? 'counselor_sheet_sync_status'
+        : job.target_type === 'receiver_tab'
+        ? 'receiver_sheet_sync_status'
+        : 'master_sheet_sync_status';
+    db.prepare(`UPDATE document_handovers SET ${col} = 'Pending' WHERE id = ?`).run(job.handover_id);
+
+    logAudit(
+      req.user!.id,
+      req.user!.name,
+      req.user!.role,
+      'MANUAL_RETRY_SHEETS_JOB',
+      'handover',
+      job.handover_id,
+      `Triggered manual outbox retry for job #${jobId} (${job.worksheet_title})`
+    );
+
+    const summary = await processSheetsOutbox(db);
+    res.json({ ok: true, summary });
+  });
+
+  app.post('/api/handovers/sync-outbox/retry-failed', requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+    const nowIso = new Date().toISOString();
+    const info = db
+      .prepare(
+        `UPDATE sheets_sync_queue
+         SET status = 'pending',
+             retry_count = 0,
+             locked_by = NULL,
+             locked_at = NULL,
+             next_retry_at = ?,
+             error_message = NULL
+         WHERE status = 'failed'`
+      )
+      .run(nowIso);
+
+    db.prepare(
+      `UPDATE document_handovers SET
+        counselor_sheet_sync_status = CASE WHEN counselor_sheet_sync_status = 'Failed' THEN 'Pending' ELSE counselor_sheet_sync_status END,
+        receiver_sheet_sync_status = CASE WHEN receiver_sheet_sync_status = 'Failed' THEN 'Pending' ELSE receiver_sheet_sync_status END,
+        master_sheet_sync_status = CASE WHEN master_sheet_sync_status = 'Failed' THEN 'Pending' ELSE master_sheet_sync_status END`
+    ).run();
+
+    logAudit(
+      req.user!.id,
+      req.user!.name,
+      req.user!.role,
+      'BATCH_RETRY_SHEETS_JOBS',
+      'system',
+      'sheets_sync_queue',
+      `Re-queued ${info.changes} failed Google Sheets sync job(s)`
+    );
+
+    const summary = await processSheetsOutbox(db);
+    res.json({ ok: true, requeued: info.changes, summary });
+  });
+
+  app.get('/api/handovers', (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const result = listHandovers(db, req.user!, {
+        viewMode: req.query.viewMode as any,
+        search: req.query.search as string | undefined,
+        studentId: req.query.studentId as string | undefined,
+        counselorId: req.query.counselorId as string | undefined,
+        receiverId: req.query.receiverId as string | undefined,
+        status: req.query.status as string | undefined,
+        dateFrom: req.query.dateFrom as string | undefined,
+        dateTo: req.query.dateTo as string | undefined,
+      });
+      res.json(result);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to fetch handovers' });
+    }
+  });
+
+  app.get('/api/handovers/:id', (req: AuthenticatedRequest, res: Response) => {
+    const handover = getHandoverById(db, req.params.id);
+    if (!handover) {
+      return res.status(404).json({ error: 'Document handover not found.' });
+    }
+
+    // Access check: Involved counselor, assigned receiver, or Admission_Manager
+    const isAdmin = req.user!.role === 'Admission_Manager';
+    const isParticipant =
+      handover.counselorId === req.user!.id || handover.receivingEmployeeId === req.user!.id;
+
+    if (!isAdmin && !isParticipant) {
+      return res.status(403).json({ error: 'You are not authorized to view this document handover.' });
+    }
+
+    const outboxJobs = db
+      .prepare('SELECT * FROM sheets_sync_queue WHERE handover_id = ? ORDER BY id DESC LIMIT 30')
+      .all(req.params.id);
+
+    res.json({ ...handover, outboxJobs });
+  });
+
+  app.post('/api/handovers', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { handover, notificationsToBroadcast } = createDocumentHandover(db, req.user!, req.body);
+
+      for (const n of notificationsToBroadcast) {
+        broadcastNotification(n.recipient_id, {
+          ...n,
+          senderName: req.user!.name,
+          read: false,
+          targetEntity: n.target_entity,
+          targetEntityId: n.target_entity_id,
+          createdAt: n.created_at,
+        });
+      }
+
+      // Immediately process outbox queue asynchronously (or await fast commit)
+      await processSheetsOutbox(db).catch((err) => {
+        console.warn('[Sheets Outbox] Immediate flush warning:', err);
+      });
+
+      const refreshed = getHandoverById(db, handover.id);
+      res.status(201).json(refreshed || handover);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to create document handover' });
+    }
+  });
+
+  app.put('/api/handovers/:id/acknowledge', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { handover, notificationsToBroadcast } = acknowledgeDocumentHandover(
+        db,
+        req.params.id,
+        req.user!,
+        req.body
+      );
+
+      for (const n of notificationsToBroadcast) {
+        broadcastNotification(n.recipient_id, {
+          ...n,
+          senderName: req.user!.name,
+          read: false,
+          targetEntity: n.target_entity,
+          targetEntityId: n.target_entity_id,
+          createdAt: n.created_at,
+        });
+      }
+
+      await processSheetsOutbox(db).catch((err) => {
+        console.warn('[Sheets Outbox] Immediate flush warning:', err);
+      });
+
+      const refreshed = getHandoverById(db, handover.id);
+      res.json(refreshed || handover);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to verify handover documents' });
+    }
+  });
+
+  app.put('/api/handovers/:id/follow-up', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { handover, notificationsToBroadcast } = submitHandoverFollowUp(
+        db,
+        req.params.id,
+        req.user!,
+        req.body
+      );
+
+      for (const n of notificationsToBroadcast) {
+        broadcastNotification(n.recipient_id, {
+          ...n,
+          senderName: req.user!.name,
+          read: false,
+          targetEntity: n.target_entity,
+          targetEntityId: n.target_entity_id,
+          createdAt: n.created_at,
+        });
+      }
+
+      await processSheetsOutbox(db).catch((err) => {
+        console.warn('[Sheets Outbox] Immediate flush warning:', err);
+      });
+
+      const refreshed = getHandoverById(db, handover.id);
+      res.json(refreshed || handover);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to submit follow-up delivery' });
+    }
+  });
+
+  // Periodic background sweep for due Google Sheets sync retries (every 10 seconds)
+  setInterval(() => {
+    processSheetsOutbox(db).catch((err) => {
+      console.warn('[Sheets Outbox] Background sweep error:', err);
+    });
+  }, 10000);
 
   // Database Backup endpoint
   app.post('/api/backup', requireAdmin, (_req: Request, res: Response) => {

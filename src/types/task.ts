@@ -13,6 +13,7 @@ export type NavigationTab =
   | 'students'
   | 'projects'
   | 'universities'
+  | 'document-handover'
   | 'completed'
   | 'sheets-connection'
   | 'settings';

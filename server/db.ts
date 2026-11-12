@@ -267,6 +267,116 @@ export function initDatabase(): void {
       account_name TEXT NOT NULL,
       auth_mode TEXT NOT NULL DEFAULT 'workspace_cloud'
     );
+
+    -- Document Handover & Acknowledgement Module Tables
+    CREATE TABLE IF NOT EXISTS handover_sequences (
+      year INTEGER PRIMARY KEY,
+      last_seq INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS document_handovers (
+      id TEXT PRIMARY KEY,
+      version INTEGER NOT NULL DEFAULT 1,
+      student_id TEXT NOT NULL,
+      counselor_id TEXT NOT NULL,
+      counselor_name TEXT NOT NULL,
+      receiving_employee_id TEXT NOT NULL,
+      receiving_employee_name TEXT NOT NULL,
+      handover_date TEXT NOT NULL,
+      handover_time TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'Pending Receipt'
+        CHECK(status IN ('Pending Receipt', 'Accepted', 'Partially Received', 'Disputed', 'Follow-up Delivered')),
+      total_documents INTEGER NOT NULL DEFAULT 1,
+      documents_json TEXT NOT NULL DEFAULT '[]',
+      follow_up_deliveries_json TEXT NOT NULL DEFAULT '[]',
+      general_remarks TEXT,
+      package_seal_number TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      last_acknowledged_at TEXT,
+      last_acknowledged_by_id TEXT,
+      last_acknowledged_by_name TEXT,
+      acknowledgement_type TEXT,
+      acknowledgement_notes TEXT,
+      dispute_reason TEXT,
+      counselor_sheet_sync_status TEXT NOT NULL DEFAULT 'Pending' CHECK(counselor_sheet_sync_status IN ('Pending', 'Synced', 'Failed')),
+      receiver_sheet_sync_status TEXT NOT NULL DEFAULT 'Pending' CHECK(receiver_sheet_sync_status IN ('Pending', 'Synced', 'Failed')),
+      master_sheet_sync_status TEXT NOT NULL DEFAULT 'Pending' CHECK(master_sheet_sync_status IN ('Pending', 'Synced', 'Failed')),
+      last_sync_error TEXT,
+      FOREIGN KEY (student_id) REFERENCES student_applications(id) ON DELETE RESTRICT,
+      FOREIGN KEY (counselor_id) REFERENCES users(id) ON DELETE RESTRICT,
+      FOREIGN KEY (receiving_employee_id) REFERENCES users(id) ON DELETE RESTRICT,
+      FOREIGN KEY (last_acknowledged_by_id) REFERENCES users(id) ON DELETE RESTRICT
+    );
+
+    CREATE TABLE IF NOT EXISTS handover_events (
+      id TEXT PRIMARY KEY,
+      handover_id TEXT NOT NULL,
+      actor_id TEXT NOT NULL,
+      actor_name TEXT NOT NULL,
+      actor_role TEXT NOT NULL,
+      action_type TEXT NOT NULL
+        CHECK(action_type IN ('Created', 'Accepted', 'Partially_Received', 'Disputed', 'FollowUp_Submitted', 'FollowUp_Verified')),
+      details TEXT NOT NULL,
+      item_states_snapshot TEXT,
+      timestamp TEXT NOT NULL,
+      FOREIGN KEY (handover_id) REFERENCES document_handovers(id) ON DELETE RESTRICT,
+      FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE RESTRICT
+    );
+
+    CREATE TABLE IF NOT EXISTS sheets_sync_queue (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      handover_id TEXT NOT NULL,
+      handover_version INTEGER NOT NULL DEFAULT 1,
+      target_type TEXT NOT NULL CHECK(target_type IN ('counselor_tab', 'receiver_tab', 'master_tab')),
+      worksheet_title TEXT NOT NULL,
+      employee_id TEXT,
+      row_payload_json TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'processing', 'synced', 'failed', 'superseded')),
+      retry_count INTEGER NOT NULL DEFAULT 0,
+      max_retries INTEGER NOT NULL DEFAULT 5,
+      next_retry_at TEXT,
+      locked_by TEXT,
+      locked_at TEXT,
+      error_message TEXT,
+      created_at TEXT NOT NULL,
+      last_attempt_at TEXT,
+      synced_at TEXT,
+      FOREIGN KEY (handover_id) REFERENCES document_handovers(id) ON DELETE RESTRICT
+    );
+
+    CREATE TABLE IF NOT EXISTS google_sheet_tab_rows (
+      spreadsheet_id TEXT NOT NULL,
+      worksheet_title TEXT NOT NULL,
+      handover_id TEXT NOT NULL,
+      handover_version INTEGER NOT NULL DEFAULT 1,
+      row_number INTEGER NOT NULL,
+      row_payload_json TEXT NOT NULL,
+      synced_at TEXT NOT NULL,
+      PRIMARY KEY (spreadsheet_id, worksheet_title, handover_id),
+      FOREIGN KEY (handover_id) REFERENCES document_handovers(id) ON DELETE RESTRICT
+    );
+  `);
+
+  // Immutability triggers to protect handover audit history and handover records from tampering or cascading deletion
+  db.exec(`
+    CREATE TRIGGER IF NOT EXISTS prevent_handover_events_update
+    BEFORE UPDATE ON handover_events
+    BEGIN
+      SELECT RAISE(ABORT, 'handover_events is append-only and cannot be modified');
+    END;
+
+    CREATE TRIGGER IF NOT EXISTS prevent_handover_events_delete
+    BEFORE DELETE ON handover_events
+    BEGIN
+      SELECT RAISE(ABORT, 'handover_events is immutable and cannot be deleted');
+    END;
+
+    CREATE TRIGGER IF NOT EXISTS prevent_document_handovers_delete
+    BEFORE DELETE ON document_handovers
+    BEGIN
+      SELECT RAISE(ABORT, 'document_handovers records cannot be deleted');
+    END;
   `);
 
   // Indexes for relational lookups
@@ -280,6 +390,13 @@ export function initDatabase(): void {
     CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_logs(timestamp);
     CREATE INDEX IF NOT EXISTS idx_programs_university ON university_programs(university_id);
     CREATE INDEX IF NOT EXISTS idx_documents_university ON university_documents(university_id);
+    CREATE INDEX IF NOT EXISTS idx_handovers_student ON document_handovers(student_id);
+    CREATE INDEX IF NOT EXISTS idx_handovers_counselor ON document_handovers(counselor_id);
+    CREATE INDEX IF NOT EXISTS idx_handovers_receiver ON document_handovers(receiving_employee_id);
+    CREATE INDEX IF NOT EXISTS idx_handovers_status ON document_handovers(status);
+    CREATE INDEX IF NOT EXISTS idx_handover_events_hnd ON handover_events(handover_id);
+    CREATE INDEX IF NOT EXISTS idx_sheets_queue_status_next ON sheets_sync_queue(status, next_retry_at);
+    CREATE INDEX IF NOT EXISTS idx_sheets_queue_handover ON sheets_sync_queue(handover_id, target_type, handover_version);
   `);
 
   // Ensure newly added columns exist in SQLite tables

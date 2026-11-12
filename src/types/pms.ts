@@ -250,7 +250,7 @@ export interface InAppNotification {
   title: string;
   message: string;
   type: 'task_assigned' | 'task_completed' | 'deadline_warning' | 'visa_update' | 'application_submitted';
-  targetEntity: 'task' | 'student' | 'project' | 'university';
+  targetEntity: 'task' | 'student' | 'project' | 'university' | 'handover';
   targetEntityId: string;
   read: boolean;
   createdAt: string;
@@ -266,4 +266,168 @@ export interface AuditLogEntry {
   entityId: string;
   details: string;
   timestamp: string;
+}
+
+export type DocumentItemStatus = 'Pending' | 'Received' | 'Missing' | 'Incorrect' | 'Rejected';
+
+export type DocumentFormat = 'Original' | 'Apostilled' | 'Notarized' | 'Certified Copy' | 'Photocopy';
+
+export type HandoverStatus =
+  | 'Pending Receipt'
+  | 'Accepted'
+  | 'Partially Received'
+  | 'Disputed'
+  | 'Follow-up Delivered';
+
+export type SyncTabStatus = 'Pending' | 'Synced' | 'Failed';
+
+export interface HandoverDocumentItem {
+  id: string;
+  documentName: string;
+  documentType: string;
+  quantity: number;
+  pageCount: number;
+  format: DocumentFormat;
+  conditionRemarks?: string;
+  status: DocumentItemStatus;
+  verifiedAt?: string | null;
+  verifiedById?: string | null;
+  verifiedByName?: string | null;
+  deliveryBatch: number;
+  verificationNotes?: string;
+}
+
+export interface FollowUpDelivery {
+  batchNumber: number;
+  deliveredAt: string;
+  deliveryDate: string;
+  deliveryTime: string;
+  deliveredById: string;
+  deliveredByName: string;
+  documentsDelivered: string[];
+  documentNamesDelivered: string[];
+  deliveryNotes: string;
+  status: 'Pending Verification' | 'Verified';
+}
+
+export interface HandoverEvent {
+  id: string;
+  handoverId: string;
+  actorId: string;
+  actorName: string;
+  actorRole: UserRole;
+  actionType:
+    | 'Created'
+    | 'Accepted'
+    | 'Partially_Received'
+    | 'Disputed'
+    | 'FollowUp_Submitted'
+    | 'FollowUp_Verified';
+  details: string;
+  itemStatesSnapshot?: Array<{
+    id: string;
+    name: string;
+    status: DocumentItemStatus;
+    batch: number;
+    notes?: string;
+  }>;
+  timestamp: string;
+}
+
+export interface DocumentHandover {
+  id: string;
+  version: number;
+  studentId: string;
+  studentName: string;
+  studentPassport: string;
+  universityName?: string;
+  intakeTerm?: string;
+  counselorId: string;
+  counselorName: string;
+  receivingEmployeeId: string;
+  receivingEmployeeName: string;
+  handoverDate: string;
+  handoverTime: string;
+  status: HandoverStatus;
+  totalDocuments: number;
+  documents: HandoverDocumentItem[];
+  followUpDeliveries: FollowUpDelivery[];
+  generalRemarks: string;
+  packageSealNumber?: string;
+  createdAt: string;
+  updatedAt: string;
+  lastAcknowledgedAt?: string | null;
+  lastAcknowledgedById?: string | null;
+  lastAcknowledgedByName?: string | null;
+  acknowledgementType?: string | null;
+  acknowledgementNotes?: string | null;
+  disputeReason?: string | null;
+  counselorSheetSyncStatus: SyncTabStatus;
+  receiverSheetSyncStatus: SyncTabStatus;
+  masterSheetSyncStatus: SyncTabStatus;
+  lastSyncError?: string | null;
+  events?: HandoverEvent[];
+  outboxJobs?: any[];
+}
+
+export interface HandoverStats {
+  total: number;
+  pendingReceipts: number;
+  accepted: number;
+  partiallyReceived: number;
+  disputed: number;
+  myPendingVerifications: number;
+  outbox: {
+    pending: number;
+    processing: number;
+    synced: number;
+    failed: number;
+    superseded: number;
+  };
+}
+
+export interface HandoverContextData {
+  students: Array<{
+    id: string;
+    fullName: string;
+    passportNumber: string;
+    intakeTerm: string;
+    degreeLevel: string;
+    assignedConsultantId: string;
+    universityName: string;
+  }>;
+  admissionTeam: UserProfile[];
+  counselingTeam: UserProfile[];
+}
+
+export interface SheetsOutboxJob {
+  id: number;
+  handoverId: string;
+  handoverVersion: number;
+  targetType: 'counselor_tab' | 'receiver_tab' | 'master_tab';
+  worksheetTitle: string;
+  employeeId?: string | null;
+  status: 'pending' | 'processing' | 'synced' | 'failed' | 'superseded';
+  retryCount: number;
+  maxRetries: number;
+  nextRetryAt?: string | null;
+  lockedBy?: string | null;
+  lockedAt?: string | null;
+  errorMessage?: string | null;
+  createdAt: string;
+  lastAttemptAt?: string | null;
+  syncedAt?: string | null;
+  counselorName?: string;
+  receiverName?: string;
+  handoverStatus?: string;
+}
+
+export interface SyncedTabRowPreview {
+  spreadsheetId: string;
+  worksheetTitle: string;
+  handoverId: string;
+  handoverVersion: number;
+  rowNumber: number;
+  rowValues: string[];
+  syncedAt: string;
 }

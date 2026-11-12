@@ -33,6 +33,7 @@ import {
   Clock,
   Layers,
   Percent,
+  FileCheck2,
 } from 'lucide-react';
 import {
   AppNotification,
@@ -82,6 +83,7 @@ import {
   StudentApplication,
   PmsTask,
   InAppNotification,
+  HandoverStats,
 } from './types/pms';
 import {
   getSessionUser,
@@ -96,6 +98,7 @@ import {
   markAllNotificationsAsRead,
   subscribeToNotificationStream,
   createPmsTask,
+  fetchHandoverStats,
 } from './services/pmsService';
 import { RoleSwitcherBar } from './components/RoleSwitcherBar';
 import { NotificationDrawer } from './components/NotificationDrawer';
@@ -108,6 +111,7 @@ import { UniversityDirectoryView } from './components/UniversityDirectoryView';
 import { EnhancedTaskModal } from './components/EnhancedTaskModal';
 import { DashboardSkeleton } from './components/SkeletonLoaders';
 import { TeamTaskManagementView } from './components/TeamTaskManagementView';
+import { DocumentHandoverView } from './components/DocumentHandoverView';
 
 const LOCAL_STORAGE_KEY = 'sheetsync_pc_state_v1';
 
@@ -242,6 +246,8 @@ export function App() {
   const [prefillStudentUniversityId, setPrefillStudentUniversityId] = useState<string | undefined>(undefined);
   const [prefillStudentProgramId, setPrefillStudentProgramId] = useState<string | undefined>(undefined);
   const [prefillStudentIntakeTerm, setPrefillStudentIntakeTerm] = useState<string | undefined>(undefined);
+  const [handoverStats, setHandoverStats] = useState<HandoverStats | null>(null);
+  const [selectedHandoverIdFromNotif, setSelectedHandoverIdFromNotif] = useState<string | null>(null);
 
   const isOffline = !browserOnline || settings.simulateOffline;
 
@@ -392,20 +398,33 @@ export function App() {
   // Fetch all PMS Consultancy records (scoped by currentUser role/id)
   const refreshPmsData = useCallback(async () => {
     try {
-      const [tList, uList, pList, sList, aData, nList] = await Promise.all([
+      const [tList, uList, pList, sList, aData, nList, hStats] = await Promise.all([
         fetchTeam().catch(() => []),
         fetchUniversities().catch(() => []),
         fetchProjects().catch(() => []),
         fetchStudents().catch(() => []),
         fetchAnalytics().catch(() => null),
         fetchNotifications().catch(() => []),
+        fetchHandoverStats().catch(() => null),
       ]);
       setTeam(tList);
+      if (tList.length > 0) {
+        setCurrentUser((prev) => {
+          const fresh = tList.find((u) => u.id === prev.id);
+          if (fresh && fresh.team !== prev.team) {
+            const updated = { ...prev, team: fresh.team, role: fresh.role, title: fresh.title, name: fresh.name };
+            setSessionUser(updated);
+            return updated;
+          }
+          return prev;
+        });
+      }
       setUniversities(uList);
       setProjects(pList);
       setStudents(sList);
       setAnalytics(aData);
       setPmsNotifications(nList);
+      if (hStats) setHandoverStats(hStats);
     } catch (err) {
       console.warn('Failed to refresh PMS records', err);
     }
@@ -1452,6 +1471,16 @@ export function App() {
           count: universities.length,
           accentColor: 'text-amber-500 dark:text-amber-400',
         },
+        {
+          id: 'document-handover',
+          label: 'Document Handover',
+          icon: FileCheck2 as any,
+          count:
+            currentUser.team === 'Counseling Team'
+              ? (handoverStats?.partiallyReceived || 0) + (handoverStats?.disputed || 0)
+              : handoverStats?.myPendingVerifications ?? handoverStats?.pendingReceipts ?? 0,
+          accentColor: 'text-cyan-600 dark:text-cyan-400',
+        },
       ],
     },
     {
@@ -2398,6 +2427,17 @@ export function App() {
             />
           )}
 
+          {/* VIEW: PHYSICAL DOCUMENT HANDOVER & ACKNOWLEDGEMENT */}
+          {activeNav === 'document-handover' && (
+            <DocumentHandoverView
+              currentUser={currentUser}
+              initialHandoverId={selectedHandoverIdFromNotif}
+              onClearInitialHandoverId={() => setSelectedHandoverIdFromNotif(null)}
+              onNotifyToast={(title, msg, type) => pushNotification(title, msg, type)}
+              onStatsChanged={(st) => setHandoverStats(st)}
+            />
+          )}
+
           {/* VIEW 2: MY DAY */}
           {activeNav === 'my-day' && (
             <div className="space-y-6">
@@ -2972,6 +3012,9 @@ export function App() {
           } else if (entityType === 'task') {
             setActiveNav('all-tasks');
             setSearchQuery(entityId);
+          } else if (entityType === 'handover') {
+            setSelectedHandoverIdFromNotif(entityId);
+            setActiveNav('document-handover');
           }
         }}
       />

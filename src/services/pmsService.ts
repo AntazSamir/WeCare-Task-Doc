@@ -21,6 +21,7 @@ let currentSessionUser: UserProfile = {
   role: 'Admission_Manager',
   title: 'Head of Admissions & Visa Processing',
   avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+  team: 'Admission Team',
 };
 
 export function setSessionUser(user: UserProfile) {
@@ -464,4 +465,180 @@ export async function assignBulkTasks(data: {
   }
   return res.json();
 }
+
+// ==========================================
+// DOCUMENT HANDOVER & ACKNOWLEDGEMENT API
+// ==========================================
+import type {
+  DocumentHandover,
+  DocumentItemStatus,
+  HandoverContextData,
+  HandoverStats,
+  SheetsOutboxJob,
+  SyncedTabRowPreview,
+} from '../types/pms';
+
+export async function fetchHandoverContext(): Promise<HandoverContextData> {
+  const res = await fetch('/api/handovers/context', { headers: getAuthHeaders() });
+  if (!res.ok) throw new Error('Failed to load handover context');
+  return res.json();
+}
+
+export async function fetchHandoverStats(): Promise<HandoverStats> {
+  const res = await fetch('/api/handovers/stats', { headers: getAuthHeaders() });
+  if (!res.ok) throw new Error('Failed to load handover stats');
+  return res.json();
+}
+
+export async function fetchHandovers(params?: {
+  viewMode?: 'my' | 'pending' | 'received' | 'disputed' | 'all';
+  search?: string;
+  studentId?: string;
+  counselorId?: string;
+  receiverId?: string;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}): Promise<DocumentHandover[]> {
+  const qs = new URLSearchParams();
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => {
+      if (v) qs.set(k, v);
+    });
+  }
+  const res = await fetch(`/api/handovers?${qs.toString()}`, { headers: getAuthHeaders() });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to load handovers');
+  }
+  return res.json();
+}
+
+export async function fetchHandoverDetails(id: string): Promise<DocumentHandover> {
+  const res = await fetch(`/api/handovers/${encodeURIComponent(id)}`, { headers: getAuthHeaders() });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to load handover details');
+  }
+  return res.json();
+}
+
+export async function createDocumentHandoverApi(payload: {
+  studentId: string;
+  receivingEmployeeId: string;
+  handoverDate: string;
+  handoverTime: string;
+  generalRemarks?: string;
+  packageSealNumber?: string;
+  documents: Array<{
+    documentName: string;
+    documentType: string;
+    quantity: number;
+    pageCount: number;
+    format: 'Original' | 'Apostilled' | 'Notarized' | 'Certified Copy' | 'Photocopy';
+    conditionRemarks?: string;
+  }>;
+}): Promise<DocumentHandover> {
+  const res = await fetch('/api/handovers', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to create document handover');
+  }
+  return res.json();
+}
+
+export async function acknowledgeHandoverApi(
+  id: string,
+  payload: {
+    action: 'Accept' | 'Partial' | 'Dispute';
+    itemDecisions: Array<{
+      itemId: string;
+      status: DocumentItemStatus;
+      verificationNotes?: string;
+    }>;
+    acknowledgementNotes?: string;
+    disputeReason?: string;
+  }
+): Promise<DocumentHandover> {
+  const res = await fetch(`/api/handovers/${encodeURIComponent(id)}/acknowledge`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to verify handover documents');
+  }
+  return res.json();
+}
+
+export async function submitHandoverFollowUpApi(
+  id: string,
+  payload: {
+    deliveryDate: string;
+    deliveryTime: string;
+    deliveryNotes: string;
+    deliveredItems: Array<{
+      itemId: string;
+      quantity?: number;
+      pageCount?: number;
+      format?: 'Original' | 'Apostilled' | 'Notarized' | 'Certified Copy' | 'Photocopy';
+      conditionRemarks?: string;
+    }>;
+  }
+): Promise<DocumentHandover> {
+  const res = await fetch(`/api/handovers/${encodeURIComponent(id)}/follow-up`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to submit follow-up delivery');
+  }
+  return res.json();
+}
+
+export async function fetchSheetsOutbox(status = 'all'): Promise<{
+  jobs: SheetsOutboxJob[];
+  syncedTabRows: SyncedTabRowPreview[];
+}> {
+  const res = await fetch(`/api/handovers/sync-outbox?status=${encodeURIComponent(status)}`, {
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to load outbox queue');
+  }
+  return res.json();
+}
+
+export async function retryOutboxJobApi(jobId: number): Promise<any> {
+  const res = await fetch(`/api/handovers/sync-outbox/${jobId}/retry`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to retry sync job');
+  }
+  return res.json();
+}
+
+export async function retryAllFailedOutboxApi(): Promise<any> {
+  const res = await fetch('/api/handovers/sync-outbox/retry-failed', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to retry failed sync jobs');
+  }
+  return res.json();
+}
+
 
