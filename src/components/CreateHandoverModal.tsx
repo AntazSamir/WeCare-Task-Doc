@@ -10,14 +10,21 @@ import {
   Clock,
   AlertCircle,
   Package,
+  ClipboardList,
 } from 'lucide-react';
-import { DocumentFormat, HandoverContextData, UserProfile } from '../types/pms';
+import {
+  DocumentFormat,
+  DocumentRequest,
+  HandoverContextData,
+  UserProfile,
+} from '../types/pms';
 import { createDocumentHandoverApi } from '../services/pmsService';
 
 interface CreateHandoverModalProps {
   isOpen: boolean;
   currentUser: UserProfile;
   contextData: HandoverContextData | null;
+  linkedRequest?: DocumentRequest | null;
   onClose: () => void;
   onSuccess: (handoverId: string) => void;
 }
@@ -93,6 +100,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
   isOpen,
   currentUser,
   contextData,
+  linkedRequest,
   onClose,
   onSuccess,
 }) => {
@@ -120,19 +128,61 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen && contextData) {
-      if (!studentId && contextData.students.length > 0) {
-        setStudentId(contextData.students[0].id);
-      }
-      if (!receivingEmployeeId && contextData.admissionTeam.length > 0) {
-        const preferred =
-          contextData.admissionTeam.find((m) => m.id !== currentUser.id) ||
-          contextData.admissionTeam[0];
-        setReceivingEmployeeId(preferred.id);
-      }
-      setErrorMsg(null);
+    if (!isOpen) return;
+    setErrorMsg(null);
+    const freshNow = new Date();
+    setHandoverDate(freshNow.toISOString().slice(0, 10));
+    setHandoverTime(freshNow.toTimeString().slice(0, 5));
+    setPackageSealNumber('');
+
+    if (linkedRequest) {
+      setStudentId(linkedRequest.studentId);
+      setReceivingEmployeeId(linkedRequest.requestedById);
+      setGeneralRemarks(
+        linkedRequest.remarks
+          ? `Fulfilling ${linkedRequest.id}: ${linkedRequest.remarks}`
+          : `Fulfilling Admission Request ${linkedRequest.id}`
+      );
+      setDocuments(
+        linkedRequest.requiredDocuments.length > 0
+          ? linkedRequest.requiredDocuments.map((d) => ({
+              documentName: d.documentName,
+              documentType: d.documentType || 'Academic / Legal',
+              quantity: d.quantity || 1,
+              pageCount: d.pageCount || 1,
+              format: d.format || 'Original',
+              conditionRemarks: d.notes || '',
+            }))
+          : [
+              {
+                documentName: '',
+                documentType: 'Academic / Legal',
+                quantity: 1,
+                pageCount: 1,
+                format: 'Original',
+                conditionRemarks: '',
+              },
+            ]
+      );
+    } else if (contextData) {
+      setStudentId(contextData.students[0]?.id || '');
+      const preferred =
+        contextData.admissionTeam.find((m) => m.id !== currentUser.id) ||
+        contextData.admissionTeam[0];
+      setReceivingEmployeeId(preferred?.id || '');
+      setGeneralRemarks('');
+      setDocuments([
+        {
+          documentName: 'Apostilled High School / Degree Diploma',
+          documentType: 'Academic Credential',
+          quantity: 1,
+          pageCount: 2,
+          format: 'Apostilled',
+          conditionRemarks: '',
+        },
+      ]);
     }
-  }, [isOpen, contextData, studentId, receivingEmployeeId, currentUser.id]);
+  }, [isOpen, linkedRequest, contextData, currentUser.id]);
 
   if (!isOpen) return null;
 
@@ -207,6 +257,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
         receivingEmployeeId,
         handoverDate,
         handoverTime,
+        requestId: linkedRequest?.id,
         packageSealNumber,
         generalRemarks,
         documents: cleanedDocs,
@@ -263,6 +314,20 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
             </div>
           )}
 
+          {linkedRequest && (
+            <div className="p-3 rounded-md bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200 flex items-start gap-2.5">
+              <ClipboardList className="w-4 h-4 shrink-0 mt-0.5 text-indigo-600 dark:text-indigo-400" />
+              <div className="space-y-0.5">
+                <div className="font-bold font-mono">
+                  Fulfilling Request {linkedRequest.id} · {linkedRequest.priority} Priority · Due {linkedRequest.deadline}
+                </div>
+                <div className="text-[11px] text-indigo-700 dark:text-indigo-300">
+                  Requested by {linkedRequest.requestedByName} for {linkedRequest.studentName}. Submitting links this handover directly to the request.
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Student & Receiver Metadata Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -273,8 +338,9 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
               <select
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
+                disabled={!!linkedRequest}
                 required
-                className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-blue-600 focus:outline-none"
+                className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-blue-600 focus:outline-none disabled:opacity-75 disabled:bg-slate-100 dark:disabled:bg-slate-900"
               >
                 <option value="">-- Select Student --</option>
                 {(contextData?.students || []).map((stu) => (

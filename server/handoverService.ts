@@ -13,6 +13,27 @@ export type HandoverStatus =
   | 'Disputed'
   | 'Follow-up Delivered';
 
+export type RequestPriority = 'Low' | 'Normal' | 'High' | 'Urgent';
+
+export type DocumentRequestStatus =
+  | 'Open'
+  | 'Handover Submitted'
+  | 'In Verification'
+  | 'Partially Fulfilled'
+  | 'Disputed'
+  | 'Completed'
+  | 'Cancelled';
+
+export interface RequestedDocumentItem {
+  id: string;
+  documentName: string;
+  documentType: string;
+  format: 'Original' | 'Apostilled' | 'Notarized' | 'Certified Copy' | 'Photocopy';
+  quantity: number;
+  pageCount?: number;
+  notes?: string;
+}
+
 export interface HandoverDocumentItem {
   id: string;
   documentName: string;
@@ -154,11 +175,439 @@ export function allocateNextHandoverId(targetDb: Database.Database, currentYear?
   return candidateId;
 }
 
+export function allocateNextRequestId(targetDb: Database.Database, currentYear?: number): string {
+  const year = currentYear || new Date().getFullYear();
+
+  targetDb
+    .prepare(
+      `INSERT INTO handover_request_sequences (year, last_seq) VALUES (?, 1)
+       ON CONFLICT(year) DO UPDATE SET last_seq = last_seq + 1`
+    )
+    .run(year);
+
+  let row = targetDb
+    .prepare('SELECT last_seq FROM handover_request_sequences WHERE year = ?')
+    .get(year) as { last_seq: number };
+
+  let candidateId = `REQ-${year}-${String(row.last_seq).padStart(4, '0')}`;
+
+  while (targetDb.prepare('SELECT 1 FROM document_requests WHERE id = ?').get(candidateId)) {
+    targetDb
+      .prepare('UPDATE handover_request_sequences SET last_seq = last_seq + 1 WHERE year = ?')
+      .run(year);
+    row = targetDb
+      .prepare('SELECT last_seq FROM handover_request_sequences WHERE year = ?')
+      .get(year) as { last_seq: number };
+    candidateId = `REQ-${year}-${String(row.last_seq).padStart(4, '0')}`;
+  }
+
+  return candidateId;
+}
+
+export interface CreateDocumentRequestInput {
+  studentId: string;
+  assignedCounselorId: string;
+  priority: RequestPriority;
+  deadline: string;
+  remarks?: string;
+  requiredDocuments: Array<{
+    documentName: string;
+    documentType?: string;
+    format?: 'Original' | 'Apostilled' | 'Notarized' | 'Certified Copy' | 'Photocopy';
+    quantity?: number;
+    pageCount?: number;
+    notes?: string;
+  }>;
+}
+
+const VALID_PRIORITIES: RequestPriority[] = ['Low', 'Normal', 'High', 'Urgent'];
+
+export function createDocumentRequest(
+  targetDb: Database.Database,
+  actor: ActorContext,
+  input: CreateDocumentRequestInput
+): { request: any; notificationsToBroadcast: any[] } {
+  const isAdmissionActor = actor.team === 'Admission Team' || actor.role === 'Admission_Manager';
+  if (!isAdmissionActor) {
+    throw new HandoverError(
+      403,
+      'Only Admission Team members or Administrators can issue document requests to counselors.'
+    );
+  }
+
+  if (!input.studentId || !input.assignedCounselorId || !input.deadline) {
+    throw new HandoverError(400, 'Student, target counselor, and deadline are required.');
+  }
+
+  const priority: RequestPriority = VALID_PRIORITIES.includes(input.priority) ? input.priority : 'Normal';
+
+  if (!Array.isArray(input.requiredDocuments) || input.requiredDocuments.length === 0) {
+    throw new HandoverError(400, 'At least one required physical document item must be specified.');
+  }
+
+  const student = targetDb
+    .prepare('SELECT id, full_name, passport_number FROM student_applications WHERE id = ?')
+    .get(input.studentId) as { id: string; full_name: string; passport_number: string } | undefined;
+  if (!student) {
+    throw new HandoverError(404, `Student record "${input.studentId}" does not exist.`);
+  }
+
+  const counselor = targetDb
+    .prepare("SELECT id, name, role, COALESCE(team, 'Admission Team') as team FROM users WHERE id = ?")
+    .get(input.assignedCounselorId) as { id: string; name: string; role: string; team: string } | undefined;
+  if (!counselor) {
+    throw new HandoverError(404, `Counselor "${input.assignedCounselorId}" does not exist.`);
+  }
+  if (counselor.team !== 'Counseling Team') {
+    throw new HandoverError(400, 'Document requests must be assigned to a Counseling Team member.');
+  }
+  if (counselor.id === actor.id) {
+    throw new HandoverError(400, 'You cannot send a document request to yourself.');
+  }
+
+  const reqDocs: RequestedDocumentItem[] = input.requiredDocuments.map((d, idx) => {
+    const cleanName = (d.documentName || '').trim();
+    if (!cleanName) {
+      throw new HandoverError(400, `Required document #${idx + 1} is missing a document name.`);
+    }
+    return {
+      id: `RDOC-${idx + 1}`,
+      documentName: cleanName,
+      documentType: (d.documentType || 'Academic / Legal').trim(),
+      format: d.format || 'Original',
+      quantity: Math.max(1, Number(d.quantity) || 1),
+      pageCount: Math.max(1, Number(d.pageCount) || 1),
+      notes: (d.notes || '').trim(),
+    };
+  });
+
+  const nowIso = new Date().toISOString();
+  const notificationsToBroadcast: any[] = [];
+  let createdRequestId = '';
+
+  const tx = targetDb.transaction(() => {
+    const requestId = allocateNextRequestId(targetDb);
+    createdRequestId = requestId;
+
+    targetDb
+      .prepare(
+        `INSERT INTO document_requests (
+          id, student_id, requested_by_id, requested_by_name,
+          assigned_counselor_id, assigned_counselor_name,
+          required_documents_json, priority, deadline, remarks,
+          status, linked_handover_id, created_at, updated_at, completed_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Open', NULL, ?, ?, NULL)`
+      )
+      .run(
+        requestId,
+        student.id,
+        actor.id,
+        actor.name,
+        counselor.id,
+        counselor.name,
+        JSON.stringify(reqDocs),
+        priority,
+        input.deadline,
+        (input.remarks || '').trim(),
+        nowIso,
+        nowIso
+      );
+
+    targetDb
+      .prepare(
+        `INSERT INTO audit_logs (id, actor_id, actor_name, actor_role, action, entity_type, entity_id, details, timestamp)
+         VALUES (?, ?, ?, ?, 'CREATE_DOCUMENT_REQUEST', 'handover', ?, ?, ?)`
+      )
+      .run(
+        generateAuditId(),
+        actor.id,
+        actor.name,
+        actor.role,
+        requestId,
+        `Request ${requestId} (${priority}, due ${input.deadline}): ${student.full_name} (${reqDocs.length} doc items) -> ${counselor.name}`,
+        nowIso
+      );
+
+    const notif = {
+      id: generateNotifId(),
+      recipient_id: counselor.id,
+      sender_id: actor.id,
+      title: `Document Request (${priority}): ${requestId}`,
+      message: `${actor.name} requested ${reqDocs.length} physical document(s) for ${student.full_name} (${student.passport_number}). Due by ${input.deadline}.`,
+      type: priority === 'Urgent' || priority === 'High' ? 'deadline_warning' : 'task_assigned',
+      target_entity: 'handover',
+      target_entity_id: requestId,
+      read_status: 0,
+      created_at: nowIso,
+    };
+
+    targetDb
+      .prepare('INSERT INTO notifications VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .run(
+        notif.id,
+        notif.recipient_id,
+        notif.sender_id,
+        notif.title,
+        notif.message,
+        notif.type,
+        notif.target_entity,
+        notif.target_entity_id,
+        0,
+        nowIso
+      );
+    notificationsToBroadcast.push(notif);
+  });
+
+  tx();
+
+  const request = getDocumentRequestById(targetDb, createdRequestId);
+  return { request, notificationsToBroadcast };
+}
+
+export function cancelDocumentRequest(
+  targetDb: Database.Database,
+  requestId: string,
+  actor: ActorContext,
+  reason?: string
+): { request: any; notificationsToBroadcast: any[] } {
+  const existing = targetDb
+    .prepare(
+      `SELECT r.*, s.full_name as student_name
+       FROM document_requests r
+       JOIN student_applications s ON r.student_id = s.id
+       WHERE r.id = ?`
+    )
+    .get(requestId) as any;
+
+  if (!existing) {
+    throw new HandoverError(404, `Document request "${requestId}" was not found.`);
+  }
+
+  const isRequester = existing.requested_by_id === actor.id;
+  const isAdmin = actor.role === 'Admission_Manager';
+  if (!isRequester && !isAdmin) {
+    throw new HandoverError(403, 'Only the requesting Admission employee or an Administrator can cancel this request.');
+  }
+
+  if (existing.status !== 'Open' || existing.linked_handover_id) {
+    throw new HandoverError(
+      409,
+      'Cannot cancel a document request once a handover has been submitted or completed.'
+    );
+  }
+
+  const nowIso = new Date().toISOString();
+  const notificationsToBroadcast: any[] = [];
+  const cancelNote = (reason || '').trim() || 'Cancelled by Admission Team';
+
+  const tx = targetDb.transaction(() => {
+    targetDb
+      .prepare(
+        `UPDATE document_requests SET status = 'Cancelled', remarks = CASE WHEN ? != '' THEN COALESCE(remarks, '') || ' [Cancelled: ' || ? || ']' ELSE remarks END, updated_at = ? WHERE id = ?`
+      )
+      .run(cancelNote, cancelNote, nowIso, requestId);
+
+    targetDb
+      .prepare(
+        `INSERT INTO audit_logs (id, actor_id, actor_name, actor_role, action, entity_type, entity_id, details, timestamp)
+         VALUES (?, ?, ?, ?, 'CANCEL_DOCUMENT_REQUEST', 'handover', ?, ?, ?)`
+      )
+      .run(
+        generateAuditId(),
+        actor.id,
+        actor.name,
+        actor.role,
+        requestId,
+        `Cancelled document request ${requestId} for ${existing.student_name}: ${cancelNote}`,
+        nowIso
+      );
+
+    const notif = {
+      id: generateNotifId(),
+      recipient_id: existing.assigned_counselor_id,
+      sender_id: actor.id,
+      title: `Document Request Cancelled: ${requestId}`,
+      message: `${actor.name} cancelled the document request for ${existing.student_name}. Reason: ${cancelNote}`,
+      type: 'visa_update',
+      target_entity: 'handover',
+      target_entity_id: requestId,
+      read_status: 0,
+      created_at: nowIso,
+    };
+
+    targetDb
+      .prepare('INSERT INTO notifications VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .run(
+        notif.id,
+        notif.recipient_id,
+        notif.sender_id,
+        notif.title,
+        notif.message,
+        notif.type,
+        notif.target_entity,
+        notif.target_entity_id,
+        0,
+        nowIso
+      );
+    notificationsToBroadcast.push(notif);
+  });
+
+  tx();
+
+  const request = getDocumentRequestById(targetDb, requestId);
+  return { request, notificationsToBroadcast };
+}
+
+function mapDocumentRequestRow(row: any) {
+  return {
+    id: row.id,
+    studentId: row.student_id,
+    studentName: row.student_name,
+    studentPassport: row.student_passport,
+    universityName: row.university_name || '',
+    intakeTerm: row.intake_term || '',
+    requestedById: row.requested_by_id,
+    requestedByName: row.requested_by_name,
+    assignedCounselorId: row.assigned_counselor_id,
+    assignedCounselorName: row.assigned_counselor_name,
+    requiredDocuments: JSON.parse(row.required_documents_json || '[]') as RequestedDocumentItem[],
+    priority: row.priority as RequestPriority,
+    deadline: row.deadline,
+    remarks: row.remarks || '',
+    status: row.status as DocumentRequestStatus,
+    linkedHandoverId: row.linked_handover_id || null,
+    linkedHandoverStatus: row.linked_handover_status || null,
+    linkedHandoverVersion: row.linked_handover_version || null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    completedAt: row.completed_at || null,
+  };
+}
+
+export function getDocumentRequestById(targetDb: Database.Database, requestId: string) {
+  const row = targetDb
+    .prepare(
+      `SELECT r.*,
+              s.full_name as student_name,
+              s.passport_number as student_passport,
+              s.intake_term as intake_term,
+              u.name_en as university_name,
+              h.status as linked_handover_status,
+              h.version as linked_handover_version
+       FROM document_requests r
+       JOIN student_applications s ON r.student_id = s.id
+       LEFT JOIN universities u ON s.applied_university_id = u.id
+       LEFT JOIN document_handovers h ON r.linked_handover_id = h.id
+       WHERE r.id = ?`
+    )
+    .get(requestId) as any;
+
+  if (!row) return null;
+  return mapDocumentRequestRow(row);
+}
+
+export interface ListDocumentRequestsFilter {
+  scope?: 'assigned_to_me' | 'my_requests' | 'all';
+  search?: string;
+  studentId?: string;
+  counselorId?: string;
+  requesterId?: string;
+  status?: string;
+  priority?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export function listDocumentRequests(
+  targetDb: Database.Database,
+  actor: ActorContext,
+  filter: ListDocumentRequestsFilter
+) {
+  const isAdmin = actor.role === 'Admission_Manager';
+  const isCounselor = actor.team === 'Counseling Team';
+
+  let sql = `
+    SELECT r.*,
+           s.full_name as student_name,
+           s.passport_number as student_passport,
+           s.intake_term as intake_term,
+           u.name_en as university_name,
+           h.status as linked_handover_status,
+           h.version as linked_handover_version
+    FROM document_requests r
+    JOIN student_applications s ON r.student_id = s.id
+    LEFT JOIN universities u ON s.applied_university_id = u.id
+    LEFT JOIN document_handovers h ON r.linked_handover_id = h.id
+    WHERE 1=1
+  `;
+  const params: any[] = [];
+
+  if (isCounselor) {
+    sql += ' AND r.assigned_counselor_id = ?';
+    params.push(actor.id);
+  } else if (!isAdmin) {
+    // Admission Team Officers view their own requested items
+    sql += ' AND r.requested_by_id = ?';
+    params.push(actor.id);
+  } else if (filter.scope === 'my_requests') {
+    sql += ' AND r.requested_by_id = ?';
+    params.push(actor.id);
+  }
+
+  if (filter.studentId) {
+    sql += ' AND r.student_id = ?';
+    params.push(filter.studentId);
+  }
+  if (filter.counselorId) {
+    sql += ' AND r.assigned_counselor_id = ?';
+    params.push(filter.counselorId);
+  }
+  if (filter.requesterId) {
+    sql += ' AND r.requested_by_id = ?';
+    params.push(filter.requesterId);
+  }
+  if (filter.status && filter.status !== 'All') {
+    sql += ' AND r.status = ?';
+    params.push(filter.status);
+  }
+  if (filter.priority && filter.priority !== 'All') {
+    sql += ' AND r.priority = ?';
+    params.push(filter.priority);
+  }
+  if (filter.dateFrom) {
+    sql += ' AND r.deadline >= ?';
+    params.push(filter.dateFrom);
+  }
+  if (filter.dateTo) {
+    sql += ' AND r.deadline <= ?';
+    params.push(filter.dateTo);
+  }
+  if (filter.search && filter.search.trim()) {
+    const q = `%${filter.search.trim().toLowerCase()}%`;
+    sql += ` AND (
+      LOWER(r.id) LIKE ? OR
+      LOWER(COALESCE(r.linked_handover_id, '')) LIKE ? OR
+      LOWER(s.full_name) LIKE ? OR
+      LOWER(s.passport_number) LIKE ? OR
+      LOWER(r.requested_by_name) LIKE ? OR
+      LOWER(r.assigned_counselor_name) LIKE ? OR
+      LOWER(r.required_documents_json) LIKE ?
+    )`;
+    params.push(q, q, q, q, q, q, q);
+  }
+
+  sql += ' ORDER BY CASE r.status WHEN \'Open\' THEN 0 WHEN \'Disputed\' THEN 1 WHEN \'Partially Fulfilled\' THEN 2 WHEN \'Handover Submitted\' THEN 3 WHEN \'In Verification\' THEN 4 ELSE 5 END, r.deadline ASC, r.created_at DESC';
+
+  const rows = targetDb.prepare(sql).all(...params) as any[];
+  return rows.map((r) => mapDocumentRequestRow(r));
+}
+
 export interface CreateHandoverInput {
   studentId: string;
   receivingEmployeeId: string;
   handoverDate: string;
   handoverTime: string;
+  requestId?: string;
   generalRemarks?: string;
   packageSealNumber?: string;
   documents: Array<{
@@ -239,7 +688,37 @@ export function createDocumentHandover(
   const notificationsToBroadcast: any[] = [];
   let createdHandoverId = '';
 
+  const cleanRequestId = input.requestId ? input.requestId.trim() : '';
+
   const tx = targetDb.transaction(() => {
+    if (cleanRequestId) {
+      const reqRow = targetDb
+        .prepare('SELECT * FROM document_requests WHERE id = ?')
+        .get(cleanRequestId) as any;
+
+      if (!reqRow) {
+        throw new HandoverError(404, `Linked document request "${cleanRequestId}" was not found.`);
+      }
+      if (reqRow.status !== 'Open' || reqRow.linked_handover_id) {
+        throw new HandoverError(
+          409,
+          `Document request "${cleanRequestId}" is already linked or closed (status: ${reqRow.status}).`
+        );
+      }
+      if (reqRow.assigned_counselor_id !== actor.id) {
+        throw new HandoverError(
+          403,
+          `Document request "${cleanRequestId}" is assigned to ${reqRow.assigned_counselor_name}. Only the requested counselor can fulfill it.`
+        );
+      }
+      if (reqRow.student_id !== student.id) {
+        throw new HandoverError(
+          400,
+          `Selected student does not match the student required by request "${cleanRequestId}".`
+        );
+      }
+    }
+
     const handoverId = allocateNextHandoverId(targetDb);
     createdHandoverId = handoverId;
     const version = 1;
@@ -251,9 +730,9 @@ export function createDocumentHandover(
           receiving_employee_id, receiving_employee_name,
           handover_date, handover_time, status, total_documents,
           documents_json, follow_up_deliveries_json, general_remarks, package_seal_number,
-          created_at, updated_at,
+          request_id, created_at, updated_at,
           counselor_sheet_sync_status, receiver_sheet_sync_status, master_sheet_sync_status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[]', ?, ?, ?, ?, 'Pending', 'Pending', 'Pending')`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[]', ?, ?, ?, ?, ?, 'Pending', 'Pending', 'Pending')`
       )
       .run(
         handoverId,
@@ -270,9 +749,37 @@ export function createDocumentHandover(
         JSON.stringify(items),
         (input.generalRemarks || '').trim(),
         (input.packageSealNumber || '').trim() || null,
+        cleanRequestId || null,
         nowIso,
         nowIso
       );
+
+    if (cleanRequestId) {
+      targetDb
+        .prepare(
+          `UPDATE document_requests
+           SET linked_handover_id = ?,
+               status = 'Handover Submitted',
+               updated_at = ?
+           WHERE id = ?`
+        )
+        .run(handoverId, nowIso, cleanRequestId);
+
+      targetDb
+        .prepare(
+          `INSERT INTO audit_logs (id, actor_id, actor_name, actor_role, action, entity_type, entity_id, details, timestamp)
+           VALUES (?, ?, ?, ?, 'LINK_HANDOVER_TO_REQUEST', 'handover', ?, ?, ?)`
+        )
+        .run(
+          generateAuditId(),
+          actor.id,
+          actor.name,
+          actor.role,
+          cleanRequestId,
+          `Linked physical handover ${handoverId} to document request ${cleanRequestId}. Awaiting Admission receipt verification.`,
+          nowIso
+        );
+    }
 
     // 1. Immutable Handover Event
     targetDb
@@ -286,7 +793,7 @@ export function createDocumentHandover(
         actor.id,
         actor.name,
         actor.role,
-        `Created handover ${handoverId} for ${student.full_name} (${items.length} physical document item${items.length > 1 ? 's' : ''}) assigned to ${receiver.name}.`,
+        `Created handover ${handoverId} for ${student.full_name} (${items.length} physical document item${items.length > 1 ? 's' : ''}) assigned to ${receiver.name}.${cleanRequestId ? ` Fulfilling Admission Request ${cleanRequestId}.` : ''}`,
         JSON.stringify(items.map((i) => ({ id: i.id, name: i.documentName, status: i.status, batch: i.deliveryBatch }))),
         nowIso
       );
@@ -303,7 +810,7 @@ export function createDocumentHandover(
         actor.name,
         actor.role,
         handoverId,
-        `Handover ${handoverId}: ${student.full_name} (${items.length} docs) -> ${receiver.name}`,
+        `Handover ${handoverId}: ${student.full_name} (${items.length} docs) -> ${receiver.name}${cleanRequestId ? ` [Request: ${cleanRequestId}]` : ''}`,
         nowIso
       );
 
@@ -312,8 +819,10 @@ export function createDocumentHandover(
       id: generateNotifId(),
       recipient_id: receiver.id,
       sender_id: actor.id,
-      title: `Pending Document Handover: ${handoverId}`,
-      message: `${actor.name} submitted ${items.length} physical document(s) for ${student.full_name} (${student.passport_number}). Please inspect & acknowledge receipt.`,
+      title: cleanRequestId
+        ? `Requested Handover Ready: ${handoverId} (${cleanRequestId})`
+        : `Pending Document Handover: ${handoverId}`,
+      message: `${actor.name} submitted ${items.length} physical document(s) for ${student.full_name} (${student.passport_number})${cleanRequestId ? ` in response to ${cleanRequestId}` : ''}. Please inspect & acknowledge receipt.`,
       type: 'visa_update',
       target_entity: 'handover',
       target_entity_id: handoverId,
@@ -338,6 +847,13 @@ export function createDocumentHandover(
     notificationsToBroadcast.push(notif);
 
     // 4. Outbox Sync Jobs (Counselor tab, Receiver tab, Master tab)
+    const rowNotes = [
+      cleanRequestId ? `[Req: ${cleanRequestId}]` : '',
+      (input.generalRemarks || '').trim(),
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     const rowPayload = buildHandoverRowPayload({
       handoverId,
       version,
@@ -352,7 +868,7 @@ export function createDocumentHandover(
       receiverId: receiver.id,
       overallStatus: initialStatus,
       updatedAt: nowIso,
-      notes: input.generalRemarks,
+      notes: rowNotes,
     });
 
     enqueueHandoverSyncJobs(targetDb, {
@@ -607,14 +1123,53 @@ export function acknowledgeDocumentHandover(
         nowIso
       );
 
+    // Sync linked Admission -> Counselor Document Request status
+    // Request is Completed ONLY when Admission confirms full physical receipt ('Accepted')
+    if (existing.request_id) {
+      const nextReqStatus: DocumentRequestStatus =
+        derivedStatus === 'Accepted'
+          ? 'Completed'
+          : derivedStatus === 'Partially Received'
+          ? 'Partially Fulfilled'
+          : derivedStatus === 'Disputed'
+          ? 'Disputed'
+          : 'In Verification';
+
+      targetDb
+        .prepare(
+          `UPDATE document_requests
+           SET status = ?,
+               updated_at = ?,
+               completed_at = CASE WHEN ? = 'Completed' THEN ? ELSE completed_at END
+           WHERE id = ?`
+        )
+        .run(nextReqStatus, nowIso, nextReqStatus, nowIso, existing.request_id);
+
+      targetDb
+        .prepare(
+          `INSERT INTO audit_logs (id, actor_id, actor_name, actor_role, action, entity_type, entity_id, details, timestamp)
+           VALUES (?, ?, ?, ?, ?, 'handover', ?, ?, ?)`
+        )
+        .run(
+          generateAuditId(),
+          actor.id,
+          actor.name,
+          actor.role,
+          nextReqStatus === 'Completed' ? 'COMPLETE_DOCUMENT_REQUEST' : 'UPDATE_DOCUMENT_REQUEST_STATUS',
+          existing.request_id,
+          `Request ${existing.request_id} transitioned to "${nextReqStatus}" following verification of ${handoverId}.`,
+          nowIso
+        );
+    }
+
     // Notify Counselor immediately
     const notifTitle =
       derivedStatus === 'Accepted'
-        ? `Handover Accepted: ${handoverId}`
+        ? `Handover Accepted: ${handoverId}${existing.request_id ? ` (${existing.request_id})` : ''}`
         : `Action Required (${derivedStatus}): ${handoverId}`;
     const notifMessage =
       derivedStatus === 'Accepted'
-        ? `${actor.name} confirmed receipt of all ${updatedItems.length} documents for ${existing.student_name}.`
+        ? `${actor.name} confirmed receipt of all ${updatedItems.length} documents for ${existing.student_name}.${existing.request_id ? ` Request ${existing.request_id} is now Completed.` : ''}`
         : `${actor.name} flagged ${existing.student_name}'s handover as ${derivedStatus}. Outstanding: ${summaryCounts.missing} missing, ${summaryCounts.incorrect + summaryCounts.rejected} defective. Please deliver missing/corrected documents under ${handoverId}.`;
 
     const notif = {
@@ -646,6 +1201,13 @@ export function acknowledgeDocumentHandover(
       );
     notificationsToBroadcast.push(notif);
 
+    const ackRowNotes = [
+      existing.request_id ? `[Req: ${existing.request_id}]` : '',
+      input.disputeReason || input.acknowledgementNotes || existing.general_remarks || '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     const rowPayload = buildHandoverRowPayload({
       handoverId,
       version: nextVersion,
@@ -660,7 +1222,7 @@ export function acknowledgeDocumentHandover(
       receiverId: existing.receiving_employee_id,
       overallStatus: derivedStatus,
       updatedAt: nowIso,
-      notes: input.disputeReason || input.acknowledgementNotes || existing.general_remarks,
+      notes: ackRowNotes,
     });
 
     enqueueHandoverSyncJobs(targetDb, {
@@ -856,13 +1418,24 @@ export function submitHandoverFollowUp(
         nowIso
       );
 
+    if (existing.request_id) {
+      targetDb
+        .prepare(
+          `UPDATE document_requests
+           SET status = 'In Verification',
+               updated_at = ?
+           WHERE id = ? AND status NOT IN ('Completed', 'Cancelled')`
+        )
+        .run(nowIso, existing.request_id);
+    }
+
     // Notify Assigned Admission Receiver
     const notif = {
       id: generateNotifId(),
       recipient_id: existing.receiving_employee_id,
       sender_id: actor.id,
       title: `Follow-up Delivery Ready: ${handoverId}`,
-      message: `${actor.name} delivered ${deliveredDocNames.length} missing/corrected document(s) (Batch #${nextBatchNumber}) for ${existing.student_name}. Please inspect & verify receipt.`,
+      message: `${actor.name} delivered ${deliveredDocNames.length} missing/corrected document(s) (Batch #${nextBatchNumber}) for ${existing.student_name}${existing.request_id ? ` [${existing.request_id}]` : ''}. Please inspect & verify receipt.`,
       type: 'visa_update',
       target_entity: 'handover',
       target_entity_id: handoverId,
@@ -886,6 +1459,13 @@ export function submitHandoverFollowUp(
       );
     notificationsToBroadcast.push(notif);
 
+    const followUpNotes = [
+      existing.request_id ? `[Req: ${existing.request_id}]` : '',
+      `Follow-up Batch #${nextBatchNumber}: ${input.deliveryNotes || deliveredDocNames.join(', ')}`,
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     const rowPayload = buildHandoverRowPayload({
       handoverId,
       version: nextVersion,
@@ -900,7 +1480,7 @@ export function submitHandoverFollowUp(
       receiverId: existing.receiving_employee_id,
       overallStatus: nextStatus,
       updatedAt: nowIso,
-      notes: `Follow-up Batch #${nextBatchNumber}: ${input.deliveryNotes || deliveredDocNames.join(', ')}`,
+      notes: followUpNotes,
     });
 
     enqueueHandoverSyncJobs(targetDb, {
@@ -940,6 +1520,10 @@ function mapHandoverRow(row: any, events: any[] = []) {
     followUpDeliveries: JSON.parse(row.follow_up_deliveries_json || '[]') as FollowUpDelivery[],
     generalRemarks: row.general_remarks || '',
     packageSealNumber: row.package_seal_number || '',
+    requestId: row.request_id || null,
+    requestPriority: row.request_priority || null,
+    requestDeadline: row.request_deadline || null,
+    requestStatus: row.request_status || null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     lastAcknowledgedAt: row.last_acknowledged_at,
@@ -973,10 +1557,14 @@ export function getHandoverById(targetDb: Database.Database, handoverId: string)
               s.full_name as student_name,
               s.passport_number as student_passport,
               s.intake_term as intake_term,
-              u.name_en as university_name
+              u.name_en as university_name,
+              r.priority as request_priority,
+              r.deadline as request_deadline,
+              r.status as request_status
        FROM document_handovers h
        JOIN student_applications s ON h.student_id = s.id
        LEFT JOIN universities u ON s.applied_university_id = u.id
+       LEFT JOIN document_requests r ON h.request_id = r.id
        WHERE h.id = ?`
     )
     .get(handoverId) as any;
@@ -991,7 +1579,7 @@ export function getHandoverById(targetDb: Database.Database, handoverId: string)
 }
 
 export interface ListHandoversFilter {
-  viewMode?: 'my' | 'pending' | 'received' | 'disputed' | 'all';
+  viewMode?: 'my' | 'pending' | 'pending_confirmations' | 'received' | 'disputed' | 'all';
   search?: string;
   studentId?: string;
   counselorId?: string;
@@ -1018,10 +1606,14 @@ export function listHandovers(
            s.full_name as student_name,
            s.passport_number as student_passport,
            s.intake_term as intake_term,
-           u.name_en as university_name
+           u.name_en as university_name,
+           r.priority as request_priority,
+           r.deadline as request_deadline,
+           r.status as request_status
     FROM document_handovers h
     JOIN student_applications s ON h.student_id = s.id
     LEFT JOIN universities u ON s.applied_university_id = u.id
+    LEFT JOIN document_requests r ON h.request_id = r.id
     WHERE 1=1
   `;
   const params: any[] = [];
@@ -1029,6 +1621,9 @@ export function listHandovers(
   // Role & view scoping
   if (viewMode === 'my') {
     sql += ' AND h.counselor_id = ?';
+    params.push(actor.id);
+  } else if (viewMode === 'pending_confirmations') {
+    sql += " AND h.status IN ('Pending Receipt', 'Follow-up Delivered') AND h.counselor_id = ?";
     params.push(actor.id);
   } else if (viewMode === 'pending') {
     sql += " AND h.status IN ('Pending Receipt', 'Follow-up Delivered')";
@@ -1079,13 +1674,14 @@ export function listHandovers(
     const q = `%${filter.search.trim().toLowerCase()}%`;
     sql += ` AND (
       LOWER(h.id) LIKE ? OR
+      LOWER(COALESCE(h.request_id, '')) LIKE ? OR
       LOWER(s.full_name) LIKE ? OR
       LOWER(s.passport_number) LIKE ? OR
       LOWER(h.counselor_name) LIKE ? OR
       LOWER(h.receiving_employee_name) LIKE ? OR
       LOWER(h.documents_json) LIKE ?
     )`;
-    params.push(q, q, q, q, q, q);
+    params.push(q, q, q, q, q, q, q);
   }
 
   sql += ' ORDER BY h.updated_at DESC, h.id DESC';
@@ -1113,6 +1709,41 @@ export function getHandoverStats(targetDb: Database.Database, actor: ActorContex
     )
     .get(...(isAdmin ? [] : [actor.id, ...scopeParams])) as any;
 
+  // Counselor-specific KPIs
+  const counselorCounts = targetDb
+    .prepare(
+      `SELECT
+        COUNT(*) as my_total,
+        SUM(CASE WHEN status IN ('Pending Receipt', 'Follow-up Delivered') THEN 1 ELSE 0 END) as my_pending_confirmations,
+        SUM(CASE WHEN status IN ('Partially Received', 'Disputed') THEN 1 ELSE 0 END) as my_needs_followup,
+        SUM(CASE WHEN status = 'Accepted' THEN 1 ELSE 0 END) as my_accepted
+       FROM document_handovers
+       WHERE counselor_id = ?`
+    )
+    .get(actor.id) as any;
+
+  const counselorReqCounts = targetDb
+    .prepare(
+      `SELECT
+        SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) as open_assigned,
+        SUM(CASE WHEN status IN ('Open', 'Partially Fulfilled', 'Disputed') THEN 1 ELSE 0 END) as action_needed_assigned,
+        COUNT(*) as total_assigned
+       FROM document_requests
+       WHERE assigned_counselor_id = ?`
+    )
+    .get(actor.id) as any;
+
+  const admissionReqCounts = targetDb
+    .prepare(
+      `SELECT
+        SUM(CASE WHEN status NOT IN ('Completed', 'Cancelled') THEN 1 ELSE 0 END) as open_requests,
+        SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed_requests,
+        COUNT(*) as total_requests
+       FROM document_requests
+       ${isAdmin ? '' : 'WHERE requested_by_id = ?'}`
+    )
+    .get(...(isAdmin ? [] : [actor.id])) as any;
+
   const outboxStats = targetDb
     .prepare(
       `SELECT
@@ -1132,6 +1763,17 @@ export function getHandoverStats(targetDb: Database.Database, actor: ActorContex
     partiallyReceived: counts?.partial || 0,
     disputed: counts?.disputed || 0,
     myPendingVerifications: counts?.my_pending_verifications || 0,
+    // Role-specific metrics for dual dashboards
+    openRequestsAssignedToMe: counselorReqCounts?.open_assigned || 0,
+    actionNeededRequestsAssignedToMe: counselorReqCounts?.action_needed_assigned || 0,
+    totalRequestsAssignedToMe: counselorReqCounts?.total_assigned || 0,
+    myTotalHandovers: counselorCounts?.my_total || 0,
+    pendingConfirmationsMyHandovers: counselorCounts?.my_pending_confirmations || 0,
+    myNeedsFollowUp: counselorCounts?.my_needs_followup || 0,
+    myAcceptedHandovers: counselorCounts?.my_accepted || 0,
+    myOpenAdmissionRequests: admissionReqCounts?.open_requests || 0,
+    myCompletedAdmissionRequests: admissionReqCounts?.completed_requests || 0,
+    myTotalAdmissionRequests: admissionReqCounts?.total_requests || 0,
     outbox: {
       pending: outboxStats?.pending || 0,
       processing: outboxStats?.processing || 0,

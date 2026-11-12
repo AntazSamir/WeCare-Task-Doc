@@ -248,6 +248,7 @@ export function App() {
   const [prefillStudentIntakeTerm, setPrefillStudentIntakeTerm] = useState<string | undefined>(undefined);
   const [handoverStats, setHandoverStats] = useState<HandoverStats | null>(null);
   const [selectedHandoverIdFromNotif, setSelectedHandoverIdFromNotif] = useState<string | null>(null);
+  const clearSelectedHandoverFromNotif = useCallback(() => setSelectedHandoverIdFromNotif(null), []);
 
   const isOffline = !browserOnline || settings.simulateOffline;
 
@@ -1477,7 +1478,8 @@ export function App() {
           icon: FileCheck2 as any,
           count:
             currentUser.team === 'Counseling Team'
-              ? (handoverStats?.partiallyReceived || 0) + (handoverStats?.disputed || 0)
+              ? (handoverStats?.actionNeededRequestsAssignedToMe || 0) +
+                (handoverStats?.myNeedsFollowUp || 0)
               : handoverStats?.myPendingVerifications ?? handoverStats?.pendingReceipts ?? 0,
           accentColor: 'text-cyan-600 dark:text-cyan-400',
         },
@@ -2432,9 +2434,9 @@ export function App() {
             <DocumentHandoverView
               currentUser={currentUser}
               initialHandoverId={selectedHandoverIdFromNotif}
-              onClearInitialHandoverId={() => setSelectedHandoverIdFromNotif(null)}
-              onNotifyToast={(title, msg, type) => pushNotification(title, msg, type)}
-              onStatsChanged={(st) => setHandoverStats(st)}
+              onClearInitialHandoverId={clearSelectedHandoverFromNotif}
+              onNotifyToast={pushNotification}
+              onStatsChanged={setHandoverStats}
             />
           )}
 

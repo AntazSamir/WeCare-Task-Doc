@@ -334,6 +334,51 @@ export interface HandoverEvent {
   timestamp: string;
 }
 
+export type RequestPriority = 'Low' | 'Normal' | 'High' | 'Urgent';
+
+export type DocumentRequestStatus =
+  | 'Open'
+  | 'Handover Submitted'
+  | 'In Verification'
+  | 'Partially Fulfilled'
+  | 'Disputed'
+  | 'Completed'
+  | 'Cancelled';
+
+export interface RequestedDocumentItem {
+  id: string;
+  documentName: string;
+  documentType: string;
+  format: DocumentFormat;
+  quantity: number;
+  pageCount?: number;
+  notes?: string;
+}
+
+export interface DocumentRequest {
+  id: string;
+  studentId: string;
+  studentName: string;
+  studentPassport: string;
+  universityName?: string;
+  intakeTerm?: string;
+  requestedById: string;
+  requestedByName: string;
+  assignedCounselorId: string;
+  assignedCounselorName: string;
+  requiredDocuments: RequestedDocumentItem[];
+  priority: RequestPriority;
+  deadline: string;
+  remarks: string;
+  status: DocumentRequestStatus;
+  linkedHandoverId?: string | null;
+  linkedHandoverStatus?: HandoverStatus | null;
+  linkedHandoverVersion?: number | null;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string | null;
+}
+
 export interface DocumentHandover {
   id: string;
   version: number;
@@ -354,6 +399,10 @@ export interface DocumentHandover {
   followUpDeliveries: FollowUpDelivery[];
   generalRemarks: string;
   packageSealNumber?: string;
+  requestId?: string | null;
+  requestPriority?: RequestPriority | null;
+  requestDeadline?: string | null;
+  requestStatus?: DocumentRequestStatus | null;
   createdAt: string;
   updatedAt: string;
   lastAcknowledgedAt?: string | null;
@@ -377,6 +426,16 @@ export interface HandoverStats {
   partiallyReceived: number;
   disputed: number;
   myPendingVerifications: number;
+  openRequestsAssignedToMe?: number;
+  actionNeededRequestsAssignedToMe?: number;
+  totalRequestsAssignedToMe?: number;
+  myTotalHandovers?: number;
+  pendingConfirmationsMyHandovers?: number;
+  myNeedsFollowUp?: number;
+  myAcceptedHandovers?: number;
+  myOpenAdmissionRequests?: number;
+  myCompletedAdmissionRequests?: number;
+  myTotalAdmissionRequests?: number;
   outbox: {
     pending: number;
     processing: number;

@@ -7,9 +7,13 @@ import Database from 'better-sqlite3';
 import {
   acknowledgeDocumentHandover,
   ActorContext,
+  cancelDocumentRequest,
   createDocumentHandover,
+  createDocumentRequest,
+  getDocumentRequestById,
   getHandoverById,
   HandoverError,
+  listDocumentRequests,
   submitHandoverFollowUp,
 } from '../server/handoverService';
 import {
@@ -22,6 +26,12 @@ function createIsolatedTestDb(): { db: Database.Database; cleanup: () => void } 
   const prodDbPath = path.resolve(process.cwd(), 'data', 'consultancy_pms.sqlite');
   const tmpFile = path.join(os.tmpdir(), `handover_test_${Date.now()}_${Math.random().toString(36).slice(2)}.sqlite`);
   fs.copyFileSync(prodDbPath, tmpFile);
+  if (fs.existsSync(`${prodDbPath}-wal`)) {
+    fs.copyFileSync(`${prodDbPath}-wal`, `${tmpFile}-wal`);
+  }
+  if (fs.existsSync(`${prodDbPath}-shm`)) {
+    fs.copyFileSync(`${prodDbPath}-shm`, `${tmpFile}-shm`);
+  }
   const testDb = new Database(tmpFile);
   testDb.pragma('foreign_keys = ON');
   return {
@@ -29,6 +39,8 @@ function createIsolatedTestDb(): { db: Database.Database; cleanup: () => void } 
     cleanup: () => {
       testDb.close();
       try { fs.unlinkSync(tmpFile); } catch {}
+      try { fs.unlinkSync(`${tmpFile}-wal`); } catch {}
+      try { fs.unlinkSync(`${tmpFile}-shm`); } catch {}
     },
   };
 }
@@ -291,3 +303,148 @@ test('Outbox Sync Queue: Locking, Stale Version Protection, Retries, Failed Rete
     cleanup();
   }
 });
+
+test('Admission -> Counselor Request Workflow, Bidirectional Linking, RBAC & Completion Rules', async () => {
+  const { db, cleanup } = createIsolatedTestDb();
+  try {
+    // 1. Counselors cannot issue Admission document requests
+    assert.throws(
+      () =>
+        createDocumentRequest(db, counselorDavid, {
+          studentId: 'STU-2027-001',
+          assignedCounselorId: 'USR-CONSULTANT-3',
+          priority: 'High',
+          deadline: '2026-11-20',
+          requiredDocuments: [{ documentName: 'Apostilled Diploma', format: 'Apostilled', quantity: 1 }],
+        }),
+      (err: any) => err instanceof HandoverError && err.statusCode === 403
+    );
+
+    // 2. Admission officer Min-Ji requests documents from specific counselor David
+    const { request, notificationsToBroadcast: reqNotifs } = createDocumentRequest(db, admissionMinJi, {
+      studentId: 'STU-2027-001',
+      assignedCounselorId: 'USR-CONSULTANT-3',
+      priority: 'Urgent',
+      deadline: '2026-11-18',
+      remarks: 'Required for Seoul National University portal final audit.',
+      requiredDocuments: [
+        { documentName: 'Apostilled Degree Certificate', documentType: 'Academic', format: 'Apostilled', quantity: 1, pageCount: 2 },
+        { documentName: 'Original Bank Balance ($20k)', documentType: 'Financial', format: 'Original', quantity: 1, pageCount: 1 },
+      ],
+    });
+
+    assert.ok(request.id.startsWith(`REQ-${new Date().getFullYear()}-`));
+    assert.equal(request.status, 'Open');
+    assert.equal(request.linkedHandoverId, null);
+    assert.equal(reqNotifs.length, 1);
+    assert.equal(reqNotifs[0].recipient_id, counselorDavid.id);
+
+    // Counselor can view the request assigned to them
+    const counselorVisibleReqs = listDocumentRequests(db, counselorDavid, {});
+    assert.equal(counselorVisibleReqs.length, 1);
+    assert.equal(counselorVisibleReqs[0].id, request.id);
+
+    // Another counselor cannot steal & fulfill David's request
+    const anotherCounselor: ActorContext = {
+      id: 'USR-CNS-02',
+      name: 'Yu-Jin Song',
+      role: 'Consultant',
+      team: 'Counseling Team',
+    };
+    assert.throws(
+      () =>
+        createDocumentHandover(db, anotherCounselor, {
+          studentId: 'STU-2027-001',
+          receivingEmployeeId: admissionMinJi.id,
+          handoverDate: '2026-11-12',
+          handoverTime: '12:00',
+          requestId: request.id,
+          documents: [{ documentName: 'Apostilled Degree Certificate', format: 'Apostilled', quantity: 1, pageCount: 2 }],
+        }),
+      (err: any) => err instanceof HandoverError && err.statusCode === 403
+    );
+
+    // 3. David submits handover linked to request
+    const { handover: linkedHandover } = createDocumentHandover(db, counselorDavid, {
+      studentId: 'STU-2027-001',
+      receivingEmployeeId: admissionMinJi.id,
+      handoverDate: '2026-11-12',
+      handoverTime: '12:15',
+      requestId: request.id,
+      generalRemarks: 'Submitted per Admission request',
+      documents: [
+        { documentName: 'Apostilled Degree Certificate', format: 'Apostilled', quantity: 1, pageCount: 2 },
+        { documentName: 'Original Bank Balance ($20k)', format: 'Original', quantity: 1, pageCount: 1 },
+      ],
+    });
+
+    assert.equal(linkedHandover.requestId, request.id);
+    const reqAfterSubmit = getDocumentRequestById(db, request.id);
+    assert.ok(reqAfterSubmit);
+    assert.equal(reqAfterSubmit.status, 'Handover Submitted'); // NOT completed until verified!
+    assert.equal(reqAfterSubmit.linkedHandoverId, linkedHandover.id);
+
+    // Cannot cancel request once handover is submitted
+    assert.throws(
+      () => cancelDocumentRequest(db, request.id, admissionMinJi, 'Too late'),
+      (err: any) => err instanceof HandoverError && err.statusCode === 409
+    );
+
+    // 4. Admission marks Partial Receipt -> Request becomes Partially Fulfilled (still not Completed)
+    acknowledgeDocumentHandover(db, linkedHandover.id, admissionMinJi, {
+      action: 'Partial',
+      itemDecisions: [
+        { itemId: 'DOC-1', status: 'Received' },
+        { itemId: 'DOC-2', status: 'Missing', verificationNotes: 'Bank stamp missing' },
+      ],
+      acknowledgementNotes: 'Need updated bank cert',
+    });
+
+    const reqAfterPartial = getDocumentRequestById(db, request.id);
+    assert.ok(reqAfterPartial);
+    assert.equal(reqAfterPartial.status, 'Partially Fulfilled');
+    assert.equal(reqAfterPartial.completedAt, null);
+
+    // 5. Counselor submits follow-up -> Request becomes In Verification
+    submitHandoverFollowUp(db, linkedHandover.id, counselorDavid, {
+      deliveryDate: '2026-11-12',
+      deliveryTime: '15:00',
+      deliveryNotes: 'Fresh bank certificate attached',
+      deliveredItems: [{ itemId: 'DOC-2', quantity: 1, pageCount: 1 }],
+    });
+
+    const reqAfterFollowUp = getDocumentRequestById(db, request.id);
+    assert.ok(reqAfterFollowUp);
+    assert.equal(reqAfterFollowUp.status, 'In Verification');
+
+    // 6. Admission confirms physical receipt of follow-up -> Handover Accepted & Request Completed!
+    const { handover: finalHandover } = acknowledgeDocumentHandover(db, linkedHandover.id, admissionMinJi, {
+      action: 'Accept',
+      itemDecisions: [{ itemId: 'DOC-2', status: 'Received', verificationNotes: 'Verified stamp' }],
+      acknowledgementNotes: 'All requested docs verified in custody',
+    });
+
+    assert.equal(finalHandover.status, 'Accepted');
+    const reqCompleted = getDocumentRequestById(db, request.id);
+    assert.ok(reqCompleted);
+    assert.equal(reqCompleted.status, 'Completed');
+    assert.ok(reqCompleted.completedAt);
+
+    // Outbox sync includes linked Request ID in worksheet payload
+    await processSheetsOutbox(db);
+    const tabRows = db
+      .prepare('SELECT worksheet_title, row_payload_json FROM google_sheet_tab_rows WHERE handover_id = ?')
+      .all(linkedHandover.id) as any[];
+    assert.equal(tabRows.length, 3);
+    assert.ok(tabRows.every((r) => JSON.parse(r.row_payload_json)[12].includes(request.id)));
+
+    // Delete trigger protects document_requests
+    assert.throws(
+      () => db.prepare('DELETE FROM document_requests WHERE id = ?').run(request.id),
+      /document_requests records cannot be deleted/
+    );
+  } finally {
+    cleanup();
+  }
+});
+

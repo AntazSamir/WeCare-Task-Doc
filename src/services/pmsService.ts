@@ -1,10 +1,19 @@
 import {
   AuditLogEntry,
+  DocumentFormat,
+  DocumentHandover,
+  DocumentItemStatus,
+  DocumentRequest,
+  HandoverContextData,
+  HandoverStats,
   InAppNotification,
   IntakeProject,
   KoreanUniversity,
   PmsTask,
+  RequestPriority,
+  SheetsOutboxJob,
   StudentApplication,
+  SyncedTabRowPreview,
   UniversityBankAccount,
   UniversityDocument,
   UniversityProgram,
@@ -469,14 +478,6 @@ export async function assignBulkTasks(data: {
 // ==========================================
 // DOCUMENT HANDOVER & ACKNOWLEDGEMENT API
 // ==========================================
-import type {
-  DocumentHandover,
-  DocumentItemStatus,
-  HandoverContextData,
-  HandoverStats,
-  SheetsOutboxJob,
-  SyncedTabRowPreview,
-} from '../types/pms';
 
 export async function fetchHandoverContext(): Promise<HandoverContextData> {
   const res = await fetch('/api/handovers/context', { headers: getAuthHeaders() });
@@ -491,7 +492,7 @@ export async function fetchHandoverStats(): Promise<HandoverStats> {
 }
 
 export async function fetchHandovers(params?: {
-  viewMode?: 'my' | 'pending' | 'received' | 'disputed' | 'all';
+  viewMode?: 'my' | 'pending' | 'pending_confirmations' | 'received' | 'disputed' | 'all';
   search?: string;
   studentId?: string;
   counselorId?: string;
@@ -528,6 +529,7 @@ export async function createDocumentHandoverApi(payload: {
   receivingEmployeeId: string;
   handoverDate: string;
   handoverTime: string;
+  requestId?: string;
   generalRemarks?: string;
   packageSealNumber?: string;
   documents: Array<{
@@ -535,7 +537,7 @@ export async function createDocumentHandoverApi(payload: {
     documentType: string;
     quantity: number;
     pageCount: number;
-    format: 'Original' | 'Apostilled' | 'Notarized' | 'Certified Copy' | 'Photocopy';
+    format: DocumentFormat;
     conditionRemarks?: string;
   }>;
 }): Promise<DocumentHandover> {
@@ -640,5 +642,85 @@ export async function retryAllFailedOutboxApi(): Promise<any> {
   }
   return res.json();
 }
+
+export async function fetchDocumentRequests(params?: {
+  scope?: 'assigned_to_me' | 'my_requests' | 'all';
+  search?: string;
+  studentId?: string;
+  counselorId?: string;
+  requesterId?: string;
+  status?: string;
+  priority?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}): Promise<DocumentRequest[]> {
+  const qs = new URLSearchParams();
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => {
+      if (v) qs.set(k, v);
+    });
+  }
+  const res = await fetch(`/api/handover-requests?${qs.toString()}`, { headers: getAuthHeaders() });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to load document requests');
+  }
+  return res.json();
+}
+
+export async function fetchDocumentRequestDetails(id: string): Promise<DocumentRequest> {
+  const res = await fetch(`/api/handover-requests/${encodeURIComponent(id)}`, {
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to load document request details');
+  }
+  return res.json();
+}
+
+export async function createDocumentRequestApi(payload: {
+  studentId: string;
+  assignedCounselorId: string;
+  priority: RequestPriority;
+  deadline: string;
+  remarks?: string;
+  requiredDocuments: Array<{
+    documentName: string;
+    documentType: string;
+    format: DocumentFormat;
+    quantity: number;
+    pageCount?: number;
+    notes?: string;
+  }>;
+}): Promise<DocumentRequest> {
+  const res = await fetch('/api/handover-requests', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to create document request');
+  }
+  return res.json();
+}
+
+export async function cancelDocumentRequestApi(
+  id: string,
+  reason?: string
+): Promise<DocumentRequest> {
+  const res = await fetch(`/api/handover-requests/${encodeURIComponent(id)}/cancel`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ reason }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.error || 'Failed to cancel document request');
+  }
+  return res.json();
+}
+
 
 

@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   FileText,
   AlertCircle,
+  ClipboardList,
 } from 'lucide-react';
 import { DocumentHandover, DocumentItemStatus, UserProfile } from '../types/pms';
 import { acknowledgeHandoverApi } from '../services/pmsService';
@@ -191,6 +192,16 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
             <div className="p-3 rounded-md bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
+            </div>
+          )}
+
+          {handover.requestId && (
+            <div className="p-3 rounded-md bg-indigo-50 dark:bg-indigo-950/35 border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+              <ClipboardList className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+              <span>
+                Fulfills Admission Request <span className="font-mono font-bold">{handover.requestId}</span>
+                {handover.requestStatus ? ` (${handover.requestStatus})` : ''}. Accepting all documents Received marks the request Completed.
+              </span>
             </div>
           )}
 

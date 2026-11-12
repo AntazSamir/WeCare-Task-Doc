@@ -11,6 +11,7 @@ import {
   ArrowRight,
   History,
   Package,
+  ClipboardList,
 } from 'lucide-react';
 import { DocumentHandover, DocumentItemStatus } from '../types/pms';
 import { fetchHandoverDetails } from '../services/pmsService';
@@ -22,6 +23,7 @@ interface HandoverDetailModalProps {
   onClose: () => void;
   onOpenVerify?: (handover: DocumentHandover) => void;
   onOpenFollowUp?: (handover: DocumentHandover) => void;
+  onOpenRequest?: (requestId: string) => void;
   canVerify?: (handover: DocumentHandover) => boolean;
   canFollowUp?: (handover: DocumentHandover) => boolean;
 }
@@ -32,6 +34,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
   onClose,
   onOpenVerify,
   onOpenFollowUp,
+  onOpenRequest,
   canVerify,
   canFollowUp,
 }) => {
@@ -199,6 +202,37 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 </div>
               </div>
 
+              {handover.requestId && (
+                <div className="p-3.5 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 text-xs">
+                    <ClipboardList className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                    <div>
+                      <span className="font-bold font-mono text-indigo-900 dark:text-indigo-200">
+                        Linked Request: {handover.requestId}
+                      </span>
+                      <span className="text-indigo-700 dark:text-indigo-300">
+                        {handover.requestPriority ? ` · ${handover.requestPriority} Priority` : ''}
+                        {handover.requestDeadline ? ` · Due ${handover.requestDeadline}` : ''}
+                        {handover.requestStatus ? ` · Status: ${handover.requestStatus}` : ''}
+                      </span>
+                    </div>
+                  </div>
+                  {onOpenRequest && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onOpenRequest(handover.requestId!);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 bg-white dark:bg-slate-900 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-700 rounded-md"
+                    >
+                      <span>View Request {handover.requestId}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              )}
+
               {handover.lastSyncError && (
                 <div className="p-3 rounded-md bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300">
                   <span className="font-bold">Google Sheets Outbox Warning:</span> {handover.lastSyncError}
@@ -361,6 +395,9 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   <div><strong>Student Name:</strong> {handover.studentName}</div>
                   <div><strong>Passport No:</strong> {handover.studentPassport}</div>
                   <div><strong>Target University:</strong> {handover.universityName || handover.intakeTerm}</div>
+                  {handover.requestId && (
+                    <div><strong>Linked Admission Request:</strong> <span className="font-mono">{handover.requestId}</span></div>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <div><strong>Counselor (Sender):</strong> {handover.counselorName} ({handover.counselorId})</div>

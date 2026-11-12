@@ -124,6 +124,9 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Student: <span className="font-semibold text-slate-700 dark:text-slate-300">{handover.studentName}</span> · To Receiver: <span className="font-semibold">{handover.receivingEmployeeName}</span>
+                {handover.requestId ? (
+                  <span className="font-mono text-indigo-600 dark:text-indigo-400"> · Request: {handover.requestId}</span>
+                ) : null}
               </p>
             </div>
           </div>

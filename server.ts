@@ -5,10 +5,14 @@ import { createServer as createViteServer } from 'vite';
 import { db, initDatabase, createBackupSnapshot } from './server/db';
 import {
   acknowledgeDocumentHandover,
+  cancelDocumentRequest,
   createDocumentHandover,
+  createDocumentRequest,
+  getDocumentRequestById,
   getHandoverById,
   getHandoverStats,
   HandoverError,
+  listDocumentRequests,
   listHandovers,
   submitHandoverFollowUp,
 } from './server/handoverService';
@@ -2181,6 +2185,92 @@ async function startServer() {
       res.json(refreshed || handover);
     } catch (err: any) {
       res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to submit follow-up delivery' });
+    }
+  });
+
+  // ==========================================
+  // ADMISSION -> COUNSELOR DOCUMENT REQUESTS API
+  // ==========================================
+  app.get('/api/handover-requests', (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const result = listDocumentRequests(db, req.user!, {
+        scope: req.query.scope as any,
+        search: req.query.search as string | undefined,
+        studentId: req.query.studentId as string | undefined,
+        counselorId: req.query.counselorId as string | undefined,
+        requesterId: req.query.requesterId as string | undefined,
+        status: req.query.status as string | undefined,
+        priority: req.query.priority as string | undefined,
+        dateFrom: req.query.dateFrom as string | undefined,
+        dateTo: req.query.dateTo as string | undefined,
+      });
+      res.json(result);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to load document requests' });
+    }
+  });
+
+  app.get('/api/handover-requests/:id', (req: AuthenticatedRequest, res: Response) => {
+    const docReq = getDocumentRequestById(db, req.params.id);
+    if (!docReq) {
+      return res.status(404).json({ error: 'Document request not found.' });
+    }
+
+    const isAdmin = req.user!.role === 'Admission_Manager';
+    const isParticipant =
+      docReq.requestedById === req.user!.id || docReq.assignedCounselorId === req.user!.id;
+
+    if (!isAdmin && !isParticipant) {
+      return res.status(403).json({ error: 'You are not authorized to view this document request.' });
+    }
+
+    res.json(docReq);
+  });
+
+  app.post('/api/handover-requests', (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { request, notificationsToBroadcast } = createDocumentRequest(db, req.user!, req.body);
+
+      for (const n of notificationsToBroadcast) {
+        broadcastNotification(n.recipient_id, {
+          ...n,
+          senderName: req.user!.name,
+          read: false,
+          targetEntity: n.target_entity,
+          targetEntityId: n.target_entity_id,
+          createdAt: n.created_at,
+        });
+      }
+
+      res.status(201).json(request);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to create document request' });
+    }
+  });
+
+  app.put('/api/handover-requests/:id/cancel', (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { request, notificationsToBroadcast } = cancelDocumentRequest(
+        db,
+        req.params.id,
+        req.user!,
+        req.body?.reason
+      );
+
+      for (const n of notificationsToBroadcast) {
+        broadcastNotification(n.recipient_id, {
+          ...n,
+          senderName: req.user!.name,
+          read: false,
+          targetEntity: n.target_entity,
+          targetEntityId: n.target_entity_id,
+          createdAt: n.created_at,
+        });
+      }
+
+      res.json(request);
+    } catch (err: any) {
+      res.status(err?.statusCode || 500).json({ error: err?.message || 'Failed to cancel document request' });
     }
   });
 

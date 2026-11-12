@@ -356,6 +356,35 @@ export function initDatabase(): void {
       PRIMARY KEY (spreadsheet_id, worksheet_title, handover_id),
       FOREIGN KEY (handover_id) REFERENCES document_handovers(id) ON DELETE RESTRICT
     );
+
+    -- Admission -> Counselor Document Requests Tables
+    CREATE TABLE IF NOT EXISTS handover_request_sequences (
+      year INTEGER PRIMARY KEY,
+      last_seq INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS document_requests (
+      id TEXT PRIMARY KEY,
+      student_id TEXT NOT NULL,
+      requested_by_id TEXT NOT NULL,
+      requested_by_name TEXT NOT NULL,
+      assigned_counselor_id TEXT NOT NULL,
+      assigned_counselor_name TEXT NOT NULL,
+      required_documents_json TEXT NOT NULL DEFAULT '[]',
+      priority TEXT NOT NULL DEFAULT 'Normal' CHECK(priority IN ('Low', 'Normal', 'High', 'Urgent')),
+      deadline TEXT NOT NULL,
+      remarks TEXT,
+      status TEXT NOT NULL DEFAULT 'Open'
+        CHECK(status IN ('Open', 'Handover Submitted', 'In Verification', 'Partially Fulfilled', 'Disputed', 'Completed', 'Cancelled')),
+      linked_handover_id TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      completed_at TEXT,
+      FOREIGN KEY (student_id) REFERENCES student_applications(id) ON DELETE RESTRICT,
+      FOREIGN KEY (requested_by_id) REFERENCES users(id) ON DELETE RESTRICT,
+      FOREIGN KEY (assigned_counselor_id) REFERENCES users(id) ON DELETE RESTRICT,
+      FOREIGN KEY (linked_handover_id) REFERENCES document_handovers(id) ON DELETE RESTRICT
+    );
   `);
 
   // Immutability triggers to protect handover audit history and handover records from tampering or cascading deletion
@@ -377,7 +406,16 @@ export function initDatabase(): void {
     BEGIN
       SELECT RAISE(ABORT, 'document_handovers records cannot be deleted');
     END;
+
+    CREATE TRIGGER IF NOT EXISTS prevent_document_requests_delete
+    BEFORE DELETE ON document_requests
+    BEGIN
+      SELECT RAISE(ABORT, 'document_requests records cannot be deleted');
+    END;
   `);
+
+  // Ensure request_id exists on document_handovers for linking Admission -> Counselor requests to handovers
+  ensureColumnExists('document_handovers', 'request_id', 'TEXT');
 
   // Indexes for relational lookups
   db.exec(`
@@ -394,6 +432,12 @@ export function initDatabase(): void {
     CREATE INDEX IF NOT EXISTS idx_handovers_counselor ON document_handovers(counselor_id);
     CREATE INDEX IF NOT EXISTS idx_handovers_receiver ON document_handovers(receiving_employee_id);
     CREATE INDEX IF NOT EXISTS idx_handovers_status ON document_handovers(status);
+    CREATE INDEX IF NOT EXISTS idx_handovers_request ON document_handovers(request_id);
+    CREATE INDEX IF NOT EXISTS idx_doc_requests_student ON document_requests(student_id);
+    CREATE INDEX IF NOT EXISTS idx_doc_requests_requester ON document_requests(requested_by_id);
+    CREATE INDEX IF NOT EXISTS idx_doc_requests_counselor ON document_requests(assigned_counselor_id);
+    CREATE INDEX IF NOT EXISTS idx_doc_requests_status ON document_requests(status);
+    CREATE INDEX IF NOT EXISTS idx_doc_requests_handover ON document_requests(linked_handover_id);
     CREATE INDEX IF NOT EXISTS idx_handover_events_hnd ON handover_events(handover_id);
     CREATE INDEX IF NOT EXISTS idx_sheets_queue_status_next ON sheets_sync_queue(status, next_retry_at);
     CREATE INDEX IF NOT EXISTS idx_sheets_queue_handover ON sheets_sync_queue(handover_id, target_type, handover_version);
