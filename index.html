@@ -12,6 +12,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script>
+      // Prevent FOUC: apply saved Light / Dark / System preference before first paint
+      (function() {
+        try {
+          var pref = localStorage.getItem('pms_theme_preference');
+          if (!pref) {
+            var raw = localStorage.getItem('sheetsync_pc_state_v1');
+            if (raw) {
+              var parsed = JSON.parse(raw);
+              if (parsed && parsed.settings && parsed.settings.theme) {
+                pref = parsed.settings.theme;
+              }
+            }
+          }
+          var isDark =
+            pref === 'dark' ||
+            (pref === 'system' &&
+              window.matchMedia &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
       // Silence Vite HMR websocket disconnection rejections in sandbox environment
       window.addEventListener('unhandledrejection', function(event) {
         const msg = event?.reason?.message || '';
@@ -22,7 +47,7 @@
     </script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
-  <body class="bg-[#F5F8FC] text-[#172B4D] dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-[#1769E8] selection:text-white">
+  <body class="bg-[var(--color-main-bg)] text-[var(--color-primary-text)] antialiased selection:bg-[var(--color-primary-blue)] selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

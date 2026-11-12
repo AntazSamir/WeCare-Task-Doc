@@ -133,21 +133,21 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
   return (
     <div className="space-y-4">
       {/* Top Banner / Welcome & Quick Actions */}
-      <div className="bg-[#123B78] border border-[#123B78] rounded-lg p-4 sm:p-5 text-white shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-[var(--color-deep-blue)] border border-[var(--color-deep-blue)] dark:border-[var(--color-border)] rounded-lg p-4 sm:p-5 text-white shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-semibold tracking-wider uppercase text-[#36A5F5]">
+            <span className="text-xs font-mono font-semibold tracking-wider uppercase text-[var(--color-sky-blue)]">
               South Korea Student Visa & Admission PMS
             </span>
             <span className="text-[#DCEBFF]/50">·</span>
-            <span className="text-xs text-[#DCEBFF] font-medium">
+            <span className="text-xs text-[#DCEBFF] dark:text-[var(--color-light-blue)] font-medium">
               {isAdmin ? 'Agency Director Console' : `Consultant Workspace: ${currentUser.name}`}
             </span>
           </div>
           <h1 className="text-xl font-bold tracking-tight text-white">
             Executive Admission & Visa Operations Command
           </h1>
-          <p className="text-xs text-[#DCEBFF]/90 max-w-2xl">
+          <p className="text-xs text-[#DCEBFF]/90 dark:text-[var(--color-secondary-text)] max-w-2xl">
             Managing Spring 2027 & Fall 2027 intakes, apostille verifications, DHL courier dispatches, and D-2/D-4 visa documentation for top South Korean partner institutions.
           </p>
         </div>
@@ -156,7 +156,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           <button
             type="button"
             onClick={onOpenNewStudentModal}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#36A5F5] rounded-md transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#36A5F5] dark:hover:bg-[var(--color-primary-blue-hover)] rounded-md transition-colors shadow-sm"
           >
             <Users className="w-3.5 h-3.5" />
             Register Student
@@ -164,7 +164,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           <button
             type="button"
             onClick={onOpenNewTaskModal}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-[#123B78] bg-[#DCEBFF] hover:bg-white rounded-md transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-[#123B78] dark:text-[var(--color-light-blue)] bg-[#DCEBFF] dark:bg-[var(--color-elevated-surface)] hover:bg-white dark:hover:bg-[var(--color-border)] dark:border dark:border-[var(--color-border)] rounded-md transition-colors shadow-sm"
           >
             <FileCheck2 className="w-3.5 h-3.5" />
             Assign Task

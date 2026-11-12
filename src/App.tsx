@@ -14,6 +14,7 @@ import {
   Bell,
   BellOff,
   Moon,
+  Monitor,
   Wifi,
   WifiOff,
   AlertTriangle,
@@ -114,6 +115,27 @@ import { TeamTaskManagementView } from './components/TeamTaskManagementView';
 import { DocumentHandoverView } from './components/DocumentHandoverView';
 
 const LOCAL_STORAGE_KEY = 'sheetsync_pc_state_v1';
+const THEME_STORAGE_KEY = 'pms_theme_preference';
+
+function getInitialThemePreference(): AppSettings['theme'] {
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    if (saved === 'light' || saved === 'dark' || saved === 'system') {
+      return saved;
+    }
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const t = parsed?.settings?.theme;
+      if (t === 'light' || t === 'dark' || t === 'system') {
+        return t;
+      }
+    }
+  } catch {
+    // ignore storage errors
+  }
+  return 'light';
+}
 
 export function App() {
   const todayIso = getLocalTodayIso();
@@ -184,14 +206,21 @@ export function App() {
   });
   const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
   const [syncQueue, setSyncQueue] = useState<SyncQueueItem[]>([]);
-  const [settings, setSettings] = useState<AppSettings>({
-    theme: 'light',
+  const [settings, setSettings] = useState<AppSettings>(() => ({
+    theme: getInitialThemePreference(),
     remindersEnabled: true,
     todayReminderShownDate: null,
     defaultCategory: 'Work',
     defaultPriority: 'Medium',
     simulateOffline: false,
-  });
+  }));
+  const [systemPrefersDark, setSystemPrefersDark] = useState<boolean>(() =>
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches
+      : false
+  );
+  const effectiveTheme: 'light' | 'dark' =
+    settings.theme === 'system' ? (systemPrefersDark ? 'dark' : 'light') : settings.theme;
 
   // Network & Loading State
   const [browserOnline, setBrowserOnline] = useState<boolean>(
@@ -269,15 +298,32 @@ export function App() {
   const isFlushingQueueRef = useRef<boolean>(false);
   const prevIsOfflineRef = useRef<boolean>(isOffline);
 
-  // Apply Light / Dark Theme to <html>
+  // Listen to OS color scheme changes when theme is set to 'system'
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (event: MediaQueryListEvent) => {
+      setSystemPrefersDark(event.matches);
+    };
+    setSystemPrefersDark(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Apply resolved Light / Dark Theme to <html> and persist preference across sessions
   useEffect(() => {
     const root = document.documentElement;
-    if (settings.theme === 'dark') {
+    if (effectiveTheme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-  }, [settings.theme]);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, settings.theme);
+    } catch {
+      // ignore storage errors
+    }
+  }, [effectiveTheme, settings.theme]);
 
   // Helper to show non-intrusive toast and record notification
   const pushNotification = useCallback(
@@ -356,11 +402,14 @@ export function App() {
         if (Array.isArray(data.syncLogs)) {
           setSyncLogs(data.syncLogs);
         }
+        const mergedSettings = data.settings
+          ? { ...settingsRef.current, ...data.settings, theme: settingsRef.current.theme }
+          : settingsRef.current;
         if (data.settings) {
-          setSettings((prev) => ({ ...prev, ...data.settings }));
+          setSettings(mergedSettings);
         }
 
-        // Cache locally for offline resilience
+        // Cache locally for offline resilience without overwriting theme preference
         localStorage.setItem(
           LOCAL_STORAGE_KEY,
           JSON.stringify({
@@ -368,7 +417,7 @@ export function App() {
             spreadsheets: data.spreadsheets,
             connection: data.connection,
             syncLogs: data.syncLogs,
-            settings: data.settings,
+            settings: mergedSettings,
           })
         );
       } catch {
@@ -1550,15 +1599,15 @@ export function App() {
     allNavItems.find((item) => item.id === activeNav)?.label || 'Dashboard';
 
   return (
-    <div className="min-h-screen flex bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100">
+    <div className="min-h-screen flex bg-[var(--color-main-bg)] text-[var(--color-primary-text)]">
       {/* LEFT SIDEBAR NAVIGATION (Collapsible: 256px expanded / 64px collapsed) */}
       <aside
-        className={`shrink-0 bg-[#FFFFFF] dark:bg-slate-900 border-r border-[#E3EAF3] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all duration-300 ease-in-out z-30 ${
+        className={`shrink-0 bg-[var(--color-sidebar-bg)] border-r border-[var(--color-border)] flex flex-col h-screen sticky top-0 select-none transition-all duration-300 ease-in-out z-30 ${
           isSidebarCollapsed ? 'w-16' : 'w-64'
         }`}
       >
         {/* Brand Header — Mathematically aligned with top workspace header (h-14, matching bottom border) */}
-        <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[#E3EAF3] dark:border-slate-800">
+        <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[var(--color-border)]">
           {!isSidebarCollapsed ? (
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-lg bg-[#1769E8] text-white flex items-center justify-center font-display font-bold text-sm shadow-[0_0_12px_rgba(23,105,232,0.3)] shrink-0">
@@ -1612,14 +1661,14 @@ export function App() {
                           title={`${item.label}${typeof item.count === 'number' ? ` (${item.count})` : ''}`}
                           className={`w-10 h-10 rounded-lg flex items-center justify-center relative sidebar-nav-btn group ${
                             isActive
-                              ? 'bg-[#123B78] text-white dark:bg-slate-800 dark:text-white shadow-xs'
-                              : 'text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800/60 hover:text-[#123B78] dark:hover:text-slate-200'
+                              ? 'bg-[var(--color-deep-blue)] dark:bg-[var(--color-primary-blue)] text-white shadow-xs'
+                              : 'text-[#172B4D]/75 dark:text-[var(--color-secondary-text)] hover:bg-[#DCEBFF]/60 dark:hover:bg-[var(--color-elevated-surface)] hover:text-[#123B78] dark:hover:text-[var(--color-primary-text)]'
                           }`}
                           aria-label={item.label}
                         >
                           <Icon
                             className={`sidebar-nav-icon w-4 h-4 shrink-0 group-hover:scale-110 ${
-                              isActive ? 'text-[#36A5F5]' : item.accentColor
+                              isActive ? 'text-[#36A5F5] dark:text-white' : item.accentColor
                             } ${
                               isActive
                                 ? 'opacity-100'
@@ -1650,14 +1699,14 @@ export function App() {
                         onClick={() => setActiveNav(item.id)}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium sidebar-nav-btn group whitespace-nowrap shrink-0 ${
                           isActive
-                            ? 'bg-[#123B78] text-white dark:bg-slate-800 dark:text-white shadow-xs'
-                            : 'text-[#172B4D]/80 dark:text-slate-400 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800/60 hover:text-[#123B78] dark:hover:text-slate-200'
+                            ? 'bg-[var(--color-deep-blue)] dark:bg-[var(--color-primary-blue)] text-white shadow-xs'
+                            : 'text-[#172B4D]/80 dark:text-[var(--color-secondary-text)] hover:bg-[#DCEBFF]/60 dark:hover:bg-[var(--color-elevated-surface)] hover:text-[#123B78] dark:hover:text-[var(--color-primary-text)]'
                         }`}
                       >
                         <span className="flex items-center gap-2.5 truncate">
                           <Icon
                             className={`sidebar-nav-icon w-4 h-4 shrink-0 group-hover:scale-110 ${
-                              isActive ? 'text-[#36A5F5]' : item.accentColor
+                              isActive ? 'text-[#36A5F5] dark:text-white' : item.accentColor
                             } ${
                               isActive
                                 ? 'opacity-100'
@@ -1702,7 +1751,7 @@ export function App() {
 
         {/* Dedicated Sticky Footer Container inside Sidebar */}
         {!isSidebarCollapsed ? (
-          <div className="shrink-0 p-4 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 space-y-3 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-[0_-4px_16px_rgba(0,0,0,0.25)]">
+          <div className="shrink-0 p-4 border-t border-[var(--color-border)] bg-[var(--color-sidebar-bg)] space-y-3 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-none">
             {/* Primary Action Button (Pinned in Dedicated Sticky Footer for High Visibility) */}
             <button
               type="button"
@@ -1711,7 +1760,7 @@ export function App() {
                 setTaskContextProjectId(undefined);
                 setIsEnhancedTaskModalOpen(true);
               }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] active:scale-[0.98] rounded-lg transition-all shadow-[0_2px_10px_rgba(23,105,232,0.28)] whitespace-nowrap shrink-0 group"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] active:scale-[0.98] rounded-lg transition-all shadow-[0_2px_10px_rgba(23,105,232,0.28)] dark:shadow-none whitespace-nowrap shrink-0 group"
             >
               <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
               <span>{currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}</span>
@@ -1794,7 +1843,7 @@ export function App() {
             </button>
           </div>
         ) : (
-          <div className="shrink-0 p-3 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 flex flex-col items-center gap-2.5 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-[0_-4px_16px_rgba(0,0,0,0.25)]">
+          <div className="shrink-0 p-3 border-t border-[var(--color-border)] bg-[var(--color-sidebar-bg)] flex flex-col items-center gap-2.5 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-none">
             {/* Primary Action Button (Collapsed Icon Form) */}
             <button
               type="button"
@@ -1804,7 +1853,7 @@ export function App() {
                 setIsEnhancedTaskModalOpen(true);
               }}
               title={currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
-              className="w-10 h-10 rounded-lg bg-[#1769E8] hover:bg-[#123B78] active:scale-95 text-white flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(23,105,232,0.28)] shrink-0 group"
+              className="w-10 h-10 rounded-lg bg-[#1769E8] hover:bg-[#123B78] active:scale-95 text-white flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(23,105,232,0.28)] dark:shadow-none shrink-0 group"
               aria-label={currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
             >
               <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
@@ -1860,7 +1909,7 @@ export function App() {
       {/* MAIN WORKSPACE CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* TOP HEADER BAR (Fixed, Reduced Height h-14, Perfectly Aligned with Sidebar Brand Logo) */}
-        <header className="sticky top-0 z-20 h-14 px-4 sm:px-6 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between gap-4 shrink-0 shadow-[0_1px_3px_rgba(18,59,120,0.02)]">
+        <header className="sticky top-0 z-20 h-14 px-4 sm:px-6 bg-[var(--color-sidebar-bg)] border-b border-[var(--color-border)] flex items-center justify-between gap-4 shrink-0 shadow-[0_1px_3px_rgba(18,59,120,0.02)] dark:shadow-none">
           {/* Left: Contextual Breadcrumb */}
           <div className="flex items-center gap-3 text-sm min-w-0">
             <div className="flex items-center gap-2 text-sm min-w-0">
@@ -1985,17 +2034,17 @@ export function App() {
               onClick={() =>
                 setSettings((prev) => ({
                   ...prev,
-                  theme: prev.theme === 'dark' ? 'light' : 'dark',
+                  theme: effectiveTheme === 'dark' ? 'light' : 'dark',
                 }))
               }
-              className="p-2 text-[#172B4D] dark:text-slate-300 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800 rounded-lg transition-colors"
-              title={settings.theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="p-2 text-[var(--color-primary-text)] hover:bg-[#DCEBFF]/60 dark:hover:bg-[var(--color-elevated-surface)] rounded-lg transition-colors"
+              title={effectiveTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               aria-label="Toggle color theme"
             >
-              {settings.theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-[#E9A23B]" />
+              {effectiveTheme === 'dark' ? (
+                <Sun className="w-4 h-4 text-[var(--color-warning)]" />
               ) : (
-                <Moon className="w-4 h-4 text-[#123B78]" />
+                <Moon className="w-4 h-4 text-[var(--color-deep-blue)]" />
               )}
             </button>
 
@@ -2016,7 +2065,7 @@ export function App() {
         </header>
 
         {/* MAIN SCROLLABLE VIEWPORT */}
-        <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-5 sm:py-3.5 w-full">
+        <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-5 sm:py-3.5 w-full bg-[var(--color-workspace-bg)]">
           <div key={activeNav} className="animate-page-enter space-y-3.5">
           {/* VIEW 1: DASHBOARD */}
           {activeNav === 'dashboard' && (
@@ -2825,37 +2874,66 @@ export function App() {
 
               <div className="space-y-4 divide-y divide-[#E3EAF3] dark:divide-slate-800">
                 {/* Appearance */}
-                <div className="pt-4 flex items-center justify-between gap-4">
+                <div className="pt-4 flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-100">
+                    <div className="text-sm font-semibold text-[var(--color-primary-text)]">
                       Color Theme
                     </div>
-                    <div className="text-xs text-slate-500">
-                      Switch between crisp Light mode and high-contrast Slate Dark mode
+                    <div className="text-xs text-[var(--color-secondary-text)]">
+                      Choose Light, Dark, or follow your System appearance preference
+                      {settings.theme === 'system' && (
+                        <span className="ml-1 font-mono text-[11px] text-[var(--color-primary-blue)]">
+                          (Currently {effectiveTheme === 'dark' ? 'Dark' : 'Light'})
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 p-1 bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-lg">
+                  <div
+                    role="radiogroup"
+                    aria-label="Color Theme"
+                    className="flex items-center gap-1 p-1 bg-[var(--color-workspace-bg)] border border-[var(--color-border)] rounded-lg"
+                  >
                     <button
                       type="button"
+                      role="radio"
+                      aria-checked={settings.theme === 'light'}
                       onClick={() => setSettings((p) => ({ ...p, theme: 'light' }))}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                         settings.theme === 'light'
-                          ? 'bg-[#FFFFFF] text-[#123B78] shadow-xs'
-                          : 'text-slate-600 dark:text-slate-400'
+                          ? 'bg-[var(--color-card-bg)] text-[var(--color-deep-blue)] border border-[var(--color-border)] shadow-xs'
+                          : 'text-[var(--color-secondary-text)] hover:text-[var(--color-primary-text)] border border-transparent'
                       }`}
                     >
+                      <Sun className="w-3.5 h-3.5" />
                       Light
                     </button>
                     <button
                       type="button"
+                      role="radio"
+                      aria-checked={settings.theme === 'dark'}
                       onClick={() => setSettings((p) => ({ ...p, theme: 'dark' }))}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                         settings.theme === 'dark'
-                          ? 'bg-slate-900 text-white shadow-xs'
-                          : 'text-slate-600 dark:text-slate-400'
+                          ? 'bg-[var(--color-primary-blue)] text-white border border-[var(--color-primary-blue)] shadow-xs'
+                          : 'text-[var(--color-secondary-text)] hover:text-[var(--color-primary-text)] border border-transparent'
                       }`}
                     >
+                      <Moon className="w-3.5 h-3.5" />
                       Dark
+                    </button>
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={settings.theme === 'system'}
+                      onClick={() => setSettings((p) => ({ ...p, theme: 'system' }))}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                        settings.theme === 'system'
+                          ? 'bg-[var(--color-card-bg)] dark:bg-[var(--color-primary-blue)] text-[var(--color-deep-blue)] dark:text-white border border-[var(--color-border)] dark:border-[var(--color-primary-blue)] shadow-xs'
+                          : 'text-[var(--color-secondary-text)] hover:text-[var(--color-primary-text)] border border-transparent'
+                      }`}
+                    >
+                      <Monitor className="w-3.5 h-3.5" />
+                      System
                     </button>
                   </div>
                 </div>

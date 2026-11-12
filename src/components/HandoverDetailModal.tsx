@@ -376,17 +376,17 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
 
           {/* Printable Physical Slip Preview */}
           {handover && showPrintSlip && (
-            <div className="p-6 border border-slate-300 dark:border-slate-700 rounded-md bg-white text-slate-900 space-y-5">
-              <div className="flex items-start justify-between border-b-2 border-slate-900 pb-4">
+            <div className="p-6 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 print:bg-white print:text-black space-y-5">
+              <div className="flex items-start justify-between border-b-2 border-slate-900 dark:border-slate-700 pb-4">
                 <div>
                   <div className="text-lg font-bold tracking-tight">KOREA STUDY HUB PMS — PHYSICAL DOCUMENT HANDOVER SLIP</div>
-                  <div className="text-xs text-slate-600 mt-0.5">
+                  <div className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                     In-Office Chain of Custody Record · File inside student physical dossier folder
                   </div>
                 </div>
                 <div className="text-right font-mono">
                   <div className="text-base font-bold">{handover.id}</div>
-                  <div className="text-xs text-slate-600">Status: {handover.status} (v{handover.version})</div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">Status: {handover.status} (v{handover.version})</div>
                 </div>
               </div>
 
@@ -406,39 +406,39 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 </div>
               </div>
 
-              <table className="w-full border-collapse border border-slate-400 text-xs">
+              <table className="w-full border-collapse border border-slate-400 dark:border-slate-700 text-xs">
                 <thead>
-                  <tr className="bg-slate-100">
-                    <th className="border border-slate-400 px-2.5 py-1.5 text-left">ID</th>
-                    <th className="border border-slate-400 px-2.5 py-1.5 text-left">Physical Document Name</th>
-                    <th className="border border-slate-400 px-2.5 py-1.5 text-left">Format</th>
-                    <th className="border border-slate-400 px-2.5 py-1.5 text-center">Qty / Pages</th>
-                    <th className="border border-slate-400 px-2.5 py-1.5 text-left">Status</th>
+                  <tr className="bg-slate-100 dark:bg-slate-800">
+                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">ID</th>
+                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">Physical Document Name</th>
+                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">Format</th>
+                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-center">Qty / Pages</th>
+                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {handover.documents.map((d) => (
                     <tr key={d.id}>
-                      <td className="border border-slate-400 px-2.5 py-1.5 font-mono">{d.id}</td>
-                      <td className="border border-slate-400 px-2.5 py-1.5">{d.documentName}</td>
-                      <td className="border border-slate-400 px-2.5 py-1.5">{d.format}</td>
-                      <td className="border border-slate-400 px-2.5 py-1.5 text-center font-mono">
+                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 font-mono">{d.id}</td>
+                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5">{d.documentName}</td>
+                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5">{d.format}</td>
+                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-center font-mono">
                         {d.quantity} / {d.pageCount}p
                       </td>
-                      <td className="border border-slate-400 px-2.5 py-1.5 font-mono font-bold">{d.status}</td>
+                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 font-mono font-bold">{d.status}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <div className="grid grid-cols-2 gap-8 pt-8 text-xs">
-                <div className="border-t border-slate-900 pt-2">
+                <div className="border-t border-slate-900 dark:border-slate-700 pt-2">
                   <div className="font-bold">Counselor Signature & Date</div>
-                  <div className="text-slate-500 mt-1">{handover.counselorName}</div>
+                  <div className="text-slate-500 dark:text-slate-400 mt-1">{handover.counselorName}</div>
                 </div>
-                <div className="border-t border-slate-900 pt-2">
+                <div className="border-t border-slate-900 dark:border-slate-700 pt-2">
                   <div className="font-bold">Admission Receiver Verification Signature & Date</div>
-                  <div className="text-slate-500 mt-1">
+                  <div className="text-slate-500 dark:text-slate-400 mt-1">
                     {handover.lastAcknowledgedByName || handover.receivingEmployeeName}
                     {handover.lastAcknowledgedAt ? ` · Verified ${formatTimestamp(handover.lastAcknowledgedAt)}` : ''}
                   </div>

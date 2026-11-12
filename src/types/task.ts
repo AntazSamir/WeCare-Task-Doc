@@ -125,7 +125,7 @@ export interface SyncLogEntry {
 }
 
 export interface AppSettings {
-  theme: 'light' | 'dark';
+  theme: 'light' | 'dark' | 'system';
   remindersEnabled: boolean;
   todayReminderShownDate: string | null;
   defaultCategory: TaskCategory;

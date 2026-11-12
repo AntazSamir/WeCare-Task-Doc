@@ -341,39 +341,28 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
           <ResponsiveContainer width="100%" height="100%">
             {chartStyle === 'area' ? (
               <AreaChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="completedGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#16A36A" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#16A36A" stopOpacity={0.0} />
-                  </linearGradient>
-                  <linearGradient id="scheduledGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#1769E8" stopOpacity={0.22} />
-                    <stop offset="95%" stopColor="#1769E8" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="rgba(23, 43, 77, 0.1)"
+                  stroke="var(--color-border)"
                 />
 
                 <XAxis
                   dataKey="dayLabel"
-                  stroke="#E3EAF3"
+                  stroke="var(--color-border)"
                   fontSize={11}
                   tickLine={false}
-                  axisLine={{ stroke: '#E3EAF3' }}
-                  tick={{ fill: '#172B4D' }}
+                  axisLine={{ stroke: 'var(--color-border)' }}
+                  tick={{ fill: 'var(--color-secondary-text)' }}
                 />
 
                 <YAxis
                   allowDecimals={false}
-                  stroke="#E3EAF3"
+                  stroke="var(--color-border)"
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: '#172B4D' }}
+                  tick={{ fill: 'var(--color-secondary-text)' }}
                 />
 
                 <Tooltip content={<CustomTooltip />} />
@@ -383,10 +372,11 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
                   type="monotone"
                   dataKey="scheduled"
                   name="Scheduled"
-                  stroke="#1769E8"
+                  stroke="var(--color-primary-blue)"
                   strokeWidth={1.75}
                   strokeDasharray="4 4"
-                  fill="url(#scheduledGradient)"
+                  fill="var(--color-primary-blue)"
+                  fillOpacity={0.1}
                 />
 
                 {/* Completed Tasks Primary Area */}
@@ -394,14 +384,15 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
                   type="monotone"
                   dataKey="completed"
                   name="Completed"
-                  stroke="#16A36A"
+                  stroke="var(--color-success)"
                   strokeWidth={2.5}
-                  fill="url(#completedGradient)"
+                  fill="var(--color-success)"
+                  fillOpacity={0.14}
                   activeDot={{
                     r: 5,
-                    stroke: '#16A36A',
+                    stroke: 'var(--color-success)',
                     strokeWidth: 2,
-                    fill: '#ffffff',
+                    fill: 'var(--color-card-bg)',
                   }}
                 />
               </AreaChart>
@@ -410,25 +401,25 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="rgba(23, 43, 77, 0.1)"
+                  stroke="var(--color-border)"
                 />
 
                 <XAxis
                   dataKey="dayLabel"
-                  stroke="#E3EAF3"
+                  stroke="var(--color-border)"
                   fontSize={11}
                   tickLine={false}
-                  axisLine={{ stroke: '#E3EAF3' }}
-                  tick={{ fill: '#172B4D' }}
+                  axisLine={{ stroke: 'var(--color-border)' }}
+                  tick={{ fill: 'var(--color-secondary-text)' }}
                 />
 
                 <YAxis
                   allowDecimals={false}
-                  stroke="#E3EAF3"
+                  stroke="var(--color-border)"
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: '#172B4D' }}
+                  tick={{ fill: 'var(--color-secondary-text)' }}
                 />
 
                 <Tooltip content={<CustomTooltip />} />
@@ -436,14 +427,14 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
                 <Bar
                   dataKey="scheduled"
                   name="Scheduled"
-                  fill="#36A5F5"
+                  fill="var(--color-sky-blue)"
                   radius={[4, 4, 0, 0]}
                   maxBarSize={28}
                 />
                 <Bar
                   dataKey="completed"
                   name="Completed"
-                  fill="#16A36A"
+                  fill="var(--color-success)"
                   radius={[4, 4, 0, 0]}
                   maxBarSize={28}
                 />

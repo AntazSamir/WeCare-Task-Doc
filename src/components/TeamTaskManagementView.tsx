@@ -1063,7 +1063,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     onClick={() => setEmployeeTaskFilter(tf.id as any)}
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-colors ${
                       employeeTaskFilter === tf.id
-                        ? 'bg-[#123B78] text-white dark:bg-slate-100 dark:text-slate-900'
+                        ? 'bg-[#123B78] text-white dark:bg-[var(--color-primary-blue)] dark:text-white'
                         : 'bg-[#F5F8FC] dark:bg-slate-800 text-[#172B4D]/70 dark:text-slate-400 hover:text-[#172B4D]'
                     }`}
                   >
