@@ -24,10 +24,10 @@ import {
 const PriorityIndicator: React.FC<{ priority: TaskPriority }> = ({ priority }) => {
   const dotColor =
     priority === 'High'
-      ? 'bg-rose-500'
+      ? 'bg-[#DC4545]'
       : priority === 'Medium'
-      ? 'bg-amber-500'
-      : 'bg-slate-400';
+      ? 'bg-[#E9A23B]'
+      : 'bg-[#172B4D]/40 dark:bg-slate-400';
   return (
     <span className="inline-flex items-center gap-1 font-medium">
       <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
@@ -38,8 +38,8 @@ const PriorityIndicator: React.FC<{ priority: TaskPriority }> = ({ priority }) =
 
 const CategoryIndicator: React.FC<{ category: TaskCategory }> = ({ category }) => {
   return (
-    <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400">
-      <Tag className="w-3 h-3 text-slate-400 shrink-0" />
+    <span className="inline-flex items-center gap-1 text-[#172B4D]/75 dark:text-slate-400">
+      <Tag className="w-3 h-3 text-[#1769E8] shrink-0" />
       <span>{category}</span>
     </span>
   );
@@ -109,15 +109,15 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
   const displayedTasks = upcomingTasks.slice(0, 5);
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-lg overflow-hidden shadow-xs">
+    <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800/80 rounded-lg overflow-hidden shadow-xs">
       {/* Widget Header - Minimal, Refined */}
-      <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3">
+      <div className="px-4 py-3 border-b border-[#E3EAF3] dark:border-slate-800/80 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <CalendarPlus className="w-4 h-4 text-purple-500 shrink-0" />
-          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 tracking-tight">
+          <CalendarPlus className="w-4 h-4 text-[#1769E8] shrink-0" />
+          <h2 className="text-sm font-semibold text-[#172B4D] dark:text-slate-100 tracking-tight">
             Upcoming Deadlines
           </h2>
-          <span className="font-mono text-xs tabular-nums text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-1.5 py-0.5 rounded font-medium">
+          <span className="font-mono text-xs tabular-nums text-[#123B78] dark:text-blue-400 bg-[#DCEBFF] dark:bg-blue-950/50 border border-[#36A5F5]/40 dark:border-transparent px-1.5 py-0.5 rounded font-medium">
             {upcomingTasks.length}
           </span>
         </div>
@@ -130,8 +130,8 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
               onClick={() => setFilter('all')}
               className={`px-2 py-0.5 rounded-md transition-colors ${
                 filter === 'all'
-                  ? 'text-slate-900 dark:text-slate-100 font-semibold bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                  ? 'text-[#123B78] dark:text-slate-100 font-semibold bg-[#DCEBFF] dark:bg-slate-800'
+                  : 'text-[#172B4D]/65 hover:text-[#123B78] dark:hover:text-slate-300'
               }`}
             >
               All
@@ -141,8 +141,8 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
               onClick={() => setFilter('7days')}
               className={`px-2 py-0.5 rounded-md transition-colors ${
                 filter === '7days'
-                  ? 'text-slate-900 dark:text-slate-100 font-semibold bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                  ? 'text-[#123B78] dark:text-slate-100 font-semibold bg-[#DCEBFF] dark:bg-slate-800'
+                  : 'text-[#172B4D]/65 hover:text-[#123B78] dark:hover:text-slate-300'
               }`}
             >
               Next 7d
@@ -152,8 +152,8 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
               onClick={() => setFilter('high')}
               className={`px-2 py-0.5 rounded-md transition-colors ${
                 filter === 'high'
-                  ? 'text-slate-900 dark:text-slate-100 font-semibold bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                  ? 'text-[#123B78] dark:text-slate-100 font-semibold bg-[#DCEBFF] dark:bg-slate-800'
+                  : 'text-[#172B4D]/65 hover:text-[#123B78] dark:hover:text-slate-300'
               }`}
             >
               High
@@ -163,7 +163,7 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
           <button
             type="button"
             onClick={onViewAll}
-            className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors whitespace-nowrap shrink-0 group"
+            className="inline-flex items-center gap-1 text-[11px] font-medium text-[#1769E8] dark:text-blue-400 hover:text-[#123B78] dark:hover:text-blue-300 transition-colors whitespace-nowrap shrink-0 group"
           >
             <span>View All</span>
             <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
@@ -172,13 +172,13 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
       </div>
 
       {/* Deadlines List - Clean Typography & Lightweight Visuals */}
-      <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
+      <div className="divide-y divide-[#E3EAF3] dark:divide-slate-800/60">
         {displayedTasks.length === 0 ? (
           <div className="py-8 px-5 text-center space-y-2">
-            <div className="w-8 h-8 mx-auto rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-indigo-500" />
+            <div className="w-8 h-8 mx-auto rounded-md bg-[#DCEBFF] dark:bg-slate-800 text-[#1769E8] flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-[#1769E8]" />
             </div>
-            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+            <p className="text-xs font-medium text-[#172B4D] dark:text-slate-300">
               {filter === 'high'
                 ? 'No upcoming high-priority deadlines'
                 : 'No upcoming deadlines on your radar'}
@@ -186,7 +186,7 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
             <button
               type="button"
               onClick={() => onCreateTaskWithDate(todayIso)}
-              className="text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:underline"
+              className="text-[11px] font-medium text-[#1769E8] dark:text-blue-400 hover:underline"
             >
               + Schedule a new deadline
             </button>
@@ -205,7 +205,7 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
             return (
               <div
                 key={task.id}
-                className="group relative p-3 sm:px-4 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                className="group relative p-3 sm:px-4 hover:bg-[#F5F8FC] dark:hover:bg-slate-800/40 transition-colors"
               >
                 <div className="flex items-start gap-3">
                   {/* Minimal Circular Checkbox */}
@@ -213,10 +213,10 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
                     type="button"
                     onClick={() => onRequestComplete(task)}
                     title="Click to complete task"
-                    className="mt-0.5 w-4 h-4 rounded-full border border-slate-300 dark:border-slate-600 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 bg-white dark:bg-slate-900 flex items-center justify-center transition-colors shrink-0 group/check focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-indigo-500"
+                    className="mt-0.5 w-4 h-4 rounded-full border border-[#E3EAF3] dark:border-slate-600 hover:border-[#16A36A] hover:bg-[#16A36A]/10 dark:hover:bg-emerald-950/40 bg-[#FFFFFF] dark:bg-slate-900 flex items-center justify-center transition-colors shrink-0 group/check focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#1769E8]"
                     aria-label={`Complete task ${task.title}`}
                   >
-                    <Check className="w-2.5 h-2.5 text-transparent group-hover/check:text-emerald-500 dark:group-hover/check:text-emerald-400 transition-colors stroke-[2.5]" />
+                    <Check className="w-2.5 h-2.5 text-transparent group-hover/check:text-[#16A36A] dark:group-hover/check:text-emerald-400 transition-colors stroke-[2.5]" />
                   </button>
 
                   {/* Main Content Area */}
@@ -224,28 +224,28 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
                     {/* Task Title (Primary Visual Focus) */}
                     <h3
                       onClick={() => onEdit(task)}
-                      className="text-[14px] sm:text-[15px] font-medium text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors leading-snug break-words"
+                      className="text-[14px] sm:text-[15px] font-medium text-[#172B4D] dark:text-slate-100 hover:text-[#1769E8] dark:hover:text-blue-400 cursor-pointer transition-colors leading-snug break-words"
                     >
                       {task.title}
                     </h3>
 
                     {/* Concise Secondary Description */}
                     {task.description && (
-                      <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 line-clamp-1 leading-relaxed">
+                      <p className="mt-0.5 text-xs text-[#172B4D]/70 dark:text-slate-400 line-clamp-1 leading-relaxed">
                         {task.description}
                       </p>
                     )}
 
                     {/* Compact, Organized Metadata Row */}
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-[#172B4D]/65 dark:text-slate-400">
                       {/* Due Date with Elegant Accent Colors */}
                       <span
                         className={`inline-flex items-center gap-1 font-mono tabular-nums font-medium ${
                           isTomorrow
-                            ? 'text-amber-600 dark:text-amber-400'
+                            ? 'text-[#E9A23B] dark:text-amber-400'
                             : isSoon
-                            ? 'text-indigo-600 dark:text-indigo-400'
-                            : 'text-slate-600 dark:text-slate-400'
+                            ? 'text-[#1769E8] dark:text-blue-400'
+                            : 'text-[#172B4D]/75 dark:text-slate-400'
                         }`}
                       >
                         <Calendar className="w-3 h-3 shrink-0" />
@@ -256,19 +256,19 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
                             ? 'Today'
                             : `In ${daysDiff}d`}
                         </span>
-                        <span className="text-slate-400 dark:text-slate-500">
+                        <span className="text-[#172B4D]/50 dark:text-slate-500">
                           ({urgency.formattedDeadline})
                         </span>
                       </span>
 
-                      <span className="text-slate-300 dark:text-slate-700" aria-hidden="true">
+                      <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
                         ·
                       </span>
 
                       {/* Priority Indicator */}
                       <PriorityIndicator priority={task.priority} />
 
-                      <span className="text-slate-300 dark:text-slate-700" aria-hidden="true">
+                      <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
                         ·
                       </span>
 
@@ -277,20 +277,20 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
 
                       {task.scheduledTime && (
                         <>
-                          <span className="text-slate-300 dark:text-slate-700" aria-hidden="true">
+                          <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
                             ·
                           </span>
-                          <span className="inline-flex items-center gap-1 font-mono text-slate-500">
-                            <Clock className="w-3 h-3 text-sky-500" />
+                          <span className="inline-flex items-center gap-1 font-mono text-[#172B4D]/70 dark:text-slate-400">
+                            <Clock className="w-3 h-3 text-[#36A5F5]" />
                             <span>{task.scheduledTime}</span>
                           </span>
                         </>
                       )}
 
-                      <span className="text-slate-300 dark:text-slate-700" aria-hidden="true">
+                      <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
                         ·
                       </span>
-                      <span className="font-mono text-slate-400 dark:text-slate-500">
+                      <span className="font-mono text-[#172B4D]/50 dark:text-slate-500">
                         {task.id}
                       </span>
                     </div>
@@ -302,20 +302,20 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
                       type="button"
                       onClick={() => onQuickReschedule(task, 1)}
                       title="Postpone +1 Day"
-                      className="p-1.5 text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+                      className="p-1.5 text-[#172B4D]/50 hover:text-[#1769E8] dark:hover:text-blue-400 hover:bg-[#DCEBFF]/70 dark:hover:bg-slate-800 rounded-md transition-colors"
                       aria-label="Postpone 1 day"
                     >
-                      <CalendarPlus className="w-3.5 h-3.5 text-purple-500" />
+                      <CalendarPlus className="w-3.5 h-3.5 text-[#1769E8]" />
                     </button>
 
                     <button
                       type="button"
                       onClick={() => onEdit(task)}
                       title="Edit task"
-                      className="p-1.5 text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+                      className="p-1.5 text-[#172B4D]/50 hover:text-[#E9A23B] dark:hover:text-amber-400 hover:bg-[#E9A23B]/10 dark:hover:bg-slate-800 rounded-md transition-colors"
                       aria-label="Edit task"
                     >
-                      <Edit3 className="w-3.5 h-3.5 text-amber-500" />
+                      <Edit3 className="w-3.5 h-3.5 text-[#E9A23B]" />
                     </button>
                   </div>
                 </div>
@@ -326,18 +326,18 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
       </div>
 
       {/* Widget Footer */}
-      <div className="px-5 py-2.5 bg-slate-50/60 dark:bg-slate-900/60 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+      <div className="px-5 py-2.5 bg-[#F5F8FC] dark:bg-slate-900/60 border-t border-[#E3EAF3] dark:border-slate-800/80 flex items-center justify-between text-xs">
         <button
           type="button"
           onClick={() => onCreateTaskWithDate(todayIso)}
-          className="text-[11px] font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+          className="text-[11px] font-medium text-[#172B4D]/70 hover:text-[#123B78] dark:hover:text-slate-200 transition-colors"
         >
           + Schedule a deadline
         </button>
         <button
           type="button"
           onClick={onViewAll}
-          className="text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:underline"
+          className="text-[11px] font-medium text-[#1769E8] dark:text-blue-400 hover:underline"
         >
           Open Schedule →
         </button>

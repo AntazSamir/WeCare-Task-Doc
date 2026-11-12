@@ -143,25 +143,25 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#123B78]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-lg rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl my-auto overflow-hidden animate-modal-card">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="w-full max-w-lg rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 shadow-2xl my-auto overflow-hidden animate-modal-card">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E3EAF3] dark:border-slate-800">
           <div>
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Users className="w-4 h-4 text-blue-600" />
+            <h2 className="text-base font-semibold text-[#172B4D] dark:text-slate-100 flex items-center gap-2">
+              <Users className="w-4 h-4 text-[#1769E8]" />
               Register New Student Candidate
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[#172B4D]/65 dark:text-slate-400">
               Initialize Korean university admission dossier and document verification checklist
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded"
+            className="p-1.5 text-[#172B4D]/50 hover:text-[#123B78] dark:hover:text-slate-200 rounded"
           >
             <X className="w-4 h-4" />
           </button>
@@ -169,14 +169,14 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <div className="p-2.5 rounded bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-600 dark:text-red-400 font-medium">
+            <div className="p-2.5 rounded bg-[#DC4545]/10 dark:bg-red-950/40 border border-[#DC4545]/35 dark:border-red-900 text-xs text-[#DC4545] dark:text-red-400 font-medium">
               {error}
             </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Candidate Full Name *
               </label>
               <input
@@ -185,12 +185,12 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="e.g. Park Ji-hoon"
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Passport Number *
               </label>
               <input
@@ -199,14 +199,14 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
                 value={passportNumber}
                 onChange={(e) => setPassportNumber(e.target.value)}
                 placeholder="e.g. M99218412"
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 font-mono text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 font-mono text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Contact Email
               </label>
               <input
@@ -214,12 +214,12 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="candidate@gmail.com"
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Phone Number
               </label>
               <input
@@ -227,7 +227,7 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+82-10-1234-5678"
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 font-mono text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 font-mono text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
           </div>
@@ -235,13 +235,13 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
           {/* Target University & Project Linkage */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Target Korean University *
               </label>
               <select
                 value={universityId}
                 onChange={(e) => handleUniversityChange(e.target.value)}
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               >
                 {universities.map((u) => (
                   <option key={u.id} value={u.id}>
@@ -252,13 +252,13 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Intake Project Campaign *
               </label>
               <select
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               >
                 {projects.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -272,13 +272,13 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
           {/* Academic / Language Program Track (Specific to Selected University) */}
           {availablePrograms.length > 0 && (
             <div className="text-xs">
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 University Academic / Language Track (Auto-populates requirements & fees)
               </label>
               <select
                 value={programId}
                 onChange={(e) => handleProgramChange(e.target.value)}
-                className="w-full rounded border border-blue-300 dark:border-blue-700 bg-blue-50/30 dark:bg-blue-950/20 px-3 py-2 text-slate-900 dark:text-slate-100 font-medium"
+                className="w-full rounded border border-[#36A5F5]/60 dark:border-blue-700 bg-[#DCEBFF]/40 dark:bg-blue-950/20 px-3 py-2 text-[#123B78] dark:text-slate-100 font-medium focus:border-[#1769E8] focus:outline-none"
               >
                 <option value="">-- Custom / Direct Academic Entry --</option>
                 {availablePrograms.map((prog) => (
@@ -293,13 +293,13 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
           {/* Department, Major & Degree Level */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Degree Level & Visa Code
               </label>
               <select
                 value={degreeLevel}
                 onChange={(e) => setDegreeLevel(e.target.value as any)}
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               >
                 <option value="Bachelor (D-2-2)">Undergraduate / Bachelor (D-2-2)</option>
                 <option value="Master (D-2-3)">Graduate / Master (D-2-3)</option>
@@ -310,7 +310,7 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Target Department / College
               </label>
               <input
@@ -318,13 +318,13 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
                 placeholder="e.g. College of Engineering"
-                className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
           </div>
 
           <div className="text-xs">
-            <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
               Target Major / Field of Study *
             </label>
             <input
@@ -333,19 +333,19 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
               value={major}
               onChange={(e) => setMajor(e.target.value)}
               placeholder="e.g. Computer Science & Artificial Intelligence"
-              className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+              className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
             />
           </div>
 
           {/* Assigned Consultant */}
           <div className="text-xs">
-            <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
               Assigned Consultant / Case Officer
             </label>
             <select
               value={assignedConsultantId}
               onChange={(e) => setAssignedConsultantId(e.target.value)}
-              className="w-full rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-slate-900 dark:text-slate-100"
+              className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
             >
               {team.map((u) => (
                 <option key={u.id} value={u.id}>
@@ -356,18 +356,18 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
           </div>
 
           {/* Submit Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E3EAF3] dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded hover:bg-slate-100 transition-colors"
+              className="px-4 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded hover:bg-[#DCEBFF] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded transition-colors"
+              className="px-4 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] disabled:opacity-50 rounded transition-colors"
             >
               {isSubmitting ? 'Registering...' : 'Register Candidate'}
             </button>

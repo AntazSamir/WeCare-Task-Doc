@@ -11,7 +11,7 @@ export const SkeletonLine: React.FC<{
   height?: string;
 }> = ({ className = '', width = 'w-full', height = 'h-4' }) => (
   <div
-    className={`rounded skeleton-shimmer bg-slate-200/80 dark:bg-slate-800 ${width} ${height} ${className}`}
+    className={`rounded skeleton-shimmer bg-[#DCEBFF]/70 dark:bg-slate-800 ${width} ${height} ${className}`}
   />
 );
 
@@ -20,7 +20,7 @@ export const SkeletonCard: React.FC<{
   lines?: number;
 }> = ({ className = '', lines = 3 }) => (
   <div
-    className={`p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3 ${className}`}
+    className={`p-4 rounded-xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 shadow-xs space-y-3 ${className}`}
   >
     <div className="flex items-center justify-between">
       <SkeletonLine width="w-1/3" height="h-4" />
@@ -59,12 +59,12 @@ export const TableSkeleton: React.FC<{
   rows?: number;
   cols?: number;
 }> = ({ rows = 5, cols = 5 }) => (
-  <div className="w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden animate-page-enter">
-    <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+  <div className="w-full bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-xl overflow-hidden animate-page-enter">
+    <div className="p-4 border-b border-[#E3EAF3] dark:border-slate-800 flex justify-between items-center">
       <SkeletonLine width="w-48" height="h-5" />
       <SkeletonLine width="w-24" height="h-8" />
     </div>
-    <div className="divide-y divide-slate-100 dark:divide-slate-800">
+    <div className="divide-y divide-[#E3EAF3] dark:divide-slate-800">
       {Array.from({ length: rows }).map((_, rIdx) => (
         <div key={rIdx} className="p-4 flex items-center gap-4">
           {Array.from({ length: cols }).map((_, cIdx) => (
@@ -99,8 +99,8 @@ export const UniversityDetailsSkeleton: React.FC = () => {
       </div>
 
       {/* Hero Banner Skeleton */}
-      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs flex flex-col md:flex-row items-center gap-6">
-        <div className="w-24 h-24 rounded-2xl skeleton-shimmer bg-slate-200 dark:bg-slate-800 shrink-0" />
+      <div className="rounded-2xl border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 p-6 shadow-xs flex flex-col md:flex-row items-center gap-6">
+        <div className="w-24 h-24 rounded-2xl skeleton-shimmer bg-[#DCEBFF]/70 dark:bg-slate-800 shrink-0" />
         <div className="flex-1 space-y-3 w-full">
           <SkeletonLine width="w-64" height="h-7" />
           <div className="flex flex-wrap gap-4 pt-1">
@@ -109,7 +109,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
             <SkeletonLine width="w-24" height="h-4" />
           </div>
         </div>
-        <div className="hidden lg:block w-72 h-24 rounded-xl skeleton-shimmer bg-slate-200/70 dark:bg-slate-800 shrink-0" />
+        <div className="hidden lg:block w-72 h-24 rounded-xl skeleton-shimmer bg-[#DCEBFF]/50 dark:bg-slate-800 shrink-0" />
       </div>
 
       {/* Navigation Tabs Strip Skeleton */}
@@ -127,7 +127,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
       {/* 3-Column Top Grid Skeleton */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Current Intake */}
-        <div className="lg:col-span-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
+        <div className="lg:col-span-3 rounded-2xl border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 p-5 space-y-4">
           <SkeletonLine width="w-28" height="h-4" />
           <SkeletonLine width="w-36" height="h-6" />
           <div className="space-y-3 pt-2">
@@ -141,7 +141,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
         </div>
 
         {/* Available Programs */}
-        <div className="lg:col-span-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
+        <div className="lg:col-span-6 rounded-2xl border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 p-5 space-y-4">
           <div className="flex justify-between">
             <SkeletonLine width="w-36" height="h-5" />
             <SkeletonLine width="w-24" height="h-4" />
@@ -150,7 +150,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2"
+                className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/40 space-y-2"
               >
                 <SkeletonLine width="w-10" height="h-4" className="rounded-full" />
                 <SkeletonLine width="w-full" height="h-4" />
@@ -159,11 +159,11 @@ export const UniversityDetailsSkeleton: React.FC = () => {
             ))}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+            <div className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/40 space-y-2">
               <SkeletonLine width="w-32" height="h-4" />
               <SkeletonLine width="w-20" height="h-3" />
             </div>
-            <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+            <div className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/40 space-y-2">
               <SkeletonLine width="w-32" height="h-4" />
               <SkeletonLine width="w-20" height="h-3" />
             </div>
@@ -171,7 +171,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
         </div>
 
         {/* Refund Policy */}
-        <div className="lg:col-span-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
+        <div className="lg:col-span-3 rounded-2xl border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 p-5 space-y-4">
           <SkeletonLine width="w-32" height="h-4" />
           <div className="space-y-3 pt-1">
             <SkeletonLine width="w-full" height="h-3.5" />
@@ -187,7 +187,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3"
+            className="rounded-2xl border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 p-5 space-y-3"
           >
             <div className="flex justify-between">
               <SkeletonLine width="w-28" height="h-4" />
@@ -209,7 +209,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
 export const DashboardSkeleton: React.FC = () => (
   <div className="space-y-6 animate-page-enter">
     {/* Welcome Banner Skeleton */}
-    <div className="p-6 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+    <div className="p-6 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 space-y-3">
       <SkeletonLine width="w-32" height="h-3.5" />
       <SkeletonLine width="w-72" height="h-6" />
       <SkeletonLine width="w-96" height="h-3.5" />
@@ -221,7 +221,7 @@ export const DashboardSkeleton: React.FC = () => (
       {Array.from({ length: 4 }).map((_, i) => (
         <div
           key={i}
-          className={`animate-card-enter stagger-${i + 1} p-4 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2`}
+          className={`animate-card-enter stagger-${i + 1} p-4 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 space-y-2`}
         >
           <div className="flex justify-between">
             <SkeletonLine width="w-28" height="h-3.5" />
@@ -234,13 +234,13 @@ export const DashboardSkeleton: React.FC = () => (
     </div>
 
     {/* Pipeline Stages Skeleton */}
-    <div className="p-5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+    <div className="p-5 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 space-y-4">
       <SkeletonLine width="w-64" height="h-5" />
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="p-3 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 space-y-2 text-center"
+            className="p-3 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/50 space-y-2 text-center"
           >
             <SkeletonLine width="w-8" height="h-6" className="mx-auto" />
             <SkeletonLine width="w-16" height="h-3" className="mx-auto" />

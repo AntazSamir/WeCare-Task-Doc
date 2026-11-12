@@ -6,6 +6,17 @@
     --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --color-deep-blue: #123B78;
+    --color-primary-blue: #1769E8;
+    --color-sky-blue: #36A5F5;
+    --color-light-blue: #DCEBFF;
+    --color-workspace-bg: #F5F8FC;
+    --color-card-bg: #FFFFFF;
+    --color-border: #E3EAF3;
+    --color-main-text: #172B4D;
+    --color-success: #16A36A;
+    --color-warning: #E9A23B;
+    --color-danger: #DC4545;
   }
 
   body {
@@ -195,7 +206,7 @@ button:not(:disabled):active,
 /* 7. Data loading: Static clean skeleton loaders without looping animation or gradients */
 .skeleton-pulse,
 .skeleton-shimmer {
-  background-color: #f1f5f9;
+  background-color: #E3EAF3;
 }
 
 .dark .skeleton-pulse,

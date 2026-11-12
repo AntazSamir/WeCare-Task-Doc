@@ -142,13 +142,13 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
   const getHandoverStatusClass = (status: string) => {
     switch (status) {
       case 'Accepted':
-        return 'text-emerald-600 dark:text-emerald-400';
+        return 'text-[#16A36A] dark:text-emerald-400';
       case 'Partially Received':
-        return 'text-amber-600 dark:text-amber-400';
+        return 'text-[#E9A23B] dark:text-amber-400';
       case 'Disputed':
-        return 'text-rose-600 dark:text-rose-400';
+        return 'text-[#DC4545] dark:text-rose-400';
       case 'Follow-up Delivered':
-        return 'text-blue-600 dark:text-blue-400';
+        return 'text-[#1769E8] dark:text-blue-400';
       default:
         return 'text-slate-600 dark:text-slate-400';
     }
@@ -157,13 +157,13 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
   const renderHandoverStatusIcon = (status: string) => {
     switch (status) {
       case 'Accepted':
-        return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />;
+        return <CheckCircle2 className="w-3.5 h-3.5 text-[#16A36A] dark:text-emerald-400 shrink-0" />;
       case 'Partially Received':
-        return <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />;
+        return <AlertTriangle className="w-3.5 h-3.5 text-[#E9A23B] dark:text-amber-400 shrink-0" />;
       case 'Disputed':
-        return <XCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />;
+        return <XCircle className="w-3.5 h-3.5 text-[#DC4545] dark:text-rose-400 shrink-0" />;
       case 'Follow-up Delivered':
-        return <PackageCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />;
+        return <PackageCheck className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400 shrink-0" />;
       default:
         return <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0" />;
     }
@@ -172,29 +172,29 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
   const getRequestStatusClass = (status: string) => {
     switch (status) {
       case 'Completed':
-        return 'text-emerald-600 dark:text-emerald-400';
+        return 'text-[#16A36A] dark:text-emerald-400';
       case 'Partially Fulfilled':
-        return 'text-amber-600 dark:text-amber-400';
+        return 'text-[#E9A23B] dark:text-amber-400';
       case 'Disputed':
-        return 'text-rose-600 dark:text-rose-400';
+        return 'text-[#DC4545] dark:text-rose-400';
       case 'Handover Submitted':
       case 'In Verification':
-        return 'text-blue-600 dark:text-blue-400';
+        return 'text-[#1769E8] dark:text-blue-400';
       case 'Cancelled':
         return 'text-slate-400';
       default:
-        return 'text-indigo-600 dark:text-indigo-400';
+        return 'text-[#123B78] dark:text-blue-400';
     }
   };
 
   const getPriorityClass = (priority: string) => {
     switch (priority) {
       case 'Urgent':
-        return 'text-rose-600 dark:text-rose-400';
+        return 'text-[#DC4545] dark:text-rose-400';
       case 'High':
-        return 'text-amber-600 dark:text-amber-400';
+        return 'text-[#E9A23B] dark:text-amber-400';
       case 'Normal':
-        return 'text-blue-600 dark:text-blue-400';
+        return 'text-[#1769E8] dark:text-blue-400';
       default:
         return 'text-slate-500';
     }
@@ -235,18 +235,18 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
   return (
     <div className="space-y-4">
       {/* Header Bar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-5 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+          <div className="w-9 h-9 rounded-md bg-[#DCEBFF] dark:bg-blue-950/60 border border-[#36A5F5]/40 dark:border-blue-800 flex items-center justify-center text-[#123B78] dark:text-blue-400 shrink-0">
             <FileCheck2 className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-lg font-display font-bold text-slate-900 dark:text-slate-100">
+            <h1 className="text-lg font-display font-bold text-[#172B4D] dark:text-slate-100">
               Counselor Document Handover Workspace
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {currentUser.name} · Submit physical student records to Admission Team · Fulfill incoming document requests · Ledger Tab{' '}
-              <span className="font-mono text-slate-700 dark:text-slate-300">HND_{currentUser.id}</span>
+              <span className="font-mono text-[#172B4D] dark:text-slate-300">HND_{currentUser.id}</span>
             </p>
           </div>
         </div>
@@ -258,16 +258,16 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               onRefreshAll();
               loadTabData();
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 border border-slate-200 dark:border-slate-700 rounded-md"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#172B4D] dark:text-slate-300 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className="w-3.5 h-3.5 text-[#1769E8]" />
             Refresh
           </button>
 
           <button
             type="button"
             onClick={() => onOpenCreateHandover(null)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-md transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
             Create Document Handover
@@ -280,13 +280,13 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         <button
           type="button"
           onClick={() => handleTabChange('requests')}
-          className="text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#1769E8] dark:hover:border-blue-700 rounded-lg p-3.5 transition-colors"
         >
           <div className="text-[11px] font-semibold text-slate-500 uppercase flex items-center justify-between">
             <span>Admission Requests</span>
-            <ClipboardList className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            <ClipboardList className="w-3.5 h-3.5 text-[#123B78] dark:text-blue-400" />
           </div>
-          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-indigo-600 dark:text-indigo-400">
+          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-[#123B78] dark:text-blue-400">
             {stats?.openRequestsAssignedToMe ?? 0}
           </div>
           <div className="mt-0.5 text-[11px] text-slate-500 font-mono tabular-nums">
@@ -297,12 +297,12 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         <button
           type="button"
           onClick={() => handleTabChange('pending_confirmations')}
-          className="text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#36A5F5] dark:hover:border-blue-700 rounded-lg p-3.5 transition-colors"
         >
           <div className="text-[11px] font-semibold text-slate-500 uppercase">
             Pending Confirmations
           </div>
-          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-blue-600 dark:text-blue-400">
+          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-[#1769E8] dark:text-blue-400">
             {stats?.pendingConfirmationsMyHandovers ?? 0}
           </div>
           <div className="mt-0.5 text-[11px] text-slate-500">Awaiting Admission sign-off</div>
@@ -311,12 +311,12 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         <button
           type="button"
           onClick={() => handleTabChange('disputed')}
-          className="text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#E9A23B] dark:hover:border-amber-700 rounded-lg p-3.5 transition-colors"
         >
           <div className="text-[11px] font-semibold text-slate-500 uppercase">
             Needs Follow-Up
           </div>
-          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-amber-600 dark:text-amber-400">
+          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-[#E9A23B] dark:text-amber-400">
             {stats?.myNeedsFollowUp ?? 0}
           </div>
           <div className="mt-0.5 text-[11px] text-slate-500">Partial or disputed batches</div>
@@ -325,12 +325,12 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         <button
           type="button"
           onClick={() => handleTabChange('received')}
-          className="text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#16A36A] dark:hover:border-emerald-700 rounded-lg p-3.5 transition-colors"
         >
           <div className="text-[11px] font-semibold text-slate-500 uppercase">
             Accepted in Custody
           </div>
-          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-[#16A36A] dark:text-emerald-400">
             {stats?.myAcceptedHandovers ?? 0}
           </div>
           <div className="mt-0.5 text-[11px] text-slate-500">Verified physical receipts</div>
@@ -339,12 +339,12 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         <button
           type="button"
           onClick={() => handleTabChange('my')}
-          className="text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 rounded-lg p-3.5 col-span-2 lg:col-span-1 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#36A5F5] dark:hover:border-slate-700 rounded-lg p-3.5 col-span-2 lg:col-span-1 transition-colors"
         >
           <div className="text-[11px] font-semibold text-slate-500 uppercase">
             My Total Handovers
           </div>
-          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">
+          <div className="mt-1 text-2xl font-mono font-bold tabular-nums text-[#172B4D] dark:text-slate-100">
             {stats?.myTotalHandovers ?? 0}
           </div>
           <div className="mt-0.5 text-[11px] text-slate-500">Submitted across all terms</div>
@@ -352,7 +352,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
       </div>
 
       {/* Role Segmented Navigation */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 flex flex-wrap items-center gap-1.5">
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-2 flex flex-wrap items-center gap-1.5">
         {tabs.map((tab) => {
           const active = activeTab === tab.id;
           return (
@@ -362,14 +362,14 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               onClick={() => handleTabChange(tab.id)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap flex items-center gap-1.5 ${
                 active
-                  ? 'bg-slate-900 text-white dark:bg-blue-600 dark:text-white'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-[#123B78] text-white dark:bg-blue-600 dark:text-white'
+                  : 'text-[#172B4D] dark:text-slate-400 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800'
               }`}
             >
               <span>{tab.label}</span>
               <span
                 className={`font-mono text-[11px] tabular-nums ${
-                  active ? 'text-slate-200' : 'text-slate-400'
+                  active ? 'text-[#DCEBFF]' : 'text-slate-400'
                 }`}
               >
                 ({tab.count ?? 0})
@@ -380,7 +380,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
       </div>
 
       {/* Search & Multi-Facet Filter Bar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3.5 grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-3.5 grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
         <div className="md:col-span-4 relative">
           <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -392,7 +392,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                 ? 'Search Request ID, student, passport, requester, or document...'
                 : 'Search Handover ID, Request ID, student, passport, or doc...'
             }
-            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-blue-600 focus:outline-none"
+            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:bg-[#FFFFFF] focus:border-[#1769E8] focus:outline-none"
           />
         </div>
 
@@ -400,7 +400,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           <select
             value={admissionFilter}
             onChange={(e) => setAdmissionFilter(e.target.value)}
-            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
           >
             <option value="">All Admission Officers</option>
             {(contextData?.admissionTeam || []).map((emp) => (
@@ -416,7 +416,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
             <select
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+              className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
             >
               <option value="All">All Priorities</option>
               <option value="Urgent">Urgent</option>
@@ -431,7 +431,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
           >
             <option value="All">All Statuses</option>
             {activeTab === 'requests' ? (
@@ -462,13 +462,13 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
             title={activeTab === 'requests' ? 'Deadline / Created From' : 'Handover Date From'}
-            className="w-full px-2 py-1.5 text-[11px] rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+            className="w-full px-2 py-1.5 text-[11px] rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 font-mono focus:border-[#1769E8] focus:outline-none"
           />
           {hasActiveFilters && (
             <button
               type="button"
               onClick={resetFilters}
-              className="px-2 py-1.5 text-[11px] font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
+              className="px-2 py-1.5 text-[11px] font-semibold text-[#1769E8] hover:text-[#123B78] dark:hover:text-slate-100"
             >
               Reset
             </button>
@@ -478,9 +478,9 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
 
       {/* Main Content Table */}
       {activeTab === 'requests' ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-x-auto">
+        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 text-[11px] font-semibold text-slate-500 border-b border-slate-200 dark:border-slate-800">
+            <thead className="bg-[#F5F8FC] dark:bg-slate-800/60 text-[11px] font-semibold text-slate-500 border-b border-[#E3EAF3] dark:border-slate-800">
               <tr>
                 <th className="px-4 py-3">Request ID</th>
                 <th className="px-4 py-3">Student Dossier</th>
@@ -491,7 +491,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+            <tbody className="divide-y divide-[#E3EAF3] dark:divide-slate-800">
               {loading && requests.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-10 text-center text-slate-500">
@@ -501,7 +501,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               ) : requests.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center space-y-2">
-                    <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                    <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-300">
                       No document requests assigned to you
                     </div>
                     <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -519,20 +519,20 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                   return (
                     <tr
                       key={req.id}
-                      className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                      className="hover:bg-[#F5F8FC] dark:hover:bg-slate-800/30 transition-colors"
                     >
                       <td className="px-4 py-3 align-top">
                         <button
                           type="button"
                           onClick={() => onOpenRequestDetail(req.id)}
-                          className="font-mono font-bold text-indigo-600 dark:text-indigo-400 hover:underline text-left"
+                          className="font-mono font-bold text-[#1769E8] dark:text-blue-400 hover:underline text-left"
                         >
                           {req.id}
                         </button>
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-slate-900 dark:text-slate-100">
+                        <div className="font-semibold text-[#172B4D] dark:text-slate-100">
                           {req.studentName}
                         </div>
                         <div className="text-[11px] font-mono text-slate-500">
@@ -541,7 +541,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                       </td>
 
                       <td className="px-4 py-3 align-top max-w-xs">
-                        <div className="font-medium text-slate-800 dark:text-slate-200 truncate">
+                        <div className="font-medium text-[#172B4D] dark:text-slate-200 truncate">
                           {req.requiredDocuments.map((d) => d.documentName).join(', ')}
                         </div>
                         <div className="text-[11px] font-mono text-slate-500 mt-0.5 tabular-nums">
@@ -551,7 +551,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-slate-800 dark:text-slate-200">
+                        <div className="font-semibold text-[#172B4D] dark:text-slate-200">
                           {req.requestedByName}
                         </div>
                         <div className="text-[11px] text-slate-500 font-mono">Admission Team</div>
@@ -575,7 +575,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <button
                             type="button"
                             onClick={() => onOpenHandoverDetail(req.linkedHandoverId!)}
-                            className="mt-0.5 text-[11px] font-mono font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                            className="mt-0.5 text-[11px] font-mono font-semibold text-[#1769E8] dark:text-blue-400 hover:underline"
                           >
                             {req.linkedHandoverId} ({req.linkedHandoverStatus})
                           </button>
@@ -590,7 +590,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                             <button
                               type="button"
                               onClick={() => onOpenCreateHandover(req)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-md transition-colors"
                             >
                               <Send className="w-3 h-3" />
                               Submit Docs
@@ -600,7 +600,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                             <button
                               type="button"
                               onClick={() => onOpenHandoverDetail(req.linkedHandoverId!)}
-                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-amber-600 hover:bg-amber-700 rounded-md"
+                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#E9A23B] hover:opacity-90 rounded-md"
                             >
                               Deliver Missing
                             </button>
@@ -608,7 +608,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <button
                             type="button"
                             onClick={() => onOpenRequestDetail(req.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-md"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#172B4D] dark:text-slate-300 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
                           >
                             <span>Details</span>
                             <ChevronRight className="w-3 h-3" />
@@ -623,9 +623,9 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           </table>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-x-auto">
+        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 text-[11px] font-semibold text-slate-500 border-b border-slate-200 dark:border-slate-800">
+            <thead className="bg-[#F5F8FC] dark:bg-slate-800/60 text-[11px] font-semibold text-slate-500 border-b border-[#E3EAF3] dark:border-slate-800">
               <tr>
                 <th className="px-4 py-3">Handover ID</th>
                 <th className="px-4 py-3">Student Dossier</th>
@@ -636,7 +636,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+            <tbody className="divide-y divide-[#E3EAF3] dark:divide-slate-800">
               {loading && handovers.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-10 text-center text-slate-500">
@@ -646,7 +646,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               ) : handovers.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center space-y-2">
-                    <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                    <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-300">
                       No document handovers in this view
                     </div>
                     <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -667,13 +667,13 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                   return (
                     <tr
                       key={h.id}
-                      className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                      className="hover:bg-[#F5F8FC] dark:hover:bg-slate-800/30 transition-colors"
                     >
                       <td className="px-4 py-3 align-top">
                         <button
                           type="button"
                           onClick={() => onOpenHandoverDetail(h.id)}
-                          className="font-mono font-bold text-blue-600 dark:text-blue-400 hover:underline text-left"
+                          className="font-mono font-bold text-[#1769E8] dark:text-blue-400 hover:underline text-left"
                         >
                           {h.id}
                         </button>
@@ -685,7 +685,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <button
                             type="button"
                             onClick={() => onOpenRequestDetail(h.requestId!)}
-                            className="mt-0.5 block text-[10px] font-mono font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+                            className="mt-0.5 block text-[10px] font-mono font-semibold text-[#123B78] dark:text-blue-400 hover:underline"
                           >
                             Req: {h.requestId}
                           </button>
@@ -693,7 +693,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-slate-900 dark:text-slate-100">
+                        <div className="font-semibold text-[#172B4D] dark:text-slate-100">
                           {h.studentName}
                         </div>
                         <div className="text-[11px] font-mono text-slate-500">
@@ -702,7 +702,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                       </td>
 
                       <td className="px-4 py-3 align-top max-w-xs">
-                        <div className="font-medium text-slate-800 dark:text-slate-200 truncate">
+                        <div className="font-medium text-[#172B4D] dark:text-slate-200 truncate">
                           {h.documents.map((d) => d.documentName).join(', ')}
                         </div>
                         <div className="text-[11px] font-mono text-slate-500 mt-0.5 tabular-nums">
@@ -713,7 +713,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-slate-800 dark:text-slate-200">
+                        <div className="font-semibold text-[#172B4D] dark:text-slate-200">
                           {h.receivingEmployeeName}
                         </div>
                         <div className="text-[11px] text-slate-500 font-mono">
@@ -742,7 +742,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                             <button
                               type="button"
                               onClick={() => onOpenFollowUp(h)}
-                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-amber-600 hover:bg-amber-700 rounded-md"
+                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#E9A23B] hover:opacity-90 rounded-md"
                             >
                               Deliver Missing
                             </button>
@@ -750,7 +750,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <button
                             type="button"
                             onClick={() => onOpenHandoverDetail(h.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-md"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#172B4D] dark:text-slate-300 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
                           >
                             <span>Manifest</span>
                             <ChevronRight className="w-3 h-3" />
