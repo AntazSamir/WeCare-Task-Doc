@@ -1,0 +1,6 @@
+{
+  "name": "Korean Student Visa Consultancy PMS & Task Manager",
+  "description": "Centralized Project Management System for South Korean university admissions, D-2/D-4 student visa processing, document verification, apostilles, DHL dispatch tracking, and team task orchestration with two-way Google Sheets synchronization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

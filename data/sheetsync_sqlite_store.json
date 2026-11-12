@@ -1,0 +1,85 @@
+{
+  "tasks": [],
+  "spreadsheets": [],
+  "sheetCells": {
+    "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms": {
+      "Daily_Tasks_2026": {
+        "headers": [
+          "Task ID",
+          "Task Title",
+          "Description",
+          "Category",
+          "Priority",
+          "Task Date",
+          "Deadline",
+          "Status",
+          "Created At",
+          "Completed At",
+          "Notes",
+          "Last Updated"
+        ],
+        "rows": {}
+      },
+      "Work_Backlog": {
+        "headers": [
+          "Task ID",
+          "Task Title",
+          "Description",
+          "Category",
+          "Priority",
+          "Task Date",
+          "Deadline",
+          "Status",
+          "Created At",
+          "Completed At",
+          "Notes",
+          "Last Updated"
+        ],
+        "rows": {}
+      },
+      "Completed_Archive": {
+        "headers": [
+          "Task ID",
+          "Task Title",
+          "Description",
+          "Category",
+          "Priority",
+          "Task Date",
+          "Deadline",
+          "Status",
+          "Created At",
+          "Completed At",
+          "Notes",
+          "Last Updated"
+        ],
+        "rows": {}
+      }
+    }
+  },
+  "connection": {
+    "connected": true,
+    "accountEmail": "samiul.wecare@gmail.com",
+    "accountName": "Samiul (Personal Google Workspace)",
+    "authMode": "workspace_cloud",
+    "oauthClientId": "",
+    "oauthAccessToken": "",
+    "appsScriptUrl": "",
+    "selectedSpreadsheetId": "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
+    "selectedSpreadsheetTitle": "Personal Daily Task Master 2026",
+    "selectedWorksheet": "Daily_Tasks_2026",
+    "autoSync": true,
+    "syncStatus": "Synced",
+    "lastSyncedAt": "2026-11-07T06:17:51.262Z",
+    "headersInitialized": true,
+    "errorMessage": null
+  },
+  "syncLogs": [],
+  "settings": {
+    "theme": "light",
+    "remindersEnabled": true,
+    "todayReminderShownDate": null,
+    "defaultCategory": "Work",
+    "defaultPriority": "Medium",
+    "simulateOffline": false
+  }
+}

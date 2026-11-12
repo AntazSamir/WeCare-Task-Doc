@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Korean Student Visa Consultancy PMS &amp; Task Manager</title>
+    <meta name="description" content="Centralized Project Management System for South Korean university admissions, D-2/D-4 student visa processing, document verification, apostilles, DHL dispatch tracking, and team task orchestration with two-way Google Sheets synchronization." />
+    <meta property="og:title" content="Korean Student Visa Consultancy PMS &amp; Task Manager" />
+    <meta property="og:description" content="Centralized Project Management System for South Korean university admissions, D-2/D-4 student visa processing, document verification, apostilles, DHL dispatch tracking, and team task orchestration with two-way Google Sheets synchronization." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script>
+      // Silence Vite HMR websocket disconnection rejections in sandbox environment
+      window.addEventListener('unhandledrejection', function(event) {
+        const msg = event?.reason?.message || '';
+        if (msg.includes('WebSocket') || msg.includes('websocket')) {
+          event.preventDefault();
+        }
+      });
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
