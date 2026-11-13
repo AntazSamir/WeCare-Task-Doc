@@ -6,3 +6,13 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Runtime SQLite database files
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
+data/backups/
+
+# Lock files
+package-lock.json
+bun.lock
