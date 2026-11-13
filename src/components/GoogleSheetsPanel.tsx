@@ -189,7 +189,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Connection Overview Bar */}
+
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1">
@@ -215,7 +215,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
             </p>
           </div>
 
-          {/* Primary Sync Actions */}
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               type="button"
@@ -249,9 +248,8 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           </div>
         </div>
 
-        {/* Spreadsheet & Worksheet Selector Bar */}
         <div className="mt-6 pt-5 border-t border-[#E3EAF3] dark:border-slate-800 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-          {/* Spreadsheet Selector */}
+
           <div className="md:col-span-5">
             <label
               htmlFor="select-spreadsheet"
@@ -283,7 +281,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
             </div>
           </div>
 
-          {/* Worksheet / Tab Selector */}
           <div className="md:col-span-4">
             <label
               htmlFor="select-worksheet"
@@ -315,7 +312,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
             </div>
           </div>
 
-          {/* Sync Status & Auto-Sync Toggle */}
           <div className="md:col-span-3 flex items-center justify-between md:justify-end gap-4 pb-1">
             <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-medium text-[#172B4D] dark:text-slate-300">
               <input
@@ -353,7 +349,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           </div>
         </div>
 
-        {/* Inline Create New Spreadsheet Form */}
         {showCreateSheetModal && (
           <form
             onSubmit={handleCreateSpreadsheetSubmit}
@@ -400,7 +395,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           </form>
         )}
 
-        {/* Inline Add Worksheet Tab Form */}
         {showAddTabInput && (
           <form
             onSubmit={handleAddWorksheetSubmit}
@@ -436,7 +430,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         )}
       </div>
 
-      {/* Sub-Navigation Tabs (Functional Segmented Control) */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-1 p-1 bg-[#F4F2EE] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md">
           <button
@@ -492,7 +485,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           </button>
         </div>
 
-        {/* CSV Import / Export Actions */}
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -510,7 +502,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         </div>
       </div>
 
-      {/* TAB 1: Live 12-Column Google Sheet Grid View */}
       {activeSubTab === 'sheet-grid' && (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md overflow-hidden">
           <div className="px-4 py-3 bg-[#16A36A]/10 dark:bg-emerald-950/20 border-b border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -531,7 +522,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
               <thead>
-                {/* Column Letters Row */}
+
                 <tr className="bg-[#F4F2EE] dark:bg-slate-800/90 border-b border-[#E3EAF3] dark:border-slate-700 text-[11px] font-mono text-[#172B4D]/65 dark:text-slate-400">
                   <th className="py-1.5 px-2.5 border-r border-[#E3EAF3] dark:border-slate-700 text-center w-10">
                     #
@@ -546,7 +537,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                   ))}
                 </tr>
 
-                {/* Row 1: Frozen Spreadsheet Column Headers */}
                 <tr className="bg-[#F4F2EE] dark:bg-slate-900 border-b-2 border-[#E3EAF3] dark:border-slate-700 font-semibold text-[#172B4D] dark:text-slate-200">
                   <td className="py-2 px-2.5 border-r border-[#E3EAF3] dark:border-slate-800 text-center font-mono text-[#172B4D]/50">
                     1
@@ -633,7 +623,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         </div>
       )}
 
-      {/* TAB 2: Google OAuth 2.0 & API Connection Configuration */}
       {activeSubTab === 'connection-config' && (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-6 space-y-6">
           <div className="flex items-start justify-between gap-4 border-b border-[#E3EAF3] dark:border-slate-800 pb-4">
@@ -736,7 +725,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         </div>
       )}
 
-      {/* TAB 3: Sync Audit Log & Offline Recovery Queue */}
       {activeSubTab === 'sync-logs' && (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-6 space-y-4">
           <div className="flex items-center justify-between">
@@ -804,7 +792,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         </div>
       )}
 
-      {/* TAB 4: Step-by-Step Google Cloud Console & Windows PC Build Guide */}
       {activeSubTab === 'setup-guide' && (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-6 space-y-6 text-sm text-[#172B4D]/80 dark:text-slate-300 leading-relaxed">
           <div>

@@ -143,7 +143,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
     }
   };
 
-  // Program delete
   const handleDeleteProgram = async (programId: string) => {
     if (!isAdmin) return;
     if (!window.confirm('Are you sure you want to delete this degree/language program?')) return;
@@ -156,7 +155,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
     }
   };
 
-  // Document delete
   const handleDeleteDoc = async (docId: string) => {
     if (!isAdmin) return;
     if (!window.confirm('Delete this admission document?')) return;
@@ -210,7 +208,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
   return (
     <div className="space-y-3.5">
-      {/* Top Breadcrumb & Return Action */}
+
       <div className="flex items-center justify-between gap-4">
         <button
           type="button"
@@ -248,10 +246,9 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         </div>
       </div>
 
-      {/* Premium Institutional Identity Banner with Campus Photo & Seal Badge */}
       <div className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-[0_2px_14px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_14px_rgba(0,0,0,0.3)]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
-          {/* Left: University Seal Badge Card */}
+
           <div className="flex items-center gap-4 shrink-0">
             {uni.id === 'UNI-SNU' ? (
               <div className="h-20 w-52 sm:w-56 rounded-xl border border-blue-100 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
@@ -260,7 +257,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   alt="Seoul National University"
                   className="h-full w-full object-contain"
                   onError={(e) => {
-                    // Fallback to stylized SVG emblem if file not reachable
+
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                 />
@@ -274,13 +271,12 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
             )}
 
-            {/* University Title & Metadata */}
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                   {uni.nameEn} {uni.id === 'UNI-SNU' ? '(SNU)' : ''}
                 </h1>
-                {/* Verified Blue Badge Icon */}
+
                 <span className="inline-flex items-center justify-center text-blue-500 dark:text-blue-400" title="Verified Korean Institution">
                   <svg className="w-5 h-5 fill-blue-500 text-white" viewBox="0 0 24 24">
                     <path fillRule="evenodd" d="M8.6 2.25A2.25 2.25 0 0 0 6.64 3.7l-.42 1.48a2.25 2.25 0 0 1-1.54 1.54l-1.48.42a2.25 2.25 0 0 0-1.45 1.96v.1a2.25 2.25 0 0 0 .7 1.68l1.09 1.09c.47.46.7 1.1.63 1.74l-.16 1.53a2.25 2.25 0 0 0 1.25 2.25l1.37.69c.58.29.98.84 1.08 1.48l.24 1.52a2.25 2.25 0 0 0 2 1.89h.2a2.25 2.25 0 0 0 1.8-1l.9-1.26a2.25 2.25 0 0 1 1.6-.82h1.55a2.25 2.25 0 0 0 2.2-1.78l.35-1.5a2.25 2.25 0 0 1 1.22-1.5l1.4-.64a2.25 2.25 0 0 0 1.28-2.22l-.12-1.54a2.25 2.25 0 0 1 .65-1.73l1.1-1.09a2.25 2.25 0 0 0 .7-1.68v-.1a2.25 2.25 0 0 0-1.45-1.96l-1.48-.42a2.25 2.25 0 0 1-1.54-1.54l-.42-1.48a2.25 2.25 0 0 0-1.96-1.45h-.1a2.25 2.25 0 0 0-1.68.7L13.1 3.5a2.25 2.25 0 0 1-1.74.63l-1.53-.16a2.25 2.25 0 0 0-2.25 1.25l-.69 1.37c-.29.58-.84.98-1.48 1.08l-1.52.24a2.25 2.25 0 0 0-1.89 2v.2a2.25 2.25 0 0 0 1 1.8l1.26.9c.5.35.8.92.82 1.6v1.55a2.25 2.25 0 0 0 1.78 2.2l1.5.35c.6.14 1.13.56 1.5 1.22l.64 1.4a2.25 2.25 0 0 0 2.22 1.28l1.54-.12c.64-.05 1.27.18 1.73.65l1.09 1.1a2.25 2.25 0 0 0 1.68.7h.1a2.25 2.25 0 0 0 1.96-1.45l.42-1.48a2.25 2.25 0 0 1 1.54-1.54l1.48-.42a2.25 2.25 0 0 0 1.45-1.96v-.1a2.25 2.25 0 0 0-.7-1.68l-1.09-1.09a2.25 2.25 0 0 1-.63-1.74l.16-1.53a2.25 2.25 0 0 0-1.25-2.25l-1.37-.69a2.25 2.25 0 0 1-1.08-1.48l-.24-1.52a2.25 2.25 0 0 0-2-1.89h-.2a2.25 2.25 0 0 0-1.8 1l-.9 1.26a2.25 2.25 0 0 1-1.6.82h-1.55a2.25 2.25 0 0 0-2.2 1.78l-.35 1.5a2.25 2.25 0 0 1-1.22 1.5l-1.4.64a2.25 2.25 0 0 0-1.28 2.22l.12 1.54c.05.64-.18 1.27-.65 1.73l-1.1 1.09a2.25 2.25 0 0 0-.7 1.68v.1c0 .88.52 1.65 1.3 1.96l1.48.42a2.25 2.25 0 0 1 1.54 1.54l.42 1.48a2.25 2.25 0 0 0 1.96 1.45h.1a2.25 2.25 0 0 0 1.68-.7l1.09-1.09a2.25 2.25 0 0 1 1.74-.63l1.53.16a2.25 2.25 0 0 0 2.25-1.25l.69-1.37c.29-.58.84-.98 1.48-1.08l1.52-.24a2.25 2.25 0 0 0 1.89-2v-.2a2.25 2.25 0 0 0-1-1.8l-1.26-.9a2.25 2.25 0 0 1-.82-1.6v-1.55a2.25 2.25 0 0 0-1.78-2.2l-1.5-.35a2.25 2.25 0 0 1-1.5-1.22l-.64-1.4a2.25 2.25 0 0 0-2.22-1.28l-1.54.12a2.25 2.25 0 0 1-1.73-.65l-1.09-1.1a2.25 2.25 0 0 0-1.68-.7h-.1z" clipRule="evenodd" />
@@ -313,7 +309,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             </div>
           </div>
 
-          {/* Right: Korean Campus Panoramic Photographic Banner */}
           <div className="hidden lg:block relative w-96 xl:w-[460px] h-24 rounded-lg overflow-hidden border border-slate-200/80 dark:border-slate-800 shrink-0">
             <img
               src="/assets/campus_snu_clean.jpg"
@@ -327,7 +322,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         </div>
       </div>
 
-      {/* Navigation Filter Tabs with matched corner radius */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 text-xs">
         <button
           type="button"
@@ -420,7 +414,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
           <span>Important Dates</span>
         </button>
 
-        {/* More dropdown */}
         <div className="relative inline-block text-left">
           <button
             type="button"
@@ -437,11 +430,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         </div>
       </div>
 
-      {/* TAB CONTENT WITH SMOOTH ANIMATED TRANSITION */}
       <div key={activeTab} className="animate-tab-enter">
-        {/* TAB 1: CURRENT INTAKE - DASHBOARD OVERVIEW (MATCHING REFERENCE DESIGN EXACTLY) */}
+
         {activeTab === 'intakes' && (() => {
-        // Find current primary open/active intake (e.g. Spring 2027)
+
         const primaryIntake = intakes.find((i) => i.status === 'Open') || intakes[0] || {
           term: 'Spring 2027',
           status: 'Open',
@@ -460,7 +452,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         const underProgram = programs.find((p) => p.degreeLevel.includes('Bachelor') && p.code !== 'KSU');
         const gradProgram = programs.find((p) => p.degreeLevel.includes('Master') || p.degreeLevel.includes('Doctorate'));
 
-        // Format dates cleanly for the UI like the mockup
         const formatDateClean = (dStr?: string) => {
           if (!dStr) return '';
           if (dStr.includes('Oct') || dStr.includes('Nov') || dStr.includes('Dec') || dStr.includes('Jan') || dStr.includes('Feb') || dStr.includes('Mar')) {
@@ -473,18 +464,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
         return (
           <div className="space-y-4">
-            {/* Top Row: 3 Columns Grid */}
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-              {/* CARD 1: Current Intake (approx 3.2 cols) */}
+
               <div className="lg:col-span-3 xl:col-span-3 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
                 <div>
-                  {/* Header */}
+
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 mb-3">
                     <Calendar className="w-4 h-4 text-blue-600" />
                     <span>Current Intake</span>
                   </div>
 
-                  {/* Title & Status */}
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
                       {primaryIntake.term}
@@ -495,9 +485,8 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     </span>
                   </div>
 
-                  {/* Milestones List */}
                   <div className="space-y-2.5 text-xs">
-                    {/* Application Open */}
+
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <Calendar className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -508,7 +497,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </span>
                     </div>
 
-                    {/* Application Deadline (Highlighted in bold Red matching screenshot) */}
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <Calendar className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -519,7 +507,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </span>
                     </div>
 
-                    {/* Document Deadline */}
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <FileText className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -530,7 +517,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </span>
                     </div>
 
-                    {/* Result Announcement */}
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <Clock className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -541,7 +527,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </span>
                     </div>
 
-                    {/* Tuition Payment */}
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <DollarSign className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -552,7 +537,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </span>
                     </div>
 
-                    {/* Visa Submission */}
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <ShieldCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -563,7 +547,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </span>
                     </div>
 
-                    {/* Classes Start */}
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -576,7 +559,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
                 </div>
 
-                {/* Footer link */}
                 <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 text-center">
                   <button
                     type="button"
@@ -594,10 +576,9 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              {/* CARD 2: Available Programs (approx 5.5 cols) */}
               <div className="lg:col-span-5 xl:col-span-5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
                 <div>
-                  {/* Header */}
+
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
                       <GraduationCap className="w-4 h-4 text-blue-600" />
@@ -613,9 +594,8 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     </button>
                   </div>
 
-                  {/* 3 mini cards on top row */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-2.5">
-                    {/* KLP Card (Sky/Cyan tint) */}
+
                     <div
                       onClick={() => {
                         if (klpProgram && onApplyStudentForProgram) {
@@ -643,7 +623,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </div>
                     </div>
 
-                    {/* KSU Card (Purple/Lavender tint) */}
                     <div
                       onClick={() => {
                         if (ksuProgram && onApplyStudentForProgram) {
@@ -671,7 +650,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       </div>
                     </div>
 
-                    {/* EAP Card (Emerald/Green tint) */}
                     <div
                       onClick={() => {
                         if (eapProgram && onApplyStudentForProgram) {
@@ -700,9 +678,8 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     </div>
                   </div>
 
-                  {/* 2 wide cards on bottom row */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {/* Undergraduate Programs (Amber/Warm tint) */}
+
                     <div
                       onClick={() => setActiveTab('programs')}
                       className="p-3 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/40 hover:border-amber-300 transition-all cursor-pointer flex items-center justify-between group"
@@ -724,7 +701,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
                     </div>
 
-                    {/* Graduate Programs (Blue/Indigo tint) */}
                     <div
                       onClick={() => setActiveTab('programs')}
                       className="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 hover:border-blue-300 transition-all cursor-pointer flex items-center justify-between group"
