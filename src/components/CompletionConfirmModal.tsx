@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, CheckCircle2, FileSpreadsheet, Check } from 'lucide-react';
 import { Task } from '../types/task';
@@ -74,7 +74,7 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
             Are you sure you have completed this task?
           </p>
 
-          <div className="p-3.5 rounded-md bg-[#F5F8FC] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-800 space-y-1.5">
+          <div className="p-3.5 rounded-md bg-[#F4F2EE] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-800 space-y-1.5">
             <div className="text-xs font-mono tabular-nums text-[#1769E8] dark:text-slate-400">
               {task.id} · {task.category} · {task.priority} Priority
             </div>
@@ -123,7 +123,7 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-[#F5F8FC] dark:bg-slate-900/90 border-t border-[#E3EAF3] dark:border-slate-800">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-[#F4F2EE] dark:bg-slate-900/90 border-t border-[#E3EAF3] dark:border-slate-800">
           <button
             type="button"
             onClick={onCancel}

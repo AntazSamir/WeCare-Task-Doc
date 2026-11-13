@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import {
   ArrowRight,
   Check,
@@ -205,7 +205,7 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
             return (
               <div
                 key={task.id}
-                className="group relative p-3 sm:px-4 hover:bg-[#F5F8FC] dark:hover:bg-slate-800/40 transition-colors"
+                className="group relative p-3 sm:px-4 hover:bg-[#F4F2EE] dark:hover:bg-slate-800/40 transition-colors"
               >
                 <div className="flex items-start gap-3">
                   {/* Minimal Circular Checkbox */}
@@ -326,7 +326,7 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
       </div>
 
       {/* Widget Footer */}
-      <div className="px-5 py-2.5 bg-[#F5F8FC] dark:bg-slate-900/60 border-t border-[#E3EAF3] dark:border-slate-800/80 flex items-center justify-between text-xs">
+      <div className="px-5 py-2.5 bg-[#F4F2EE] dark:bg-slate-900/60 border-t border-[#E3EAF3] dark:border-slate-800/80 flex items-center justify-between text-xs">
         <button
           type="button"
           onClick={() => onCreateTaskWithDate(todayIso)}

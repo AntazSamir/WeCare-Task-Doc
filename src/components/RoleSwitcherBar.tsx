@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { ShieldCheck, UserCheck, ChevronDown, Check } from 'lucide-react';
 import { UserProfile } from '../types/pms';
 
@@ -26,7 +26,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
         className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium border transition-all ${
           isAdmin
             ? 'bg-[#DCEBFF] dark:bg-blue-950/40 border-[#36A5F5]/40 dark:border-blue-900/60 text-[#123B78] dark:text-blue-300 hover:bg-[#DCEBFF]/80'
-            : 'bg-[#F5F8FC] dark:bg-slate-800 border-[#E3EAF3] dark:border-slate-700 text-[#172B4D] dark:text-slate-200 hover:bg-[#DCEBFF]/60'
+            : 'bg-[#F4F2EE] dark:bg-slate-800 border-[#E3EAF3] dark:border-slate-700 text-[#172B4D] dark:text-slate-200 hover:bg-[#DCEBFF]/60'
         }`}
         title="Admin Persona Switcher: Switch between Admission Manager and Consultants to test access & notifications"
       >
@@ -68,7 +68,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                   className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-left text-xs transition-colors ${
                     isSelected
                       ? 'bg-[#DCEBFF] dark:bg-slate-800 font-semibold text-[#123B78] dark:text-slate-100'
-                      : 'text-[#172B4D] dark:text-slate-300 hover:bg-[#F5F8FC] dark:hover:bg-slate-800/50'
+                      : 'text-[#172B4D] dark:text-slate-300 hover:bg-[#F4F2EE] dark:hover:bg-slate-800/50'
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0">
@@ -82,7 +82,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                         <span>{user.name}</span>
                         <span className={`px-1 py-0.2 rounded text-[9px] font-semibold ${
                           user.team === 'Counseling Team'
-                            ? 'bg-[#F5F8FC] text-[#123B78] border border-[#E3EAF3] dark:bg-slate-800 dark:text-sky-300 dark:border-slate-700'
+                            ? 'bg-[#F4F2EE] text-[#123B78] border border-[#E3EAF3] dark:bg-slate-800 dark:text-sky-300 dark:border-slate-700'
                             : 'bg-[#DCEBFF] text-[#1769E8] dark:bg-blue-950 dark:text-blue-300'
                         }`}>
                           {teamLabel}

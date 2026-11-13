@@ -115,27 +115,6 @@ import { TeamTaskManagementView } from './components/TeamTaskManagementView';
 import { DocumentHandoverView } from './components/DocumentHandoverView';
 
 const LOCAL_STORAGE_KEY = 'sheetsync_pc_state_v1';
-const THEME_STORAGE_KEY = 'pms_theme_preference';
-
-function getInitialThemePreference(): AppSettings['theme'] {
-  try {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY);
-    if (saved === 'light' || saved === 'dark' || saved === 'system') {
-      return saved;
-    }
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      const t = parsed?.settings?.theme;
-      if (t === 'light' || t === 'dark' || t === 'system') {
-        return t;
-      }
-    }
-  } catch {
-    // ignore storage errors
-  }
-  return 'light';
-}
 
 export function App() {
   const todayIso = getLocalTodayIso();
@@ -206,21 +185,23 @@ export function App() {
   });
   const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
   const [syncQueue, setSyncQueue] = useState<SyncQueueItem[]>([]);
-  const [settings, setSettings] = useState<AppSettings>(() => ({
-    theme: getInitialThemePreference(),
-    remindersEnabled: true,
-    todayReminderShownDate: null,
-    defaultCategory: 'Work',
-    defaultPriority: 'Medium',
-    simulateOffline: false,
-  }));
-  const [systemPrefersDark, setSystemPrefersDark] = useState<boolean>(() =>
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(prefers-color-scheme: dark)').matches
-      : false
-  );
-  const effectiveTheme: 'light' | 'dark' =
-    settings.theme === 'system' ? (systemPrefersDark ? 'dark' : 'light') : settings.theme;
+  const [settings, setSettings] = useState<AppSettings>(() => {
+    let initialTheme: 'light' | 'dark' | 'system' = 'light';
+    try {
+      const stored = localStorage.getItem('pms_theme_preference');
+      if (stored === 'light' || stored === 'dark' || stored === 'system') {
+        initialTheme = stored;
+      }
+    } catch {}
+    return {
+      theme: initialTheme,
+      remindersEnabled: true,
+      todayReminderShownDate: null,
+      defaultCategory: 'Work',
+      defaultPriority: 'Medium',
+      simulateOffline: false,
+    };
+  });
 
   // Network & Loading State
   const [browserOnline, setBrowserOnline] = useState<boolean>(
@@ -298,32 +279,35 @@ export function App() {
   const isFlushingQueueRef = useRef<boolean>(false);
   const prevIsOfflineRef = useRef<boolean>(isOffline);
 
-  // Listen to OS color scheme changes when theme is set to 'system'
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (event: MediaQueryListEvent) => {
-      setSystemPrefersDark(event.matches);
-    };
-    setSystemPrefersDark(mediaQuery.matches);
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  // Apply resolved Light / Dark Theme to <html> and persist preference across sessions
+  // Apply Light / Dark / System Theme to <html> and synchronize storage
   useEffect(() => {
     const root = document.documentElement;
-    if (effectiveTheme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    const applyTheme = () => {
+      let isDark = false;
+      if (settings.theme === 'system') {
+        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      } else {
+        isDark = settings.theme === 'dark';
+      }
+      if (isDark) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    };
+
+    applyTheme();
     try {
-      localStorage.setItem(THEME_STORAGE_KEY, settings.theme);
-    } catch {
-      // ignore storage errors
+      localStorage.setItem('pms_theme_preference', settings.theme);
+    } catch {}
+
+    if (settings.theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const listener = () => applyTheme();
+      mediaQuery.addEventListener('change', listener);
+      return () => mediaQuery.removeEventListener('change', listener);
     }
-  }, [effectiveTheme, settings.theme]);
+  }, [settings.theme]);
 
   // Helper to show non-intrusive toast and record notification
   const pushNotification = useCallback(
@@ -402,14 +386,16 @@ export function App() {
         if (Array.isArray(data.syncLogs)) {
           setSyncLogs(data.syncLogs);
         }
-        const mergedSettings = data.settings
-          ? { ...settingsRef.current, ...data.settings, theme: settingsRef.current.theme }
-          : settingsRef.current;
         if (data.settings) {
-          setSettings(mergedSettings);
+          const storedTheme = localStorage.getItem('pms_theme_preference') as ('light' | 'dark' | 'system' | null);
+          setSettings((prev) => ({
+            ...prev,
+            ...data.settings,
+            theme: storedTheme || data.settings.theme || prev.theme,
+          }));
         }
 
-        // Cache locally for offline resilience without overwriting theme preference
+        // Cache locally for offline resilience
         localStorage.setItem(
           LOCAL_STORAGE_KEY,
           JSON.stringify({
@@ -417,7 +403,7 @@ export function App() {
             spreadsheets: data.spreadsheets,
             connection: data.connection,
             syncLogs: data.syncLogs,
-            settings: mergedSettings,
+            settings: data.settings,
           })
         );
       } catch {
@@ -430,7 +416,14 @@ export function App() {
             if (parsed.spreadsheets) setSpreadsheets(parsed.spreadsheets);
             if (parsed.connection) setConnection(parsed.connection);
             if (parsed.syncLogs) setSyncLogs(parsed.syncLogs);
-            if (parsed.settings) setSettings((prev) => ({ ...prev, ...parsed.settings }));
+            if (parsed.settings) {
+              const storedTheme = localStorage.getItem('pms_theme_preference') as ('light' | 'dark' | 'system' | null);
+              setSettings((prev) => ({
+                ...prev,
+                ...parsed.settings,
+                theme: storedTheme || parsed.settings.theme || prev.theme,
+              }));
+            }
           } catch {
             // ignore corrupt cache
           }
@@ -1599,15 +1592,15 @@ export function App() {
     allNavItems.find((item) => item.id === activeNav)?.label || 'Dashboard';
 
   return (
-    <div className="min-h-screen flex bg-[var(--color-main-bg)] text-[var(--color-primary-text)]">
+    <div className="min-h-screen flex bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100">
       {/* LEFT SIDEBAR NAVIGATION (Collapsible: 256px expanded / 64px collapsed) */}
       <aside
-        className={`shrink-0 bg-[var(--color-sidebar-bg)] border-r border-[var(--color-border)] flex flex-col h-screen sticky top-0 select-none transition-all duration-300 ease-in-out z-30 ${
+        className={`shrink-0 bg-[#FFFFFF] dark:bg-slate-900 border-r border-[#E3EAF3] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all duration-300 ease-in-out z-30 ${
           isSidebarCollapsed ? 'w-16' : 'w-64'
         }`}
       >
         {/* Brand Header — Mathematically aligned with top workspace header (h-14, matching bottom border) */}
-        <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[var(--color-border)]">
+        <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[#E3EAF3] dark:border-slate-800">
           {!isSidebarCollapsed ? (
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-lg bg-[#1769E8] text-white flex items-center justify-center font-display font-bold text-sm shadow-[0_0_12px_rgba(23,105,232,0.3)] shrink-0">
@@ -1661,14 +1654,14 @@ export function App() {
                           title={`${item.label}${typeof item.count === 'number' ? ` (${item.count})` : ''}`}
                           className={`w-10 h-10 rounded-lg flex items-center justify-center relative sidebar-nav-btn group ${
                             isActive
-                              ? 'bg-[var(--color-deep-blue)] dark:bg-[var(--color-primary-blue)] text-white shadow-xs'
-                              : 'text-[#172B4D]/75 dark:text-[var(--color-secondary-text)] hover:bg-[#DCEBFF]/60 dark:hover:bg-[var(--color-elevated-surface)] hover:text-[#123B78] dark:hover:text-[var(--color-primary-text)]'
+                              ? 'bg-[#123B78] text-white dark:bg-slate-800 dark:text-white shadow-xs'
+                              : 'text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800/60 hover:text-[#123B78] dark:hover:text-slate-200'
                           }`}
                           aria-label={item.label}
                         >
                           <Icon
                             className={`sidebar-nav-icon w-4 h-4 shrink-0 group-hover:scale-110 ${
-                              isActive ? 'text-[#36A5F5] dark:text-white' : item.accentColor
+                              isActive ? 'text-[#36A5F5]' : item.accentColor
                             } ${
                               isActive
                                 ? 'opacity-100'
@@ -1699,14 +1692,14 @@ export function App() {
                         onClick={() => setActiveNav(item.id)}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium sidebar-nav-btn group whitespace-nowrap shrink-0 ${
                           isActive
-                            ? 'bg-[var(--color-deep-blue)] dark:bg-[var(--color-primary-blue)] text-white shadow-xs'
-                            : 'text-[#172B4D]/80 dark:text-[var(--color-secondary-text)] hover:bg-[#DCEBFF]/60 dark:hover:bg-[var(--color-elevated-surface)] hover:text-[#123B78] dark:hover:text-[var(--color-primary-text)]'
+                            ? 'bg-[#123B78] text-white dark:bg-slate-800 dark:text-white shadow-xs'
+                            : 'text-[#172B4D]/80 dark:text-slate-400 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800/60 hover:text-[#123B78] dark:hover:text-slate-200'
                         }`}
                       >
                         <span className="flex items-center gap-2.5 truncate">
                           <Icon
                             className={`sidebar-nav-icon w-4 h-4 shrink-0 group-hover:scale-110 ${
-                              isActive ? 'text-[#36A5F5] dark:text-white' : item.accentColor
+                              isActive ? 'text-[#36A5F5]' : item.accentColor
                             } ${
                               isActive
                                 ? 'opacity-100'
@@ -1733,7 +1726,7 @@ export function App() {
                               className={`font-mono tabular-nums text-[11px] px-1.5 py-0.2 rounded ${
                                 isActive
                                   ? 'text-[#DCEBFF] bg-white/15'
-                                  : 'text-[#123B78]/75 dark:text-slate-400 bg-[#F5F8FC] border border-[#E3EAF3] dark:border-slate-700 dark:bg-slate-800/80'
+                                  : 'text-[#123B78]/75 dark:text-slate-400 bg-[#F4F2EE] border border-[#E3EAF3] dark:border-slate-700 dark:bg-slate-800/80'
                               }`}
                             >
                               {item.count}
@@ -1751,7 +1744,7 @@ export function App() {
 
         {/* Dedicated Sticky Footer Container inside Sidebar */}
         {!isSidebarCollapsed ? (
-          <div className="shrink-0 p-4 border-t border-[var(--color-border)] bg-[var(--color-sidebar-bg)] space-y-3 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-none">
+          <div className="shrink-0 p-4 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 space-y-3 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-[0_-4px_16px_rgba(0,0,0,0.25)]">
             {/* Primary Action Button (Pinned in Dedicated Sticky Footer for High Visibility) */}
             <button
               type="button"
@@ -1760,14 +1753,14 @@ export function App() {
                 setTaskContextProjectId(undefined);
                 setIsEnhancedTaskModalOpen(true);
               }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] active:scale-[0.98] rounded-lg transition-all shadow-[0_2px_10px_rgba(23,105,232,0.28)] dark:shadow-none whitespace-nowrap shrink-0 group"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] active:scale-[0.98] rounded-lg transition-all shadow-[0_2px_10px_rgba(23,105,232,0.28)] whitespace-nowrap shrink-0 group"
             >
               <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
               <span>{currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}</span>
             </button>
 
             {/* Google Sheets Live Sync Card */}
-            <div className="p-3 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 space-y-2">
+            <div className="p-3 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-[#172B4D] dark:text-slate-200 flex items-center gap-1.5">
                   <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A36A] dark:text-emerald-400" />
@@ -1830,20 +1823,20 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Collapse sidebar (Ctrl+B)"
-              className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#123B78] dark:hover:text-slate-100 hover:bg-[#F5F8FC] dark:hover:bg-slate-800/80 rounded-lg transition-colors group border border-transparent hover:border-[#E3EAF3] dark:hover:border-slate-700/60"
+              className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#123B78] dark:hover:text-slate-100 hover:bg-[#F4F2EE] dark:hover:bg-slate-800/80 rounded-lg transition-colors group border border-transparent hover:border-[#E3EAF3] dark:hover:border-slate-700/60"
               aria-label="Collapse sidebar"
             >
               <span className="flex items-center gap-2">
                 <PanelLeftClose className="w-4 h-4 text-slate-400 group-hover:text-[#1769E8] dark:group-hover:text-slate-200 transition-colors" />
                 <span>Collapse Sidebar</span>
               </span>
-              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-slate-400 dark:text-slate-500 bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded">
+              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-slate-400 dark:text-slate-500 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded">
                 Ctrl+B
               </kbd>
             </button>
           </div>
         ) : (
-          <div className="shrink-0 p-3 border-t border-[var(--color-border)] bg-[var(--color-sidebar-bg)] flex flex-col items-center gap-2.5 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-none">
+          <div className="shrink-0 p-3 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 flex flex-col items-center gap-2.5 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-[0_-4px_16px_rgba(0,0,0,0.25)]">
             {/* Primary Action Button (Collapsed Icon Form) */}
             <button
               type="button"
@@ -1853,7 +1846,7 @@ export function App() {
                 setIsEnhancedTaskModalOpen(true);
               }}
               title={currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
-              className="w-10 h-10 rounded-lg bg-[#1769E8] hover:bg-[#123B78] active:scale-95 text-white flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(23,105,232,0.28)] dark:shadow-none shrink-0 group"
+              className="w-10 h-10 rounded-lg bg-[#1769E8] hover:bg-[#123B78] active:scale-95 text-white flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(23,105,232,0.28)] shrink-0 group"
               aria-label={currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
             >
               <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
@@ -1864,7 +1857,7 @@ export function App() {
               type="button"
               onClick={() => setActiveNav('sheets-connection')}
               title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to inspect connection`}
-              className="w-10 h-10 rounded-lg flex items-center justify-center relative bg-[#F5F8FC] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#16A36A]/50 transition-colors group"
+              className="w-10 h-10 rounded-lg flex items-center justify-center relative bg-[#F4F2EE] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#16A36A]/50 transition-colors group"
               aria-label="Google Sheets synchronization status"
             >
               <FileSpreadsheet className="w-4 h-4 text-[#16A36A] dark:text-emerald-400 group-hover:scale-110 transition-transform" />
@@ -1882,7 +1875,7 @@ export function App() {
               type="button"
               onClick={handleManualSyncNow}
               title="Sync Now with Google Sheets"
-              className="p-2 text-slate-400 hover:text-[#16A36A] dark:hover:text-emerald-400 hover:bg-[#F5F8FC] dark:hover:bg-slate-800 rounded-md transition-colors"
+              className="p-2 text-slate-400 hover:text-[#16A36A] dark:hover:text-emerald-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 rounded-md transition-colors"
               aria-label="Sync now"
             >
               <RefreshCw
@@ -1897,7 +1890,7 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Expand sidebar (Ctrl+B)"
-              className="w-10 h-10 rounded-lg bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 text-[#172B4D] dark:text-slate-300 flex items-center justify-center transition-colors group mt-1 border border-[#E3EAF3] dark:border-slate-700/60"
+              className="w-10 h-10 rounded-lg bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 text-[#172B4D] dark:text-slate-300 flex items-center justify-center transition-colors group mt-1 border border-[#E3EAF3] dark:border-slate-700/60"
               aria-label="Expand sidebar"
             >
               <PanelLeftOpen className="w-4 h-4 transition-transform group-hover:scale-110" />
@@ -1909,7 +1902,7 @@ export function App() {
       {/* MAIN WORKSPACE CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* TOP HEADER BAR (Fixed, Reduced Height h-14, Perfectly Aligned with Sidebar Brand Logo) */}
-        <header className="sticky top-0 z-20 h-14 px-4 sm:px-6 bg-[var(--color-sidebar-bg)] border-b border-[var(--color-border)] flex items-center justify-between gap-4 shrink-0 shadow-[0_1px_3px_rgba(18,59,120,0.02)] dark:shadow-none">
+        <header className="sticky top-0 z-20 h-14 px-4 sm:px-6 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between gap-4 shrink-0 shadow-[0_1px_3px_rgba(18,59,120,0.02)]">
           {/* Left: Contextual Breadcrumb */}
           <div className="flex items-center gap-3 text-sm min-w-0">
             <div className="flex items-center gap-2 text-sm min-w-0">
@@ -1956,7 +1949,7 @@ export function App() {
                 }
               }}
               placeholder="Search tasks by title, ID (TSK-1001), category, or notes..."
-              className="w-full pl-9 pr-8 py-1.5 text-xs rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none transition-colors"
+              className="w-full pl-9 pr-8 py-1.5 text-xs rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none transition-colors"
             />
             {searchQuery && (
               <button
@@ -1996,7 +1989,7 @@ export function App() {
               className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap shrink-0 ${
                 isOffline
                   ? 'bg-[#DC4545]/10 dark:bg-red-950/50 text-[#DC4545] dark:text-red-300 border-[#DC4545]/30 dark:border-red-900'
-                  : 'bg-[#F5F8FC] dark:bg-slate-800 text-[#172B4D] dark:text-slate-300 border-[#E3EAF3] dark:border-slate-700 hover:bg-[#DCEBFF]/60'
+                  : 'bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D] dark:text-slate-300 border-[#E3EAF3] dark:border-slate-700 hover:bg-[#DCEBFF]/60'
               }`}
             >
               {isOffline ? (
@@ -2028,23 +2021,38 @@ export function App() {
               )}
             </button>
 
-            {/* Theme Toggle (Light / Dark) */}
+            {/* Theme Toggle (Light / Dark / System) */}
             <button
               type="button"
-              onClick={() =>
-                setSettings((prev) => ({
-                  ...prev,
-                  theme: effectiveTheme === 'dark' ? 'light' : 'dark',
-                }))
-              }
-              className="p-2 text-[var(--color-primary-text)] hover:bg-[#DCEBFF]/60 dark:hover:bg-[var(--color-elevated-surface)] rounded-lg transition-colors"
-              title={effectiveTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              onClick={() => {
+                const nextTheme: 'light' | 'dark' | 'system' =
+                  settings.theme === 'light'
+                    ? 'dark'
+                    : settings.theme === 'dark'
+                    ? 'system'
+                    : 'light';
+                const nextSettings = { ...settings, theme: nextTheme };
+                setSettings(nextSettings);
+                try {
+                  localStorage.setItem('pms_theme_preference', nextTheme);
+                  const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+                  if (raw) {
+                    const parsed = JSON.parse(raw);
+                    parsed.settings = nextSettings;
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                  }
+                } catch {}
+              }}
+              className="p-2 text-[#172B4D] dark:text-slate-300 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              title={`Theme: ${settings.theme === 'system' ? 'System' : settings.theme === 'dark' ? 'Dark' : 'Light'} (Click to cycle)`}
               aria-label="Toggle color theme"
             >
-              {effectiveTheme === 'dark' ? (
-                <Sun className="w-4 h-4 text-[var(--color-warning)]" />
+              {settings.theme === 'dark' ? (
+                <Moon className="w-4 h-4 text-[#60B8F5]" />
+              ) : settings.theme === 'system' ? (
+                <Monitor className="w-4 h-4 text-[#1769E8] dark:text-[#60B8F5]" />
               ) : (
-                <Moon className="w-4 h-4 text-[var(--color-deep-blue)]" />
+                <Sun className="w-4 h-4 text-[#E9A23B]" />
               )}
             </button>
 
@@ -2065,7 +2073,7 @@ export function App() {
         </header>
 
         {/* MAIN SCROLLABLE VIEWPORT */}
-        <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-5 sm:py-3.5 w-full bg-[var(--color-workspace-bg)]">
+        <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-5 sm:py-3.5 w-full">
           <div key={activeNav} className="animate-page-enter space-y-3.5">
           {/* VIEW 1: DASHBOARD */}
           {activeNav === 'dashboard' && (
@@ -2107,7 +2115,7 @@ export function App() {
 
                   {/* List vs Calendar Switcher */}
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 p-1 bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-lg">
+                    <div className="flex items-center gap-1 p-1 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-lg">
                       <button
                         type="button"
                         onClick={() => setDashboardViewMode('list')}
@@ -2168,7 +2176,7 @@ export function App() {
                       {stats.todayCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] transition-all hover:border-[#36A5F5]">
+                  <div className="p-3 rounded-md bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] transition-all hover:border-[#36A5F5]">
                     <div className="flex items-center gap-1.5 text-xs text-[#123B78] dark:text-blue-300 font-medium">
                       <CalendarClock className="w-3.5 h-3.5 shrink-0" />
                       <span>Upcoming</span>
@@ -2204,7 +2212,7 @@ export function App() {
                       {stats.overdueCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] transition-all hover:border-[#36A5F5]">
+                  <div className="p-3 rounded-md bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] transition-all hover:border-[#36A5F5]">
                     <div className="flex items-center gap-1.5 text-xs text-[#123B78] dark:text-indigo-400 font-medium">
                       <Layers className="w-3.5 h-3.5 shrink-0" />
                       <span>Total</span>
@@ -2236,7 +2244,7 @@ export function App() {
                     value={quickTitle}
                     onChange={(e) => setQuickTitle(e.target.value)}
                     placeholder="Quick add a task for today (press Enter to save & sync to Google Sheets)..."
-                    className="w-full px-3.5 py-2 text-sm rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none"
+                    className="w-full px-3.5 py-2 text-sm rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none"
                   />
                 </div>
 
@@ -2244,7 +2252,7 @@ export function App() {
                   value={quickCategory}
                   onChange={(e) => setQuickCategory(e.target.value as TaskCategory)}
                   aria-label="Quick task category"
-                  className="px-3 py-2 text-xs font-medium rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
+                  className="px-3 py-2 text-xs font-medium rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
                 >
                   <option value="Work">Work</option>
                   <option value="Personal">Personal</option>
@@ -2257,7 +2265,7 @@ export function App() {
                   value={quickPriority}
                   onChange={(e) => setQuickPriority(e.target.value as TaskPriority)}
                   aria-label="Quick task priority"
-                  className="px-3 py-2 text-xs font-medium rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
+                  className="px-3 py-2 text-xs font-medium rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
                 >
                   <option value="High">High Priority</option>
                   <option value="Medium">Medium Priority</option>
@@ -2269,7 +2277,7 @@ export function App() {
                   value={quickDate}
                   onChange={(e) => setQuickDate(e.target.value)}
                   aria-label="Quick task scheduled date"
-                  className="px-3 py-1.5 text-xs font-mono tabular-nums rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
+                  className="px-3 py-1.5 text-xs font-mono tabular-nums rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
                 />
 
                 <button
@@ -2874,48 +2882,59 @@ export function App() {
 
               <div className="space-y-4 divide-y divide-[#E3EAF3] dark:divide-slate-800">
                 {/* Appearance */}
-                <div className="pt-4 flex flex-wrap items-center justify-between gap-4">
+                <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-[var(--color-primary-text)]">
+                    <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-100">
                       Color Theme
                     </div>
-                    <div className="text-xs text-[var(--color-secondary-text)]">
-                      Choose Light, Dark, or follow your System appearance preference
-                      {settings.theme === 'system' && (
-                        <span className="ml-1 font-mono text-[11px] text-[var(--color-primary-blue)]">
-                          (Currently {effectiveTheme === 'dark' ? 'Dark' : 'Light'})
-                        </span>
-                      )}
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      Select Light, Dark, or follow your System OS preference
                     </div>
                   </div>
-                  <div
-                    role="radiogroup"
-                    aria-label="Color Theme"
-                    className="flex items-center gap-1 p-1 bg-[var(--color-workspace-bg)] border border-[var(--color-border)] rounded-lg"
-                  >
+                  <div className="flex items-center gap-1 p-1 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-lg shrink-0">
                     <button
                       type="button"
-                      role="radio"
-                      aria-checked={settings.theme === 'light'}
-                      onClick={() => setSettings((p) => ({ ...p, theme: 'light' }))}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                      onClick={() => {
+                        const nextSettings = { ...settings, theme: 'light' as const };
+                        setSettings(nextSettings);
+                        try {
+                          localStorage.setItem('pms_theme_preference', 'light');
+                          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+                          if (raw) {
+                            const parsed = JSON.parse(raw);
+                            parsed.settings = nextSettings;
+                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                          }
+                        } catch {}
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                         settings.theme === 'light'
-                          ? 'bg-[var(--color-card-bg)] text-[var(--color-deep-blue)] border border-[var(--color-border)] shadow-xs'
-                          : 'text-[var(--color-secondary-text)] hover:text-[var(--color-primary-text)] border border-transparent'
+                          ? 'bg-[#FFFFFF] text-[#123B78] shadow-xs font-semibold'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                       }`}
                     >
-                      <Sun className="w-3.5 h-3.5" />
+                      <Sun className="w-3.5 h-3.5 text-[#E9A23B]" />
                       Light
                     </button>
                     <button
                       type="button"
-                      role="radio"
-                      aria-checked={settings.theme === 'dark'}
-                      onClick={() => setSettings((p) => ({ ...p, theme: 'dark' }))}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                      onClick={() => {
+                        const nextSettings = { ...settings, theme: 'dark' as const };
+                        setSettings(nextSettings);
+                        try {
+                          localStorage.setItem('pms_theme_preference', 'dark');
+                          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+                          if (raw) {
+                            const parsed = JSON.parse(raw);
+                            parsed.settings = nextSettings;
+                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                          }
+                        } catch {}
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                         settings.theme === 'dark'
-                          ? 'bg-[var(--color-primary-blue)] text-white border border-[var(--color-primary-blue)] shadow-xs'
-                          : 'text-[var(--color-secondary-text)] hover:text-[var(--color-primary-text)] border border-transparent'
+                          ? 'bg-[#3B82F6] text-white shadow-xs font-semibold'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                       }`}
                     >
                       <Moon className="w-3.5 h-3.5" />
@@ -2923,13 +2942,23 @@ export function App() {
                     </button>
                     <button
                       type="button"
-                      role="radio"
-                      aria-checked={settings.theme === 'system'}
-                      onClick={() => setSettings((p) => ({ ...p, theme: 'system' }))}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                      onClick={() => {
+                        const nextSettings = { ...settings, theme: 'system' as const };
+                        setSettings(nextSettings);
+                        try {
+                          localStorage.setItem('pms_theme_preference', 'system');
+                          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+                          if (raw) {
+                            const parsed = JSON.parse(raw);
+                            parsed.settings = nextSettings;
+                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                          }
+                        } catch {}
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                         settings.theme === 'system'
-                          ? 'bg-[var(--color-card-bg)] dark:bg-[var(--color-primary-blue)] text-[var(--color-deep-blue)] dark:text-white border border-[var(--color-border)] dark:border-[var(--color-primary-blue)] shadow-xs'
-                          : 'text-[var(--color-secondary-text)] hover:text-[var(--color-primary-text)] border border-transparent'
+                          ? 'bg-[#3B82F6] text-white shadow-xs font-semibold'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                       }`}
                     >
                       <Monitor className="w-3.5 h-3.5" />

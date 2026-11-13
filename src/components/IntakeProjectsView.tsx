@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Building2,
@@ -122,7 +122,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                     className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                       p.status === 'Active'
                         ? 'bg-[#16A36A]/10 dark:bg-emerald-950/60 text-[#16A36A] dark:text-emerald-400'
-                        : 'bg-[#F5F8FC] dark:bg-slate-800 text-[#172B4D]/70 dark:text-slate-300'
+                        : 'bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D]/70 dark:text-slate-300'
                     }`}
                   >
                     {p.status}
@@ -292,7 +292,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                 <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                   Assign Consultant Team
                 </label>
-                <div className="flex flex-wrap gap-2 p-2 rounded bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
+                <div className="flex flex-wrap gap-2 p-2 rounded bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
                   {team
                     .filter((t) => t.role === 'Consultant')
                     .map((t) => {

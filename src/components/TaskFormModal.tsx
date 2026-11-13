@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -221,7 +221,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               <span className="block text-xs font-medium text-[#172B4D] dark:text-slate-300 mb-1.5">
                 Category
               </span>
-              <div className="flex flex-wrap gap-1 p-1 rounded-md bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700">
+              <div className="flex flex-wrap gap-1 p-1 rounded-md bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700">
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat}
@@ -244,7 +244,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               <span className="block text-xs font-medium text-[#172B4D] dark:text-slate-300 mb-1.5">
                 Priority Level
               </span>
-              <div className="grid grid-cols-3 gap-1 p-1 rounded-md bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700">
+              <div className="grid grid-cols-3 gap-1 p-1 rounded-md bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700">
                 {PRIORITIES.map((prio) => (
                   <button
                     key={prio}

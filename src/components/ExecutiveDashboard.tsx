@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import {
   Users,
   GraduationCap,
@@ -39,7 +39,7 @@ const VISA_STAGES_CONFIG: {
     labelKo: '서류 수집',
     stageKey: 'documentGathering',
     color: 'text-[#172B4D] dark:text-slate-200',
-    bgLight: 'bg-[#F5F8FC]',
+    bgLight: 'bg-[#F4F2EE]',
     bgDark: 'dark:bg-slate-800',
   },
   {
@@ -48,7 +48,7 @@ const VISA_STAGES_CONFIG: {
     labelKo: '아포스티유 공증',
     stageKey: 'apostilleVerification',
     color: 'text-[#123B78] dark:text-blue-300',
-    bgLight: 'bg-[#F5F8FC]',
+    bgLight: 'bg-[#F4F2EE]',
     bgDark: 'dark:bg-slate-800/80',
   },
   {
@@ -93,7 +93,7 @@ const VISA_STAGES_CONFIG: {
     labelKo: '비자 신청',
     stageKey: 'embassyVisaFiling',
     color: 'text-[#1769E8] dark:text-blue-400',
-    bgLight: 'bg-[#F5F8FC]',
+    bgLight: 'bg-[#F4F2EE]',
     bgDark: 'dark:bg-indigo-950/50',
   },
   {
@@ -350,7 +350,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                       </div>
                     </div>
 
-                    <div className="w-16 bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 h-2 rounded-full overflow-hidden">
+                    <div className="w-16 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 h-2 rounded-full overflow-hidden">
                       <div
                         className="bg-[#1769E8] h-full rounded-full transition-all"
                         style={{ width: `${Math.min(fillPct, 100)}%` }}
@@ -384,7 +384,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
           {/* Quick Team Filter Tabs & Workload Summary */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <div className="inline-flex p-0.5 bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px] font-medium">
+            <div className="inline-flex p-0.5 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px] font-medium">
               <button
                 type="button"
                 onClick={() => setWorkloadTeamFilter('All')}
@@ -436,7 +436,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                 <div
                   key={c.id}
                   onClick={() => onNavigateTab('all-tasks')}
-                  className="py-1.5 px-2 rounded flex items-center justify-between gap-2.5 text-xs hover:bg-[#F5F8FC] dark:hover:bg-slate-800/50 cursor-pointer transition-colors group"
+                  className="py-1.5 px-2 rounded flex items-center justify-between gap-2.5 text-xs hover:bg-[#F4F2EE] dark:hover:bg-slate-800/50 cursor-pointer transition-colors group"
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <img

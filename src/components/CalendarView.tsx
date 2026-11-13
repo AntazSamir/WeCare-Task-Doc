@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -422,7 +422,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <button
               type="button"
               onClick={handlePrevMonth}
-              className="p-1.5 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F5F8FC] dark:hover:bg-slate-800 transition-colors"
+              className="p-1.5 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 transition-colors"
               aria-label="Previous month"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -430,7 +430,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <button
               type="button"
               onClick={handleNextMonth}
-              className="p-1.5 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F5F8FC] dark:hover:bg-slate-800 transition-colors border-l border-[#E3EAF3] dark:border-slate-800"
+              className="p-1.5 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 transition-colors border-l border-[#E3EAF3] dark:border-slate-800"
               aria-label="Next month"
             >
               <ChevronRight className="w-4 h-4" />
@@ -451,7 +451,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Compact Month Grid (Reduced Size) */}
         <div className="lg:col-span-5 xl:col-span-5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
-          <div className="grid grid-cols-7 border-b border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-900/60">
+          <div className="grid grid-cols-7 border-b border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/60">
             {WEEKDAYS.map((day) => (
               <div
                 key={day}
@@ -476,12 +476,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   onClick={() => setSelectedDateIso(cell.dateIso)}
                   className={`min-h-[58px] sm:min-h-[64px] p-1.5 text-left flex flex-col justify-between transition-colors ${
                     !cell.isCurrentMonth
-                      ? 'bg-[#F5F8FC] dark:bg-slate-950/40 text-[#172B4D]/35 dark:text-slate-600'
+                      ? 'bg-[#F4F2EE] dark:bg-slate-950/40 text-[#172B4D]/35 dark:text-slate-600'
                       : 'bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100'
                   } ${
                     isSelected
                       ? 'ring-2 ring-inset ring-[#1769E8] dark:ring-blue-500 bg-[#DCEBFF]/40 dark:bg-blue-950/20'
-                      : 'hover:bg-[#F5F8FC] dark:hover:bg-slate-800/50'
+                      : 'hover:bg-[#F4F2EE] dark:hover:bg-slate-800/50'
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">

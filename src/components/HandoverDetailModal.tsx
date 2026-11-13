@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import {
   X,
   FileCheck2,
@@ -117,7 +117,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowPrintSlip(!showPrintSlip)}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-[#123B78] dark:text-slate-300 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-[#123B78] dark:text-slate-300 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   {showPrintSlip ? 'Back to Audit View' : 'Printable Slip'}
@@ -157,7 +157,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
             <div className="space-y-5">
               {/* Custody Chain Strip */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="p-3.5 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
+                <div className="p-3.5 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
                   <div className="text-[10px] font-bold uppercase text-[#172B4D]/55 dark:text-slate-400">Counselor (Sender)</div>
                   <div className="mt-1 text-xs font-bold text-[#172B4D] dark:text-slate-100">
                     {handover.counselorName}
@@ -170,7 +170,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
+                <div className="p-3.5 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
                   <div className="text-[10px] font-bold uppercase text-[#172B4D]/55 dark:text-slate-400">Admission Officer (Receiver)</div>
                   <div className="mt-1 text-xs font-bold text-[#172B4D] dark:text-slate-100">
                     {handover.receivingEmployeeName}
@@ -183,7 +183,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
+                <div className="p-3.5 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
                   <div className="text-[10px] font-bold uppercase text-[#172B4D]/55 dark:text-slate-400">Transfer & Custody Status</div>
                   <div className="mt-1 text-xs font-bold text-[#172B4D] dark:text-slate-100 flex items-center gap-1.5">
                     <span>{handover.status}</span>
@@ -268,7 +268,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 </h3>
                 <div className="border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F5F8FC] dark:bg-slate-800/60 text-[11px] font-semibold text-[#172B4D]/65 dark:text-slate-400 border-b border-[#E3EAF3] dark:border-slate-800">
+                    <thead className="bg-[#F4F2EE] dark:bg-slate-800/60 text-[11px] font-semibold text-[#172B4D]/65 dark:text-slate-400 border-b border-[#E3EAF3] dark:border-slate-800">
                       <tr>
                         <th className="px-3 py-2">#</th>
                         <th className="px-3 py-2">Document Name</th>
@@ -281,7 +281,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                     </thead>
                     <tbody className="divide-y divide-[#E3EAF3] dark:divide-slate-800">
                       {handover.documents.map((doc) => (
-                        <tr key={doc.id} className="hover:bg-[#F5F8FC] dark:hover:bg-slate-800/30">
+                        <tr key={doc.id} className="hover:bg-[#F4F2EE] dark:hover:bg-slate-800/30">
                           <td className="px-3 py-2.5 font-mono text-[11px] text-[#172B4D]/55 dark:text-slate-400">{doc.id}</td>
                           <td className="px-3 py-2.5">
                             <div className="font-semibold text-[#172B4D] dark:text-slate-100">
@@ -324,7 +324,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                     {handover.followUpDeliveries.map((fb) => (
                       <div
                         key={fb.batchNumber}
-                        className="p-3 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800 text-xs flex flex-wrap items-center justify-between gap-2"
+                        className="p-3 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800 text-xs flex flex-wrap items-center justify-between gap-2"
                       >
                         <div>
                           <div className="font-bold text-[#172B4D] dark:text-slate-100">
@@ -449,7 +449,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-900/80 flex items-center justify-between gap-3">
+        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/80 flex items-center justify-between gap-3">
           <div className="text-[11px] font-mono text-[#172B4D]/60 dark:text-slate-400">
             Created: {handover ? formatTimestamp(handover.createdAt) : '—'}
           </div>

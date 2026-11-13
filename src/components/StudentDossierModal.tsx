@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -108,7 +108,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
     >
       <div className="w-full max-w-3xl max-h-[90vh] my-auto flex flex-col rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 shadow-2xl overflow-hidden animate-modal-card">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between shrink-0 bg-[#F5F8FC] dark:bg-slate-900">
+        <div className="px-6 py-4 border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between shrink-0 bg-[#F4F2EE] dark:bg-slate-900">
           <div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs text-[#1769E8] dark:text-[#36A5F5] font-bold">
@@ -166,7 +166,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                     className={`p-2.5 rounded-md border text-left transition-all ${
                       isSelected
                         ? 'bg-[#DCEBFF] dark:bg-blue-950/60 border-[#1769E8] dark:border-blue-500 text-[#123B78] dark:text-blue-100 ring-2 ring-[#1769E8]/25'
-                        : 'bg-[#FFFFFF] dark:bg-slate-950/40 border-[#E3EAF3] dark:border-slate-800 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F5F8FC] hover:border-[#36A5F5]/50 dark:hover:bg-slate-800/40'
+                        : 'bg-[#FFFFFF] dark:bg-slate-950/40 border-[#E3EAF3] dark:border-slate-800 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F4F2EE] hover:border-[#36A5F5]/50 dark:hover:bg-slate-800/40'
                     }`}
                   >
                     <div className="text-xs font-semibold truncate flex items-center justify-between">
@@ -183,7 +183,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
           </div>
 
           {/* Student Dossier Information Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-md bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-md bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800 text-xs">
             <div>
               <span className="text-[#172B4D]/55 dark:text-slate-400 block text-[10px] uppercase font-mono">Assigned Consultant</span>
               <span className="font-semibold text-[#172B4D] dark:text-slate-200 mt-0.5 block">
@@ -235,7 +235,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                 <select
                   value={courierName}
                   onChange={(e) => setCourierName(e.target.value as any)}
-                  className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 px-3 py-1.5 text-xs text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                  className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 px-3 py-1.5 text-xs text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
                 >
                   <option value="DHL Express">DHL Express Korea</option>
                   <option value="EMS">Korea Post EMS</option>
@@ -250,7 +250,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                   value={dhlTracking}
                   onChange={(e) => setDhlTracking(e.target.value)}
                   placeholder="e.g. DHL-9921-8840-KR"
-                  className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 px-3 py-1.5 text-xs font-mono tabular-nums text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                  className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 px-3 py-1.5 text-xs font-mono tabular-nums text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
                 />
               </div>
             </div>
@@ -300,7 +300,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                               : st === 'Notarized'
                               ? 'bg-[#1769E8] text-white font-semibold'
                               : 'bg-[#E9A23B] text-white font-semibold'
-                            : 'bg-[#F5F8FC] dark:bg-slate-800 text-[#172B4D]/70 dark:text-slate-400 hover:bg-[#DCEBFF] hover:text-[#123B78] dark:hover:bg-slate-700'
+                            : 'bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D]/70 dark:text-slate-400 hover:bg-[#DCEBFF] hover:text-[#123B78] dark:hover:bg-slate-700'
                         }`}
                       >
                         {st}
@@ -322,7 +322,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Candidate interview preparation, Shinhan wire receipt confirmation, apostille submission dates..."
-              className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 p-2.5 text-xs text-[#172B4D] dark:text-slate-100 placeholder:text-[#172B4D]/40 dark:placeholder:text-slate-400 focus:outline-none focus:border-[#1769E8]"
+              className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 p-2.5 text-xs text-[#172B4D] dark:text-slate-100 placeholder:text-[#172B4D]/40 dark:placeholder:text-slate-400 focus:outline-none focus:border-[#1769E8]"
             />
           </div>
 
@@ -331,7 +331,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-[#172B4D]/75 dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded hover:bg-[#F5F8FC] transition-colors"
+              className="px-4 py-2 text-xs font-medium text-[#172B4D]/75 dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded hover:bg-[#F4F2EE] transition-colors"
             >
               Cancel
             </button>

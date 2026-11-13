@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import {
   Users,
   Search,
@@ -22,7 +22,7 @@ interface StudentDossierListProps {
 }
 
 const STAGE_LABELS: Record<VisaStage, { label: string; tone: string }> = {
-  Document_Gathering: { label: 'Doc Prep', tone: 'bg-[#F5F8FC] dark:bg-slate-800 text-[#172B4D] dark:text-slate-300 border border-[#E3EAF3] dark:border-slate-700' },
+  Document_Gathering: { label: 'Doc Prep', tone: 'bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D] dark:text-slate-300 border border-[#E3EAF3] dark:border-slate-700' },
   Apostille_Verification: { label: 'Apostille & Notary', tone: 'bg-[#DCEBFF] dark:bg-blue-950/60 text-[#123B78] dark:text-[#36A5F5]' },
   University_Submitted: { label: 'Univ Submitted', tone: 'bg-[#DCEBFF] dark:bg-blue-950/60 text-[#1769E8] dark:text-blue-300' },
   Admission_Granted: { label: 'Admitted', tone: 'bg-[#36A5F5]/15 dark:bg-sky-950/60 text-[#123B78] dark:text-[#36A5F5]' },
@@ -96,7 +96,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search candidate name, passport, target university, or ID..."
-            className="w-full pl-9 pr-3 py-1.5 rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
+            className="w-full pl-9 pr-3 py-1.5 rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
           />
         </div>
 
@@ -140,7 +140,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-[#F5F8FC] dark:bg-slate-800/60 border-b border-[#E3EAF3] dark:border-slate-800 text-[11px] font-semibold text-[#172B4D]/65 dark:text-slate-400 uppercase font-mono">
+              <tr className="bg-[#F4F2EE] dark:bg-slate-800/60 border-b border-[#E3EAF3] dark:border-slate-800 text-[11px] font-semibold text-[#172B4D]/65 dark:text-slate-400 uppercase font-mono">
                 <th className="px-4 py-3">ID & Candidate</th>
                 <th className="px-4 py-3">Passport</th>
                 <th className="px-4 py-3">Applied Institution & Major</th>
@@ -160,7 +160,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                 </tr>
               ) : (
                 filtered.map((s, idx) => {
-                  const stageInfo = STAGE_LABELS[s.visaStage] || { label: s.visaStage, tone: 'bg-[#F5F8FC] text-[#172B4D]' };
+                  const stageInfo = STAGE_LABELS[s.visaStage] || { label: s.visaStage, tone: 'bg-[#F4F2EE] text-[#172B4D]' };
                   const verifiedCount = (s.documentChecklist || []).filter((d) => d.status === 'Verified').length;
                   const totalDocs = (s.documentChecklist || []).length;
 
@@ -168,7 +168,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                     <tr
                       key={s.id}
                       onClick={() => onSelectStudent(s)}
-                      className={`hover:bg-[#F5F8FC] dark:hover:bg-slate-800/50 cursor-pointer transition-colors animate-card-enter stagger-${Math.min(idx + 1, 12)}`}
+                      className={`hover:bg-[#F4F2EE] dark:hover:bg-slate-800/50 cursor-pointer transition-colors animate-card-enter stagger-${Math.min(idx + 1, 12)}`}
                     >
                       <td className="px-4 py-3">
                         <div className="font-semibold text-[#172B4D] dark:text-slate-100">

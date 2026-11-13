@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   X,
   Plus,
@@ -352,7 +352,7 @@ export const CreateDocumentRequestModal: React.FC<CreateDocumentRequestModalProp
                   key={preset.label}
                   type="button"
                   onClick={() => handleAddPreset(preset)}
-                  className="px-2.5 py-1 text-[11px] font-medium text-[#172B4D] dark:text-slate-300 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] hover:text-[#123B78] dark:hover:bg-slate-700 rounded-md border border-[#E3EAF3] dark:border-slate-700 transition-colors"
+                  className="px-2.5 py-1 text-[11px] font-medium text-[#172B4D] dark:text-slate-300 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] hover:text-[#123B78] dark:hover:bg-slate-700 rounded-md border border-[#E3EAF3] dark:border-slate-700 transition-colors"
                 >
                   {preset.label}
                 </button>
@@ -365,7 +365,7 @@ export const CreateDocumentRequestModal: React.FC<CreateDocumentRequestModalProp
             {requiredDocuments.map((doc, idx) => (
               <div
                 key={idx}
-                className="p-3 bg-[#F5F8FC] dark:bg-slate-900/60 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-start"
+                className="p-3 bg-[#F4F2EE] dark:bg-slate-900/60 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-start"
               >
                 <div className="sm:col-span-4 space-y-1">
                   <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400">
@@ -455,7 +455,7 @@ export const CreateDocumentRequestModal: React.FC<CreateDocumentRequestModalProp
         </form>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-900/80 flex items-center justify-between gap-3">
+        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/80 flex items-center justify-between gap-3">
           <div className="text-[11px] text-[#172B4D]/60 dark:text-slate-400">
             Counselor receives an immediate operational notification with these requirements
           </div>

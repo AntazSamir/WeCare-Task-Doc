@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   Bell,
   BellOff,
@@ -81,7 +81,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
         </div>
 
         {/* Browser Desktop Notification Status Bar */}
-        <div className="px-4 py-2 bg-[#F5F8FC] dark:bg-slate-800/40 border-b border-[#E3EAF3] dark:border-slate-800/80 flex items-center justify-between text-xs">
+        <div className="px-4 py-2 bg-[#F4F2EE] dark:bg-slate-800/40 border-b border-[#E3EAF3] dark:border-slate-800/80 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 text-[#172B4D]/75 dark:text-slate-400">
             {browserPermission === 'granted' ? (
               <Bell className="w-3.5 h-3.5 text-[#16A36A]" />
@@ -141,7 +141,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
                   className={`p-3 rounded-lg cursor-pointer transition-all ${
                     isUnread
                       ? 'bg-[#DCEBFF]/50 dark:bg-blue-950/30 border border-[#36A5F5]/40 dark:border-blue-900/40 shadow-xs'
-                      : 'hover:bg-[#F5F8FC] dark:hover:bg-slate-800/50'
+                      : 'hover:bg-[#F4F2EE] dark:hover:bg-slate-800/50'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">

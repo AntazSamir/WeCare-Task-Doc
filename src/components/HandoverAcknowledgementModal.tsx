@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   X,
   CheckCircle2,
@@ -206,7 +206,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
           )}
 
           {/* Live Status Tally Bar */}
-          <div className="p-3 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div className="p-3 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-4 text-xs font-mono">
               <span className="text-[#16A36A] dark:text-emerald-400 font-semibold">
                 Received: {statusCounts['Received'] || 0}
@@ -295,7 +295,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                                 className={`px-2.5 py-1 text-[11px] font-semibold rounded-md border transition-colors ${
                                   active
                                     ? activeCls
-                                    : 'bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-300 border-[#E3EAF3] dark:border-slate-700 hover:bg-[#F5F8FC]'
+                                    : 'bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-300 border-[#E3EAF3] dark:border-slate-700 hover:bg-[#F4F2EE]'
                                 }`}
                               >
                                 {st}
@@ -354,7 +354,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
         </div>
 
         {/* Footer Actions */}
-        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-900/80 flex flex-wrap items-center justify-between gap-2">
+        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/80 flex flex-wrap items-center justify-between gap-2">
           <button
             type="button"
             onClick={onClose}

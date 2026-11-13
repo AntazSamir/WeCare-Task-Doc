@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   Check,
   Clock,
@@ -152,7 +152,7 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
               className={`group relative p-3 sm:px-4 transition-all duration-150 ${
                 isDragging
                   ? 'opacity-40 border-dashed border-[#DC4545] bg-[#DC4545]/10 dark:bg-rose-950/20'
-                  : 'hover:bg-[#F5F8FC] dark:hover:bg-slate-800/40'
+                  : 'hover:bg-[#F4F2EE] dark:hover:bg-slate-800/40'
               }`}
             >
               {/* Drop placement indicator */}

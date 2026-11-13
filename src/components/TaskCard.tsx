@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   ChevronDown,
   ChevronUp,
@@ -173,7 +173,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         isDragging
           ? 'opacity-40 border-dashed border-[#1769E8] scale-[0.99] shadow-xs'
           : isCompleted
-          ? 'bg-[#F5F8FC] dark:bg-slate-900/50 border-[#E3EAF3] dark:border-slate-800/80'
+          ? 'bg-[#F4F2EE] dark:bg-slate-900/50 border-[#E3EAF3] dark:border-slate-800/80'
           : overdue
           ? 'bg-[#DC4545]/5 dark:bg-red-950/15 border-[#DC4545]/30 dark:border-red-900/60 hover:border-[#DC4545]/60 dark:hover:border-red-800'
           : 'bg-[#FFFFFF] dark:bg-slate-900 border-[#E3EAF3] dark:border-slate-800 hover:border-[#36A5F5]/60 dark:hover:border-slate-700'
@@ -355,7 +355,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <button
               type="button"
               onClick={() => onRestorePending(task)}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors whitespace-nowrap shrink-0"
             >
               <RotateCcw className="w-3 h-3 text-[#16A36A] dark:text-emerald-400" />
               Restore

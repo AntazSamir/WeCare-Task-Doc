@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 /**
  * Premium Skeleton Loaders for Korea Study Hub PMS
@@ -150,7 +150,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/40 space-y-2"
+                className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-800/40 space-y-2"
               >
                 <SkeletonLine width="w-10" height="h-4" className="rounded-full" />
                 <SkeletonLine width="w-full" height="h-4" />
@@ -159,11 +159,11 @@ export const UniversityDetailsSkeleton: React.FC = () => {
             ))}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <div className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/40 space-y-2">
+            <div className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-800/40 space-y-2">
               <SkeletonLine width="w-32" height="h-4" />
               <SkeletonLine width="w-20" height="h-3" />
             </div>
-            <div className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/40 space-y-2">
+            <div className="p-3 rounded-xl border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-800/40 space-y-2">
               <SkeletonLine width="w-32" height="h-4" />
               <SkeletonLine width="w-20" height="h-3" />
             </div>
@@ -240,7 +240,7 @@ export const DashboardSkeleton: React.FC = () => (
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="p-3 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/50 space-y-2 text-center"
+            className="p-3 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-800/50 space-y-2 text-center"
           >
             <SkeletonLine width="w-8" height="h-6" className="mx-auto" />
             <SkeletonLine width="w-16" height="h-3" className="mx-auto" />

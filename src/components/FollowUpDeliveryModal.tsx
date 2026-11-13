@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   X,
   PackageCheck,
@@ -319,7 +319,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
           </div>
 
           {receivedItems.length > 0 && (
-            <div className="p-3 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800 space-y-1">
+            <div className="p-3 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800 space-y-1">
               <div className="text-[11px] font-bold text-[#172B4D]/65 dark:text-slate-400 uppercase">
                 Already Received in Earlier Custody ({receivedItems.length})
               </div>
@@ -349,7 +349,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-900/80 flex items-center justify-end gap-2">
+        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/80 flex items-center justify-end gap-2">
           <button
             type="button"
             onClick={onClose}

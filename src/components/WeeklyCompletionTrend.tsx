@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import {
   AreaChart,
   Area,
@@ -223,7 +223,7 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
         {/* Action Controls: Timeframe & Chart Style Toggles */}
         <div className="flex items-center gap-2">
           {/* Timeframe Selector */}
-          <div className="flex items-center gap-1 p-0.5 bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px]">
+          <div className="flex items-center gap-1 p-0.5 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px]">
             <button
               type="button"
               onClick={() => setTimeframe('trailing7')}
@@ -249,7 +249,7 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
           </div>
 
           {/* Chart Style Selector */}
-          <div className="flex items-center gap-1 p-0.5 bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px]">
+          <div className="flex items-center gap-1 p-0.5 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px]">
             <button
               type="button"
               onClick={() => setChartStyle('area')}
@@ -281,7 +281,7 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
       </div>
 
       {/* 4-KPI Quick Analytics Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#F5F8FC] dark:bg-slate-900/40 border-b border-[#E3EAF3] dark:border-slate-800/80">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#F4F2EE] dark:bg-slate-900/40 border-b border-[#E3EAF3] dark:border-slate-800/80">
         <div className="px-2">
           <div className="text-[11px] font-medium text-[#172B4D]/65 dark:text-slate-400 flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-[#16A36A]" />

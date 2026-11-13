@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+﻿import React, { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   GraduationCap,
@@ -249,7 +249,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   }
                   setShowAddIntakeModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#172B4D] dark:text-slate-200 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#172B4D] dark:text-slate-200 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
               >
                 <Calendar className="w-3.5 h-3.5 text-[#1769E8]" />
                 Add Intake Term
@@ -276,7 +276,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search university, Hangul name, city, TOPIK, or IELTS..."
-                className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-[#172B4D]/45 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none"
+                className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-[#172B4D]/45 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
 
@@ -313,7 +313,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               Showing {filteredUniversities.length} of {universities.length}
             </span>
 
-            <div className="inline-flex items-center p-0.5 rounded-md bg-[#F5F8FC] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700">
+            <div className="inline-flex items-center p-0.5 rounded-md bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700">
               <button
                 type="button"
                 onClick={() => setViewLayout('grid')}
@@ -357,7 +357,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
         /* Comparison Table View */
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#F5F8FC] dark:bg-slate-800/60 text-[11px] font-semibold text-[#172B4D]/70 dark:text-slate-400 border-b border-[#E3EAF3] dark:border-slate-800">
+            <thead className="bg-[#F4F2EE] dark:bg-slate-800/60 text-[11px] font-semibold text-[#172B4D]/70 dark:text-slate-400 border-b border-[#E3EAF3] dark:border-slate-800">
               <tr>
                 <th className="px-4 py-3">Institution</th>
                 <th className="px-4 py-3">Location &amp; Tier</th>
@@ -376,7 +376,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 return (
                   <tr
                     key={u.id}
-                    className="hover:bg-[#F5F8FC] dark:hover:bg-slate-800/30 transition-colors"
+                    className="hover:bg-[#F4F2EE] dark:hover:bg-slate-800/30 transition-colors"
                   >
                     <td className="px-4 py-3.5 align-top">
                       <div className="flex items-start gap-2.5">
@@ -638,7 +638,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                     target="_blank"
                     rel="noreferrer"
                     title="Visit University Portal"
-                    className="p-2 text-[#172B4D]/65 hover:text-[#1769E8] dark:text-slate-400 dark:hover:text-slate-100 hover:bg-[#F5F8FC] dark:hover:bg-slate-800 rounded-md transition-colors border border-[#E3EAF3] dark:border-slate-800"
+                    className="p-2 text-[#172B4D]/65 hover:text-[#1769E8] dark:text-slate-400 dark:hover:text-slate-100 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 rounded-md transition-colors border border-[#E3EAF3] dark:border-slate-800"
                     aria-label={`Visit official website of ${u.nameEn}`}
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -679,7 +679,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       value={nameEn}
                       onChange={(e) => setNameEn(e.target.value)}
                       placeholder="e.g. Chung-Ang University"
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -689,7 +689,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       value={nameKo}
                       onChange={(e) => setNameKo(e.target.value)}
                       placeholder="e.g. 중앙대학교"
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -703,7 +703,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="e.g. Seoul (Dongjak-gu)"
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -713,7 +713,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       value={ranking}
                       onChange={(e) => setRanking(e.target.value)}
                       placeholder="e.g. Top 15 in Korea"
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -727,7 +727,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       type="number"
                       value={bankBalanceUsd}
                       onChange={(e) => setBankBalanceUsd(Number(e.target.value))}
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
                     />
                   </div>
                   <div>
@@ -736,7 +736,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       type="url"
                       value={websiteUrl}
                       onChange={(e) => setWebsiteUrl(e.target.value)}
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -745,7 +745,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   <button
                     type="button"
                     onClick={() => setShowAddUniModal(false)}
-                    className="px-3 py-1.5 rounded hover:bg-[#F5F8FC] text-[#172B4D]/70"
+                    className="px-3 py-1.5 rounded hover:bg-[#F4F2EE] text-[#172B4D]/70"
                   >
                     Cancel
                   </button>
@@ -787,7 +787,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   <select
                     value={selectedUniIdForIntake}
                     onChange={(e) => setSelectedUniIdForIntake(e.target.value)}
-                    className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                    className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
                   >
                     {universities.map((u) => (
                       <option key={u.id} value={u.id}>
@@ -803,7 +803,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                     <select
                       value={intakeTerm}
                       onChange={(e) => setIntakeTerm(e.target.value)}
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
                     >
                       <option value="Spring 2027">Spring 2027</option>
                       <option value="Fall 2027">Fall 2027</option>
@@ -816,7 +816,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       type="number"
                       value={quota}
                       onChange={(e) => setQuota(Number(e.target.value))}
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
                     />
                   </div>
                 </div>
@@ -828,7 +828,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                     required
                     value={appDeadline}
                     onChange={(e) => setAppDeadline(e.target.value)}
-                    className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F5F8FC] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
                   />
                 </div>
 
@@ -836,7 +836,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   <button
                     type="button"
                     onClick={() => setShowAddIntakeModal(false)}
-                    className="px-3 py-1.5 rounded hover:bg-[#F5F8FC] text-[#172B4D]/70"
+                    className="px-3 py-1.5 rounded hover:bg-[#F4F2EE] text-[#172B4D]/70"
                   >
                     Cancel
                   </button>

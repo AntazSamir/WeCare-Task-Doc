@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   RefreshCw,
   CheckCircle2,
@@ -234,7 +234,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
             <button
               type="button"
               onClick={onPullFromSheet}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-200 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-200 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
             >
               Load Tasks from Sheet
             </button>
@@ -242,7 +242,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
             <button
               type="button"
               onClick={onEnsureHeaders}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-200 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-200 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
             >
               Verify 12 Headers
             </button>
@@ -307,7 +307,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
               <button
                 type="button"
                 onClick={() => setShowAddTabInput((v) => !v)}
-                className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#F5F8FC] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
+                className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
               >
                 <Layers className="w-3.5 h-3.5 text-[#1769E8]" />
                 + Tab
@@ -357,7 +357,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         {showCreateSheetModal && (
           <form
             onSubmit={handleCreateSpreadsheetSubmit}
-            className="mt-4 p-4 rounded-md bg-[#F5F8FC] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-end gap-3"
+            className="mt-4 p-4 rounded-md bg-[#F4F2EE] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-end gap-3"
           >
             <div className="flex-1 min-w-[220px]">
               <label className="block text-xs font-medium text-[#172B4D] dark:text-slate-300 mb-1">
@@ -404,7 +404,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         {showAddTabInput && (
           <form
             onSubmit={handleAddWorksheetSubmit}
-            className="mt-4 p-4 rounded-md bg-[#F5F8FC] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-end gap-3"
+            className="mt-4 p-4 rounded-md bg-[#F4F2EE] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-end gap-3"
           >
             <div className="flex-1 min-w-[200px]">
               <label className="block text-xs font-medium text-[#172B4D] dark:text-slate-300 mb-1">
@@ -438,7 +438,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
 
       {/* Sub-Navigation Tabs (Functional Segmented Control) */}
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-1 p-1 bg-[#F5F8FC] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md">
+        <div className="flex items-center gap-1 p-1 bg-[#F4F2EE] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md">
           <button
             type="button"
             onClick={() => setActiveSubTab('sheet-grid')}
@@ -497,12 +497,12 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           <button
             type="button"
             onClick={onExportCsv}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:bg-[#F5F8FC] dark:hover:bg-slate-800 rounded transition-colors whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 rounded transition-colors whitespace-nowrap shrink-0"
           >
             <Download className="w-3.5 h-3.5 text-[#1769E8]" />
             Export .CSV
           </button>
-          <label className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:bg-[#F5F8FC] dark:hover:bg-slate-800 rounded transition-colors cursor-pointer whitespace-nowrap shrink-0">
+          <label className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#172B4D] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 rounded transition-colors cursor-pointer whitespace-nowrap shrink-0">
             <Upload className="w-3.5 h-3.5 text-[#1769E8]" />
             Import Sheet .CSV
             <input type="file" accept=".csv,.tsv,.txt" onChange={handleFileUpload} className="hidden" />
@@ -532,7 +532,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
             <table className="w-full border-collapse text-left text-xs">
               <thead>
                 {/* Column Letters Row */}
-                <tr className="bg-[#F5F8FC] dark:bg-slate-800/90 border-b border-[#E3EAF3] dark:border-slate-700 text-[11px] font-mono text-[#172B4D]/65 dark:text-slate-400">
+                <tr className="bg-[#F4F2EE] dark:bg-slate-800/90 border-b border-[#E3EAF3] dark:border-slate-700 text-[11px] font-mono text-[#172B4D]/65 dark:text-slate-400">
                   <th className="py-1.5 px-2.5 border-r border-[#E3EAF3] dark:border-slate-700 text-center w-10">
                     #
                   </th>
@@ -547,7 +547,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                 </tr>
 
                 {/* Row 1: Frozen Spreadsheet Column Headers */}
-                <tr className="bg-[#F5F8FC] dark:bg-slate-900 border-b-2 border-[#E3EAF3] dark:border-slate-700 font-semibold text-[#172B4D] dark:text-slate-200">
+                <tr className="bg-[#F4F2EE] dark:bg-slate-900 border-b-2 border-[#E3EAF3] dark:border-slate-700 font-semibold text-[#172B4D] dark:text-slate-200">
                   <td className="py-2 px-2.5 border-r border-[#E3EAF3] dark:border-slate-800 text-center font-mono text-[#172B4D]/50">
                     1
                   </td>
@@ -572,7 +572,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                         : 'text-[#172B4D] dark:text-slate-200'
                     }`}
                   >
-                    <td className="py-2 px-2.5 border-r border-[#E3EAF3] dark:border-slate-800 text-center text-[#172B4D]/50 bg-[#F5F8FC] dark:bg-slate-900/50">
+                    <td className="py-2 px-2.5 border-r border-[#E3EAF3] dark:border-slate-800 text-center text-[#172B4D]/50 bg-[#F4F2EE] dark:bg-slate-900/50">
                       {row.rowNumber}
                     </td>
                     <td className="py-2 px-3 border-r border-[#E3EAF3] dark:border-slate-800 whitespace-nowrap font-semibold text-[#1769E8] dark:text-blue-400">
@@ -755,7 +755,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
 
           <div className="overflow-x-auto border border-[#E3EAF3] dark:border-slate-800 rounded-md">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#F5F8FC] dark:bg-slate-800/60 border-b border-[#E3EAF3] dark:border-slate-800 text-[#172B4D]/65 dark:text-slate-400">
+              <thead className="bg-[#F4F2EE] dark:bg-slate-800/60 border-b border-[#E3EAF3] dark:border-slate-800 text-[#172B4D]/65 dark:text-slate-400">
                 <tr>
                   <th className="py-2.5 px-3 font-medium">Timestamp</th>
                   <th className="py-2.5 px-3 font-medium">Operation</th>
@@ -767,7 +767,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
               </thead>
               <tbody className="divide-y divide-[#E3EAF3] dark:divide-slate-800">
                 {syncLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-[#F5F8FC] dark:hover:bg-slate-800/30">
+                  <tr key={log.id} className="hover:bg-[#F4F2EE] dark:hover:bg-slate-800/30">
                     <td className="py-2.5 px-3 font-mono tabular-nums text-[#172B4D]/65 whitespace-nowrap">
                       {formatTimestamp(log.timestamp)}
                     </td>

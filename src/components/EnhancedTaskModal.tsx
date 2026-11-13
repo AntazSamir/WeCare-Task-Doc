@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -166,7 +166,7 @@ export function EnhancedTaskModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#123B78]/40 dark:bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-modal-backdrop">
       <div className="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-2xl my-auto overflow-hidden animate-modal-card">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-800/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-800/50">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#DCEBFF] dark:bg-blue-900/50 text-[#123B78] dark:text-blue-400 flex items-center justify-center font-bold text-sm">
               {editingTask ? '✏️' : '📋'}
@@ -320,7 +320,7 @@ export function EnhancedTaskModal({
           </div>
 
           {/* Consultancy Links: Link to Student, Project, or University */}
-          <div className="p-4 bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-700 rounded-md space-y-3">
+          <div className="p-4 bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-700 rounded-md space-y-3">
             <div className="text-xs font-bold text-[#172B4D] dark:text-slate-100 flex items-center gap-1.5">
               <FolderKanban className="w-4 h-4 text-[#1769E8]" />
               Link to South Korea Consultancy Entities (Optional)
@@ -399,7 +399,7 @@ export function EnhancedTaskModal({
                 {subtasks.map((st) => (
                   <div
                     key={st.id}
-                    className="flex items-center justify-between p-2 rounded-md bg-[#F5F8FC] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-700 text-xs"
+                    className="flex items-center justify-between p-2 rounded-md bg-[#F4F2EE] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-700 text-xs"
                   >
                     <button
                       type="button"

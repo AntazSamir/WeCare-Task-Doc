@@ -173,7 +173,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
             <>
               {/* Overview Strip */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="p-3.5 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
+                <div className="p-3.5 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
                   <div className="text-[10px] font-bold uppercase text-[#172B4D]/55 dark:text-slate-400">
                     Requested By (Admission)
                   </div>
@@ -185,7 +185,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
+                <div className="p-3.5 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
                   <div className="text-[10px] font-bold uppercase text-[#172B4D]/55 dark:text-slate-400">
                     Assigned Counselor
                   </div>
@@ -197,7 +197,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F5F8FC] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
+                <div className="p-3.5 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800">
                   <div className="text-[10px] font-bold uppercase text-[#172B4D]/55 dark:text-slate-400">
                     Priority & Deadline
                   </div>
@@ -272,7 +272,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
                 </h3>
                 <div className="border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F5F8FC] dark:bg-slate-800/60 text-[11px] font-semibold text-[#172B4D]/65 dark:text-slate-400 border-b border-[#E3EAF3] dark:border-slate-800">
+                    <thead className="bg-[#F4F2EE] dark:bg-slate-800/60 text-[11px] font-semibold text-[#172B4D]/65 dark:text-slate-400 border-b border-[#E3EAF3] dark:border-slate-800">
                       <tr>
                         <th className="px-3 py-2">#</th>
                         <th className="px-3 py-2">Required Document</th>
@@ -283,7 +283,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
                     </thead>
                     <tbody className="divide-y divide-[#E3EAF3] dark:divide-slate-800">
                       {request.requiredDocuments.map((doc) => (
-                        <tr key={doc.id} className="hover:bg-[#F5F8FC] dark:hover:bg-slate-800/30">
+                        <tr key={doc.id} className="hover:bg-[#F4F2EE] dark:hover:bg-slate-800/30">
                           <td className="px-3 py-2 font-mono text-[11px] text-[#172B4D]/55 dark:text-slate-400">{doc.id}</td>
                           <td className="px-3 py-2">
                             <div className="font-semibold text-[#172B4D] dark:text-slate-100">
@@ -319,7 +319,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowCancelConfirm(false)}
-                      className="px-3 py-1.5 text-xs font-semibold text-[#172B4D] bg-[#FFFFFF] border border-[#E3EAF3] rounded-md"
+                      className="px-3 py-1.5 text-xs font-semibold text-[#172B4D] dark:text-slate-100 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md hover:bg-[#F4F2EE] dark:hover:bg-slate-800 transition-colors"
                     >
                       Keep Open
                     </button>
@@ -339,7 +339,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F5F8FC] dark:bg-slate-900/80 flex flex-wrap items-center justify-between gap-2">
+        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/80 flex flex-wrap items-center justify-between gap-2">
           <div className="text-[11px] font-mono text-[#172B4D]/60 dark:text-slate-400">
             Created: {request ? formatTimestamp(request.createdAt) : '—'}
           </div>
