@@ -31,7 +31,7 @@ const MORPH: Transition = { type: 'spring', duration: 0.5, bounce: 0.22 };
 
 // Trigger and panel header share this row so the morph stays seamless.
 const ROW =
-  'flex w-full items-center justify-between gap-1.5 px-2.5 py-1.5 text-xs';
+  'h-8 flex w-full items-center justify-between gap-1.5 px-2.5 text-xs leading-none';
 
 const LIST: Variants = {
   hidden: {},
@@ -162,7 +162,7 @@ export function MorphSelect({
 
   return (
     <MorphContext.Provider value={ctx}>
-      <div ref={rootRef} className={cn('relative', className)}>
+      <div ref={rootRef} className={cn('relative w-full', className)}>
         {children}
       </div>
     </MorphContext.Provider>
@@ -183,6 +183,7 @@ export function MorphSelectValue({ placeholder, className }: MorphSelectValuePro
   return (
     <span
       className={cn(
+        'min-w-0 truncate block text-left',
         label ? 'text-[#172B4D] dark:text-slate-100' : 'text-[#899BB1] dark:text-slate-500',
         className,
       )}
@@ -206,8 +207,8 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
         aria-hidden
         className={cn(ROW, 'invisible rounded-md border border-[#E3EAF3] dark:border-slate-700', className)}
       >
-        {children}
-        <ChevronDown className="h-3.5 w-3.5 shrink-0" />
+        <span className="min-w-0 truncate text-left flex-1 block">{children}</span>
+        <ChevronDown className="h-3.5 w-3.5 shrink-0 ml-1" />
       </div>
 
       <AnimatePresence initial={false} mode="popLayout">
@@ -235,10 +236,10 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
               className,
             )}
           >
-            <motion.span layout="position" className="min-w-0 truncate text-left">
+            <motion.span layout="position" className="min-w-0 truncate text-left flex-1 block">
               {children}
             </motion.span>
-            <motion.span layout="position" className="text-[#899BB1] dark:text-slate-400 shrink-0">
+            <motion.span layout="position" className="text-[#899BB1] dark:text-slate-400 shrink-0 ml-1">
               <ChevronDown className="h-3.5 w-3.5" />
             </motion.span>
           </motion.button>
@@ -289,7 +290,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
             >
               <span
                 className={cn(
-                  'min-w-0 truncate',
+                  'min-w-0 truncate text-left flex-1 block',
                   label
                     ? 'text-[#172B4D] dark:text-slate-100'
                     : 'text-[#899BB1] dark:text-slate-500',
@@ -300,7 +301,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
               <motion.span
                 animate={{ rotate: 180 }}
                 transition={ctx.reduce ? { duration: 0 } : MORPH}
-                className="text-[#899BB1] dark:text-slate-400 shrink-0"
+                className="text-[#899BB1] dark:text-slate-400 shrink-0 ml-1"
               >
                 <ChevronDown className="h-3.5 w-3.5" />
               </motion.span>
