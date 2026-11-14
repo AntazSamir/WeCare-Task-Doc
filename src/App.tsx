@@ -12,15 +12,11 @@ import {
   Search,
   RefreshCw,
   Bell,
-  BellOff,
   Moon,
   Monitor,
   Wifi,
   WifiOff,
   AlertTriangle,
-  RotateCcw,
-  Trash2,
-  ListFilter,
   LayoutList,
   Check,
   X,
@@ -30,7 +26,6 @@ import {
   Users,
   FolderKanban,
   Building2,
-  GraduationCap,
   Clock,
   Layers,
   Percent,
@@ -212,11 +207,6 @@ export function App() {
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<TaskCategory | 'All'>('All');
-  const [priorityFilter, setPriorityFilter] = useState<TaskPriority | 'All'>('All');
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Pending' | 'Completed' | 'Overdue'>(
-    'All'
-  );
 
   // Quick Inline Add Task Bar
   const [quickTitle, setQuickTitle] = useState('');
@@ -229,10 +219,10 @@ export function App() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [modalInitialDate, setModalInitialDate] = useState<string | undefined>(undefined);
   const [taskToConfirmComplete, setTaskToConfirmComplete] = useState<Task | null>(null);
-  const [showNotificationsPopover, setShowNotificationsPopover] = useState(false);
+  const [_showNotificationsPopover, _setShowNotificationsPopover] = useState(false);
 
   // Notifications & Toast Banner
-  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [_notifications, setNotifications] = useState<AppNotification[]>([]);
   const [activeToast, setActiveToast] = useState<{
     id: string;
     title: string;
@@ -1445,33 +1435,6 @@ export function App() {
     };
   }, [tasks, todayIso]);
 
-  // Filtered Tasks for All Tasks / Views
-  const filteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matches =
-          task.title.toLowerCase().includes(q) ||
-          task.description.toLowerCase().includes(q) ||
-          task.id.toLowerCase().includes(q) ||
-          task.notes.toLowerCase().includes(q) ||
-          task.category.toLowerCase().includes(q);
-        if (!matches) return false;
-      }
-      if (categoryFilter !== 'All' && task.category !== categoryFilter) {
-        return false;
-      }
-      if (priorityFilter !== 'All' && task.priority !== priorityFilter) {
-        return false;
-      }
-      if (statusFilter === 'Pending' && task.status !== 'Pending') return false;
-      if (statusFilter === 'Completed' && task.status !== 'Completed') return false;
-      if (statusFilter === 'Overdue' && !isTaskOverdue(task, todayIso)) return false;
-      return true;
-    });
-  }, [tasks, searchQuery, categoryFilter, priorityFilter, statusFilter, todayIso]);
-
-  const unreadNotificationsCount = notifications.filter((n) => !n.read).length;
 
   const navSections: {
     title: string;
@@ -1925,7 +1888,6 @@ export function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    setStatusFilter('Overdue');
                     setActiveNav('all-tasks');
                   }}
                   className="inline-flex items-center gap-1 text-xs font-semibold text-[#DC4545] dark:text-red-400 hover:underline whitespace-nowrap shrink-0"
@@ -2299,6 +2261,7 @@ export function App() {
                 </button>
               </form>
 
+              <div key={dashboardViewMode} className="animate-tab-enter">
               {dashboardViewMode === 'calendar' ? (
                 <CalendarView
                   tasks={tasks}
@@ -2443,6 +2406,7 @@ export function App() {
                   </div>
                 </div>
               )}
+              </div>
 
               {/* Weekly Task Completion Trend Section */}
               <WeeklyCompletionTrend
@@ -3144,7 +3108,7 @@ export function App() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-5 right-5 z-50 max-w-sm rounded-md bg-[#123B78] dark:bg-slate-800 text-white border border-[#1769E8]/40 dark:border-slate-700 px-4 py-3 shadow-xl flex items-start gap-3"
+          className="fixed bottom-5 right-5 z-50 max-w-sm rounded-md bg-[#123B78] dark:bg-slate-800 text-white border border-[#1769E8]/40 dark:border-slate-700 px-4 py-3 shadow-xl flex items-start gap-3 animate-toast-enter"
         >
           <Check className="w-4 h-4 text-[#16A36A] shrink-0 mt-0.5" />
           <div className="text-xs space-y-0.5">

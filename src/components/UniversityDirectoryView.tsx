@@ -196,6 +196,9 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
       setShowAddUniModal(false);
       setNameEn('');
       setNameKo('');
+      setTopikRequirement('TOPIK Level 3 or higher');
+      setIeltsRequirement('IELTS 6.0 minimum');
+      setNotes('');
     } catch (err) {
       console.error(err);
     }
@@ -222,7 +225,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
   };
 
   return (
-    <div key="uni-directory-list" className="space-y-4">
+    <div key="uni-directory-list" className="animate-page-enter space-y-4">
       {/* Header & Operational Summary */}
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-5 space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -250,7 +253,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   }
                   setShowAddIntakeModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#172B4D] dark:text-slate-200 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-[#172B4D] dark:text-slate-200 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 border border-[#E3EAF3] dark:border-slate-700 rounded-md transition-colors"
               >
                 <Calendar className="w-3.5 h-3.5 text-[#1769E8]" />
                 Add Intake Term
@@ -258,7 +261,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               <button
                 type="button"
                 onClick={() => setShowAddUniModal(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 h-[28px] box-border text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-md transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add University
@@ -277,7 +280,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search university, Hangul name, city, TOPIK, or IELTS..."
-                className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-[#172B4D]/45 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none"
+                className="w-full pl-8 pr-3 h-[28px] box-border text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-[#172B4D]/45 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
 
@@ -304,7 +307,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   setSearchQuery('');
                   setCityFilter('All');
                 }}
-                className="text-xs font-semibold text-[#1769E8] hover:text-[#123B78] dark:hover:text-slate-100 px-2 py-1"
+                className="text-xs font-semibold text-[#1769E8] hover:text-[#123B78] dark:hover:text-slate-100 px-2 h-[28px] box-border inline-flex items-center"
               >
                 Reset
               </button>
@@ -356,7 +359,9 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
             Adjust your search term or city filter to view partner institutions.
           </p>
         </div>
-      ) : viewLayout === 'table' ? (
+      ) : (
+        <div key={viewLayout} className="animate-tab-enter">
+          {viewLayout === 'table' ? (
         /* Comparison Table View */
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -651,6 +656,8 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
             );
           })}
         </div>
+        )}
+      </div>
       )}
 
       {/* Add University Modal */}
@@ -744,6 +751,40 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   </div>
                 </div>
 
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-medium mb-1">TOPIK Requirement</label>
+                    <input
+                      type="text"
+                      value={topikRequirement}
+                      onChange={(e) => setTopikRequirement(e.target.value)}
+                      placeholder="e.g. TOPIK Level 3 or higher"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-medium mb-1">IELTS Requirement</label>
+                    <input
+                      type="text"
+                      value={ieltsRequirement}
+                      onChange={(e) => setIeltsRequirement(e.target.value)}
+                      placeholder="e.g. IELTS 6.0 minimum"
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-medium mb-1">Admissions Notes</label>
+                  <textarea
+                    rows={2}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Admissions guidelines notes..."
+                    className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
+                  />
+                </div>
+
                 <div className="flex justify-end gap-2 pt-2 border-t border-[#E3EAF3] dark:border-slate-800">
                   <button
                     type="button"
@@ -826,15 +867,26 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   </div>
                 </div>
 
-                <div>
-                  <label className="block font-medium mb-1">Application Portal Deadline *</label>
-                  <input
-                    type="date"
-                    required
-                    value={appDeadline}
-                    onChange={(e) => setAppDeadline(e.target.value)}
-                    className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-medium mb-1">Application Start Date</label>
+                    <input
+                      type="date"
+                      value={appStart}
+                      onChange={(e) => setAppStart(e.target.value)}
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-medium mb-1">Application Portal Deadline *</label>
+                    <input
+                      type="date"
+                      required
+                      value={appDeadline}
+                      onChange={(e) => setAppDeadline(e.target.value)}
+                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none font-mono"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2 border-t border-[#E3EAF3] dark:border-slate-800">

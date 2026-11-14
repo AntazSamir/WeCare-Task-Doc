@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, CheckCircle2, FileSpreadsheet, Check } from 'lucide-react';
 import { Task } from '../types/task';
@@ -76,7 +76,7 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
 
           <div className="p-3.5 rounded-md bg-[#F4F2EE] dark:bg-slate-800/60 border border-[#E3EAF3] dark:border-slate-800 space-y-1.5">
             <div className="text-xs font-mono tabular-nums text-[#1769E8] dark:text-slate-400">
-              {task.id} · {task.category} · {task.priority} Priority
+              {task.category} · {task.priority} Priority
             </div>
             <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-100">
               {task.title}

@@ -380,7 +380,9 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         })}
       </div>
 
-      {/* Search & Multi-Facet Filter Bar */}
+      {/* Content Area with smooth tab transition */}
+      <div key={activeTab} className="animate-tab-enter space-y-3.5">
+        {/* Search & Multi-Facet Filter Bar */}
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-3.5 grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
         <div className="md:col-span-4 relative">
           <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -769,6 +771,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           </table>
         </div>
       )}
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -11,7 +11,6 @@ import {
   Building2,
   User,
   Tag,
-  AlertCircle,
 } from 'lucide-react';
 import { Task, TaskCategory, TaskPriority } from '../types/task';
 import { getLocalTodayIso } from '../utils/dateUtils';
@@ -150,7 +149,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               id="task-form-title"
               className="text-base font-semibold text-[#172B4D] dark:text-slate-100"
             >
-              {editingTask ? `Edit Task (${editingTask.id})` : 'Create New Task'}
+              {editingTask ? 'Edit Task' : 'Create New Task'}
             </h2>
             <p className="text-xs text-[#172B4D]/65 dark:text-slate-400">
               Automatically synchronized with local SQLite and connected Google Spreadsheet

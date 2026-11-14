@@ -1,20 +1,15 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Users,
   GraduationCap,
   Calendar,
-  AlertTriangle,
   ArrowRight,
-  TrendingUp,
   FileCheck2,
   Clock,
-  ExternalLink,
-  ShieldAlert,
   Plane,
   Building2,
-  CheckCircle2,
 } from 'lucide-react';
-import { UserProfile, VisaStage } from '../types/pms';
+import { UserProfile } from '../types/pms';
 
 interface ExecutiveDashboardProps {
   analytics: any;

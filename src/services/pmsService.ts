@@ -19,7 +19,6 @@ import {
   UniversityProgram,
   UniversityRefundPolicy,
   UserProfile,
-  UserRole,
   VisaStage,
 } from '../types/pms';
 

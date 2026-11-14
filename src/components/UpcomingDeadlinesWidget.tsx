@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ArrowRight,
   Check,
@@ -8,19 +8,13 @@ import {
   Calendar,
   Sparkles,
   Tag,
-  Briefcase,
-  GraduationCap,
-  Building2,
-  User,
 } from 'lucide-react';
 import { Task, TaskPriority, TaskCategory } from '../types/task';
 import {
-  formatReadableDate,
   getDeadlineUrgency,
   getDaysDifference,
   getLocalTodayIso,
 } from '../utils/dateUtils';
-
 const PriorityIndicator: React.FC<{ priority: TaskPriority }> = ({ priority }) => {
   const dotColor =
     priority === 'High'
@@ -199,8 +193,6 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
 
             const isTomorrow = daysDiff === 1;
             const isSoon = daysDiff >= 2 && daysDiff <= 3;
-            const isHigh = task.priority === 'High';
-            const isMedium = task.priority === 'Medium';
 
             return (
               <div
@@ -286,13 +278,6 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
                           </span>
                         </>
                       )}
-
-                      <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
-                        ·
-                      </span>
-                      <span className="font-mono text-[#172B4D]/50 dark:text-slate-500">
-                        {task.id}
-                      </span>
                     </div>
                   </div>
 

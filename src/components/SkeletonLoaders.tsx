@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 /**
  * Premium Skeleton Loaders for Korea Study Hub PMS
@@ -11,7 +11,7 @@ export const SkeletonLine: React.FC<{
   height?: string;
 }> = ({ className = '', width = 'w-full', height = 'h-4' }) => (
   <div
-    className={`rounded skeleton-shimmer bg-[#DCEBFF]/70 dark:bg-slate-800 ${width} ${height} ${className}`}
+    className={`rounded skeleton-pulse bg-[#DCEBFF]/70 dark:bg-slate-800 ${width} ${height} ${className}`}
   />
 );
 

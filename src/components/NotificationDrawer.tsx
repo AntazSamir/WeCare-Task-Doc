@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
   Bell,
   BellOff,
@@ -37,7 +37,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
   );
 
   const handleEnableDesktopAlerts = async () => {
-    const granted = await requestDesktopNotificationPermission();
+    await requestDesktopNotificationPermission();
     if (typeof window !== 'undefined' && 'Notification' in window) {
       setBrowserPermission(Notification.permission);
     }
@@ -49,8 +49,8 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-[#123B78]/40 dark:bg-slate-950/40 backdrop-blur-xs" onClick={onClose} />
-      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#FFFFFF] dark:bg-slate-900 border-l border-[#E3EAF3] dark:border-slate-800 shadow-2xl z-50 flex flex-col">
+      <div className="fixed inset-0 z-50 bg-[#123B78]/40 dark:bg-slate-950/40 backdrop-blur-xs animate-modal-backdrop" onClick={onClose} />
+      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#FFFFFF] dark:bg-slate-900 border-l border-[#E3EAF3] dark:border-slate-800 shadow-2xl z-50 flex flex-col animate-drawer-enter">
         {/* Header */}
         <div className="p-4 border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">

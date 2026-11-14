@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Check,
   Clock,
@@ -107,8 +107,6 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
           const overdueDaysText =
             daysDiff === -1 ? 'Yesterday' : `${Math.abs(daysDiff)}d overdue`;
 
-          const isHigh = task.priority === 'High';
-          const isMedium = task.priority === 'Medium';
 
           const isDragging = draggingId === task.id;
           const isDropTop = dropTarget?.id === task.id && dropTarget?.position === 'top';
@@ -239,13 +237,6 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                         </span>
                       </>
                     )}
-
-                    <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
-                      ·
-                    </span>
-                    <span className="font-mono text-[#172B4D]/50 dark:text-slate-500">
-                      {task.id}
-                    </span>
                   </div>
                 </div>
 

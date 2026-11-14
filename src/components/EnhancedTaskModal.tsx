@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -174,7 +174,7 @@ export function EnhancedTaskModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-[#172B4D] dark:text-slate-100">
-                {editingTask ? `Edit Task — ${editingTask.id}` : 'Create Consultancy Task'}
+                {editingTask ? 'Edit Task' : 'Create Consultancy Task'}
               </h2>
               <p className="text-xs text-[#172B4D]/65 dark:text-slate-400">
                 Assign to team member and link to student dossier or intake project
@@ -346,7 +346,7 @@ export function EnhancedTaskModal({
                     <MorphSelectItem value="">— None —</MorphSelectItem>
                     {students.map((s) => (
                       <MorphSelectItem key={s.id} value={s.id}>
-                        {s.fullName} ({s.id})
+                        {s.fullName} ({s.passportNumber})
                       </MorphSelectItem>
                     ))}
                   </MorphSelectContent>

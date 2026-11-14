@@ -15,21 +15,13 @@ import {
   Trash2,
   Edit3,
   UserPlus,
-  ChevronRight,
   X,
-  Briefcase,
   Check,
-  ChevronDown,
   Phone,
   Mail,
   Award,
-  TrendingUp,
   Layers,
-  ArrowRight,
-  ListFilter,
   CheckSquare,
-  Sparkles,
-  ArrowUpDown,
   GraduationCap,
 } from 'lucide-react';
 import {
@@ -48,7 +40,6 @@ import {
   deleteEmployee,
   assignBulkTasks,
   reassignPmsTask,
-  updatePmsTask,
 } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
@@ -516,7 +507,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
         </div>
 
         {/* TEAM MEMBERS CARDS GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+        <div key={selectedTeamTab} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 animate-tab-enter">
           {team
             .filter((m) => {
               if (selectedTeamTab === 'Admission Team') return m.team === 'Admission Team' || (!m.team && m.role === 'Admission_Manager');
@@ -727,7 +718,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
       </div>
 
       {/* 4. TASK LIST ACCORDING TO VIEW */}
-      <div className="space-y-3">
+      <div key={activeView} className="space-y-3 animate-tab-enter">
         {displayedTasks.length === 0 ? (
           <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-xl p-10 text-center space-y-3 shadow-sm">
             <div className="w-12 h-12 rounded-full bg-[#DCEBFF] dark:bg-slate-800 flex items-center justify-center mx-auto text-[#1769E8]">
@@ -805,7 +796,6 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-[10px] text-[#172B4D]/50 dark:text-slate-400 font-semibold">{task.id}</span>
 
                         <span
                           className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
@@ -1102,7 +1092,6 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-1.5 font-semibold text-[#172B4D] dark:text-slate-100">
-                            <span className="font-mono text-[10px] text-[#172B4D]/50">{t.id}</span>
                             <span className={isDone ? 'line-through text-[#172B4D]/45' : ''}>{t.title}</span>
                           </div>
                           <span
@@ -1415,7 +1404,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       <MorphSelectItem value="">None</MorphSelectItem>
                       {students.map((s) => (
                         <MorphSelectItem key={s.id} value={s.id}>
-                          {s.fullName} ({s.id})
+                          {s.fullName} ({s.passportNumber})
                         </MorphSelectItem>
                       ))}
                     </MorphSelectContent>
@@ -1454,7 +1443,6 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 <h3 className="font-bold text-sm text-[#172B4D] dark:text-slate-100">
                   Reassign Task
                 </h3>
-                <p className="text-xs text-[#172B4D]/55 font-mono mt-0.5">{reassigningTask.id}</p>
               </div>
               <button
                 type="button"

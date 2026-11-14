@@ -3,13 +3,8 @@ import { createPortal } from 'react-dom';
 import {
   X,
   FileCheck2,
-  Plane,
   Truck,
   CheckCircle2,
-  Clock,
-  ShieldCheck,
-  UserCheck,
-  Building2,
   Plus,
   ExternalLink,
 } from 'lucide-react';
@@ -112,10 +107,6 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
         <div className="px-6 py-4 border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between shrink-0 bg-[#F4F2EE] dark:bg-slate-900">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-[#1769E8] dark:text-[#36A5F5] font-bold">
-                {student.id}
-              </span>
-              <span className="text-[#E3EAF3] dark:text-slate-700">·</span>
               <span className="text-xs text-[#172B4D]/65 dark:text-slate-400 font-mono">Passport: {student.passportNumber}</span>
               <span className="text-[#E3EAF3] dark:text-slate-700">·</span>
               <span className="text-xs px-2 py-0.5 rounded bg-[#DCEBFF] dark:bg-slate-800 text-[#123B78] dark:text-slate-300 font-medium">

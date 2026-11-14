@@ -6,19 +6,15 @@ import {
   Truck,
   ChevronRight,
   FileCheck2,
-  CheckCircle2,
   GraduationCap,
   Copy,
   Check,
   LayoutGrid,
   List,
   Building2,
-  Calendar,
   User,
   X,
   ArrowUpDown,
-  CreditCard,
-  ExternalLink,
   Clock,
 } from 'lucide-react';
 import { StudentApplication, UserProfile, VisaStage } from '../types/pms';
@@ -223,12 +219,6 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
     setTermFilter('All');
   };
 
-  const getInitials = (name: string): string => {
-    const parts = name.trim().split(/\s+/);
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  };
-
   return (
     <div className="space-y-4">
       {/* 1. Header Bar with Register Action and View Switcher */}
@@ -362,8 +352,8 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by candidate name, passport, university, major, ID, or courier #..."
-              className="w-full pl-9 pr-8 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:border-[#1769E8] focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+              placeholder="Search by candidate name, passport, university, major, or courier #..."
+              className="w-full pl-9 pr-8 h-[28px] text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:border-[#1769E8] focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
             />
             {search && (
               <button
@@ -468,13 +458,14 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
       </div>
 
       {/* 4. REDESIGNED CONTENT: Table View or Cards View */}
+      <div key={viewMode} className="animate-tab-enter">
       {viewMode === 'table' ? (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-[#F4F2EE] dark:bg-slate-800/70 border-b border-[#E3EAF3] dark:border-slate-700/80 text-[11px] font-semibold text-[#172B4D]/75 dark:text-slate-300">
-                  <th className="py-3 px-4 min-w-[250px]">Candidate & Dossier ID</th>
+                  <th className="py-3 px-4 min-w-[250px]">Candidate</th>
                   <th className="py-3 px-4 min-w-[260px]">Applied University & Program</th>
                   <th className="py-3 px-4 min-w-[210px]">Visa Stage & Checklist</th>
                   <th className="py-3 px-4 min-w-[190px]">Consultant & Courier</th>
@@ -526,48 +517,35 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                         onClick={() => onSelectStudent(student)}
                         className="group hover:bg-[#F4F2EE]/70 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
                       >
-                        {/* COLUMN 1: CANDIDATE & DOSSIER ID */}
+                        {/* COLUMN 1: CANDIDATE */}
                         <td className="py-3.5 px-4 align-top">
-                          <div className="flex items-start gap-3">
-                            {/* Avatar */}
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#123B78] to-[#1769E8] text-white shrink-0 flex items-center justify-center font-bold text-xs shadow-xs select-none">
-                              {getInitials(student.fullName)}
+                          <div className="space-y-1 min-w-0">
+                            {/* Full Name - whitespace-nowrap prevents broken hyphens */}
+                            <div className="font-bold text-sm text-[#172B4D] dark:text-slate-100 group-hover:text-[#1769E8] dark:group-hover:text-[#60B8F5] transition-colors whitespace-nowrap">
+                              {student.fullName}
                             </div>
 
-                            <div className="space-y-1 min-w-0">
-                              {/* Full Name - whitespace-nowrap prevents broken hyphens */}
-                              <div className="font-bold text-sm text-[#172B4D] dark:text-slate-100 group-hover:text-[#1769E8] dark:group-hover:text-[#60B8F5] transition-colors whitespace-nowrap">
-                                {student.fullName}
-                              </div>
-
-                              {/* Dossier ID & Passport & Term */}
-                              <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-                                <span className="font-mono font-semibold px-1.5 py-0.2 rounded bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D] dark:text-slate-200 border border-[#E3EAF3] dark:border-slate-700">
-                                  {student.id}
-                                </span>
-                                <span className="text-slate-400" aria-hidden="true">
-                                  ·
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleCopy(e, student.passportNumber)}
-                                  title="Click to copy passport number"
-                                  className="inline-flex items-center gap-1 font-mono text-[11px] text-[#172B4D]/75 dark:text-slate-300 hover:text-[#1769E8] dark:hover:text-blue-400 transition-colors"
-                                >
-                                  <span>{student.passportNumber}</span>
-                                  {copiedText === student.passportNumber ? (
-                                    <Check className="w-3 h-3 text-[#16A36A]" />
-                                  ) : (
-                                    <Copy className="w-2.5 h-2.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
-                                  )}
-                                </button>
-                                <span className="text-slate-400" aria-hidden="true">
-                                  ·
-                                </span>
-                                <span className="text-[#172B4D]/60 dark:text-slate-400 font-medium">
-                                  {student.intakeTerm}
-                                </span>
-                              </div>
+                            {/* Passport & Term */}
+                            <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                              <button
+                                type="button"
+                                onClick={(e) => handleCopy(e, student.passportNumber)}
+                                title="Click to copy passport number"
+                                className="inline-flex items-center gap-1 font-mono text-[11px] text-[#172B4D]/75 dark:text-slate-300 hover:text-[#1769E8] dark:hover:text-blue-400 transition-colors"
+                              >
+                                <span>{student.passportNumber}</span>
+                                {copiedText === student.passportNumber ? (
+                                  <Check className="w-3 h-3 text-[#16A36A]" />
+                                ) : (
+                                  <Copy className="w-2.5 h-2.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+                                )}
+                              </button>
+                              <span className="text-slate-400" aria-hidden="true">
+                                ·
+                              </span>
+                              <span className="text-[#172B4D]/60 dark:text-slate-400 font-medium">
+                                {student.intakeTerm}
+                              </span>
                             </div>
                           </div>
                         </td>
@@ -725,22 +703,15 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                   onClick={() => onSelectStudent(student)}
                   className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-4 space-y-3 hover:shadow-md hover:border-[#1769E8]/40 transition-all cursor-pointer flex flex-col justify-between"
                 >
-                  {/* Card Header: Avatar, Name, ID & Stage */}
+                  {/* Card Header: Name, ID & Stage */}
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#123B78] to-[#1769E8] text-white shrink-0 flex items-center justify-center font-bold text-xs shadow-xs">
-                          {getInitials(student.fullName)}
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-sm text-[#172B4D] dark:text-slate-100 leading-tight">
-                            {student.fullName}
-                          </h3>
-                          <div className="flex items-center gap-1.5 text-[10px] text-[#172B4D]/60 dark:text-slate-400 font-mono mt-0.5">
-                            <span>{student.id}</span>
-                            <span>·</span>
-                            <span>{student.intakeTerm}</span>
-                          </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-[#172B4D] dark:text-slate-100 leading-tight">
+                          {student.fullName}
+                        </h3>
+                        <div className="flex items-center gap-1.5 text-[10px] text-[#172B4D]/60 dark:text-slate-400 font-mono mt-0.5">
+                          <span>{student.intakeTerm}</span>
                         </div>
                       </div>
 
@@ -845,6 +816,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };

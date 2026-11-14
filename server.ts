@@ -11,7 +11,6 @@ import {
   getDocumentRequestById,
   getHandoverById,
   getHandoverStats,
-  HandoverError,
   listDocumentRequests,
   listHandovers,
   submitHandoverFollowUp,
@@ -887,7 +886,7 @@ async function startServer() {
   // ==========================================
   // INTAKE PROJECTS API
   // ==========================================
-  app.get('/api/projects', (req: AuthenticatedRequest, res: Response) => {
+  app.get('/api/projects', (_req: AuthenticatedRequest, res: Response) => {
     const projects = db.prepare(`
       SELECT 
         p.*,
@@ -1197,6 +1196,7 @@ async function startServer() {
       intakeTerm,
       visaStage,
       admissionResult,
+      certificateOfAdmissionNo,
       tuitionFeePaid !== undefined ? (tuitionFeePaid ? 1 : 0) : null,
       courierName,
       courierTrackingNumber,

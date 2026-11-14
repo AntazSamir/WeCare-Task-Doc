@@ -3,12 +3,7 @@ import { createPortal } from 'react-dom';
 import {
   Building2,
   Calendar,
-  Users,
   Plus,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
   X,
 } from 'lucide-react';
 import { IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';

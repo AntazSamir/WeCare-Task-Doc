@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Users, GraduationCap, Building2 } from 'lucide-react';
+import { X, Users } from 'lucide-react';
 import { DegreeLevel, IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createStudent } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
@@ -359,6 +359,20 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
                 ))}
               </MorphSelectContent>
             </MorphSelect>
+          </div>
+
+          {/* Notes */}
+          <div className="text-xs">
+            <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
+              Notes / Remarks (optional)
+            </label>
+            <textarea
+              rows={2}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Any additional notes about this candidate..."
+              className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none resize-none"
+            />
           </div>
 
           {/* Submit Buttons */}

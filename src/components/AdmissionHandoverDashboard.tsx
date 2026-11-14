@@ -477,8 +477,9 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
           })}
       </div>
 
-      {/* Content Area */}
-      {activeTab === 'outbox' && isAdmin ? (
+      {/* Content Area with smooth tab transition */}
+      <div key={activeTab} className="animate-tab-enter">
+        {activeTab === 'outbox' && isAdmin ? (
         <div className="space-y-4">
           {/* Outbox Queue Controls */}
           <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-4 flex flex-wrap items-center justify-between gap-3">
@@ -1036,6 +1037,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };

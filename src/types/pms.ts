@@ -1,4 +1,4 @@
-import { Task, TaskPriority, TaskCategory } from './task';
+import { Task, TaskPriority } from './task';
 
 export type UserRole = 'Admission_Manager' | 'Consultant';
 

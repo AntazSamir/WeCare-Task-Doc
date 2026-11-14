@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import {
   RefreshCw,
   CheckCircle2,
-  AlertCircle,
-  Plus,
   Download,
   Upload,
   KeyRound,
@@ -513,6 +511,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         </div>
       </div>
 
+      <div key={activeSubTab} className="animate-tab-enter space-y-4">
       {activeSubTab === 'sheet-grid' && (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md overflow-hidden">
           <div className="px-4 py-3 bg-[#16A36A]/10 dark:bg-emerald-950/20 border-b border-[#E3EAF3] dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -522,7 +521,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
               </span>
               <span aria-hidden="true">·</span>
               <span>
-                12 Required Columns Active · Zero Duplicate Task IDs Guaranteed
+                12 Required Columns Active · Zero Duplicates Guaranteed
               </span>
             </div>
             <div className="font-mono tabular-nums text-[#172B4D]/65 dark:text-slate-400">
@@ -758,7 +757,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                 <tr>
                   <th className="py-2.5 px-3 font-medium">Timestamp</th>
                   <th className="py-2.5 px-3 font-medium">Operation</th>
-                  <th className="py-2.5 px-3 font-medium">Task ID</th>
                   <th className="py-2.5 px-3 font-medium">Sheet Range</th>
                   <th className="py-2.5 px-3 font-medium">Status</th>
                   <th className="py-2.5 px-3 font-medium">Details</th>
@@ -772,9 +770,6 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                     </td>
                     <td className="py-2.5 px-3 font-mono font-semibold text-[#172B4D] dark:text-slate-300 whitespace-nowrap">
                       {log.action}
-                    </td>
-                    <td className="py-2.5 px-3 font-mono tabular-nums text-[#1769E8] dark:text-blue-400 whitespace-nowrap">
-                      {log.taskId || '—'}
                     </td>
                     <td className="py-2.5 px-3 font-mono text-[#172B4D]/65 whitespace-nowrap">
                       {log.rowRange || '—'}
@@ -818,9 +813,8 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                 and sync queue states are stored locally in <code className="font-mono">data/sheetsync_sqlite_store.json</code> and mirrored to browser storage for instant offline startup.
               </li>
               <li>
-                <strong>Idempotent Deduping by Task ID:</strong> Every task has a unique immutable{' '}
-                <code className="font-mono">Task ID</code> (Column A). During synchronization, rows
-                are matched strictly by <code className="font-mono">Task ID</code> and reconciled by{' '}
+                <strong>Idempotent Deduping:</strong> Every task has a unique immutable internal ID (Column A). During synchronization, rows
+                are matched strictly by internal ID and reconciled by{' '}
                 <code className="font-mono">Last Updated</code> (Column L), preventing duplicate rows.
               </li>
               <li>
@@ -879,6 +873,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

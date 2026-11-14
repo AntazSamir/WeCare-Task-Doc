@@ -1,23 +1,17 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
   Calendar,
   Plus,
   Check,
-  AlertTriangle,
   Clock,
-  RotateCcw,
-  Edit3,
-  Copy,
   Trash2,
   CalendarPlus,
   Briefcase,
   GraduationCap,
   Building2,
   User,
-  Tag,
-  FileSpreadsheet,
   ArrowRight,
   Plane,
   FileText,
@@ -60,12 +54,12 @@ interface CalendarAgendaTaskItemProps {
 
 const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
   task,
-  selectedDateIso,
+  selectedDateIso: _selectedDateIso,
   todayIso,
   onRequestComplete,
   onRestorePending,
   onEdit,
-  onDuplicate,
+  onDuplicate: _onDuplicate,
   onDelete,
   onQuickReschedule,
 }) => {
@@ -537,7 +531,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
 
         {/* Selected Date Agenda Panel (Expanded to lg:col-span-7 xl:col-span-7) */}
-        <div className="lg:col-span-7 xl:col-span-7 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-2xl p-5 space-y-4 shadow-xs">
+        <div className="lg:col-span-7 xl:col-span-7 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+          <div key={selectedDateIso} className="animate-tab-enter space-y-4">
           <div className="flex items-center justify-between border-b border-[#E3EAF3] dark:border-slate-800 pb-3 gap-2">
             <div>
               <div className="flex items-center gap-2">
@@ -607,6 +602,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               ))}
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>

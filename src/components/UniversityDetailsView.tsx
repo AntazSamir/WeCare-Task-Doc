@@ -20,11 +20,8 @@ import {
   AlertCircle,
   Users,
   CreditCard,
-  RefreshCw,
   X,
-  FileCheck2,
   ChevronRight,
-  Info,
   CalendarDays,
   Percent,
   Star,
@@ -33,12 +30,8 @@ import {
 } from 'lucide-react';
 import {
   AdmissionIntake,
-  DegreeLevel,
   KoreanUniversity,
-  UniversityBankAccount,
-  UniversityDocument,
   UniversityProgram,
-  UniversityRefundPolicy,
   UserProfile,
 } from '../types/pms';
 import {
@@ -215,13 +208,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
   });
 
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-3.5 animate-page-enter">
 
       <div className="flex items-center justify-between gap-4">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all shadow-xs group"
+          className="inline-flex items-center gap-2 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all shadow-xs group"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5 text-slate-600 dark:text-slate-300" />
           <span>Back to Universities</span>
@@ -234,7 +227,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               onClick={handleReverify}
               disabled={isVerifying}
               title="Confirm that university admission criteria, fees, and bank coordinates are currently validated"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
             >
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               <span>{isVerifying ? 'Re-verifying...' : 'Re-verify Criteria'}</span>
@@ -245,7 +238,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             <button
               type="button"
               onClick={() => setShowEditUniModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
             >
               <Edit2 className="w-3.5 h-3.5" />
               <span>Edit Info</span>
@@ -334,7 +327,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('intakes')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
             activeTab === 'intakes'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -347,7 +340,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('programs')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
             activeTab === 'programs'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -360,7 +353,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('tuition')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
             activeTab === 'tuition'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -373,7 +366,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('refund')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
             activeTab === 'refund'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -386,7 +379,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('bank')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
             activeTab === 'bank'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -399,7 +392,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('documents')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
             activeTab === 'documents'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -412,7 +405,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('dates')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
             activeTab === 'dates'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -426,7 +419,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('applicants')}
-            className={`flex items-center gap-1 px-3.5 py-1.5 rounded-md font-medium transition-all shrink-0 ${
+            className={`inline-flex items-center gap-1 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
               activeTab === 'applicants'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -457,8 +450,6 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         const klpProgram = programs.find((p) => p.code === 'KLP' || p.name.includes('Korean Language'));
         const ksuProgram = programs.find((p) => p.code === 'KSU' || p.name.includes('Korean Studies'));
         const eapProgram = programs.find((p) => p.code === 'EAP' || p.name.includes('English Academic'));
-        const underProgram = programs.find((p) => p.degreeLevel.includes('Bachelor') && p.code !== 'KSU');
-        const gradProgram = programs.find((p) => p.degreeLevel.includes('Master') || p.degreeLevel.includes('Doctorate'));
 
         const formatDateClean = (dStr?: string) => {
           if (!dStr) return '';
@@ -1095,13 +1086,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
             <div className="flex items-center gap-2">
               {/* Program Segmented Filters */}
-              <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs">
+              <div className="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs h-[28px] box-border">
                 {['All', 'KLP', 'Undergraduate', 'Graduate', 'Pathway'].map((cat) => (
                   <button
                     key={cat}
                     type="button"
                     onClick={() => setProgramFilter(cat)}
-                    className={`px-3 py-1 font-medium rounded-md transition-colors ${
+                    className={`px-2.5 h-[24px] box-border inline-flex items-center font-medium rounded-md transition-colors ${
                       programFilter === cat
                         ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1119,7 +1110,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     setEditingProgram(null);
                     setShowProgramModal(true);
                   }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Add Program
@@ -1274,7 +1265,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowEditRefundModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 Edit Refund Terms
@@ -1398,7 +1389,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowEditBankModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 Edit Bank Details
@@ -1572,7 +1563,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowAddDocModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Upload / Link Document
@@ -1657,7 +1648,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   setEditingIntake(null);
                   setShowIntakeModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Intake Schedule
@@ -1776,7 +1767,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono">
                     <tr>
-                      <th className="px-4 py-3">Candidate ID & Name</th>
+                      <th className="px-4 py-3">Candidate Name</th>
                       <th className="px-4 py-3">Passport No</th>
                       <th className="px-4 py-3">Program / Major</th>
                       <th className="px-4 py-3">Intake</th>
@@ -1789,8 +1780,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     {applicants.map((app) => (
                       <tr key={app.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                         <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">
-                          <div>{app.fullName}</div>
-                          <div className="text-[11px] font-mono text-slate-400">{app.id}</div>
+                          {app.fullName}
                         </td>
                         <td className="px-4 py-3 font-mono font-semibold text-slate-700 dark:text-slate-300">
                           {app.passportNumber}
