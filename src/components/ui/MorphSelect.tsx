@@ -31,7 +31,7 @@ const MORPH: Transition = { type: 'spring', duration: 0.5, bounce: 0.22 };
 
 // Trigger and panel header share this row so the morph stays seamless.
 const ROW =
-  'flex w-full items-center justify-between gap-2 px-3.5 py-2.5 text-sm';
+  'flex w-full items-center justify-between gap-1.5 px-2.5 py-1.5 text-xs';
 
 const LIST: Variants = {
   hidden: {},
@@ -204,10 +204,10 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
       {/* invisible sizer — keeps surrounding layout from shifting when the morph panel is absolute */}
       <div
         aria-hidden
-        className={cn(ROW, 'invisible rounded-xl border border-[#E3EAF3] dark:border-slate-700')}
+        className={cn(ROW, 'invisible rounded-md border border-[#E3EAF3] dark:border-slate-700', className)}
       >
         {children}
-        <ChevronDown className="h-4 w-4 shrink-0" />
+        <ChevronDown className="h-3.5 w-3.5 shrink-0" />
       </div>
 
       <AnimatePresence initial={false} mode="popLayout">
@@ -223,14 +223,14 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
             aria-controls={ctx.listId}
             onClick={() => ctx.setOpen(true)}
             transition={ctx.reduce ? { duration: 0 } : MORPH}
-            style={{ borderRadius: 10 }}
+            style={{ borderRadius: 6 }}
             className={cn(
               ROW,
               'absolute inset-x-0 top-0 z-10 border border-[#E3EAF3] dark:border-slate-700',
               'bg-white dark:bg-slate-800 text-[#172B4D] dark:text-slate-100',
               'outline-none transition-colors cursor-pointer',
               'hover:border-[#1769E8] dark:hover:border-blue-500',
-              'focus-visible:ring-2 focus-visible:ring-[#1769E8]/20',
+              'focus-visible:ring-1 focus-visible:ring-[#1769E8]',
               'disabled:pointer-events-none disabled:opacity-50',
               className,
             )}
@@ -239,7 +239,7 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
               {children}
             </motion.span>
             <motion.span layout="position" className="text-[#899BB1] dark:text-slate-400 shrink-0">
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="h-3.5 w-3.5" />
             </motion.span>
           </motion.button>
         ) : null}
@@ -270,7 +270,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
             role="listbox"
             aria-labelledby={ctx.triggerId}
             transition={ctx.reduce ? { duration: 0 } : MORPH}
-            style={{ borderRadius: 10 }}
+            style={{ borderRadius: 6 }}
             className={cn(
               'absolute inset-x-0 top-0 z-50 overflow-hidden',
               'border border-[#E3EAF3] dark:border-slate-700',
@@ -285,7 +285,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
               layout="position"
               aria-expanded
               onClick={() => ctx.setOpen(false)}
-              className={cn(ROW, 'outline-none hover:bg-[#F4F2EE] dark:hover:bg-slate-700/50 transition-colors')}
+              className={cn(ROW, 'outline-none hover:bg-[#F4F2EE] dark:hover:bg-slate-700/50 transition-colors cursor-pointer')}
             >
               <span
                 className={cn(
@@ -302,7 +302,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
                 transition={ctx.reduce ? { duration: 0 } : MORPH}
                 className="text-[#899BB1] dark:text-slate-400 shrink-0"
               >
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-3.5 w-3.5" />
               </motion.span>
             </motion.button>
 
@@ -312,7 +312,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
               initial="hidden"
               animate="show"
               variants={ctx.reduce ? undefined : LIST}
-              className="p-1 max-h-56 overflow-y-auto"
+              className="p-1 max-h-52 overflow-y-auto space-y-0.5"
             >
               {children}
             </motion.ul>
@@ -354,7 +354,7 @@ export function MorphSelectItem({
         disabled={disabled}
         onClick={() => ctx.select(value)}
         className={cn(
-          'flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-left text-sm outline-none transition-colors',
+          'flex w-full items-center justify-between gap-2 rounded px-2 py-1 text-left text-xs outline-none transition-colors cursor-pointer',
           selected
             ? 'bg-[#DCEBFF] dark:bg-blue-900/40 text-[#1769E8] dark:text-blue-300 font-medium'
             : 'text-[#5E718D] dark:text-slate-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-700/60 hover:text-[#172B4D] dark:hover:text-slate-100',
@@ -363,7 +363,7 @@ export function MorphSelectItem({
         )}
       >
         <span className="truncate">{children}</span>
-        {selected ? <Check className="h-3.5 w-3.5 shrink-0 text-[#1769E8] dark:text-blue-400" /> : null}
+        {selected ? <Check className="h-3 w-3 shrink-0 text-[#1769E8] dark:text-blue-400" /> : null}
       </button>
     </motion.li>
   );
