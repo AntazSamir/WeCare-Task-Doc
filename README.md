@@ -52,6 +52,12 @@
 - Light / Dark / System selector in Settings — preference persisted across sessions
 - Flash-of-wrong-theme prevention (synchronous script before first paint)
 
+### ⚡ Smooth Transitions & Ergonomic UI Architecture
+- **Motion System**: Subtle, fluid CSS animations (`animate-page-enter`, `animate-modal-backdrop`, `animate-modal-card`, `animate-drawer-enter`, `animate-tab-enter`, `animate-dropdown-enter`) with 150ms–240ms duration and `cubic-bezier(0.16, 1, 0.3, 1)` easing.
+- **Accessibility & Motion Safety**: Native `@media (prefers-reduced-motion: reduce)` support that disables animations for users requiring reduced motion.
+- **Consistent Compact Controls**: Standardized 28px control height (`h-[28px] box-border`) across all toolbars, search bars, segmented pills, and dropdown triggers (`MorphSelect`) for high-density professional productivity.
+- **Flicker-Free Layouts**: Optimized keying and state persistence to prevent unwanted card re-renders and layout shifts.
+
 ---
 
 ## 🏗️ Tech Stack
@@ -248,10 +254,17 @@ The UI uses centralized CSS variables defined in `src/index.css` for both light 
 
 ---
 
-## 🧪 Running Tests
+## 🧪 Running Tests & Quality Checks
 
 ```bash
+# Run backend test suite
 npx tsx tests/handoverBackend.test.ts
+
+# Strict TypeScript type check
+npm run lint
+
+# Production bundle build
+npm run build
 ```
 
 ---
