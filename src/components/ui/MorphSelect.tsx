@@ -31,7 +31,7 @@ const MORPH: Transition = { type: 'spring', duration: 0.5, bounce: 0.22 };
 
 // Trigger and panel header share this row so the morph stays seamless.
 const ROW =
-  'h-8 flex w-full items-center justify-between gap-1.5 px-2.5 text-xs leading-none';
+  'h-[28px] flex w-full items-center justify-between gap-1.5 px-2.5 text-xs leading-none box-border';
 
 const LIST: Variants = {
   hidden: {},
@@ -162,7 +162,7 @@ export function MorphSelect({
 
   return (
     <MorphContext.Provider value={ctx}>
-      <div ref={rootRef} className={cn('relative w-full', className)}>
+      <div ref={rootRef} className={cn('relative w-full h-[28px] box-border', className)}>
         {children}
       </div>
     </MorphContext.Provider>
@@ -201,51 +201,40 @@ export interface MorphSelectTriggerProps {
 export function MorphSelectTrigger({ className, children }: MorphSelectTriggerProps) {
   const ctx = useMorphContext('MorphSelectTrigger');
   return (
-    <>
-      {/* invisible sizer — keeps surrounding layout from shifting when the morph panel is absolute */}
-      <div
-        aria-hidden
-        className={cn(ROW, 'invisible rounded-md border border-[#E3EAF3] dark:border-slate-700', className)}
-      >
-        <span className="min-w-0 truncate text-left flex-1 block">{children}</span>
-        <ChevronDown className="h-3.5 w-3.5 shrink-0 ml-1" />
-      </div>
-
-      <AnimatePresence initial={false} mode="popLayout">
-        {!ctx.open ? (
-          <motion.button
-            key="trigger"
-            layoutId={ctx.layoutId}
-            type="button"
-            id={ctx.triggerId}
-            disabled={ctx.disabled}
-            aria-haspopup="listbox"
-            aria-expanded={ctx.open}
-            aria-controls={ctx.listId}
-            onClick={() => ctx.setOpen(true)}
-            transition={ctx.reduce ? { duration: 0 } : MORPH}
-            style={{ borderRadius: 6 }}
-            className={cn(
-              ROW,
-              'absolute inset-x-0 top-0 z-10 border border-[#E3EAF3] dark:border-slate-700',
-              'bg-white dark:bg-slate-800 text-[#172B4D] dark:text-slate-100',
-              'outline-none transition-colors cursor-pointer',
-              'hover:border-[#1769E8] dark:hover:border-blue-500',
-              'focus-visible:ring-1 focus-visible:ring-[#1769E8]',
-              'disabled:pointer-events-none disabled:opacity-50',
-              className,
-            )}
-          >
-            <motion.span layout="position" className="min-w-0 truncate text-left flex-1 block">
-              {children}
-            </motion.span>
-            <motion.span layout="position" className="text-[#899BB1] dark:text-slate-400 shrink-0 ml-1">
-              <ChevronDown className="h-3.5 w-3.5" />
-            </motion.span>
-          </motion.button>
-        ) : null}
-      </AnimatePresence>
-    </>
+    <AnimatePresence initial={false}>
+      {!ctx.open ? (
+        <motion.button
+          key="trigger"
+          layoutId={ctx.layoutId}
+          type="button"
+          id={ctx.triggerId}
+          disabled={ctx.disabled}
+          aria-haspopup="listbox"
+          aria-expanded={ctx.open}
+          aria-controls={ctx.listId}
+          onClick={() => ctx.setOpen(true)}
+          transition={ctx.reduce ? { duration: 0 } : MORPH}
+          style={{ borderRadius: 6 }}
+          className={cn(
+            ROW,
+            'rounded-md border border-[#E3EAF3] dark:border-slate-700',
+            'bg-white dark:bg-slate-800 text-[#172B4D] dark:text-slate-100',
+            'outline-none transition-colors cursor-pointer',
+            'hover:border-[#1769E8] dark:hover:border-blue-500',
+            'focus-visible:ring-1 focus-visible:ring-[#1769E8]',
+            'disabled:pointer-events-none disabled:opacity-50',
+            className,
+          )}
+        >
+          <motion.span layout="position" className="min-w-0 truncate text-left flex-1 block">
+            {children}
+          </motion.span>
+          <motion.span layout="position" className="text-[#899BB1] dark:text-slate-400 shrink-0 ml-1">
+            <ChevronDown className="h-3.5 w-3.5" />
+          </motion.span>
+        </motion.button>
+      ) : null}
+    </AnimatePresence>
   );
 }
 
@@ -262,7 +251,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
       {/* always-mounted hidden copy — keeps item registrations alive while closed */}
       <div className="hidden">{children}</div>
 
-      <AnimatePresence initial={false} mode="popLayout">
+      <AnimatePresence initial={false}>
         {ctx.open ? (
           <motion.div
             key="panel"

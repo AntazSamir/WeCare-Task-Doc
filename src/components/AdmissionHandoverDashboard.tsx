@@ -647,7 +647,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                     ? 'Search Request ID, linked Handover ID, student, counselor, or doc...'
                     : 'Search Handover ID, Request ID, student, passport, or doc...'
                 }
-                className="w-full pl-8 pr-3 h-[32px] text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
+                className="w-full pl-8 pr-3 h-[28px] text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
               />
             </div>
 
@@ -736,7 +736,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
                 title={activeTab === 'my-requests' ? 'Deadline / Created From' : 'Handover Date From'}
-                className="w-full px-2 h-[32px] text-[11px] rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 font-mono focus:border-[#1769E8] focus:outline-none"
+                className="w-full px-2 h-[28px] text-[11px] rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 font-mono focus:border-[#1769E8] focus:outline-none"
               />
               {hasActiveFilters && (
                 <button
