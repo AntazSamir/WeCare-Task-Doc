@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   PackageCheck,
@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { DocumentFormat, DocumentHandover, UserProfile } from '../types/pms';
 import { submitHandoverFollowUpApi } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface FollowUpDeliveryModalProps {
   handover: DocumentHandover | null;
@@ -248,22 +249,26 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                       <div className="mt-2.5 pl-6 grid grid-cols-1 sm:grid-cols-4 gap-2">
                         <div>
                           <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">Format</label>
-                          <select
+                          <MorphSelect
                             value={meta.format}
-                            onChange={(e) =>
+                            onValueChange={(v) =>
                               setItemMeta((prev) => ({
                                 ...prev,
-                                [item.id]: { ...meta, format: e.target.value as DocumentFormat },
+                                [item.id]: { ...meta, format: v as DocumentFormat },
                               }))
                             }
-                            className="w-full px-2 py-1 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
                           >
-                            <option value="Original">Original</option>
-                            <option value="Apostilled">Apostilled</option>
-                            <option value="Notarized">Notarized</option>
-                            <option value="Certified Copy">Certified Copy</option>
-                            <option value="Photocopy">Photocopy</option>
-                          </select>
+                            <MorphSelectTrigger>
+                              <MorphSelectValue placeholder="Format" />
+                            </MorphSelectTrigger>
+                            <MorphSelectContent>
+                              <MorphSelectItem value="Original">Original</MorphSelectItem>
+                              <MorphSelectItem value="Apostilled">Apostilled</MorphSelectItem>
+                              <MorphSelectItem value="Notarized">Notarized</MorphSelectItem>
+                              <MorphSelectItem value="Certified Copy">Certified Copy</MorphSelectItem>
+                              <MorphSelectItem value="Photocopy">Photocopy</MorphSelectItem>
+                            </MorphSelectContent>
+                          </MorphSelect>
                         </div>
                         <div>
                           <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">Qty</label>

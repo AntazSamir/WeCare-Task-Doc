@@ -18,6 +18,7 @@ import {
 import { PmsTask, SubtaskItem, UserProfile, KoreanUniversity, IntakeProject, StudentApplication } from '../types/pms';
 import { TaskCategory, TaskPriority } from '../types/task';
 import { getLocalTodayIso } from '../utils/dateUtils';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface EnhancedTaskModalProps {
   isOpen: boolean;
@@ -227,18 +228,22 @@ export function EnhancedTaskModal({
                 <User className="w-3.5 h-3.5 text-[#1769E8]" />
                 Assign Responsibility
               </label>
-              <select
+              <MorphSelect
                 value={assignedToId}
-                onChange={(e) => setAssignedToId(e.target.value)}
+                onValueChange={(v) => setAssignedToId(v)}
                 disabled={currentUser.role === 'Consultant'}
-                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none disabled:opacity-60"
               >
-                {team.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name} ({m.role === 'Admission_Manager' ? 'Manager' : 'Consultant'})
-                  </option>
-                ))}
-              </select>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  {team.map((m) => (
+                    <MorphSelectItem key={m.id} value={m.id}>
+                      {m.name} ({m.role === 'Admission_Manager' ? 'Manager' : 'Consultant'})
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div>
@@ -246,33 +251,35 @@ export function EnhancedTaskModal({
                 <AlertCircle className="w-3.5 h-3.5 text-[#E9A23B]" />
                 Priority
               </label>
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as any)}
-                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="Urgent">🚨 Urgent (Immediate)</option>
-                <option value="High">🔴 High Priority</option>
-                <option value="Medium">🟡 Medium Priority</option>
-                <option value="Low">🔵 Low Priority</option>
-              </select>
+              <MorphSelect value={priority} onValueChange={(v) => setPriority(v as any)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  <MorphSelectItem value="Urgent">🚨 Urgent (Immediate)</MorphSelectItem>
+                  <MorphSelectItem value="High">🔴 High Priority</MorphSelectItem>
+                  <MorphSelectItem value="Medium">🟡 Medium Priority</MorphSelectItem>
+                  <MorphSelectItem value="Low">🔵 Low Priority</MorphSelectItem>
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#172B4D] dark:text-slate-300 mb-1.5">
                 Category
               </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value as TaskCategory)}
-                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="Work">Admission / Visa</option>
-                <option value="Business">Document / DHL</option>
-                <option value="Study">Student Dossier</option>
-                <option value="Personal">Follow-up</option>
-                <option value="Other">Other</option>
-              </select>
+              <MorphSelect value={category} onValueChange={(v) => setCategory(v as TaskCategory)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  <MorphSelectItem value="Work">Admission / Visa</MorphSelectItem>
+                  <MorphSelectItem value="Business">Document / DHL</MorphSelectItem>
+                  <MorphSelectItem value="Study">Student Dossier</MorphSelectItem>
+                  <MorphSelectItem value="Personal">Follow-up</MorphSelectItem>
+                  <MorphSelectItem value="Other">Other</MorphSelectItem>
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
           </div>
 
@@ -331,18 +338,19 @@ export function EnhancedTaskModal({
                   <GraduationCap className="w-3 h-3 text-[#16A36A]" />
                   Candidate / Student
                 </label>
-                <select
-                  value={studentId}
-                  onChange={(e) => setStudentId(e.target.value)}
-                  className="w-full px-2.5 py-1.5 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-                >
-                  <option value="">— None —</option>
-                  {students.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.fullName} ({s.id})
-                    </option>
-                  ))}
-                </select>
+                <MorphSelect value={studentId} onValueChange={(v) => setStudentId(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="">— None —</MorphSelectItem>
+                    {students.map((s) => (
+                      <MorphSelectItem key={s.id} value={s.id}>
+                        {s.fullName} ({s.id})
+                      </MorphSelectItem>
+                    ))}
+                  </MorphSelectContent>
+                </MorphSelect>
               </div>
 
               <div>
@@ -350,18 +358,19 @@ export function EnhancedTaskModal({
                   <FolderKanban className="w-3 h-3 text-[#1769E8]" />
                   Intake Project
                 </label>
-                <select
-                  value={projectId}
-                  onChange={(e) => setProjectId(e.target.value)}
-                  className="w-full px-2.5 py-1.5 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-                >
-                  <option value="">— None —</option>
-                  {projects.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+                <MorphSelect value={projectId} onValueChange={(v) => setProjectId(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="">— None —</MorphSelectItem>
+                    {projects.map((p) => (
+                      <MorphSelectItem key={p.id} value={p.id}>
+                        {p.name}
+                      </MorphSelectItem>
+                    ))}
+                  </MorphSelectContent>
+                </MorphSelect>
               </div>
 
               <div>
@@ -369,18 +378,19 @@ export function EnhancedTaskModal({
                   <Building2 className="w-3 h-3 text-[#E9A23B]" />
                   University
                 </label>
-                <select
-                  value={universityId}
-                  onChange={(e) => setUniversityId(e.target.value)}
-                  className="w-full px-2.5 py-1.5 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-                >
-                  <option value="">— None —</option>
-                  {universities.map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.nameEn}
-                    </option>
-                  ))}
-                </select>
+                <MorphSelect value={universityId} onValueChange={(v) => setUniversityId(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="">— None —</MorphSelectItem>
+                    {universities.map((u) => (
+                      <MorphSelectItem key={u.id} value={u.id}>
+                        {u.nameEn}
+                      </MorphSelectItem>
+                    ))}
+                  </MorphSelectContent>
+                </MorphSelect>
               </div>
             </div>
           </div>

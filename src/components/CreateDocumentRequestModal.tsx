@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Plus,
@@ -17,6 +17,7 @@ import {
   UserProfile,
 } from '../types/pms';
 import { createDocumentRequestApi } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface CreateDocumentRequestModalProps {
   isOpen: boolean;
@@ -263,19 +264,18 @@ export const CreateDocumentRequestModal: React.FC<CreateDocumentRequestModalProp
                 <GraduationCap className="w-3.5 h-3.5 text-[#16A36A]" />
                 Student Dossier <span className="text-[#DC4545]">*</span>
               </label>
-              <select
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                required
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="">-- Select Student --</option>
-                {(contextData?.students || []).map((stu) => (
-                  <option key={stu.id} value={stu.id}>
-                    {stu.fullName} ({stu.passportNumber}) — {stu.universityName || stu.intakeTerm} [{stu.id}]
-                  </option>
-                ))}
-              </select>
+              <MorphSelect value={studentId} onValueChange={(v) => setStudentId(v)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="-- Select Student --" />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  {(contextData?.students || []).map((stu) => (
+                    <MorphSelectItem key={stu.id} value={stu.id}>
+                      {stu.fullName} ({stu.passportNumber}) — {stu.universityName || stu.intakeTerm} [{stu.id}]
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div className="space-y-1.5">
@@ -283,19 +283,18 @@ export const CreateDocumentRequestModal: React.FC<CreateDocumentRequestModalProp
                 <UserCheck className="w-3.5 h-3.5 text-[#1769E8]" />
                 Target Counselor (Counseling Team) <span className="text-[#DC4545]">*</span>
               </label>
-              <select
-                value={assignedCounselorId}
-                onChange={(e) => setAssignedCounselorId(e.target.value)}
-                required
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="">-- Select Counselor --</option>
-                {(contextData?.counselingTeam || []).map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name} — {c.title} [{c.id}]
-                  </option>
-                ))}
-              </select>
+              <MorphSelect value={assignedCounselorId} onValueChange={(v) => setAssignedCounselorId(v)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="-- Select Counselor --" />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  {(contextData?.counselingTeam || []).map((c) => (
+                    <MorphSelectItem key={c.id} value={c.id}>
+                      {c.name} — {c.title} [{c.id}]
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div className="space-y-1.5">
@@ -303,16 +302,17 @@ export const CreateDocumentRequestModal: React.FC<CreateDocumentRequestModalProp
                 <Flag className="w-3.5 h-3.5 text-[#E9A23B]" />
                 Request Priority <span className="text-[#DC4545]">*</span>
               </label>
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as RequestPriority)}
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="Urgent">Urgent (Immediate University/Visa Deadline)</option>
-                <option value="High">High Priority</option>
-                <option value="Normal">Normal</option>
-                <option value="Low">Low</option>
-              </select>
+              <MorphSelect value={priority} onValueChange={(v) => setPriority(v as RequestPriority)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select priority..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  <MorphSelectItem value="Urgent">Urgent (Immediate University/Visa Deadline)</MorphSelectItem>
+                  <MorphSelectItem value="High">High Priority</MorphSelectItem>
+                  <MorphSelectItem value="Normal">Normal</MorphSelectItem>
+                  <MorphSelectItem value="Low">Low</MorphSelectItem>
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div className="space-y-1.5">
@@ -383,19 +383,21 @@ export const CreateDocumentRequestModal: React.FC<CreateDocumentRequestModalProp
 
                 <div className="sm:col-span-2 space-y-1">
                   <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400">Format</label>
-                  <select
+                  <MorphSelect
                     value={doc.format}
-                    onChange={(e) =>
-                      handleUpdateRow(idx, { format: e.target.value as DocumentFormat })
-                    }
-                    className="w-full px-2 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
+                    onValueChange={(v) => handleUpdateRow(idx, { format: v as DocumentFormat })}
                   >
-                    <option value="Original">Original</option>
-                    <option value="Apostilled">Apostilled</option>
-                    <option value="Notarized">Notarized</option>
-                    <option value="Certified Copy">Certified Copy</option>
-                    <option value="Photocopy">Photocopy</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Format" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Original">Original</MorphSelectItem>
+                      <MorphSelectItem value="Apostilled">Apostilled</MorphSelectItem>
+                      <MorphSelectItem value="Notarized">Notarized</MorphSelectItem>
+                      <MorphSelectItem value="Certified Copy">Certified Copy</MorphSelectItem>
+                      <MorphSelectItem value="Photocopy">Photocopy</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
 
                 <div className="sm:col-span-1 space-y-1">

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   FileCheck2,
   Plus,
@@ -22,6 +22,7 @@ import {
   UserProfile,
 } from '../types/pms';
 import { fetchDocumentRequests, fetchHandovers } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 export type CounselorTab =
   | 'requests'
@@ -397,63 +398,66 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         </div>
 
         <div className="md:col-span-2">
-          <select
-            value={admissionFilter}
-            onChange={(e) => setAdmissionFilter(e.target.value)}
-            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-          >
-            <option value="">All Admission Officers</option>
-            {(contextData?.admissionTeam || []).map((emp) => (
-              <option key={emp.id} value={emp.id}>
-                {emp.name}
-              </option>
-            ))}
-          </select>
+          <MorphSelect value={admissionFilter} onValueChange={(v) => setAdmissionFilter(v)}>
+            <MorphSelectTrigger>
+              <MorphSelectValue placeholder="All Admission Officers" />
+            </MorphSelectTrigger>
+            <MorphSelectContent>
+              <MorphSelectItem value="">All Admission Officers</MorphSelectItem>
+              {(contextData?.admissionTeam || []).map((emp) => (
+                <MorphSelectItem key={emp.id} value={emp.id}>
+                  {emp.name}
+                </MorphSelectItem>
+              ))}
+            </MorphSelectContent>
+          </MorphSelect>
         </div>
 
         {activeTab === 'requests' && (
           <div className="md:col-span-2">
-            <select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-            >
-              <option value="All">All Priorities</option>
-              <option value="Urgent">Urgent</option>
-              <option value="High">High</option>
-              <option value="Normal">Normal</option>
-              <option value="Low">Low</option>
-            </select>
+            <MorphSelect value={priorityFilter} onValueChange={(v) => setPriorityFilter(v)}>
+              <MorphSelectTrigger>
+                <MorphSelectValue placeholder="All Priorities" />
+              </MorphSelectTrigger>
+              <MorphSelectContent>
+                <MorphSelectItem value="All">All Priorities</MorphSelectItem>
+                <MorphSelectItem value="Urgent">Urgent</MorphSelectItem>
+                <MorphSelectItem value="High">High</MorphSelectItem>
+                <MorphSelectItem value="Normal">Normal</MorphSelectItem>
+                <MorphSelectItem value="Low">Low</MorphSelectItem>
+              </MorphSelectContent>
+            </MorphSelect>
           </div>
         )}
 
         <div className={activeTab === 'requests' ? 'md:col-span-2' : 'md:col-span-4'}>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-          >
-            <option value="All">All Statuses</option>
-            {activeTab === 'requests' ? (
-              <>
-                <option value="Open">Open</option>
-                <option value="Handover Submitted">Handover Submitted</option>
-                <option value="In Verification">In Verification</option>
-                <option value="Partially Fulfilled">Partially Fulfilled</option>
-                <option value="Disputed">Disputed</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </>
-            ) : (
-              <>
-                <option value="Pending Receipt">Pending Receipt</option>
-                <option value="Partially Received">Partially Received</option>
-                <option value="Disputed">Disputed</option>
-                <option value="Follow-up Delivered">Follow-up Delivered</option>
-                <option value="Accepted">Accepted</option>
-              </>
-            )}
-          </select>
+          <MorphSelect value={statusFilter} onValueChange={(v) => setStatusFilter(v)}>
+            <MorphSelectTrigger>
+              <MorphSelectValue placeholder="All Statuses" />
+            </MorphSelectTrigger>
+            <MorphSelectContent>
+              <MorphSelectItem value="All">All Statuses</MorphSelectItem>
+              {activeTab === 'requests' ? (
+                <>
+                  <MorphSelectItem value="Open">Open</MorphSelectItem>
+                  <MorphSelectItem value="Handover Submitted">Handover Submitted</MorphSelectItem>
+                  <MorphSelectItem value="In Verification">In Verification</MorphSelectItem>
+                  <MorphSelectItem value="Partially Fulfilled">Partially Fulfilled</MorphSelectItem>
+                  <MorphSelectItem value="Disputed">Disputed</MorphSelectItem>
+                  <MorphSelectItem value="Completed">Completed</MorphSelectItem>
+                  <MorphSelectItem value="Cancelled">Cancelled</MorphSelectItem>
+                </>
+              ) : (
+                <>
+                  <MorphSelectItem value="Pending Receipt">Pending Receipt</MorphSelectItem>
+                  <MorphSelectItem value="Partially Received">Partially Received</MorphSelectItem>
+                  <MorphSelectItem value="Disputed">Disputed</MorphSelectItem>
+                  <MorphSelectItem value="Follow-up Delivered">Follow-up Delivered</MorphSelectItem>
+                  <MorphSelectItem value="Accepted">Accepted</MorphSelectItem>
+                </>
+              )}
+            </MorphSelectContent>
+          </MorphSelect>
         </div>
 
         <div className="md:col-span-2 flex items-center gap-1.5">

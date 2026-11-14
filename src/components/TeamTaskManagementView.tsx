@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Users,
@@ -50,6 +50,7 @@ import {
   reassignPmsTask,
   updatePmsTask,
 } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 export type TaskViewType =
   | 'all'
@@ -686,34 +687,40 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             {/* Category Filter */}
             <div className="flex items-center gap-1 text-xs">
               <span className="text-[#172B4D]/60 dark:text-slate-400 hidden sm:inline">Category:</span>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-2 py-1 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#1769E8] focus:border-[#1769E8]"
-              >
-                <option value="All">All Categories</option>
-                <option value="Work">Work</option>
-                <option value="Business">Business</option>
-                <option value="Study">Study</option>
-                <option value="Personal">Personal</option>
-                <option value="Other">Other</option>
-              </select>
+              <div className="w-36">
+                <MorphSelect value={selectedCategory} onValueChange={(v) => setSelectedCategory(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="All Categories" />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="All">All Categories</MorphSelectItem>
+                    <MorphSelectItem value="Work">Work</MorphSelectItem>
+                    <MorphSelectItem value="Business">Business</MorphSelectItem>
+                    <MorphSelectItem value="Study">Study</MorphSelectItem>
+                    <MorphSelectItem value="Personal">Personal</MorphSelectItem>
+                    <MorphSelectItem value="Other">Other</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
             </div>
 
             {/* Priority Filter */}
             <div className="flex items-center gap-1 text-xs">
               <span className="text-[#172B4D]/60 dark:text-slate-400 hidden sm:inline">Priority:</span>
-              <select
-                value={selectedPriority}
-                onChange={(e) => setSelectedPriority(e.target.value)}
-                className="px-2 py-1 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#1769E8] focus:border-[#1769E8]"
-              >
-                <option value="All">All Priorities</option>
-                <option value="Urgent">Urgent</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
+              <div className="w-36">
+                <MorphSelect value={selectedPriority} onValueChange={(v) => setSelectedPriority(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="All Priorities" />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="All">All Priorities</MorphSelectItem>
+                    <MorphSelectItem value="Urgent">Urgent</MorphSelectItem>
+                    <MorphSelectItem value="High">High</MorphSelectItem>
+                    <MorphSelectItem value="Medium">Medium</MorphSelectItem>
+                    <MorphSelectItem value="Low">Low</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
             </div>
           </div>
         </div>
@@ -1191,26 +1198,23 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   <label className="block text-[#172B4D] dark:text-slate-300 font-semibold mb-1">
                     Select Assignee
                   </label>
-                  <select
-                    value={selectedAssigneeId}
-                    onChange={(e) => setSelectedAssigneeId(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#1769E8] focus:border-[#1769E8]"
-                  >
-                    <optgroup label="Admission Team">
+                  <MorphSelect value={selectedAssigneeId} onValueChange={(v) => setSelectedAssigneeId(v)}>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select Assignee" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
                       {admissionMembers.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.name} ({m.title})
-                        </option>
+                        <MorphSelectItem key={m.id} value={m.id}>
+                          [Admission] {m.name} ({m.title})
+                        </MorphSelectItem>
                       ))}
-                    </optgroup>
-                    <optgroup label="Counseling Team">
                       {counselingMembers.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.name} ({m.title})
-                        </option>
+                        <MorphSelectItem key={m.id} value={m.id}>
+                          [Counseling] {m.name} ({m.title})
+                        </MorphSelectItem>
                       ))}
-                    </optgroup>
-                  </select>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
               )}
 
@@ -1335,32 +1339,40 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   <label className="block text-[#172B4D] dark:text-slate-300 font-semibold mb-1">
                     Priority
                   </label>
-                  <select
+                  <MorphSelect
                     value={taskForm.priority}
-                    onChange={(e) => setTaskForm({ ...taskForm, priority: e.target.value as any })}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                    onValueChange={(v) => setTaskForm({ ...taskForm, priority: v as any })}
                   >
-                    <option value="Urgent">Urgent</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Priority" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Urgent">Urgent</MorphSelectItem>
+                      <MorphSelectItem value="High">High</MorphSelectItem>
+                      <MorphSelectItem value="Medium">Medium</MorphSelectItem>
+                      <MorphSelectItem value="Low">Low</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
                 <div>
                   <label className="block text-[#172B4D] dark:text-slate-300 font-semibold mb-1">
                     Category
                   </label>
-                  <select
+                  <MorphSelect
                     value={taskForm.category}
-                    onChange={(e) => setTaskForm({ ...taskForm, category: e.target.value as any })}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                    onValueChange={(v) => setTaskForm({ ...taskForm, category: v as any })}
                   >
-                    <option value="Work">Work</option>
-                    <option value="Business">Business</option>
-                    <option value="Study">Study</option>
-                    <option value="Personal">Personal</option>
-                    <option value="Other">Other</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Category" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Work">Work</MorphSelectItem>
+                      <MorphSelectItem value="Business">Business</MorphSelectItem>
+                      <MorphSelectItem value="Study">Study</MorphSelectItem>
+                      <MorphSelectItem value="Personal">Personal</MorphSelectItem>
+                      <MorphSelectItem value="Other">Other</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
               </div>
 
@@ -1370,36 +1382,44 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   <label className="block text-[#172B4D] dark:text-slate-300 font-semibold mb-1">
                     Link University (Optional)
                   </label>
-                  <select
+                  <MorphSelect
                     value={taskForm.universityId}
-                    onChange={(e) => setTaskForm({ ...taskForm, universityId: e.target.value })}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                    onValueChange={(v) => setTaskForm({ ...taskForm, universityId: v })}
                   >
-                    <option value="">None</option>
-                    {universities.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.nameEn}
-                      </option>
-                    ))}
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select University" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="">None</MorphSelectItem>
+                      {universities.map((u) => (
+                        <MorphSelectItem key={u.id} value={u.id}>
+                          {u.nameEn}
+                        </MorphSelectItem>
+                      ))}
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
 
                 <div>
                   <label className="block text-[#172B4D] dark:text-slate-300 font-semibold mb-1">
                     Link Student Dossier (Optional)
                   </label>
-                  <select
+                  <MorphSelect
                     value={taskForm.studentId}
-                    onChange={(e) => setTaskForm({ ...taskForm, studentId: e.target.value })}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                    onValueChange={(v) => setTaskForm({ ...taskForm, studentId: v })}
                   >
-                    <option value="">None</option>
-                    {students.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.fullName} ({s.id})
-                      </option>
-                    ))}
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select Student" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="">None</MorphSelectItem>
+                      {students.map((s) => (
+                        <MorphSelectItem key={s.id} value={s.id}>
+                          {s.fullName} ({s.id})
+                        </MorphSelectItem>
+                      ))}
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
               </div>
 
@@ -1459,26 +1479,23 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 <label className="block text-[#172B4D]/75 dark:text-slate-400 mb-1 font-semibold">
                   New Assignee
                 </label>
-                <select
-                  value={reassignTargetId}
-                  onChange={(e) => setReassignTargetId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-200 focus:outline-none focus:border-[#1769E8]"
-                >
-                  <optgroup label="Admission Team">
+                <MorphSelect value={reassignTargetId} onValueChange={(v) => setReassignTargetId(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select Assignee" />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
                     {admissionMembers.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.name} ({m.title})
-                      </option>
+                      <MorphSelectItem key={m.id} value={m.id}>
+                        [Admission] {m.name} ({m.title})
+                      </MorphSelectItem>
                     ))}
-                  </optgroup>
-                  <optgroup label="Counseling Team">
                     {counselingMembers.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.name} ({m.title})
-                      </option>
+                      <MorphSelectItem key={m.id} value={m.id}>
+                        [Counseling] {m.name} ({m.title})
+                      </MorphSelectItem>
                     ))}
-                  </optgroup>
-                </select>
+                  </MorphSelectContent>
+                </MorphSelect>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -1497,16 +1514,20 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   <label className="block text-[#172B4D]/75 dark:text-slate-400 mb-1 font-semibold">
                     Priority
                   </label>
-                  <select
+                  <MorphSelect
                     value={reassignPriority}
-                    onChange={(e) => setReassignPriority(e.target.value as any)}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                    onValueChange={(v) => setReassignPriority(v as any)}
                   >
-                    <option value="Urgent">Urgent</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Priority" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Urgent">Urgent</MorphSelectItem>
+                      <MorphSelectItem value="High">High</MorphSelectItem>
+                      <MorphSelectItem value="Medium">Medium</MorphSelectItem>
+                      <MorphSelectItem value="Low">Low</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
               </div>
 
@@ -1591,28 +1612,36 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   <label className="block text-[#172B4D] dark:text-slate-300 font-semibold mb-1">
                     Assigned Team *
                   </label>
-                  <select
+                  <MorphSelect
                     value={employeeForm.team}
-                    onChange={(e) => setEmployeeForm({ ...employeeForm, team: e.target.value as TeamName })}
-                    className="w-full px-3 py-2 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100 font-medium focus:outline-none focus:border-[#1769E8]"
+                    onValueChange={(v) => setEmployeeForm({ ...employeeForm, team: v as TeamName })}
                   >
-                    <option value="Admission Team">Admission Team</option>
-                    <option value="Counseling Team">Counseling Team</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Assigned Team" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Admission Team">Admission Team</MorphSelectItem>
+                      <MorphSelectItem value="Counseling Team">Counseling Team</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
 
                 <div>
                   <label className="block text-[#172B4D] dark:text-slate-300 font-semibold mb-1">
                     Operational Role *
                   </label>
-                  <select
+                  <MorphSelect
                     value={employeeForm.role}
-                    onChange={(e) => setEmployeeForm({ ...employeeForm, role: e.target.value as UserRole })}
-                    className="w-full px-3 py-2 rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100 font-medium focus:outline-none focus:border-[#1769E8]"
+                    onValueChange={(v) => setEmployeeForm({ ...employeeForm, role: v as UserRole })}
                   >
-                    <option value="Consultant">Consultant</option>
-                    <option value="Admission_Manager">Admission Manager (Admin)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Operational Role" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Consultant">Consultant</MorphSelectItem>
+                      <MorphSelectItem value="Admission_Manager">Admission Manager (Admin)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
               </div>
 

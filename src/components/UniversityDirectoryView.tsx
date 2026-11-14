@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   GraduationCap,
@@ -19,6 +19,7 @@ import {
 import { KoreanUniversity, UniversityProgram, UserProfile } from '../types/pms';
 import { createUniversity, createIntake } from '../services/pmsService';
 import { UniversityDetailsView } from './UniversityDetailsView';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 const getUniversityAcronym = (name: string): string => {
   if (name.includes('Sungkyunkwan')) return 'SKKU';
@@ -280,19 +281,21 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               />
             </div>
 
-            <select
-              value={cityFilter}
-              onChange={(e) => setCityFilter(e.target.value)}
-              aria-label="Filter by city"
-              className="px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-300 focus:border-[#1769E8] focus:outline-none"
-            >
-              <option value="All">All Cities ({universities.length})</option>
-              {cities.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+            <div className="w-48">
+              <MorphSelect value={cityFilter} onValueChange={(v) => setCityFilter(v)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="All Cities" />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  <MorphSelectItem value="All">All Cities ({universities.length})</MorphSelectItem>
+                  {cities.map((c) => (
+                    <MorphSelectItem key={c} value={c}>
+                      {c}
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
+            </div>
 
             {(searchQuery || cityFilter !== 'All') && (
               <button
@@ -784,31 +787,33 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               <form onSubmit={handleAddIntakeSubmit} className="space-y-3 text-xs text-[#172B4D] dark:text-slate-200">
                 <div>
                   <label className="block font-medium mb-1">University *</label>
-                  <select
-                    value={selectedUniIdForIntake}
-                    onChange={(e) => setSelectedUniIdForIntake(e.target.value)}
-                    className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
-                  >
-                    {universities.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.nameEn}
-                      </option>
-                    ))}
-                  </select>
+                  <MorphSelect value={selectedUniIdForIntake} onValueChange={(v) => setSelectedUniIdForIntake(v)}>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select university..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      {universities.map((u) => (
+                        <MorphSelectItem key={u.id} value={u.id}>
+                          {u.nameEn}
+                        </MorphSelectItem>
+                      ))}
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block font-medium mb-1">Intake Term *</label>
-                    <select
-                      value={intakeTerm}
-                      onChange={(e) => setIntakeTerm(e.target.value)}
-                      className="w-full rounded border px-3 py-1.5 border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 focus:border-[#1769E8] focus:outline-none"
-                    >
-                      <option value="Spring 2027">Spring 2027</option>
-                      <option value="Fall 2027">Fall 2027</option>
-                      <option value="Winter 2026/27">Winter 2026/27</option>
-                    </select>
+                    <MorphSelect value={intakeTerm} onValueChange={(v) => setIntakeTerm(v)}>
+                      <MorphSelectTrigger>
+                        <MorphSelectValue placeholder="Select term..." />
+                      </MorphSelectTrigger>
+                      <MorphSelectContent>
+                        <MorphSelectItem value="Spring 2027">Spring 2027</MorphSelectItem>
+                        <MorphSelectItem value="Fall 2027">Fall 2027</MorphSelectItem>
+                        <MorphSelectItem value="Winter 2026/27">Winter 2026/27</MorphSelectItem>
+                      </MorphSelectContent>
+                    </MorphSelect>
                   </div>
                   <div>
                     <label className="block font-medium mb-1">Target Quota</label>

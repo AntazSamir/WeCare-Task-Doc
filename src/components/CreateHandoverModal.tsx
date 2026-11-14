@@ -19,6 +19,7 @@ import {
   UserProfile,
 } from '../types/pms';
 import { createDocumentHandoverApi } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface CreateHandoverModalProps {
   isOpen: boolean;
@@ -335,20 +336,18 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                 <GraduationCap className="w-3.5 h-3.5 text-[#16A36A]" />
                 Student Candidate Dossier <span className="text-[#DC4545]">*</span>
               </label>
-              <select
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                disabled={!!linkedRequest}
-                required
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none disabled:opacity-75 disabled:bg-[#F4F2EE] dark:disabled:bg-slate-900"
-              >
-                <option value="">-- Select Student --</option>
-                {(contextData?.students || []).map((stu) => (
-                  <option key={stu.id} value={stu.id}>
-                    {stu.fullName} ({stu.passportNumber}) — {stu.universityName || stu.intakeTerm} [{stu.id}]
-                  </option>
-                ))}
-              </select>
+              <MorphSelect value={studentId} onValueChange={(v) => setStudentId(v)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="-- Select Student --" />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  {(contextData?.students || []).map((stu) => (
+                    <MorphSelectItem key={stu.id} value={stu.id}>
+                      {stu.fullName} ({stu.passportNumber}) — {stu.universityName || stu.intakeTerm} [{stu.id}]
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div className="space-y-1.5">
@@ -356,19 +355,18 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                 <UserCheck className="w-3.5 h-3.5 text-[#1769E8]" />
                 Receiving Admission Team Member <span className="text-[#DC4545]">*</span>
               </label>
-              <select
-                value={receivingEmployeeId}
-                onChange={(e) => setReceivingEmployeeId(e.target.value)}
-                required
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="">-- Select Admission Officer --</option>
-                {(contextData?.admissionTeam || []).map((emp) => (
-                  <option key={emp.id} value={emp.id}>
-                    {emp.name} — {emp.title} [{emp.id}]
-                  </option>
-                ))}
-              </select>
+              <MorphSelect value={receivingEmployeeId} onValueChange={(v) => setReceivingEmployeeId(v)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="-- Select Admission Officer --" />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  {(contextData?.admissionTeam || []).map((emp) => (
+                    <MorphSelectItem key={emp.id} value={emp.id}>
+                      {emp.name} — {emp.title} [{emp.id}]
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -469,17 +467,18 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
 
                   <div className="sm:col-span-2 space-y-1">
                     <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">Format</label>
-                    <select
-                      value={doc.format}
-                      onChange={(e) => handleUpdateRow(idx, { format: e.target.value as DocumentFormat })}
-                      className="w-full px-2 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-                    >
-                      <option value="Original">Original</option>
-                      <option value="Apostilled">Apostilled</option>
-                      <option value="Notarized">Notarized</option>
-                      <option value="Certified Copy">Certified Copy</option>
-                      <option value="Photocopy">Photocopy</option>
-                    </select>
+                    <MorphSelect value={doc.format} onValueChange={(v) => handleUpdateRow(idx, { format: v as DocumentFormat })}>
+                      <MorphSelectTrigger>
+                        <MorphSelectValue placeholder="Select..." />
+                      </MorphSelectTrigger>
+                      <MorphSelectContent>
+                        <MorphSelectItem value="Original">Original</MorphSelectItem>
+                        <MorphSelectItem value="Apostilled">Apostilled</MorphSelectItem>
+                        <MorphSelectItem value="Notarized">Notarized</MorphSelectItem>
+                        <MorphSelectItem value="Certified Copy">Certified Copy</MorphSelectItem>
+                        <MorphSelectItem value="Photocopy">Photocopy</MorphSelectItem>
+                      </MorphSelectContent>
+                    </MorphSelect>
                   </div>
 
                   <div className="sm:col-span-1 space-y-1">

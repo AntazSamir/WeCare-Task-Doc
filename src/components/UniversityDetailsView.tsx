@@ -56,6 +56,7 @@ import {
   updateIntake,
 } from '../services/pmsService';
 import { UniversityDetailsSkeleton } from './SkeletonLoaders';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface UniversityDetailsViewProps {
   universityId: string;
@@ -92,6 +93,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
   const [showAddDocModal, setShowAddDocModal] = useState(false);
   const [showIntakeModal, setShowIntakeModal] = useState(false);
   const [editingIntake, setEditingIntake] = useState<AdmissionIntake | null>(null);
+
+  // Modal form states for MorphSelect
+  const [modalDegreeLevel, setModalDegreeLevel] = useState<string>('Bachelor (D-2-2)');
+  const [modalLanguage, setModalLanguage] = useState<string>('Korean');
+  const [modalCurrency, setModalCurrency] = useState<string>('KRW');
+  const [modalIntakeStatus, setModalIntakeStatus] = useState<string>('Open');
+  const [modalDocCategory, setModalDocCategory] = useState<string>('Admission Guidelines');
 
   // Program filter
   const [programFilter, setProgramFilter] = useState<string>('All');
@@ -2065,17 +2073,22 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Degree Level & Visa Category *</label>
-                  <select
-                    name="degreeLevel"
-                    defaultValue={editingProgram?.degreeLevel || 'Bachelor (D-2-2)'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  <input type="hidden" name="degreeLevel" value={modalDegreeLevel} />
+                  <MorphSelect
+                    value={modalDegreeLevel}
+                    onValueChange={(v) => setModalDegreeLevel(v)}
                   >
-                    <option value="Korean Language (D-4-1)">Korean Language (D-4-1)</option>
-                    <option value="Bachelor (D-2-2)">Undergraduate / Bachelor (D-2-2)</option>
-                    <option value="Master (D-2-3)">Graduate / Master (D-2-3)</option>
-                    <option value="Doctorate (D-2-4)">Doctorate / PhD (D-2-4)</option>
-                    <option value="Exchange (D-2-6)">Pathway / Exchange (D-2-6)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Degree Level" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Korean Language (D-4-1)">Korean Language (D-4-1)</MorphSelectItem>
+                      <MorphSelectItem value="Bachelor (D-2-2)">Undergraduate / Bachelor (D-2-2)</MorphSelectItem>
+                      <MorphSelectItem value="Master (D-2-3)">Graduate / Master (D-2-3)</MorphSelectItem>
+                      <MorphSelectItem value="Doctorate (D-2-4)">Doctorate / PhD (D-2-4)</MorphSelectItem>
+                      <MorphSelectItem value="Exchange (D-2-6)">Pathway / Exchange (D-2-6)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
                 <div>
                   <label className="block font-medium mb-1">Duration *</label>
@@ -2123,15 +2136,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Language of Instruction</label>
-                  <select
-                    name="languageOfInstruction"
-                    defaultValue={editingProgram?.languageOfInstruction || 'Korean'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  <input type="hidden" name="languageOfInstruction" value={modalLanguage} />
+                  <MorphSelect
+                    value={modalLanguage}
+                    onValueChange={(v) => setModalLanguage(v)}
                   >
-                    <option value="Korean">Korean</option>
-                    <option value="English 100%">English 100%</option>
-                    <option value="Bilingual (Korean + English)">Bilingual (Korean + English)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Language" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Korean">Korean</MorphSelectItem>
+                      <MorphSelectItem value="English 100%">English 100%</MorphSelectItem>
+                      <MorphSelectItem value="Bilingual (Korean + English)">Bilingual (Korean + English)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
                 <div>
                   <label className="block font-medium mb-1">Intake Terms (comma separated)</label>
@@ -2421,14 +2439,19 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Remittance Currency</label>
-                  <select
-                    name="currency"
-                    defaultValue={bankDetails?.currency || 'KRW'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                  <input type="hidden" name="currency" value={modalCurrency} />
+                  <MorphSelect
+                    value={modalCurrency}
+                    onValueChange={(v) => setModalCurrency(v)}
                   >
-                    <option value="KRW">KRW (South Korean Won)</option>
-                    <option value="USD">USD (US Dollar)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Currency" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="KRW">KRW (South Korean Won)</MorphSelectItem>
+                      <MorphSelectItem value="USD">USD (US Dollar)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
                 <div className="flex items-center gap-2 pt-6">
                   <input
@@ -2646,16 +2669,21 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Status</label>
-                  <select
-                    name="status"
-                    defaultValue={editingIntake?.status || 'Open'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  <input type="hidden" name="status" value={modalIntakeStatus} />
+                  <MorphSelect
+                    value={modalIntakeStatus}
+                    onValueChange={(v) => setModalIntakeStatus(v)}
                   >
-                    <option value="Open">Open</option>
-                    <option value="Upcoming">Upcoming</option>
-                    <option value="Closed">Closed</option>
-                    <option value="Archived">Archived</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Status" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Open">Open</MorphSelectItem>
+                      <MorphSelectItem value="Upcoming">Upcoming</MorphSelectItem>
+                      <MorphSelectItem value="Closed">Closed</MorphSelectItem>
+                      <MorphSelectItem value="Archived">Archived</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
                 <div>
                   <label className="block font-medium mb-1">Interview / Screening Dates</label>
@@ -2742,17 +2770,23 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Document Category</label>
-                  <select
-                    name="category"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  <input type="hidden" name="category" value={modalDocCategory} />
+                  <MorphSelect
+                    value={modalDocCategory}
+                    onValueChange={(v) => setModalDocCategory(v)}
                   >
-                    <option value="Admission Guidelines">Admission Guidelines</option>
-                    <option value="Circular">Circular</option>
-                    <option value="Visa & Immigration">Visa & Immigration</option>
-                    <option value="Tuition & Bank">Tuition & Bank</option>
-                    <option value="Application Form">Application Form</option>
-                    <option value="Syllabus">Syllabus</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Category" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Admission Guidelines">Admission Guidelines</MorphSelectItem>
+                      <MorphSelectItem value="Circular">Circular</MorphSelectItem>
+                      <MorphSelectItem value="Visa & Immigration">Visa & Immigration</MorphSelectItem>
+                      <MorphSelectItem value="Tuition & Bank">Tuition & Bank</MorphSelectItem>
+                      <MorphSelectItem value="Application Form">Application Form</MorphSelectItem>
+                      <MorphSelectItem value="Syllabus">Syllabus</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
                 <div>
                   <label className="block font-medium mb-1">Intake Term</label>

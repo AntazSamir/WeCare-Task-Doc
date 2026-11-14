@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   RefreshCw,
   CheckCircle2,
@@ -26,6 +26,7 @@ import {
 } from '../types/task';
 import { tasksToGoogleSheetRows } from '../services/googleSheetsService';
 import { formatTimestamp } from '../utils/dateUtils';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface GoogleSheetsPanelProps {
   tasks: Task[];
@@ -258,18 +259,23 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
               Selected Google Spreadsheet
             </label>
             <div className="flex items-center gap-2">
-              <select
-                id="select-spreadsheet"
-                value={connection.selectedSpreadsheetId}
-                onChange={(e) => onSelectSpreadsheet(e.target.value)}
-                className="w-full rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-2 text-xs font-medium text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                {spreadsheets.map((sheet) => (
-                  <option key={sheet.spreadsheetId} value={sheet.spreadsheetId}>
-                    {sheet.title} ({sheet.spreadsheetId.slice(0, 12)}...)
-                  </option>
-                ))}
-              </select>
+              <div className="flex-1 min-w-0">
+                <MorphSelect
+                  value={connection.selectedSpreadsheetId}
+                  onValueChange={(v) => onSelectSpreadsheet(v)}
+                >
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select spreadsheet..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    {spreadsheets.map((sheet) => (
+                      <MorphSelectItem key={sheet.spreadsheetId} value={sheet.spreadsheetId}>
+                        {sheet.title} ({sheet.spreadsheetId.slice(0, 12)}...)
+                      </MorphSelectItem>
+                    ))}
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
               <button
                 type="button"
                 onClick={() => setShowCreateSheetModal((v) => !v)}
@@ -289,18 +295,23 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
               Active Worksheet / Tab
             </label>
             <div className="flex items-center gap-2">
-              <select
-                id="select-worksheet"
-                value={connection.selectedWorksheet}
-                onChange={(e) => onSelectWorksheet(e.target.value)}
-                className="w-full rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-2 text-xs font-mono text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                {(currentSpreadsheet?.worksheets || [connection.selectedWorksheet]).map((ws) => (
-                  <option key={ws} value={ws}>
-                    {ws}
-                  </option>
-                ))}
-              </select>
+              <div className="flex-1 min-w-0">
+                <MorphSelect
+                  value={connection.selectedWorksheet}
+                  onValueChange={(v) => onSelectWorksheet(v)}
+                >
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select worksheet..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    {(currentSpreadsheet?.worksheets || [connection.selectedWorksheet]).map((ws) => (
+                      <MorphSelectItem key={ws} value={ws}>
+                        {ws}
+                      </MorphSelectItem>
+                    ))}
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
               <button
                 type="button"
                 onClick={() => setShowAddTabInput((v) => !v)}

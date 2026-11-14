@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, Users, GraduationCap, Building2 } from 'lucide-react';
 import { DegreeLevel, IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createStudent } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface NewStudentModalProps {
   isOpen: boolean;
@@ -238,34 +239,36 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
               <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Target Korean University *
               </label>
-              <select
-                value={universityId}
-                onChange={(e) => handleUniversityChange(e.target.value)}
-                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                {universities.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.nameEn} ({u.city})
-                  </option>
-                ))}
-              </select>
+              <MorphSelect value={universityId} onValueChange={handleUniversityChange}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select university..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  {universities.map((u) => (
+                    <MorphSelectItem key={u.id} value={u.id}>
+                      {u.nameEn} ({u.city})
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div>
               <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Intake Project Campaign *
               </label>
-              <select
-                value={projectId}
-                onChange={(e) => setProjectId(e.target.value)}
-                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                {projects.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+              <MorphSelect value={projectId} onValueChange={(v) => setProjectId(v)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select project..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  {projects.map((p) => (
+                    <MorphSelectItem key={p.id} value={p.id}>
+                      {p.name}
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
           </div>
 
@@ -275,18 +278,19 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
               <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 University Academic / Language Track (Auto-populates requirements & fees)
               </label>
-              <select
-                value={programId}
-                onChange={(e) => handleProgramChange(e.target.value)}
-                className="w-full rounded border border-[#36A5F5]/60 dark:border-blue-700 bg-[#DCEBFF]/40 dark:bg-blue-950/20 px-3 py-2 text-[#123B78] dark:text-slate-100 font-medium focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="">-- Custom / Direct Academic Entry --</option>
-                {availablePrograms.map((prog) => (
-                  <option key={prog.id} value={prog.id}>
-                    [{prog.code}] {prog.name} · {prog.degreeLevel} (₩{prog.tuitionFeeKrw === 0 ? 'Full Scholarship' : prog.tuitionFeeKrw.toLocaleString() + ' KRW'})
-                  </option>
-                ))}
-              </select>
+              <MorphSelect value={programId} onValueChange={handleProgramChange}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select program..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  <MorphSelectItem value="">-- Custom / Direct Academic Entry --</MorphSelectItem>
+                  {availablePrograms.map((prog) => (
+                    <MorphSelectItem key={prog.id} value={prog.id}>
+                      [{prog.code}] {prog.name} · {prog.degreeLevel} (₩{prog.tuitionFeeKrw === 0 ? 'Full Scholarship' : prog.tuitionFeeKrw.toLocaleString() + ' KRW'})
+                    </MorphSelectItem>
+                  ))}
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
           )}
 
@@ -296,17 +300,18 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
               <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                 Degree Level & Visa Code
               </label>
-              <select
-                value={degreeLevel}
-                onChange={(e) => setDegreeLevel(e.target.value as any)}
-                className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="Bachelor (D-2-2)">Undergraduate / Bachelor (D-2-2)</option>
-                <option value="Master (D-2-3)">Graduate / Master (D-2-3)</option>
-                <option value="Doctorate (D-2-4)">Doctorate / PhD (D-2-4)</option>
-                <option value="Korean Language (D-4-1)">Korean Language Center (D-4-1)</option>
-                <option value="Exchange (D-2-6)">Pathway / Exchange (D-2-6)</option>
-              </select>
+              <MorphSelect value={degreeLevel} onValueChange={(v) => setDegreeLevel(v as any)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Select degree level..." />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  <MorphSelectItem value="Bachelor (D-2-2)">Undergraduate / Bachelor (D-2-2)</MorphSelectItem>
+                  <MorphSelectItem value="Master (D-2-3)">Graduate / Master (D-2-3)</MorphSelectItem>
+                  <MorphSelectItem value="Doctorate (D-2-4)">Doctorate / PhD (D-2-4)</MorphSelectItem>
+                  <MorphSelectItem value="Korean Language (D-4-1)">Korean Language Center (D-4-1)</MorphSelectItem>
+                  <MorphSelectItem value="Exchange (D-2-6)">Pathway / Exchange (D-2-6)</MorphSelectItem>
+                </MorphSelectContent>
+              </MorphSelect>
             </div>
 
             <div>
@@ -342,17 +347,18 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
             <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
               Assigned Consultant / Case Officer
             </label>
-            <select
-              value={assignedConsultantId}
-              onChange={(e) => setAssignedConsultantId(e.target.value)}
-              className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-            >
-              {team.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.role === 'Admission_Manager' ? 'Admission Manager' : u.title})
-                </option>
-              ))}
-            </select>
+            <MorphSelect value={assignedConsultantId} onValueChange={(v) => setAssignedConsultantId(v)}>
+              <MorphSelectTrigger>
+                <MorphSelectValue placeholder="Select consultant..." />
+              </MorphSelectTrigger>
+              <MorphSelectContent>
+                {team.map((u) => (
+                  <MorphSelectItem key={u.id} value={u.id}>
+                    {u.name} ({u.role === 'Admission_Manager' ? 'Admission Manager' : u.title})
+                  </MorphSelectItem>
+                ))}
+              </MorphSelectContent>
+            </MorphSelect>
           </div>
 
           {/* Submit Buttons */}

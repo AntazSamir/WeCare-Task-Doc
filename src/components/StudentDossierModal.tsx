@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { DocumentChecklistItem, StudentApplication, UserProfile, VisaStage } from '../types/pms';
 import { updateStudent, updateStudentStage } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface StudentDossierModalProps {
   student: StudentApplication | null;
@@ -232,15 +233,16 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
                 <label className="block text-[#172B4D]/70 dark:text-slate-400 mb-1">Courier Service</label>
-                <select
-                  value={courierName}
-                  onChange={(e) => setCourierName(e.target.value as any)}
-                  className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 px-3 py-1.5 text-xs text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
-                >
-                  <option value="DHL Express">DHL Express Korea</option>
-                  <option value="EMS">Korea Post EMS</option>
-                  <option value="FedEx">FedEx International Priority</option>
-                </select>
+                <MorphSelect value={courierName} onValueChange={(v) => setCourierName(v as any)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select courier..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="DHL Express">DHL Express Korea</MorphSelectItem>
+                    <MorphSelectItem value="EMS">Korea Post EMS</MorphSelectItem>
+                    <MorphSelectItem value="FedEx">FedEx International Priority</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
               </div>
 
               <div>

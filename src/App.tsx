@@ -113,6 +113,7 @@ import { EnhancedTaskModal } from './components/EnhancedTaskModal';
 import { DashboardSkeleton } from './components/SkeletonLoaders';
 import { TeamTaskManagementView } from './components/TeamTaskManagementView';
 import { DocumentHandoverView } from './components/DocumentHandoverView';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './components/ui/MorphSelect';
 
 const LOCAL_STORAGE_KEY = 'sheetsync_pc_state_v1';
 
@@ -2248,29 +2249,39 @@ export function App() {
                   />
                 </div>
 
-                <select
-                  value={quickCategory}
-                  onChange={(e) => setQuickCategory(e.target.value as TaskCategory)}
-                  aria-label="Quick task category"
-                  className="px-3 py-2 text-xs font-medium rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
-                >
-                  <option value="Work">Work</option>
-                  <option value="Personal">Personal</option>
-                  <option value="Study">Study</option>
-                  <option value="Business">Business</option>
-                  <option value="Other">Other</option>
-                </select>
+                <div className="w-36">
+                  <MorphSelect
+                    value={quickCategory}
+                    onValueChange={(v) => setQuickCategory(v as TaskCategory)}
+                  >
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Category" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Work">Work</MorphSelectItem>
+                      <MorphSelectItem value="Personal">Personal</MorphSelectItem>
+                      <MorphSelectItem value="Study">Study</MorphSelectItem>
+                      <MorphSelectItem value="Business">Business</MorphSelectItem>
+                      <MorphSelectItem value="Other">Other</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
+                </div>
 
-                <select
-                  value={quickPriority}
-                  onChange={(e) => setQuickPriority(e.target.value as TaskPriority)}
-                  aria-label="Quick task priority"
-                  className="px-3 py-2 text-xs font-medium rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
-                >
-                  <option value="High">High Priority</option>
-                  <option value="Medium">Medium Priority</option>
-                  <option value="Low">Low Priority</option>
-                </select>
+                <div className="w-40">
+                  <MorphSelect
+                    value={quickPriority}
+                    onValueChange={(v) => setQuickPriority(v as TaskPriority)}
+                  >
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Priority" />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="High">High Priority</MorphSelectItem>
+                      <MorphSelectItem value="Medium">Medium Priority</MorphSelectItem>
+                      <MorphSelectItem value="Low">Low Priority</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
+                </div>
 
                 <input
                   type="date"

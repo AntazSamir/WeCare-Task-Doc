@@ -22,6 +22,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { StudentApplication, UserProfile, VisaStage } from '../types/pms';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface StudentDossierListProps {
   students: StudentApplication[];
@@ -378,33 +379,37 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
 
           {/* Filter Dropdowns */}
           <div className="flex flex-wrap items-center gap-2">
-            <select
-              value={degreeFilter}
-              onChange={(e) => setDegreeFilter(e.target.value)}
-              aria-label="Filter by Degree Track"
-              className="rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-slate-200 focus:border-[#1769E8] focus:outline-none"
-            >
-              <option value="All">All Degrees</option>
-              <option value="Korean Language (D-4-1)">Korean Language (D-4-1)</option>
-              <option value="Bachelor (D-2-2)">Bachelor (D-2-2)</option>
-              <option value="Master (D-2-3)">Master (D-2-3)</option>
-              <option value="Doctorate (D-2-4)">Doctorate (D-2-4)</option>
-            </select>
+            <div className="w-44">
+              <MorphSelect value={degreeFilter} onValueChange={(v) => setDegreeFilter(v)}>
+                <MorphSelectTrigger>
+                  <MorphSelectValue placeholder="Filter Degree" />
+                </MorphSelectTrigger>
+                <MorphSelectContent>
+                  <MorphSelectItem value="All">All Degrees</MorphSelectItem>
+                  <MorphSelectItem value="Korean Language (D-4-1)">Korean Language (D-4-1)</MorphSelectItem>
+                  <MorphSelectItem value="Bachelor (D-2-2)">Bachelor (D-2-2)</MorphSelectItem>
+                  <MorphSelectItem value="Master (D-2-3)">Master (D-2-3)</MorphSelectItem>
+                  <MorphSelectItem value="Doctorate (D-2-4)">Doctorate (D-2-4)</MorphSelectItem>
+                </MorphSelectContent>
+              </MorphSelect>
+            </div>
 
             {availableTerms.length > 0 && (
-              <select
-                value={termFilter}
-                onChange={(e) => setTermFilter(e.target.value)}
-                aria-label="Filter by Intake Term"
-                className="rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-slate-200 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="All">All Terms</option>
-                {availableTerms.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+              <div className="w-36">
+                <MorphSelect value={termFilter} onValueChange={(v) => setTermFilter(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Filter Term" />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="All">All Terms</MorphSelectItem>
+                    {availableTerms.map((t) => (
+                      <MorphSelectItem key={t} value={t}>
+                        {t}
+                      </MorphSelectItem>
+                    ))}
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
             )}
 
             {/* Sort Dropdown */}
@@ -412,18 +417,20 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               <span className="text-[#172B4D]/60 dark:text-slate-400 text-[11px] font-medium hidden sm:inline">
                 Sort:
               </span>
-              <select
-                value={sortField}
-                onChange={(e) => setSortField(e.target.value as SortField)}
-                aria-label="Sort Candidates by"
-                className="rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-slate-200 focus:border-[#1769E8] focus:outline-none"
-              >
-                <option value="name">Candidate Name</option>
-                <option value="university">University</option>
-                <option value="progress">Docs Verified</option>
-                <option value="stage">Visa Stage</option>
-                <option value="term">Intake Term</option>
-              </select>
+              <div className="w-40">
+                <MorphSelect value={sortField} onValueChange={(v) => setSortField(v as SortField)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Sort by..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="name">Candidate Name</MorphSelectItem>
+                    <MorphSelectItem value="university">University</MorphSelectItem>
+                    <MorphSelectItem value="progress">Docs Verified</MorphSelectItem>
+                    <MorphSelectItem value="stage">Visa Stage</MorphSelectItem>
+                    <MorphSelectItem value="term">Intake Term</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
               <button
                 type="button"
                 onClick={() => setSortAsc(!sortAsc)}

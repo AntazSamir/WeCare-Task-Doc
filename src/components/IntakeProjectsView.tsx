@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Building2,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createProject } from '../services/pmsService';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface IntakeProjectsViewProps {
   projects: IntakeProject[];
@@ -230,32 +231,34 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                   <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                     Korean University *
                   </label>
-                  <select
-                    value={universityId}
-                    onChange={(e) => setUniversityId(e.target.value)}
-                    className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-                  >
-                    {universities.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.nameEn}
-                      </option>
-                    ))}
-                  </select>
+                  <MorphSelect value={universityId} onValueChange={(v) => setUniversityId(v)}>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select university..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      {universities.map((u) => (
+                        <MorphSelectItem key={u.id} value={u.id}>
+                          {u.nameEn}
+                        </MorphSelectItem>
+                      ))}
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
 
                 <div>
                   <label className="block font-medium text-[#172B4D] dark:text-slate-300 mb-1">
                     Intake Term
                   </label>
-                  <select
-                    value={intakeTerm}
-                    onChange={(e) => setIntakeTerm(e.target.value)}
-                    className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
-                  >
-                    <option value="Spring 2027">Spring 2027</option>
-                    <option value="Fall 2027">Fall 2027</option>
-                    <option value="Spring 2028">Spring 2028</option>
-                  </select>
+                  <MorphSelect value={intakeTerm} onValueChange={(v) => setIntakeTerm(v)}>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select intake term..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Spring 2027">Spring 2027</MorphSelectItem>
+                      <MorphSelectItem value="Fall 2027">Fall 2027</MorphSelectItem>
+                      <MorphSelectItem value="Spring 2028">Spring 2028</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
               </div>
 
