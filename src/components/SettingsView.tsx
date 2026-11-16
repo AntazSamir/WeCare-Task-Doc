@@ -57,6 +57,41 @@ type SettingsSection =
   | 'profile'
   | 'backup';
 
+const UserAvatarImg: React.FC<{ avatar?: string; name: string; className?: string }> = ({
+  avatar,
+  name,
+  className = 'w-9 h-9',
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const isUrl = avatar && (avatar.startsWith('http') || avatar.startsWith('/'));
+  const initials = (name || 'User')
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+  if (isUrl && !hasError) {
+    return (
+      <img
+        src={avatar}
+        alt={name}
+        onError={() => setHasError(true)}
+        className={`${className} rounded-full object-cover shrink-0 border border-[#E2E8F0] dark:border-slate-700`}
+      />
+    );
+  }
+
+  return (
+    <span
+      className={`${className} rounded-full bg-[#1E40AF] text-white flex items-center justify-center font-bold text-xs shrink-0 uppercase tracking-tight`}
+    >
+      {initials}
+    </span>
+  );
+};
+
 export const SettingsView: React.FC<SettingsViewProps> = ({
   settings,
   onUpdateSettings,
@@ -998,9 +1033,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             : 'border-[#E2E8F0] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                         }`}
                       >
-                        <span className="w-9 h-9 rounded-full bg-[#1E40AF] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                          {user.avatar || user.name.slice(0, 2).toUpperCase()}
-                        </span>
+                        <UserAvatarImg avatar={user.avatar} name={user.name} className="w-9 h-9" />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 truncate">
