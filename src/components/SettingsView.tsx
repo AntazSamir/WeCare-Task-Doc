@@ -32,6 +32,7 @@ import {
 import { AppSettings, TaskCategory, TaskPriority, GoogleSheetsConnectionState, Task, NavigationTab } from '../types/task';
 import { UserProfile, StudentApplication, KoreanUniversity } from '../types/pms';
 import { playNotificationChime, playCompletionChime } from '../utils/soundUtils';
+import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 interface SettingsViewProps {
   settings: AppSettings;
@@ -531,17 +532,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Active Intake Term (Default)
                   </label>
-                  <select
+                  <MorphSelect
                     value={settings.defaultIntakeTerm || 'Fall 2026'}
-                    onChange={(e) => onUpdateSettings({ defaultIntakeTerm: e.target.value })}
-                    className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                    onValueChange={(v) => onUpdateSettings({ defaultIntakeTerm: v })}
                   >
-                    <option value="Fall 2026">Fall 2026 (Active Intake)</option>
-                    <option value="Spring 2027">Spring 2027 (Upcoming Cycle)</option>
-                    <option value="Summer 2026">Summer 2026 (Language Session)</option>
-                    <option value="Winter 2026">Winter 2026 (Intensive D-4)</option>
-                    <option value="Fall 2027">Fall 2027 (Long-Range Pipeline)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select intake term..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Fall 2026">Fall 2026 (Active Intake)</MorphSelectItem>
+                      <MorphSelectItem value="Spring 2027">Spring 2027 (Upcoming Cycle)</MorphSelectItem>
+                      <MorphSelectItem value="Summer 2026">Summer 2026 (Language Session)</MorphSelectItem>
+                      <MorphSelectItem value="Winter 2026">Winter 2026 (Intensive D-4)</MorphSelectItem>
+                      <MorphSelectItem value="Fall 2027">Fall 2027 (Long-Range Pipeline)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                   <p className="text-[11px] text-slate-400 mt-1">Pre-fills student dossier registrations and intake projects.</p>
                 </div>
 
@@ -549,17 +554,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Default Visa Classification
                   </label>
-                  <select
+                  <MorphSelect
                     value={settings.defaultVisaType || 'D-2-2'}
-                    onChange={(e) => onUpdateSettings({ defaultVisaType: e.target.value })}
-                    className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                    onValueChange={(v) => onUpdateSettings({ defaultVisaType: v })}
                   >
-                    <option value="D-2-2">D-2-2 (Bachelor&apos;s Degree Student)</option>
-                    <option value="D-2-3">D-2-3 (Master&apos;s Degree Student)</option>
-                    <option value="D-2-1">D-2-1 (Associate Degree Student)</option>
-                    <option value="D-2-4">D-2-4 (Doctoral / PhD Candidate)</option>
-                    <option value="D-4-1">D-4-1 (Korean Language Trainee)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select visa classification..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="D-2-2">D-2-2 (Bachelor&apos;s Degree Student)</MorphSelectItem>
+                      <MorphSelectItem value="D-2-3">D-2-3 (Master&apos;s Degree Student)</MorphSelectItem>
+                      <MorphSelectItem value="D-2-1">D-2-1 (Associate Degree Student)</MorphSelectItem>
+                      <MorphSelectItem value="D-2-4">D-2-4 (Doctoral / PhD Candidate)</MorphSelectItem>
+                      <MorphSelectItem value="D-4-1">D-4-1 (Korean Language Trainee)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                   <p className="text-[11px] text-slate-400 mt-1">Initial visa stage template applied to new applicants.</p>
                 </div>
               </div>
@@ -616,16 +625,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Deadline Urgency Horizon
                   </label>
-                  <select
-                    value={settings.deadlineWarningDays ?? 30}
-                    onChange={(e) => onUpdateSettings({ deadlineWarningDays: parseInt(e.target.value, 10) })}
-                    className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                  <MorphSelect
+                    value={String(settings.deadlineWarningDays ?? 30)}
+                    onValueChange={(v) => onUpdateSettings({ deadlineWarningDays: parseInt(v, 10) })}
                   >
-                    <option value={14}>14 Days (Critical Urgency Only)</option>
-                    <option value={30}>30 Days (Standard 1-Month Window)</option>
-                    <option value={45}>45 Days (Extended Intake Notice)</option>
-                    <option value={60}>60 Days (Comprehensive Preparation)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select warning horizon..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="14">14 Days (Critical Urgency Only)</MorphSelectItem>
+                      <MorphSelectItem value="30">30 Days (Standard 1-Month Window)</MorphSelectItem>
+                      <MorphSelectItem value="45">45 Days (Extended Intake Notice)</MorphSelectItem>
+                      <MorphSelectItem value="60">60 Days (Comprehensive Preparation)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                   <p className="text-[11px] text-slate-400 mt-1">
                     Highlights intake deadlines in warning/danger color schemes when approaching this date.
                   </p>
@@ -652,33 +665,41 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Default Task Priority
                   </label>
-                  <select
+                  <MorphSelect
                     value={settings.defaultPriority || 'Medium'}
-                    onChange={(e) => onUpdateSettings({ defaultPriority: e.target.value as TaskPriority })}
-                    className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                    onValueChange={(v) => onUpdateSettings({ defaultPriority: v as TaskPriority })}
                   >
-                    <option value="Urgent">Urgent (Red Alert)</option>
-                    <option value="High">High (Immediate Action)</option>
-                    <option value="Medium">Medium (Normal Schedule)</option>
-                    <option value="Low">Low (Backlog Item)</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select priority..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Urgent">Urgent (Red Alert)</MorphSelectItem>
+                      <MorphSelectItem value="High">High (Immediate Action)</MorphSelectItem>
+                      <MorphSelectItem value="Medium">Medium (Normal Schedule)</MorphSelectItem>
+                      <MorphSelectItem value="Low">Low (Backlog Item)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Default Task Category
                   </label>
-                  <select
+                  <MorphSelect
                     value={settings.defaultCategory || 'Work'}
-                    onChange={(e) => onUpdateSettings({ defaultCategory: e.target.value as TaskCategory })}
-                    className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                    onValueChange={(v) => onUpdateSettings({ defaultCategory: v as TaskCategory })}
                   >
-                    <option value="Work">Work (Admissions & Visa Operations)</option>
-                    <option value="Study">Study (Application Research & Tests)</option>
-                    <option value="Business">Business (Embassy & Courier Logistics)</option>
-                    <option value="Personal">Personal (Consultant Follow-ups)</option>
-                    <option value="Other">Other</option>
-                  </select>
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select category..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="Work">Work (Admissions & Visa Operations)</MorphSelectItem>
+                      <MorphSelectItem value="Study">Study (Application Research & Tests)</MorphSelectItem>
+                      <MorphSelectItem value="Business">Business (Embassy & Courier Logistics)</MorphSelectItem>
+                      <MorphSelectItem value="Personal">Personal (Consultant Follow-ups)</MorphSelectItem>
+                      <MorphSelectItem value="Other">Other</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
                 </div>
               </div>
 
@@ -744,16 +765,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     Items displayed per page in Team Tasks and Completed Archive views.
                   </div>
                 </div>
-                <select
-                  value={settings.tasksPerPage ?? 25}
-                  onChange={(e) => onUpdateSettings({ tasksPerPage: parseInt(e.target.value, 10) })}
-                  className="h-8 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
-                >
-                  <option value={15}>15 items</option>
-                  <option value={25}>25 items (Standard)</option>
-                  <option value={50}>50 items (Large)</option>
-                  <option value={100}>100 items (Audit View)</option>
-                </select>
+                <div className="w-48 shrink-0">
+                  <MorphSelect
+                    value={String(settings.tasksPerPage ?? 25)}
+                    onValueChange={(v) => onUpdateSettings({ tasksPerPage: parseInt(v, 10) })}
+                  >
+                    <MorphSelectTrigger>
+                      <MorphSelectValue placeholder="Select size..." />
+                    </MorphSelectTrigger>
+                    <MorphSelectContent>
+                      <MorphSelectItem value="15">15 items</MorphSelectItem>
+                      <MorphSelectItem value="25">25 items (Standard)</MorphSelectItem>
+                      <MorphSelectItem value="50">50 items (Large)</MorphSelectItem>
+                      <MorphSelectItem value="100">100 items (Audit View)</MorphSelectItem>
+                    </MorphSelectContent>
+                  </MorphSelect>
+                </div>
               </div>
             </div>
           )}
@@ -803,16 +830,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Background Synchronization Cadence
                 </label>
-                <select
+                <MorphSelect
                   value={settings.autoSyncFrequency || 'realtime'}
-                  onChange={(e) => onUpdateSettings({ autoSyncFrequency: e.target.value as 'realtime' | '5m' | '15m' | 'manual' })}
-                  className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                  onValueChange={(v) => onUpdateSettings({ autoSyncFrequency: v as 'realtime' | '5m' | '15m' | 'manual' })}
                 >
-                  <option value="realtime">Real-time (Immediate push on every task change) [Recommended]</option>
-                  <option value="5m">Every 5 Minutes (Periodic background sweep)</option>
-                  <option value="15m">Every 15 Minutes (Low API consumption)</option>
-                  <option value="manual">Manual Only (Only synchronize when clicking &quot;Sync Now&quot;)</option>
-                </select>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select sync cadence..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="realtime">Real-time (Immediate push on every task change) [Recommended]</MorphSelectItem>
+                    <MorphSelectItem value="5m">Every 5 Minutes (Periodic background sweep)</MorphSelectItem>
+                    <MorphSelectItem value="15m">Every 15 Minutes (Low API consumption)</MorphSelectItem>
+                    <MorphSelectItem value="manual">Manual Only (Only synchronize when clicking &quot;Sync Now&quot;)</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
                 <p className="text-[11px] text-slate-400 mt-1">
                   Adjusts how quickly local changes are dispatched to Google Sheets API v4.
                 </p>
@@ -823,15 +854,19 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Sync Conflict Resolution Strategy
                 </label>
-                <select
+                <MorphSelect
                   value={settings.syncConflictPolicy || 'last_modified'}
-                  onChange={(e) => onUpdateSettings({ syncConflictPolicy: e.target.value as 'sheets_wins' | 'local_wins' | 'last_modified' })}
-                  className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                  onValueChange={(v) => onUpdateSettings({ syncConflictPolicy: v as 'sheets_wins' | 'local_wins' | 'last_modified' })}
                 >
-                  <option value="last_modified">Last Modified Wins (Compare Last Updated timestamp) [Standard]</option>
-                  <option value="sheets_wins">Google Sheets Wins (Spreadsheet is single source of truth)</option>
-                  <option value="local_wins">Local SQLite Wins (Consultancy portal takes absolute precedence)</option>
-                </select>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select conflict policy..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="last_modified">Last Modified Wins (Compare Last Updated timestamp) [Standard]</MorphSelectItem>
+                    <MorphSelectItem value="sheets_wins">Google Sheets Wins (Spreadsheet is single source of truth)</MorphSelectItem>
+                    <MorphSelectItem value="local_wins">Local SQLite Wins (Consultancy portal takes absolute precedence)</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
                 <p className="text-[11px] text-slate-400 mt-1">
                   Determines behavior if a task was edited simultaneously on Google Sheets and in the PMS portal.
                 </p>
@@ -1067,16 +1102,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Regional Consultancy Liaison Office
                 </label>
-                <select
+                <MorphSelect
                   value={settings.regionalBranch || 'Dhaka Central Liaison Office (HQ)'}
-                  onChange={(e) => onUpdateSettings({ regionalBranch: e.target.value })}
-                  className="w-full h-9 px-3 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] focus:outline-none"
+                  onValueChange={(v) => onUpdateSettings({ regionalBranch: v })}
                 >
-                  <option value="Dhaka Central Liaison Office (HQ)">Dhaka Central Liaison Office (HQ - Gulshan)</option>
-                  <option value="Seoul Gangnam Admissions Center">Seoul Gangnam Admissions Center (South Korea HQ)</option>
-                  <option value="Busan Visa Processing Unit">Busan Visa Processing & Apostille Unit</option>
-                  <option value="Chittagong Student Advisory Center">Chittagong Student Advisory Center</option>
-                </select>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select regional branch..." />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="Dhaka Central Liaison Office (HQ)">Dhaka Central Liaison Office (HQ - Gulshan)</MorphSelectItem>
+                    <MorphSelectItem value="Seoul Gangnam Admissions Center">Seoul Gangnam Admissions Center (South Korea HQ)</MorphSelectItem>
+                    <MorphSelectItem value="Busan Visa Processing Unit">Busan Visa Processing & Apostille Unit</MorphSelectItem>
+                    <MorphSelectItem value="Chittagong Student Advisory Center">Chittagong Student Advisory Center</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
                 <p className="text-[11px] text-slate-400 mt-1">
                   Printed on formal document handover acknowledgement slips and DHL courier declarations.
                 </p>
