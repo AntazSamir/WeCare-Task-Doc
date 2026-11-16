@@ -96,8 +96,12 @@ import { DashboardSkeleton } from './components/SkeletonLoaders';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './components/ui/MorphSelect';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useDebounce } from './utils/useDebounce';
+import { playCompletionChime, playNotificationChime } from './utils/soundUtils';
 
 // Lazy-loaded Views (Code Splitting)
+const SettingsView = React.lazy(() =>
+  import('./components/SettingsView').then((m) => ({ default: m.SettingsView }))
+);
 const ExecutiveDashboard = React.lazy(() =>
   import('./components/ExecutiveDashboard').then((m) => ({ default: m.ExecutiveDashboard }))
 );
@@ -225,6 +229,11 @@ export function App() {
         initialTheme = stored;
       }
     } catch {}
+    let storedExtended: Partial<AppSettings> = {};
+    try {
+      const raw = localStorage.getItem('pms_app_settings');
+      if (raw) storedExtended = JSON.parse(raw);
+    } catch {}
     return {
       theme: initialTheme,
       remindersEnabled: true,
@@ -232,6 +241,25 @@ export function App() {
       defaultCategory: 'Work',
       defaultPriority: 'Medium',
       simulateOffline: false,
+      compactMode: false,
+      reducedMotion: false,
+      soundEnabled: true,
+      requireCompletionConfirm: true,
+      defaultIntakeTerm: 'Fall 2026',
+      defaultVisaType: 'D-2-2',
+      defaultDegreeLevel: "Bachelor's",
+      quotaWarningThreshold: 80,
+      deadlineWarningDays: 30,
+      autoSyncFrequency: 'realtime',
+      syncConflictPolicy: 'last_modified',
+      defaultWorksheetName: 'Personal Daily Task Master 2026',
+      regionalBranch: 'Dhaka Central Liaison Office (HQ)',
+      dispatchEmergencyPhone: '+880 1711-000000',
+      tasksPerPage: 25,
+      overdueAlertsEnabled: true,
+      handoverAlertsEnabled: true,
+      desktopNotificationsEnabled: false,
+      ...storedExtended,
     };
   });
 
@@ -359,9 +387,33 @@ export function App() {
       };
       setNotifications((prev) => [newNotif, ...prev.slice(0, 29)]);
       setActiveToast({ id, title, message, type });
+      if (settingsRef.current.soundEnabled !== false && type !== 'info') {
+        playNotificationChime();
+      }
     },
     []
   );
+
+  const handleUpdateSettings = useCallback((partial: Partial<AppSettings>) => {
+    setSettings((prev) => {
+      const next = { ...prev, ...partial };
+      if (partial.theme) {
+        try {
+          localStorage.setItem('pms_theme_preference', partial.theme);
+        } catch {}
+      }
+      try {
+        localStorage.setItem('pms_app_settings', JSON.stringify(next));
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          parsed.settings = next;
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+        }
+      } catch {}
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     if (!activeToast) return;
@@ -982,7 +1034,23 @@ export function App() {
         task.id
       );
     }
+
+    if (settings.soundEnabled !== false) {
+      playCompletionChime();
+    }
   };
+
+  // Unified handler for task completion requests respecting settings
+  const handleRequestCompleteTask = useCallback(
+    (task: Task) => {
+      if (settings.requireCompletionConfirm === false) {
+        handleConfirmTaskCompletion(task, '');
+      } else {
+        setTaskToConfirmComplete(task);
+      }
+    },
+    [settings.requireCompletionConfirm, tasks, connection.autoSync, settings.remindersEnabled, settings.soundEnabled]
+  );
 
   // Restore Completed Task to Pending (Optimistic with rollback)
   const handleRestoreTaskToPending = (task: Task) => {
@@ -2285,7 +2353,7 @@ export function App() {
                     setModalInitialDate(dateIso);
                     setIsTaskModalOpen(true);
                   }}
-                  onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                  onRequestComplete={handleRequestCompleteTask}
                   onRestorePending={handleRestoreTaskToPending}
                   onEdit={(t) => {
                     setEditingTask(t);
@@ -2303,7 +2371,7 @@ export function App() {
                     {stats.overdueTasks.length > 0 && (
                       <OverdueTasksWidget
                         tasks={stats.overdueTasks}
-                        onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                        onRequestComplete={handleRequestCompleteTask}
                         onRestorePending={handleRestoreTaskToPending}
                         onEdit={(t) => {
                           setEditingTask(t);
@@ -2356,7 +2424,7 @@ export function App() {
                             <TaskCard
                               key={task.id}
                               task={task}
-                              onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                              onRequestComplete={handleRequestCompleteTask}
                               onRestorePending={handleRestoreTaskToPending}
                               onEdit={(t) => {
                                 setEditingTask(t);
@@ -2381,7 +2449,7 @@ export function App() {
                     <UpcomingDeadlinesWidget
                       tasks={tasks}
                       onViewAll={() => setActiveNav('upcoming')}
-                      onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                      onRequestComplete={handleRequestCompleteTask}
                       onEdit={(t) => {
                         setEditingTask(t);
                         setIsTaskModalOpen(true);
@@ -2519,7 +2587,7 @@ export function App() {
                   <TaskCard
                     key={task.id}
                     task={task}
-                    onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                    onRequestComplete={handleRequestCompleteTask}
                     onRestorePending={handleRestoreTaskToPending}
                     onEdit={(t) => {
                       setEditingTask(t);
@@ -2656,7 +2724,7 @@ export function App() {
                             <TaskCard
                               key={task.id}
                               task={task}
-                              onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                              onRequestComplete={handleRequestCompleteTask}
                               onRestorePending={handleRestoreTaskToPending}
                               onEdit={(t) => {
                                 setEditingTask(t);
@@ -2687,7 +2755,7 @@ export function App() {
                             <TaskCard
                               key={task.id}
                               task={task}
-                              onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                              onRequestComplete={handleRequestCompleteTask}
                               onRestorePending={handleRestoreTaskToPending}
                               onEdit={(t) => {
                                 setEditingTask(t);
@@ -2718,7 +2786,7 @@ export function App() {
                             <TaskCard
                               key={task.id}
                               task={task}
-                              onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                              onRequestComplete={handleRequestCompleteTask}
                               onRestorePending={handleRestoreTaskToPending}
                               onEdit={(t) => {
                                 setEditingTask(t);
@@ -2747,7 +2815,7 @@ export function App() {
                 setModalInitialDate(dateIso);
                 setIsTaskModalOpen(true);
               }}
-              onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+              onRequestComplete={handleRequestCompleteTask}
               onRestorePending={handleRestoreTaskToPending}
               onEdit={(t) => {
                 setEditingTask(t);
@@ -2777,7 +2845,7 @@ export function App() {
                   console.warn('Failed to refresh team', err);
                 }
               }}
-              onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+              onRequestComplete={handleRequestCompleteTask}
               onRestorePending={handleRestoreTaskToPending}
               onDeleteTask={handleDeleteTask}
             />
@@ -2810,7 +2878,7 @@ export function App() {
                     <TaskCard
                       key={task.id}
                       task={task}
-                      onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                      onRequestComplete={handleRequestCompleteTask}
                       onRestorePending={handleRestoreTaskToPending}
                       onEdit={(t) => {
                         setEditingTask(t);
@@ -2898,145 +2966,20 @@ export function App() {
 
           {/* VIEW 8: SETTINGS */}
           {activeNav === 'settings' && (
-            <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6 space-y-6 max-w-3xl">
-              <div>
-                <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
-                  Application Settings & Preferences
-                </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Configure appearance, reminders, offline simulation, and default task properties.
-                </p>
-              </div>
-
-              <div className="space-y-4 divide-y divide-[#E2E8F0] dark:divide-slate-800">
-                {/* Appearance */}
-                <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
-                      Color Theme
-                    </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">
-                      Select Light, Dark, or follow your System OS preference
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const nextSettings = { ...settings, theme: 'light' as const };
-                        setSettings(nextSettings);
-                        try {
-                          localStorage.setItem('pms_theme_preference', 'light');
-                          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-                          if (raw) {
-                            const parsed = JSON.parse(raw);
-                            parsed.settings = nextSettings;
-                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-                          }
-                        } catch {}
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                        settings.theme === 'light'
-                          ? 'bg-[#FFFFFF] text-[#1E3A8A] shadow-xs font-semibold'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      <Sun className="w-3.5 h-3.5 text-[#D97706]" />
-                      Light
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const nextSettings = { ...settings, theme: 'dark' as const };
-                        setSettings(nextSettings);
-                        try {
-                          localStorage.setItem('pms_theme_preference', 'dark');
-                          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-                          if (raw) {
-                            const parsed = JSON.parse(raw);
-                            parsed.settings = nextSettings;
-                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-                          }
-                        } catch {}
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                        settings.theme === 'dark'
-                          ? 'bg-[#3B82F6] text-white shadow-xs font-semibold'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      <Moon className="w-3.5 h-3.5" />
-                      Dark
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const nextSettings = { ...settings, theme: 'system' as const };
-                        setSettings(nextSettings);
-                        try {
-                          localStorage.setItem('pms_theme_preference', 'system');
-                          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-                          if (raw) {
-                            const parsed = JSON.parse(raw);
-                            parsed.settings = nextSettings;
-                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-                          }
-                        } catch {}
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                        settings.theme === 'system'
-                          ? 'bg-[#3B82F6] text-white shadow-xs font-semibold'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      <Monitor className="w-3.5 h-3.5" />
-                      System
-                    </button>
-                  </div>
-                </div>
-
-                {/* Reminders */}
-                <div className="pt-4 flex items-center justify-between gap-4">
-                  <div>
-                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
-                      Task Reminders & Completion Notifications
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      Show alerts for today&apos;s tasks, overdue deadlines, and completion confirmations
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={settings.remindersEnabled}
-                    onChange={(e) =>
-                      setSettings((p) => ({ ...p, remindersEnabled: e.target.checked }))
-                    }
-                    className="w-4 h-4 rounded border-[#E2E8F0] text-[#1E40AF]"
-                  />
-                </div>
-
-                {/* Offline Mode Test Switch */}
-                <div className="pt-4 flex items-center justify-between gap-4">
-                  <div>
-                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
-                      Simulate Network Interruption (Offline SQLite Mode)
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      Test offline task creation & editing. Changes queue locally and auto-sync when
-                      turned off.
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={settings.simulateOffline}
-                    onChange={(e) =>
-                      setSettings((p) => ({ ...p, simulateOffline: e.target.checked }))
-                    }
-                    className="w-4 h-4 rounded border-[#E2E8F0] text-[#1E40AF]"
-                  />
-                </div>
-              </div>
-            </div>
+            <SettingsView
+              settings={settings}
+              onUpdateSettings={handleUpdateSettings}
+              currentUser={currentUser}
+              onSwitchUser={handleSwitchUser}
+              team={team}
+              connection={connection}
+              onRefreshData={refreshPmsData}
+              pushNotification={pushNotification}
+              tasks={tasks}
+              students={students}
+              universities={universities}
+              onNavigateTab={(tab) => setActiveNav(tab)}
+            />
           )}
           </div>
             </Suspense>

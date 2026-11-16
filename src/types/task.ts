@@ -131,6 +131,37 @@ export interface AppSettings {
   defaultCategory: TaskCategory;
   defaultPriority: TaskPriority;
   simulateOffline: boolean;
+
+  // Appearance & Interface
+  compactMode?: boolean;
+  reducedMotion?: boolean;
+
+  // Admissions & Visa Operations Defaults
+  defaultIntakeTerm?: string;
+  defaultVisaType?: string;
+  defaultDegreeLevel?: string;
+  quotaWarningThreshold?: number; // e.g. 80 (%)
+  deadlineWarningDays?: number; // e.g. 30 (days)
+
+  // Task & Workflow Automation
+  requireCompletionConfirm?: boolean;
+  soundEnabled?: boolean;
+  tasksPerPage?: number;
+  autoRescheduleOverdue?: boolean;
+
+  // Google Sheets Sync Configuration
+  autoSyncFrequency?: 'realtime' | '5m' | '15m' | 'manual';
+  syncConflictPolicy?: 'sheets_wins' | 'local_wins' | 'last_modified';
+  defaultWorksheetName?: string;
+
+  // Notifications & Alerts
+  overdueAlertsEnabled?: boolean;
+  handoverAlertsEnabled?: boolean;
+  desktopNotificationsEnabled?: boolean;
+
+  // Regional Office & Emergency Contact
+  regionalBranch?: string;
+  dispatchEmergencyPhone?: string;
 }
 
 export interface AppNotification {

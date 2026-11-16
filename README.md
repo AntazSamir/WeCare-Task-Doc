@@ -54,6 +54,16 @@
 - Light / Dark / System selector in Settings — preference persisted across sessions
 - Flash-of-wrong-theme prevention (synchronous script before first paint)
 
+### ⚙️ Operational Settings & Preferences
+- Multi-module settings console with auto-save persistence and 1-click factory defaults reset
+- **Appearance & Interface**: Light, Dark, System theme, high-density compact mode, and reduced motion
+- **Admissions & Visa Operations**: Default intake term (Fall 2026, Spring 2027), degree level, visa classification (D-2-2, D-2-3, D-4-1), intake quota warning threshold (50%–95%), and deadline urgency horizon (14–60 days)
+- **Task Automation**: Default priorities, default categories, optional 1-click task completion without confirmation modal, synthesized Web Audio completion chimes, and customizable list pagination size
+- **Google Sheets Policies**: Bi-directional sync cadence (real-time, 5m, 15m, manual), conflict resolution strategies (last modified, sheets wins, local wins), and developer offline simulation
+- **Notifications & Communication**: Daily morning briefing digest, overdue deadline warnings, document handover push alerts (SSE), audio chime alerts, and native OS desktop notification permissions
+- **Team Persona & Regional Branch**: Active persona switcher (Admission Manager vs Consultant) and regional office details (Dhaka HQ, Seoul Center, Busan Unit, Chittagong Office)
+- **Data Governance & Diagnostics**: 1-click immutable SQLite backup snapshots (`/api/backup`), full workspace JSON export, Stale-While-Revalidate cache flushing, and live system health diagnostics
+
 ### ⚡ Smooth Transitions & Ergonomic UI Architecture
 - **Motion System**: Subtle, fluid CSS animations (`animate-page-enter`, `animate-modal-backdrop`, `animate-modal-card`, `animate-drawer-enter`, `animate-tab-enter`, `animate-dropdown-enter`) with 150ms–240ms duration and `cubic-bezier(0.16, 1, 0.3, 1)` easing.
 - **Accessibility & Motion Safety**: Native `@media (prefers-reduced-motion: reduce)` support that disables animations for users requiring reduced motion.
@@ -202,6 +212,7 @@ WeCare-Task-Doc/
 │   │   ├── CalendarView.tsx
 │   │   ├── GoogleSheetsPanel.tsx
 │   │   ├── NotificationDrawer.tsx
+│   │   ├── SettingsView.tsx          # Full system, admissions, sync & backup settings
 │   │   └── ...
 │   ├── services/
 │   │   ├── googleSheetsService.ts
@@ -211,7 +222,8 @@ WeCare-Task-Doc/
 │   │   └── pms.ts
 │   └── utils/
 │       ├── dateUtils.ts
-│       └── useDebounce.ts       # Zero-dependency 250ms debouncing hook
+│       ├── soundUtils.ts             # Web Audio chime synthesis
+│       └── useDebounce.ts            # Zero-dependency 250ms debouncing hook
 ├── data/                        # SQLite database & auto-backups (git-ignored runtime files)
 ├── electron/
 │   └── main.cjs                 # Electron main process
