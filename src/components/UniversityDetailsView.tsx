@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   GraduationCap,
@@ -44,12 +44,12 @@ import {
   deleteProgram,
   createUniversityDocument,
   deleteUniversityDocument,
-  updateUniversity,
   createIntake,
   updateIntake,
 } from '../services/pmsService';
 import { UniversityDetailsSkeleton } from './SkeletonLoaders';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { AddUniversityModal } from './AddUniversityModal';
 
 interface UniversityDetailsViewProps {
   universityId: string;
@@ -79,6 +79,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
   // Admin edit modals
   const [isVerifying, setIsVerifying] = useState(false);
   const [showEditUniModal, setShowEditUniModal] = useState(false);
+  const [editUniSuccessMsg, setEditUniSuccessMsg] = useState<string | null>(null);
   const [showEditRefundModal, setShowEditRefundModal] = useState(false);
   const [showEditBankModal, setShowEditBankModal] = useState(false);
   const [showProgramModal, setShowProgramModal] = useState(false);
@@ -1826,157 +1827,26 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
       {/* ADMIN EDIT MODALS */}
       {/* ========================================================================= */}
 
-      {/* Edit University Info Modal */}
-      {showEditUniModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 animate-modal-card">
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-blue-600" />
-                Edit University Requirements & Metadata
-              </h3>
-              <button
-                type="button"
-                onClick={() => setShowEditUniModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+            {/* Edit University Info Modal � uses AddUniversityModal in edit mode */}
+      {showEditUniModal && uni && (
+        <AddUniversityModal
+          initialData={uni}
+          onClose={() => setShowEditUniModal(false)}
+          onSuccess={(msg) => {
+            setShowEditUniModal(false);
+            loadData();
+            onRefreshParent?.();
+            setEditUniSuccessMsg(msg);
+            setTimeout(() => setEditUniSuccessMsg(null), 4000);
+          }}
+        />
+      )}
 
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const form = e.target as any;
-                try {
-                  await updateUniversity(universityId, {
-                    nameEn: form.nameEn.value,
-                    nameKo: form.nameKo.value,
-                    city: form.city.value,
-                    ranking: form.ranking.value,
-                    websiteUrl: form.websiteUrl.value,
-                    topikRequirement: form.topikRequirement.value,
-                    ieltsRequirement: form.ieltsRequirement.value,
-                    bankBalanceUsd: Number(form.bankBalanceUsd.value),
-                    notes: form.notes.value,
-                  });
-                  setShowEditUniModal(false);
-                  loadData();
-                  onRefreshParent?.();
-                } catch (err: any) {
-                  alert(err.message || 'Failed to update university');
-                }
-              }}
-              className="space-y-3 text-xs"
-            >
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-medium mb-1">University Name (English)</label>
-                  <input
-                    name="nameEn"
-                    defaultValue={uni.nameEn}
-                    required
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                  />
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Korean Hangul Name</label>
-                  <input
-                    name="nameKo"
-                    defaultValue={uni.nameKo}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-medium mb-1">City / Region</label>
-                  <input
-                    name="city"
-                    defaultValue={uni.city}
-                    required
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                  />
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Ranking / Tier</label>
-                  <input
-                    name="ranking"
-                    defaultValue={uni.ranking}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-medium mb-1">TOPIK Language Cutoff</label>
-                  <input
-                    name="topikRequirement"
-                    defaultValue={uni.topikRequirement}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                  />
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">English Track Requirement</label>
-                  <input
-                    name="ieltsRequirement"
-                    defaultValue={uni.ieltsRequirement}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-medium mb-1">Bank Certificate Requirement ($ USD)</label>
-                  <input
-                    name="bankBalanceUsd"
-                    type="number"
-                    defaultValue={uni.bankBalanceUsd}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
-                  />
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Official Admissions URL</label>
-                  <input
-                    name="websiteUrl"
-                    type="url"
-                    defaultValue={uni.websiteUrl}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-medium mb-1">Operational Notes / Special Protocols</label>
-                <textarea
-                  name="notes"
-                  rows={3}
-                  defaultValue={uni.notes}
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setShowEditUniModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
+      {/* Success toast for Edit University */}
+      {editUniSuccessMsg && createPortal(
+        <div className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl animate-modal-card">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          {editUniSuccessMsg}
         </div>,
         document.body
       )}

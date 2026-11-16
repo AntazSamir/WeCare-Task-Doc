@@ -18,8 +18,9 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { KoreanUniversity, UniversityProgram, UserProfile } from '../types/pms';
-import { createUniversity, createIntake } from '../services/pmsService';
+import { createIntake } from '../services/pmsService';
 import { UniversityDetailsView } from './UniversityDetailsView';
+import { AddUniversityModal } from './AddUniversityModal';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 
 const getUniversityAcronym = (name: string): string => {
@@ -96,16 +97,8 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
   const [cityFilter, setCityFilter] = useState('All');
   const [viewLayout, setViewLayout] = useState<'grid' | 'table'>('grid');
 
-  // Add Uni form states
-  const [nameEn, setNameEn] = useState('');
-  const [nameKo, setNameKo] = useState('');
-  const [city, setCity] = useState('Seoul');
-  const [ranking, setRanking] = useState('Top Tier Korean University');
-  const [websiteUrl, setWebsiteUrl] = useState('https://');
-  const [topikRequirement, setTopikRequirement] = useState('TOPIK Level 3 or higher');
-  const [ieltsRequirement, setIeltsRequirement] = useState('IELTS 6.0 minimum');
-  const [bankBalanceUsd, setBankBalanceUsd] = useState(20000);
-  const [notes, setNotes] = useState('');
+  // AddUniversityModal success toast state
+  const [addUniSuccessMsg, setAddUniSuccessMsg] = useState<string | null>(null);
 
   // Add Intake form states
   const [intakeTerm, setIntakeTerm] = useState('Spring 2027');
@@ -177,34 +170,6 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
       </div>
     );
   }
-
-  const handleAddUniSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nameEn.trim() || !city.trim()) return;
-
-    try {
-      await createUniversity({
-        nameEn: nameEn.trim(),
-        nameKo: nameKo.trim() || nameEn.trim(),
-        city: city.trim(),
-        ranking: ranking.trim(),
-        websiteUrl: websiteUrl.trim(),
-        topikRequirement: topikRequirement.trim(),
-        ieltsRequirement: ieltsRequirement.trim(),
-        bankBalanceUsd: Number(bankBalanceUsd) || 20000,
-        notes: notes.trim(),
-      });
-      onRefresh();
-      setShowAddUniModal(false);
-      setNameEn('');
-      setNameKo('');
-      setTopikRequirement('TOPIK Level 3 or higher');
-      setIeltsRequirement('IELTS 6.0 minimum');
-      setNotes('');
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleAddIntakeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -662,151 +627,30 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
       </div>
       )}
 
-      {/* Add University Modal */}
-      {showAddUniModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-lg rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 animate-modal-card">
-              <div className="flex items-center justify-between border-b pb-3 border-[#E2E8F0] dark:border-slate-800">
-                <h3 className="text-[16px] font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#1E40AF]" />
-                  Add Korean Higher Education Partner Institution
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setShowAddUniModal(false)}
-                  className="p-1.5 text-[#64748B] hover:text-[#0F172A] rounded-lg"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+      {/* Add University Modal — replaced with AddUniversityModal component */}
+      {showAddUniModal && (
+        <AddUniversityModal
+          onClose={() => setShowAddUniModal(false)}
+          onSuccess={(msg) => {
+            setShowAddUniModal(false);
+            onRefresh();
+            setAddUniSuccessMsg(msg);
+            setTimeout(() => setAddUniSuccessMsg(null), 4000);
+          }}
+        />
+      )}
 
-              <form onSubmit={handleAddUniSubmit} className="space-y-3 text-xs text-[#0F172A] dark:text-slate-200">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-medium mb-1">University Name (English) *</label>
-                    <input
-                      type="text"
-                      required
-                      value={nameEn}
-                      onChange={(e) => setNameEn(e.target.value)}
-                      placeholder="e.g. Chung-Ang University"
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1">Korean Hangul Name</label>
-                    <input
-                      type="text"
-                      value={nameKo}
-                      onChange={(e) => setNameKo(e.target.value)}
-                      placeholder="e.g. 중앙대학교"
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                    />
-                  </div>
-                </div>
+      {/* Success toast for Add University */}
+      {addUniSuccessMsg && createPortal(
+        <div className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl animate-modal-card">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          {addUniSuccessMsg}
+        </div>,
+        document.body
+      )}
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-medium mb-1">City / Region *</label>
-                    <input
-                      type="text"
-                      required
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      placeholder="e.g. Seoul (Dongjak-gu)"
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1">Ranking / Tier</label>
-                    <input
-                      type="text"
-                      value={ranking}
-                      onChange={(e) => setRanking(e.target.value)}
-                      placeholder="e.g. Top 15 in Korea"
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-medium mb-1">
-                      Bank Certificate Requirement ($ USD)
-                    </label>
-                    <input
-                      type="number"
-                      value={bankBalanceUsd}
-                      onChange={(e) => setBankBalanceUsd(Number(e.target.value))}
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none tabular-nums"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1">Official Admissions URL</label>
-                    <input
-                      type="url"
-                      value={websiteUrl}
-                      onChange={(e) => setWebsiteUrl(e.target.value)}
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-medium mb-1">TOPIK Requirement</label>
-                    <input
-                      type="text"
-                      value={topikRequirement}
-                      onChange={(e) => setTopikRequirement(e.target.value)}
-                      placeholder="e.g. TOPIK Level 3 or higher"
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1">IELTS Requirement</label>
-                    <input
-                      type="text"
-                      value={ieltsRequirement}
-                      onChange={(e) => setIeltsRequirement(e.target.value)}
-                      placeholder="e.g. IELTS 6.0 minimum"
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block font-medium mb-1">Admissions Notes</label>
-                  <textarea
-                    rows={2}
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Admissions guidelines notes..."
-                    className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddUniModal(false)}
-                    className="h-9 px-4 text-sm font-medium rounded-lg hover:bg-slate-50 text-[#0F172A] border border-[#E2E8F0] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="h-9 px-4 text-sm font-medium rounded-lg bg-[#1E40AF] text-white hover:bg-[#1E3A8A] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
-                  >
-                    Save University
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>,
-          document.body
-        )}
+      {/* Add Intake anchor placeholder */}
+      {false && null /* dead anchor */}
 
       {/* Add Intake Term Modal */}
       {showAddIntakeModal &&
