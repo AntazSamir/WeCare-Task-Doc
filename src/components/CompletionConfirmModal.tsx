@@ -20,10 +20,12 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
   onCancel,
 }) => {
   const [completionNote, setCompletionNote] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (task) {
       setCompletionNote(task.notes || '');
+      setIsSubmitting(false);
     }
   }, [task]);
 
@@ -133,11 +135,22 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => onConfirm(task, completionNote)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded-md transition-colors whitespace-nowrap shrink-0"
+            disabled={isSubmitting}
+            onClick={async () => {
+              if (isSubmitting) return;
+              setIsSubmitting(true);
+              try {
+                await onConfirm(task, completionNote);
+              } finally {
+                setIsSubmitting(false);
+              }
+            }}
+            className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded-md transition-colors whitespace-nowrap shrink-0 ${
+              isSubmitting ? 'opacity-60 cursor-not-allowed' : ''
+            }`}
           >
             <Check className="w-4 h-4" />
-            Confirm Completion
+            {isSubmitting ? 'Saving & Syncing...' : 'Confirm Completion'}
           </button>
         </div>
       </div>

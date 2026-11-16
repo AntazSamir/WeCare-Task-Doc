@@ -83,6 +83,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   const [scheduledTime, setScheduledTime] = useState('');
   const [notes, setNotes] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (editingTask) {
@@ -111,8 +112,9 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSaving) return;
     if (!title.trim()) {
       setValidationError('Please enter a task title.');
       return;
@@ -121,18 +123,23 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
       setValidationError('Every task must have a scheduled date.');
       return;
     }
-    onSave({
-      id: editingTask?.id,
-      title: title.trim(),
-      description: description.trim(),
-      category,
-      priority,
-      taskDate,
-      deadline: deadline || taskDate,
-      scheduledTime: scheduledTime.trim() || undefined,
-      notes: notes.trim(),
-    });
-    onClose();
+    setIsSaving(true);
+    try {
+      await onSave({
+        id: editingTask?.id,
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        priority,
+        taskDate,
+        deadline: deadline || taskDate,
+        scheduledTime: scheduledTime.trim() || undefined,
+        notes: notes.trim(),
+      });
+      onClose();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return createPortal(
@@ -358,9 +365,12 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors whitespace-nowrap shrink-0"
+              disabled={isSaving}
+              className={`px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                isSaving ? 'opacity-60 cursor-not-allowed' : ''
+              }`}
             >
-              {editingTask ? 'Save & Sync Changes' : 'Create & Sync Task'}
+              {isSaving ? 'Saving & Syncing...' : editingTask ? 'Save & Sync Changes' : 'Create & Sync Task'}
             </button>
           </div>
         </form>

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useDebounce } from '../utils/useDebounce';
 import {
   GraduationCap,
   Building2,
@@ -91,6 +92,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
 
   // Search, Filter & Layout Mode
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 250);
   const [cityFilter, setCityFilter] = useState('All');
   const [viewLayout, setViewLayout] = useState<'grid' | 'table'>('grid');
 
@@ -122,7 +124,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
   }, [universities]);
 
   const filteredUniversities = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+    const q = debouncedSearchQuery.trim().toLowerCase();
     return universities.filter((u) => {
       if (cityFilter !== 'All' && u.city !== cityFilter) return false;
       if (!q) return true;
@@ -135,7 +137,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
         (u.ieltsRequirement || '').toLowerCase().includes(q)
       );
     });
-  }, [universities, searchQuery, cityFilter]);
+  }, [universities, debouncedSearchQuery, cityFilter]);
 
   const summaryMetrics = useMemo(() => {
     let totalIntakes = 0;

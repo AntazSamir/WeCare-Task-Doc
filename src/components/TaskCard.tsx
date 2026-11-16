@@ -73,7 +73,7 @@ function PriorityIndicator({ priority }: { priority: string }) {
   );
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({
+export const TaskCard: React.FC<TaskCardProps> = React.memo(({
   task,
   onRequestComplete,
   onRestorePending,
@@ -437,4 +437,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       </div>
     </div>
   );
-};
+});
+
+TaskCard.displayName = 'TaskCard';

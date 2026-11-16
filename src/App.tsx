@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } from 'react';
 import {
   LayoutDashboard,
   Sun,
@@ -65,13 +65,8 @@ import {
   pushTasksToLiveGoogleSheet,
 } from './services/googleSheetsService';
 import { TaskCard } from './components/TaskCard';
-import { CompletionConfirmModal } from './components/CompletionConfirmModal';
-import { TaskFormModal } from './components/TaskFormModal';
-import { CalendarView } from './components/CalendarView';
-import { GoogleSheetsPanel } from './components/GoogleSheetsPanel';
 import { UpcomingDeadlinesWidget } from './components/UpcomingDeadlinesWidget';
 import { OverdueTasksWidget } from './components/OverdueTasksWidget';
-import { WeeklyCompletionTrend } from './components/WeeklyCompletionTrend';
 import {
   UserProfile,
   KoreanUniversity,
@@ -97,18 +92,59 @@ import {
   fetchHandoverStats,
 } from './services/pmsService';
 import { RoleSwitcherBar } from './components/RoleSwitcherBar';
-import { NotificationDrawer } from './components/NotificationDrawer';
-import { ExecutiveDashboard } from './components/ExecutiveDashboard';
-import { StudentDossierList } from './components/StudentDossierList';
-import { StudentDossierModal } from './components/StudentDossierModal';
-import { NewStudentModal } from './components/NewStudentModal';
-import { IntakeProjectsView } from './components/IntakeProjectsView';
-import { UniversityDirectoryView } from './components/UniversityDirectoryView';
-import { EnhancedTaskModal } from './components/EnhancedTaskModal';
 import { DashboardSkeleton } from './components/SkeletonLoaders';
-import { TeamTaskManagementView } from './components/TeamTaskManagementView';
-import { DocumentHandoverView } from './components/DocumentHandoverView';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './components/ui/MorphSelect';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { useDebounce } from './utils/useDebounce';
+
+// Lazy-loaded Views (Code Splitting)
+const ExecutiveDashboard = React.lazy(() =>
+  import('./components/ExecutiveDashboard').then((m) => ({ default: m.ExecutiveDashboard }))
+);
+const CalendarView = React.lazy(() =>
+  import('./components/CalendarView').then((m) => ({ default: m.CalendarView }))
+);
+const GoogleSheetsPanel = React.lazy(() =>
+  import('./components/GoogleSheetsPanel').then((m) => ({ default: m.GoogleSheetsPanel }))
+);
+const StudentDossierList = React.lazy(() =>
+  import('./components/StudentDossierList').then((m) => ({ default: m.StudentDossierList }))
+);
+const IntakeProjectsView = React.lazy(() =>
+  import('./components/IntakeProjectsView').then((m) => ({ default: m.IntakeProjectsView }))
+);
+const UniversityDirectoryView = React.lazy(() =>
+  import('./components/UniversityDirectoryView').then((m) => ({ default: m.UniversityDirectoryView }))
+);
+const TeamTaskManagementView = React.lazy(() =>
+  import('./components/TeamTaskManagementView').then((m) => ({ default: m.TeamTaskManagementView }))
+);
+const DocumentHandoverView = React.lazy(() =>
+  import('./components/DocumentHandoverView').then((m) => ({ default: m.DocumentHandoverView }))
+);
+const WeeklyCompletionTrend = React.lazy(() =>
+  import('./components/WeeklyCompletionTrend').then((m) => ({ default: m.WeeklyCompletionTrend }))
+);
+
+// Lazy-loaded Modals & Drawers
+const EnhancedTaskModal = React.lazy(() =>
+  import('./components/EnhancedTaskModal').then((m) => ({ default: m.EnhancedTaskModal }))
+);
+const StudentDossierModal = React.lazy(() =>
+  import('./components/StudentDossierModal').then((m) => ({ default: m.StudentDossierModal }))
+);
+const NewStudentModal = React.lazy(() =>
+  import('./components/NewStudentModal').then((m) => ({ default: m.NewStudentModal }))
+);
+const TaskFormModal = React.lazy(() =>
+  import('./components/TaskFormModal').then((m) => ({ default: m.TaskFormModal }))
+);
+const CompletionConfirmModal = React.lazy(() =>
+  import('./components/CompletionConfirmModal').then((m) => ({ default: m.CompletionConfirmModal }))
+);
+const NotificationDrawer = React.lazy(() =>
+  import('./components/NotificationDrawer').then((m) => ({ default: m.NotificationDrawer }))
+);
 
 const LOCAL_STORAGE_KEY = 'sheetsync_pc_state_v1';
 
@@ -207,6 +243,9 @@ export function App() {
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 250);
+  const [completedPage, setCompletedPage] = useState(1);
+  const COMPLETED_PAGE_SIZE = 20;
 
   // Quick Inline Add Task Bar
   const [quickTitle, setQuickTitle] = useState('');
@@ -356,10 +395,44 @@ export function App() {
     []
   );
 
-  // Load initial state from Server SQLite store with LocalStorage fallback
+  // Load initial state with Stale-While-Revalidate: load immediately from localStorage cache, then sync from server
   useEffect(() => {
     let mounted = true;
-    async function hydrateState() {
+
+    // 1. Instant Cache Load: Open pages immediately without blank spinner delay
+    const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (parsed.tasks && Array.isArray(parsed.tasks)) {
+          setTasks(deduplicateTasks(parsed.tasks));
+        }
+        if (Array.isArray(parsed.spreadsheets)) {
+          setSpreadsheets(parsed.spreadsheets);
+        }
+        if (parsed.connection) {
+          setConnection(parsed.connection);
+        }
+        if (Array.isArray(parsed.syncLogs)) {
+          setSyncLogs(parsed.syncLogs);
+        }
+        if (parsed.settings) {
+          const storedTheme = localStorage.getItem('pms_theme_preference') as ('light' | 'dark' | 'system' | null);
+          setSettings((prev) => ({
+            ...prev,
+            ...parsed.settings,
+            theme: storedTheme || parsed.settings.theme || prev.theme,
+          }));
+        }
+        // Cached data is immediately ready!
+        setIsInitialLoading(false);
+      } catch {
+        // Continue to server fetch
+      }
+    }
+
+    // 2. Background Revalidation from Server SQLite Store
+    async function revalidateState() {
       try {
         const res = await fetch('/api/state');
         if (!res.ok) throw new Error('Server state fetch failed');
@@ -397,33 +470,14 @@ export function App() {
             settings: data.settings,
           })
         );
-      } catch {
-        // Fallback to localStorage offline cache
-        const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (cached && mounted) {
-          try {
-            const parsed = JSON.parse(cached);
-            if (parsed.tasks) setTasks(deduplicateTasks(parsed.tasks));
-            if (parsed.spreadsheets) setSpreadsheets(parsed.spreadsheets);
-            if (parsed.connection) setConnection(parsed.connection);
-            if (parsed.syncLogs) setSyncLogs(parsed.syncLogs);
-            if (parsed.settings) {
-              const storedTheme = localStorage.getItem('pms_theme_preference') as ('light' | 'dark' | 'system' | null);
-              setSettings((prev) => ({
-                ...prev,
-                ...parsed.settings,
-                theme: storedTheme || parsed.settings.theme || prev.theme,
-              }));
-            }
-          } catch {
-            // ignore corrupt cache
-          }
-        }
+      } catch (err) {
+        console.warn('Background state revalidation error:', err);
       } finally {
         if (mounted) setIsInitialLoading(false);
       }
     }
-    hydrateState();
+
+    revalidateState();
     return () => {
       mounted = false;
     };
@@ -883,8 +937,9 @@ export function App() {
     setQuickTitle('');
   };
 
-  // Step 4-6 of Task Confirmation System: Confirm Completion
+  // Step 4-6 of Task Confirmation System: Confirm Completion (Optimistic with rollback)
   const handleConfirmTaskCompletion = (task: Task, completionNote: string) => {
+    const previousTasks = [...tasks];
     const completedIso = new Date().toISOString();
     const updatedList = tasks.map((t) =>
       t.id === task.id
@@ -897,6 +952,7 @@ export function App() {
           }
         : t
     );
+    // Instant optimistic update
     setTasks(updatedList);
     setTaskToConfirmComplete(null);
 
@@ -906,21 +962,31 @@ export function App() {
         'COMPLETE',
         `Confirmed completion of ${task.id} ("${task.title}") at ${formatTimestamp(completedIso)}`,
         task.id
-      );
+      ).catch((err) => {
+        console.error('Task completion sync error, rolling back:', err);
+        setTasks(previousTasks);
+        pushNotification(
+          'Sync Failed — Rolled Back',
+          `Could not sync completion for "${task.title}". State restored.`,
+          'warning',
+          task.id
+        );
+      });
     }
 
     if (settings.remindersEnabled) {
       pushNotification(
-        'Task Completed & Synced to Google Sheets',
-        `"${task.title}" (${task.id}) marked Completed at ${formatTimestamp(completedIso)}.`,
+        'Task Completed',
+        `"${task.title}" (${task.id}) marked Completed.`,
         'success',
         task.id
       );
     }
   };
 
-  // Restore Completed Task to Pending
+  // Restore Completed Task to Pending (Optimistic with rollback)
   const handleRestoreTaskToPending = (task: Task) => {
+    const previousTasks = [...tasks];
     const nowIso = new Date().toISOString();
     const updatedList = tasks.map((t) =>
       t.id === task.id
@@ -932,14 +998,25 @@ export function App() {
           }
         : t
     );
+    // Instant optimistic update
     setTasks(updatedList);
+
     if (connection.autoSync) {
       synchronizeWithSheets(
         updatedList,
         'RESTORE',
         `Reopened task ${task.id} ("${task.title}") to Pending status in Google Sheets`,
         task.id
-      );
+      ).catch((err) => {
+        console.error('Task restore sync error, rolling back:', err);
+        setTasks(previousTasks);
+        pushNotification(
+          'Sync Failed — Rolled Back',
+          `Could not sync restore for "${task.title}". State restored.`,
+          'warning',
+          task.id
+        );
+      });
     }
     pushNotification(
       'Task Restored to Pending',
@@ -976,21 +1053,33 @@ export function App() {
     pushNotification('Task Duplicated', `Created "${duplicated.title}" (${newId}).`, 'info', newId);
   };
 
-  // Delete Task
+  // Delete Task (Optimistic with rollback)
   const handleDeleteTask = (task: Task) => {
+    const previousTasks = [...tasks];
     const updatedList = tasks.filter((t) => t.id !== task.id);
+    // Instant optimistic update
     setTasks(updatedList);
+
     if (connection.autoSync) {
       synchronizeWithSheets(
         updatedList,
         'DELETE',
         `Removed task ${task.id} ("${task.title}") and compacted Google Sheets rows`,
         task.id
-      );
+      ).catch((err) => {
+        console.error('Task delete sync error, rolling back:', err);
+        setTasks(previousTasks);
+        pushNotification(
+          'Sync Failed — Rolled Back',
+          `Could not delete "${task.title}". State restored.`,
+          'warning',
+          task.id
+        );
+      });
     }
     pushNotification(
       'Task Deleted',
-      `Removed "${task.title}" (${task.id}) from local SQLite and Google Sheets.`,
+      `Removed "${task.title}" (${task.id}) from task list.`,
       'warning',
       task.id
     );
@@ -1961,7 +2050,9 @@ export function App() {
 
         {/* MAIN SCROLLABLE VIEWPORT */}
         <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-5 sm:py-3.5 w-full">
-          <div key={activeNav} className="animate-page-enter space-y-3.5">
+          <ErrorBoundary viewName={currentNavTitle}>
+            <Suspense fallback={<DashboardSkeleton />}>
+              <div key={activeNav} className="animate-page-enter space-y-3.5">
           {/* VIEW 1: DASHBOARD */}
           {activeNav === 'dashboard' && (
             isInitialLoading ? (
@@ -2692,40 +2783,78 @@ export function App() {
             />
           )}
 
-          {/* VIEW 6: COMPLETED ARCHIVE */}
-          {activeNav === 'completed' && (
-            <div className="space-y-6">
-              <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6 flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
-                    Completed Tasks Archive ({stats.completedTasks.length})
-                  </h1>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Every completed task below has a verified completion timestamp synced to Column
-                    J in Google Sheets. Click Restore if you marked a task completed by accident.
-                  </p>
-                </div>
-              </div>
+          {/* VIEW 6: COMPLETED ARCHIVE (Client-side Paginated) */}
+          {activeNav === 'completed' && (() => {
+            const totalPages = Math.max(1, Math.ceil(stats.completedTasks.length / COMPLETED_PAGE_SIZE));
+            const paginatedCompleted = stats.completedTasks.slice(
+              (completedPage - 1) * COMPLETED_PAGE_SIZE,
+              completedPage * COMPLETED_PAGE_SIZE
+            );
 
-              <div className="space-y-2.5">
-                {stats.completedTasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    onRequestComplete={(t) => setTaskToConfirmComplete(t)}
-                    onRestorePending={handleRestoreTaskToPending}
-                    onEdit={(t) => {
-                      setEditingTask(t);
-                      setIsTaskModalOpen(true);
-                    }}
-                    onDuplicate={handleDuplicateTask}
-                    onDelete={handleDeleteTask}
-                    onQuickReschedule={handleQuickReschedule}
-                  />
-                ))}
+            return (
+              <div className="space-y-6">
+                <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
+                      Completed Tasks Archive ({stats.completedTasks.length})
+                    </h1>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      Every completed task below has a verified completion timestamp synced to Column
+                      J in Google Sheets. Click Restore if you marked a task completed by accident.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  {paginatedCompleted.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      onRequestComplete={(t) => setTaskToConfirmComplete(t)}
+                      onRestorePending={handleRestoreTaskToPending}
+                      onEdit={(t) => {
+                        setEditingTask(t);
+                        setIsTaskModalOpen(true);
+                      }}
+                      onDuplicate={handleDuplicateTask}
+                      onDelete={handleDeleteTask}
+                      onQuickReschedule={handleQuickReschedule}
+                    />
+                  ))}
+                </div>
+
+                {totalPages > 1 && (
+                  <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-xs text-[#64748B] dark:text-slate-400">
+                    <span>
+                      Showing <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{(completedPage - 1) * COMPLETED_PAGE_SIZE + 1}</span>–<span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{Math.min(completedPage * COMPLETED_PAGE_SIZE, stats.completedTasks.length)}</span> of{' '}
+                      <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{stats.completedTasks.length}</span> tasks
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        disabled={completedPage === 1}
+                        onClick={() => setCompletedPage((p) => Math.max(1, p - 1))}
+                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+                      >
+                        Previous
+                      </button>
+                      <span className="px-2 font-medium text-[#0F172A] dark:text-slate-200 tabular-nums">
+                        Page {completedPage} of {totalPages}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={completedPage >= totalPages}
+                        onClick={() => setCompletedPage((p) => Math.min(totalPages, p + 1))}
+                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* VIEW 7: GOOGLE SHEETS CONNECTION & LIVE GRID */}
           {activeNav === 'sheets-connection' && (
@@ -2910,139 +3039,153 @@ export function App() {
             </div>
           )}
           </div>
+            </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
 
-      {/* MANDATORY TASK COMPLETION CONFIRMATION DIALOG */}
-      <CompletionConfirmModal
-        task={taskToConfirmComplete}
-        spreadsheetTitle={connection.selectedSpreadsheetTitle}
-        worksheetName={connection.selectedWorksheet}
-        onConfirm={handleConfirmTaskCompletion}
-        onCancel={() => setTaskToConfirmComplete(null)}
-      />
+      <Suspense fallback={null}>
+        {/* MANDATORY TASK COMPLETION CONFIRMATION DIALOG */}
+        <CompletionConfirmModal
+          task={taskToConfirmComplete}
+          spreadsheetTitle={connection.selectedSpreadsheetTitle}
+          worksheetName={connection.selectedWorksheet}
+          onConfirm={handleConfirmTaskCompletion}
+          onCancel={() => setTaskToConfirmComplete(null)}
+        />
 
-      {/* CREATE / EDIT TASK MODAL (Legacy Quick Modal) */}
-      <TaskFormModal
-        isOpen={isTaskModalOpen}
-        editingTask={editingTask}
-        defaultCategory={settings.defaultCategory}
-        defaultPriority={settings.defaultPriority}
-        initialDate={modalInitialDate}
-        onSave={handleSaveTask}
-        onClose={() => {
-          setIsTaskModalOpen(false);
-          setEditingTask(null);
-        }}
-      />
+        {/* CREATE / EDIT TASK MODAL (Legacy Quick Modal) */}
+        <TaskFormModal
+          isOpen={isTaskModalOpen}
+          editingTask={editingTask}
+          defaultCategory={settings.defaultCategory}
+          defaultPriority={settings.defaultPriority}
+          initialDate={modalInitialDate}
+          onSave={handleSaveTask}
+          onClose={() => {
+            setIsTaskModalOpen(false);
+            setEditingTask(null);
+          }}
+        />
 
-      {/* ENHANCED CONSULTANCY TASK ASSIGNMENT MODAL */}
-      <EnhancedTaskModal
-        isOpen={isEnhancedTaskModalOpen}
-        editingTask={null}
-        currentUser={currentUser}
-        team={team}
-        universities={universities}
-        projects={projects}
-        students={students}
-        defaultCategory={settings.defaultCategory}
-        defaultPriority={settings.defaultPriority}
-        initialDate={todayIso}
-        initialStudentId={taskContextStudentId}
-        initialProjectId={taskContextProjectId}
-        onSave={handleSaveEnhancedTask}
-        onClose={() => {
-          setIsEnhancedTaskModalOpen(false);
-          setTaskContextStudentId(undefined);
-          setTaskContextProjectId(undefined);
-        }}
-      />
+        {/* ENHANCED CONSULTANCY TASK ASSIGNMENT MODAL */}
+        <EnhancedTaskModal
+          isOpen={isEnhancedTaskModalOpen}
+          editingTask={null}
+          currentUser={currentUser}
+          team={team}
+          universities={universities}
+          projects={projects}
+          students={students}
+          defaultCategory={settings.defaultCategory}
+          defaultPriority={settings.defaultPriority}
+          initialDate={todayIso}
+          initialStudentId={taskContextStudentId}
+          initialProjectId={taskContextProjectId}
+          onSave={handleSaveEnhancedTask}
+          onClose={() => {
+            setIsEnhancedTaskModalOpen(false);
+            setTaskContextStudentId(undefined);
+            setTaskContextProjectId(undefined);
+          }}
+        />
 
-      {/* STUDENT APPLICATION DOSSIER MODAL */}
-      <StudentDossierModal
-        student={selectedStudentForDossier}
-        currentUser={currentUser}
-        isOpen={!!selectedStudentForDossier}
-        onClose={() => setSelectedStudentForDossier(null)}
-        onRefresh={refreshPmsData}
-        onCreateTaskForStudent={(stu) => {
-          setTaskContextStudentId(stu.id);
-          setSelectedStudentForDossier(null);
-          setIsEnhancedTaskModalOpen(true);
-        }}
-      />
+        {/* STUDENT APPLICATION DOSSIER MODAL */}
+        <StudentDossierModal
+          student={selectedStudentForDossier}
+          currentUser={currentUser}
+          isOpen={!!selectedStudentForDossier}
+          onClose={() => setSelectedStudentForDossier(null)}
+          onRefresh={refreshPmsData}
+          onCreateTaskForStudent={(stu) => {
+            setTaskContextStudentId(stu.id);
+            setSelectedStudentForDossier(null);
+            setIsEnhancedTaskModalOpen(true);
+          }}
+        />
 
-      {/* NEW CANDIDATE REGISTRATION MODAL */}
-      <NewStudentModal
-        isOpen={isNewStudentModalOpen}
-        universities={universities}
-        projects={projects}
-        team={team}
-        currentUser={currentUser}
-        initialUniversityId={prefillStudentUniversityId}
-        initialProgramId={prefillStudentProgramId}
-        initialIntakeTerm={prefillStudentIntakeTerm}
-        onClose={() => {
-          setIsNewStudentModalOpen(false);
-          setPrefillStudentUniversityId(undefined);
-          setPrefillStudentProgramId(undefined);
-          setPrefillStudentIntakeTerm(undefined);
-        }}
-        onSuccess={() => {
-          setIsNewStudentModalOpen(false);
-          setPrefillStudentUniversityId(undefined);
-          setPrefillStudentProgramId(undefined);
-          setPrefillStudentIntakeTerm(undefined);
-          refreshPmsData();
-        }}
-      />
+        {/* NEW CANDIDATE REGISTRATION MODAL */}
+        <NewStudentModal
+          isOpen={isNewStudentModalOpen}
+          universities={universities}
+          projects={projects}
+          team={team}
+          currentUser={currentUser}
+          initialUniversityId={prefillStudentUniversityId}
+          initialProgramId={prefillStudentProgramId}
+          initialIntakeTerm={prefillStudentIntakeTerm}
+          onClose={() => {
+            setIsNewStudentModalOpen(false);
+            setPrefillStudentUniversityId(undefined);
+            setPrefillStudentProgramId(undefined);
+            setPrefillStudentIntakeTerm(undefined);
+          }}
+          onSuccess={() => {
+            setIsNewStudentModalOpen(false);
+            setPrefillStudentUniversityId(undefined);
+            setPrefillStudentProgramId(undefined);
+            setPrefillStudentIntakeTerm(undefined);
+            refreshPmsData();
+          }}
+        />
 
-      {/* REAL-TIME IN-APP NOTIFICATION DRAWER */}
-      <NotificationDrawer
-        notifications={pmsNotifications}
-        isOpen={isNotificationDrawerOpen}
-        onClose={() => setIsNotificationDrawerOpen(false)}
-        onMarkRead={async (id) => {
-          await markNotificationAsRead(id);
-          setPmsNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-        }}
-        onMarkAllRead={async () => {
-          await markAllNotificationsAsRead();
-          setPmsNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-        }}
-        onNavigateToEntity={(entityType, entityId) => {
-          if (entityType === 'student') {
-            const found = students.find((s) => s.id === entityId);
-            if (found) setSelectedStudentForDossier(found);
-            setActiveNav('students');
-          } else if (entityType === 'project') {
-            setActiveNav('projects');
-          } else if (entityType === 'task') {
-            setActiveNav('all-tasks');
-            setSearchQuery(entityId);
-          } else if (entityType === 'handover') {
-            setSelectedHandoverIdFromNotif(entityId);
-            setActiveNav('document-handover');
-          }
-        }}
-      />
+        {/* REAL-TIME IN-APP NOTIFICATION DRAWER */}
+        <NotificationDrawer
+          notifications={pmsNotifications}
+          isOpen={isNotificationDrawerOpen}
+          onClose={() => setIsNotificationDrawerOpen(false)}
+          onMarkRead={async (id) => {
+            await markNotificationAsRead(id);
+            setPmsNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+          }}
+          onMarkAllRead={async () => {
+            await markAllNotificationsAsRead();
+            setPmsNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+          }}
+          onNavigateToEntity={(entityType, entityId) => {
+            if (entityType === 'student') {
+              const found = students.find((s) => s.id === entityId);
+              if (found) setSelectedStudentForDossier(found);
+              setActiveNav('students');
+            } else if (entityType === 'project') {
+              setActiveNav('projects');
+            } else if (entityType === 'task') {
+              setActiveNav('all-tasks');
+              setSearchQuery(entityId);
+            } else if (entityType === 'handover') {
+              setSelectedHandoverIdFromNotif(entityId);
+              setActiveNav('document-handover');
+            }
+          }}
+        />
+      </Suspense>
 
       {/* FLOATING NOTIFICATION TOAST */}
       {activeToast && (
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-5 right-5 z-50 max-w-sm rounded-md bg-[#1E3A8A] dark:bg-slate-800 text-white border border-[#1E40AF]/40 dark:border-slate-700 px-4 py-3 shadow-xl flex items-start gap-3 animate-toast-enter"
+          className={`fixed bottom-5 right-5 z-50 max-w-sm rounded-lg text-white px-4 py-3 shadow-xl flex items-start gap-3 animate-toast-enter ${
+            activeToast.type === 'overdue'
+              ? 'bg-[#DC2626] border border-red-700'
+              : activeToast.type === 'warning'
+              ? 'bg-[#D97706] border border-amber-700'
+              : 'bg-[#1E3A8A] dark:bg-slate-800 border border-[#1E40AF]/40 dark:border-slate-700'
+          }`}
         >
-          <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
-          <div className="text-xs space-y-0.5">
+          {activeToast.type === 'overdue' || activeToast.type === 'warning' ? (
+            <AlertTriangle className="w-4 h-4 text-white shrink-0 mt-0.5" />
+          ) : (
+            <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
+          )}
+          <div className="text-xs space-y-0.5 min-w-0">
             <div className="font-semibold">{activeToast.title}</div>
-            <div className="text-[#EFF6FF]">{activeToast.message}</div>
+            <div className="text-[#EFF6FF] truncate">{activeToast.message}</div>
           </div>
           <button
             type="button"
             onClick={() => setActiveToast(null)}
-            className="text-[#EFF6FF]/80 hover:text-white ml-2"
+            className="text-[#EFF6FF]/80 hover:text-white ml-auto"
             aria-label="Dismiss notification"
           >
             <X className="w-3.5 h-3.5" />

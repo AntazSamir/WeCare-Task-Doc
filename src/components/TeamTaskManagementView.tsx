@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useDebounce } from '../utils/useDebounce';
 import {
   Users,
   ShieldCheck,
@@ -87,8 +88,15 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   const [activeView, setActiveView] = useState<TaskViewType>('all');
   const [selectedTeamTab, setSelectedTeamTab] = useState<'All' | 'Admission Team' | 'Counseling Team'>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 250);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedPriority, setSelectedPriority] = useState<string>('All');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 25;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeView, debouncedSearchQuery, selectedCategory, selectedPriority, selectedTeamTab]);
 
   // Selected Employee Profile Drawer/Modal
   const [selectedEmployee, setSelectedEmployee] = useState<UserProfile | null>(null);
@@ -180,9 +188,9 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
         if (!(t.status === 'Pending' && t.deadline < todayStr)) return false;
       }
 
-      // 2. Search query
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
+      // 2. Search query (debounced)
+      if (debouncedSearchQuery.trim()) {
+        const q = debouncedSearchQuery.toLowerCase();
         const matchesTitle = t.title.toLowerCase().includes(q);
         const matchesDesc = (t.description || '').toLowerCase().includes(q);
         const matchesAssignee = (t.assignedToName || '').toLowerCase().includes(q);
@@ -205,7 +213,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
       return true;
     });
-  }, [tasks, activeView, admissionMembers, counselingMembers, currentUser.id, todayStr, searchQuery, selectedCategory, selectedPriority]);
+  }, [tasks, activeView, admissionMembers, counselingMembers, currentUser.id, todayStr, debouncedSearchQuery, selectedCategory, selectedPriority]);
+
+  const totalPages = Math.max(1, Math.ceil(displayedTasks.length / PAGE_SIZE));
+  const paginatedTasks = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return displayedTasks.slice(start, start + PAGE_SIZE);
+  }, [displayedTasks, currentPage]);
 
   // Selected Employee tasks
   const employeeTasks = useMemo(() => {
@@ -754,7 +768,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             </div>
           </div>
         ) : (
-          displayedTasks.map((task) => {
+          paginatedTasks.map((task) => {
             const isCompleted = task.status === 'Completed';
             const isOverdue = !isCompleted && task.deadline < todayStr;
             const isDueToday = !isCompleted && (task.deadline === todayStr || task.taskDate === todayStr);
@@ -944,6 +958,37 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
             );
           })
+        )}
+
+        {/* Client-side Pagination */}
+        {totalPages > 1 && (
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-xs text-[#64748B] dark:text-slate-400">
+            <span>
+              Showing <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{(currentPage - 1) * PAGE_SIZE + 1}</span>–<span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{Math.min(currentPage * PAGE_SIZE, displayedTasks.length)}</span> of{' '}
+              <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{displayedTasks.length}</span> tasks
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+              >
+                Previous
+              </button>
+              <span className="px-2 font-medium text-[#0F172A] dark:text-slate-200 tabular-nums">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                type="button"
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

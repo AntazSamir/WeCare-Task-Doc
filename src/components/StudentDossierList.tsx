@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useDebounce } from '../utils/useDebounce';
 import {
   Users,
   Search,
@@ -130,6 +131,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
   onOpenNewStudentModal,
 }) => {
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 250);
   const [stageFilter, setStageFilter] = useState<string>('All');
   const [degreeFilter, setDegreeFilter] = useState<string>('All');
   const [termFilter, setTermFilter] = useState<string>('All');
@@ -169,8 +171,8 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
       if (stageFilter !== 'All' && s.visaStage !== stageFilter) return false;
       if (degreeFilter !== 'All' && s.degreeLevel !== degreeFilter) return false;
       if (termFilter !== 'All' && s.intakeTerm !== termFilter) return false;
-      if (search.trim()) {
-        const q = search.toLowerCase();
+      if (debouncedSearch.trim()) {
+        const q = debouncedSearch.toLowerCase();
         return (
           s.fullName.toLowerCase().includes(q) ||
           s.passportNumber.toLowerCase().includes(q) ||
@@ -204,7 +206,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
       }
       return sortAsc ? cmp : -cmp;
     });
-  }, [students, search, stageFilter, degreeFilter, termFilter, sortField, sortAsc]);
+  }, [students, debouncedSearch, stageFilter, degreeFilter, termFilter, sortField, sortAsc]);
 
   const hasActiveFilters =
     search.trim() !== '' ||
