@@ -98,25 +98,25 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#123B78]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-3xl max-h-[90vh] my-auto flex flex-col rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 shadow-2xl overflow-hidden animate-modal-card">
+      <div className="w-full max-w-3xl max-h-[90vh] my-auto flex flex-col rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl overflow-hidden animate-modal-card">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between shrink-0 bg-[#F4F2EE] dark:bg-slate-900">
+        <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between shrink-0 bg-[#F8FAFC] dark:bg-slate-900">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#172B4D]/65 dark:text-slate-400 font-mono">Passport: {student.passportNumber}</span>
-              <span className="text-[#E3EAF3] dark:text-slate-700">·</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-[#DCEBFF] dark:bg-slate-800 text-[#123B78] dark:text-slate-300 font-medium">
+              <span className="text-xs text-[#64748B] dark:text-slate-400 tabular-nums">Passport: {student.passportNumber}</span>
+              <span className="text-[#E2E8F0] dark:text-slate-700">·</span>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EFF6FF] dark:bg-slate-800 text-[#1E40AF] dark:text-slate-300 font-medium">
                 {student.degreeLevel}
               </span>
             </div>
-            <h2 className="text-lg font-bold text-[#172B4D] dark:text-slate-100 mt-1">
+            <h2 className="text-[16px] font-semibold text-[#0F172A] dark:text-slate-100 mt-1">
               {student.fullName}
             </h2>
-            <div className="text-xs text-[#172B4D]/65 dark:text-slate-400">
+            <div className="text-xs text-[#64748B] dark:text-slate-400">
               {student.appliedUniversityName} · {student.major} ({student.intakeTerm})
             </div>
           </div>
@@ -125,15 +125,15 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
             <button
               type="button"
               onClick={() => onCreateTaskForStudent(student)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               Assign Task
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 text-[#172B4D]/50 hover:text-[#172B4D] dark:text-slate-400 dark:hover:text-slate-200 rounded transition-colors"
+              className="p-2 text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-slate-200 rounded-lg transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -144,7 +144,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
         <form onSubmit={handleSaveChanges} className="p-6 overflow-y-auto space-y-6 flex-1">
           {/* Korean Visa Stage Progression Radio / Selector */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#172B4D] dark:text-slate-300 font-mono">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-slate-300">
               Korean Visa Stage Progression
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
@@ -155,17 +155,17 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                     key={stage.id}
                     type="button"
                     onClick={() => handleQuickAdvanceStage(stage.id)}
-                    className={`p-2.5 rounded-md border text-left transition-all ${
+                    className={`p-2.5 rounded-lg border text-left transition-all ${
                       isSelected
-                        ? 'bg-[#DCEBFF] dark:bg-blue-950/60 border-[#1769E8] dark:border-blue-500 text-[#123B78] dark:text-blue-100 ring-2 ring-[#1769E8]/25'
-                        : 'bg-[#FFFFFF] dark:bg-slate-950/40 border-[#E3EAF3] dark:border-slate-800 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F4F2EE] hover:border-[#36A5F5]/50 dark:hover:bg-slate-800/40'
+                        ? 'bg-[#EFF6FF] dark:bg-blue-950/60 border-[#1E40AF] dark:border-blue-500 text-[#1E40AF] dark:text-blue-100 ring-2 ring-[#1E40AF]/25'
+                        : 'bg-[#FFFFFF] dark:bg-slate-950/40 border-[#E2E8F0] dark:border-slate-800 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC] hover:border-[#1E40AF]/40 dark:hover:bg-slate-800/40'
                     }`}
                   >
                     <div className="text-xs font-semibold truncate flex items-center justify-between">
                       <span>{stage.label}</span>
-                      {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#1769E8] dark:text-[#36A5F5] shrink-0" />}
+                      {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />}
                     </div>
-                    <div className={`text-[10px] mt-1 line-clamp-2 ${isSelected ? 'text-[#123B78]/80 dark:text-blue-200/80' : 'text-[#172B4D]/60 dark:text-slate-500'}`}>
+                    <div className={`text-[10px] mt-1 line-clamp-2 ${isSelected ? 'text-[#1E40AF]/80 dark:text-blue-200/80' : 'text-[#64748B] dark:text-slate-500'}`}>
                       {stage.desc}
                     </div>
                   </button>
@@ -175,37 +175,37 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
           </div>
 
           {/* Student Dossier Information Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-md bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] dark:border-slate-800 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800 text-xs">
             <div>
-              <span className="text-[#172B4D]/55 dark:text-slate-400 block text-[10px] uppercase font-mono">Assigned Consultant</span>
-              <span className="font-semibold text-[#172B4D] dark:text-slate-200 mt-0.5 block">
+              <span className="text-[#64748B] dark:text-slate-400 block text-[10px] uppercase font-semibold">Assigned Consultant</span>
+              <span className="font-semibold text-[#0F172A] dark:text-slate-200 mt-0.5 block">
                 {student.assignedConsultantName}
               </span>
             </div>
             <div>
-              <span className="text-[#172B4D]/55 dark:text-slate-400 block text-[10px] uppercase font-mono">Contact Details</span>
-              <span className="text-[#172B4D]/85 dark:text-slate-300 font-mono block mt-0.5 truncate">
+              <span className="text-[#64748B] dark:text-slate-400 block text-[10px] uppercase font-semibold">Contact Details</span>
+              <span className="text-[#0F172A] dark:text-slate-300 tabular-nums block mt-0.5 truncate font-medium">
                 {student.contactEmail}
               </span>
-              <span className="text-[#172B4D]/65 dark:text-slate-400 font-mono block text-[11px]">{student.contactPhone}</span>
+              <span className="text-[#64748B] dark:text-slate-400 tabular-nums block text-[11px]">{student.contactPhone}</span>
             </div>
             <div>
-              <span className="text-[#172B4D]/55 dark:text-slate-400 block text-[10px] uppercase font-mono">Certificate of Admission (CoA)</span>
+              <span className="text-[#64748B] dark:text-slate-400 block text-[10px] uppercase font-semibold">Certificate of Admission (CoA)</span>
               <input
                 type="text"
                 value={coaNumber}
                 onChange={(e) => setCoaNumber(e.target.value)}
                 placeholder="e.g. COA-2027-SNU-0841"
-                className="mt-1 w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-2.5 py-1 text-xs font-mono tabular-nums text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                className="mt-1 w-full rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-2.5 py-1 text-xs tabular-nums text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
               />
             </div>
           </div>
 
           {/* DHL / Courier Dispatch Tracking Section */}
-          <div className="p-4 rounded-md border border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 space-y-3">
+          <div className="p-4 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#172B4D] dark:text-slate-200 flex items-center gap-1.5 uppercase font-mono">
-                <Truck className="w-4 h-4 text-[#E9A23B]" />
+              <span className="text-xs font-semibold text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5 uppercase">
+                <Truck className="w-4 h-4 text-[#1E40AF]" />
                 Physical Document Courier Tracking (To Korea)
               </span>
               {dhlTracking && (
@@ -213,7 +213,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                   href={`https://www.dhl.com/en/express/tracking.html?AWB=${encodeURIComponent(dhlTracking)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs text-[#1769E8] dark:text-[#36A5F5] font-semibold hover:underline inline-flex items-center gap-1"
+                  className="text-xs text-[#1E40AF] dark:text-blue-400 font-semibold hover:underline inline-flex items-center gap-1"
                 >
                   Track on DHL.com
                   <ExternalLink className="w-3 h-3" />
@@ -223,7 +223,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="block text-[#172B4D]/70 dark:text-slate-400 mb-1">Courier Service</label>
+                <label className="block text-[#64748B] dark:text-slate-400 mb-1">Courier Service</label>
                 <MorphSelect value={courierName} onValueChange={(v) => setCourierName(v as any)}>
                   <MorphSelectTrigger>
                     <MorphSelectValue placeholder="Select courier..." />
@@ -237,13 +237,13 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[#172B4D]/70 dark:text-slate-400 mb-1">AWB Tracking Number</label>
+                <label className="block text-[#64748B] dark:text-slate-400 mb-1">AWB Tracking Number</label>
                 <input
                   type="text"
                   value={dhlTracking}
                   onChange={(e) => setDhlTracking(e.target.value)}
                   placeholder="e.g. DHL-9921-8840-KR"
-                  className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 px-3 py-1.5 text-xs font-mono tabular-nums text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#1769E8]"
+                  className="w-full rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 px-3 py-1.5 text-xs tabular-nums text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
                 />
               </div>
             </div>
@@ -252,27 +252,27 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
           {/* South Korean University Document Verification Checklist */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#172B4D] dark:text-slate-300 font-mono flex items-center gap-1.5">
-                <FileCheck2 className="w-4 h-4 text-[#1769E8]" />
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-slate-300 flex items-center gap-1.5">
+                <FileCheck2 className="w-4 h-4 text-[#1E40AF]" />
                 Admission & Visa Document Verification Checklist
               </h3>
-              <span className="text-[11px] font-mono text-[#172B4D]/60 dark:text-slate-400">
+              <span className="text-[11px] tabular-nums text-[#64748B] dark:text-slate-400">
                 {checklist.filter((i) => i.status === 'Verified').length}/{checklist.length} verified
               </span>
             </div>
 
-            <div className="divide-y divide-[#E3EAF3] dark:divide-slate-800 border border-[#E3EAF3] dark:border-slate-800 rounded-md overflow-hidden text-xs">
+            <div className="divide-y divide-[#E2E8F0] dark:divide-slate-800 border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden text-xs">
               {checklist.map((doc) => (
                 <div key={doc.id} className="p-3 flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-slate-900">
                   <div className="min-w-0">
-                    <div className="font-semibold text-[#172B4D] dark:text-slate-100 flex items-center gap-1.5">
+                    <div className="font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-1.5">
                       <span>{doc.name}</span>
                       {doc.required && (
-                        <span className="text-[10px] text-[#DC4545] font-mono font-bold">*Required</span>
+                        <span className="text-[10px] text-[#DC2626] font-semibold">*Required</span>
                       )}
                     </div>
                     {doc.verifiedBy && (
-                      <div className="text-[10px] text-[#172B4D]/55 dark:text-slate-400 font-mono mt-0.5">
+                      <div className="text-[10px] text-[#64748B] dark:text-slate-400 mt-0.5">
                         Verified by {doc.verifiedBy}
                       </div>
                     )}
@@ -287,13 +287,13 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                         className={`px-2 py-1 text-[11px] rounded transition-colors ${
                           doc.status === st
                             ? st === 'Verified'
-                              ? 'bg-[#16A36A] text-white font-semibold shadow-xs'
+                              ? 'bg-[#16A34A] text-white font-semibold shadow-xs'
                               : st === 'Apostilled'
-                              ? 'bg-[#123B78] text-white font-semibold'
+                              ? 'bg-[#1E40AF] text-white font-semibold'
                               : st === 'Notarized'
-                              ? 'bg-[#1769E8] text-white font-semibold'
-                              : 'bg-[#E9A23B] text-white font-semibold'
-                            : 'bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D]/70 dark:text-slate-400 hover:bg-[#DCEBFF] hover:text-[#123B78] dark:hover:bg-slate-700'
+                              ? 'bg-[#1E40AF] text-white font-semibold'
+                              : 'bg-[#D97706] text-white font-semibold'
+                            : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#64748B] dark:text-slate-400 hover:bg-[#EFF6FF] hover:text-[#1E40AF] dark:hover:bg-slate-700'
                         }`}
                       >
                         {st}
@@ -307,7 +307,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-[#172B4D] dark:text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1">
               Internal Case Notes & Visa Guidance
             </label>
             <textarea
@@ -315,23 +315,23 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Candidate interview preparation, Shinhan wire receipt confirmation, apostille submission dates..."
-              className="w-full rounded border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 p-2.5 text-xs text-[#172B4D] dark:text-slate-100 placeholder:text-[#172B4D]/40 dark:placeholder:text-slate-400 focus:outline-none focus:border-[#1769E8]"
+              className="w-full rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 p-2.5 text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#64748B]/60 dark:placeholder:text-slate-400 focus:outline-none focus:border-[#1E40AF]"
             />
           </div>
 
           {/* Footer Submit */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E3EAF3] dark:border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-[#172B4D]/75 dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded hover:bg-[#F4F2EE] transition-colors"
+              className="h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-slate-300 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg hover:bg-slate-50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="px-4 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] disabled:opacity-50 rounded transition-colors"
+              className="h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
               {isSaving ? 'Saving...' : 'Save Dossier Updates'}
             </button>

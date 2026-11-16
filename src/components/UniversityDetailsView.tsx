@@ -266,7 +266,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             ) : (
               <div className="h-20 w-20 rounded-lg bg-blue-600 text-white flex flex-col items-center justify-center shadow-xs shrink-0">
                 <Building2 className="w-8 h-8 text-white mb-0.5" />
-                <span className="text-[11px] font-mono font-bold tracking-wider">
+                <span className="text-[11px] tabular-nums font-bold tracking-wider">
                   {uni.id.replace('UNI-', '')}
                 </span>
               </div>
@@ -606,7 +606,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       className="p-3 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 hover:border-sky-300 dark:hover:border-sky-700 transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
                     >
                       <div>
-                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-sky-500 rounded font-mono uppercase mb-1.5">
+                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-sky-500 rounded tabular-nums uppercase mb-1.5">
                           KLP
                         </span>
                         <div className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug">
@@ -633,7 +633,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       className="p-3 rounded-xl bg-purple-50/70 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/40 hover:border-purple-300 dark:hover:border-purple-700 transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
                     >
                       <div>
-                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-purple-500 rounded font-mono uppercase mb-1.5">
+                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-purple-500 rounded tabular-nums uppercase mb-1.5">
                           KSU
                         </span>
                         <div className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 transition-colors leading-snug">
@@ -660,7 +660,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
                     >
                       <div>
-                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-emerald-500 rounded font-mono uppercase mb-1.5">
+                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-emerald-500 rounded tabular-nums uppercase mb-1.5">
                           EAP
                         </span>
                         <div className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 transition-colors leading-snug">
@@ -855,14 +855,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                     <div>
                       <span className="text-slate-500 dark:text-slate-400">Account No: </span>
-                      <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+                      <span className="tabular-nums font-bold text-slate-900 dark:text-slate-100">
                         {bankDetails?.accountNumber || '123-456-7890'}
                       </span>
                     </div>
 
                     <div>
                       <span className="text-slate-500 dark:text-slate-400">SWIFT: </span>
-                      <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+                      <span className="tabular-nums font-bold text-slate-900 dark:text-slate-100">
                         {bankDetails?.swiftCode || 'CZNBKRSE'}
                       </span>
                     </div>
@@ -921,7 +921,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           {primaryIntake.term} Application Period
                         </span>
                       </div>
-                      <span className="font-bold text-slate-900 dark:text-slate-100 font-mono">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                         Oct 1 – Nov 30, 2026
                       </span>
                     </div>
@@ -933,7 +933,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           Admission Results
                         </span>
                       </div>
-                      <span className="font-bold text-slate-900 dark:text-slate-100 font-mono">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                         {primaryIntake.resultAnnouncementDate || 'Jan 15, 2027'}
                       </span>
                     </div>
@@ -945,7 +945,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           Semester Starts
                         </span>
                       </div>
-                      <span className="font-bold text-slate-900 dark:text-slate-100 font-mono">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                         {primaryIntake.classesStartDate || 'Mar 1, 2027'}
                       </span>
                     </div>
@@ -982,7 +982,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     {/* Item 1: Admission Guide */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white font-mono text-[9px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white tabular-nums text-[9px] font-bold">
                           PDF
                         </span>
                         <span className="font-medium text-slate-800 dark:text-slate-200">
@@ -990,7 +990,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-slate-400 font-mono">2.5 MB</span>
+                        <span className="text-[11px] text-slate-400 tabular-nums">2.5 MB</span>
                         <a
                           href={documents[0]?.fileUrl || 'https://en.snu.ac.kr/admission'}
                           target="_blank"
@@ -1006,7 +1006,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     {/* Item 2: Application Form */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white font-mono text-[9px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white tabular-nums text-[9px] font-bold">
                           PDF
                         </span>
                         <span className="font-medium text-slate-800 dark:text-slate-200">
@@ -1014,7 +1014,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-slate-400 font-mono">1.8 MB</span>
+                        <span className="text-[11px] text-slate-400 tabular-nums">1.8 MB</span>
                         <a
                           href={documents[1]?.fileUrl || 'https://en.snu.ac.kr/form'}
                           target="_blank"
@@ -1030,7 +1030,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     {/* Item 3: University Brochure */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white font-mono text-[9px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white tabular-nums text-[9px] font-bold">
                           PDF
                         </span>
                         <span className="font-medium text-slate-800 dark:text-slate-200">
@@ -1038,7 +1038,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-slate-400 font-mono">3.2 MB</span>
+                        <span className="text-[11px] text-slate-400 tabular-nums">3.2 MB</span>
                         <a
                           href={documents[2]?.fileUrl || 'https://en.snu.ac.kr/brochure'}
                           target="_blank"
@@ -1129,7 +1129,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded">
+                        <span className="tabular-nums text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded">
                           {prog.code}
                         </span>
                         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
@@ -1169,26 +1169,26 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   {/* Financial & Tuition Cards */}
                   <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase font-mono block">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block">
                         Tuition Fee (Per Term / Semester)
                       </span>
-                      <div className="font-mono font-bold text-slate-900 dark:text-slate-100 text-sm mt-0.5">
+                      <div className="tabular-nums font-bold text-slate-900 dark:text-slate-100 text-sm mt-0.5">
                         {prog.tuitionFeeKrw === 0
                           ? '100% Scholarship / Free'
                           : `₩${prog.tuitionFeeKrw?.toLocaleString()} KRW`}
                       </div>
                       {prog.tuitionFeeUsd && prog.tuitionFeeUsd > 0 ? (
-                        <div className="text-[11px] text-slate-500 font-mono">
+                        <div className="text-[11px] text-slate-500 tabular-nums">
                           (approx ${prog.tuitionFeeUsd?.toLocaleString()} USD)
                         </div>
                       ) : null}
                     </div>
 
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase font-mono block">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block">
                         Application Evaluation Fee
                       </span>
-                      <div className="font-mono font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                      <div className="tabular-nums font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
                         ₩{prog.applicationFeeKrw?.toLocaleString()} KRW
                       </div>
                       <div className="text-[11px] text-slate-500">
@@ -1199,7 +1199,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                   {/* Academic Requirements */}
                   <div className="space-y-1 text-xs">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 tabular-nums block">
                       Eligibility & Document Requirements:
                     </span>
                     <p className="text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/50 dark:bg-slate-800/20 p-2.5 rounded border border-slate-100 dark:border-slate-800">
@@ -1210,13 +1210,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   {/* Offered Intake Terms */}
                   {prog.intakeTerms && prog.intakeTerms.length > 0 && (
                     <div className="flex items-center gap-1.5 flex-wrap text-[11px]">
-                      <span className="font-mono text-slate-400 font-semibold text-[10px] uppercase">
+                      <span className="tabular-nums text-slate-400 font-semibold text-[10px] uppercase">
                         Available Terms:
                       </span>
                       {prog.intakeTerms.map((t, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono"
+                          className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 tabular-nums"
                         >
                           {t}
                         </span>
@@ -1227,7 +1227,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                 {/* Direct Action Linkage */}
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400 font-mono">
+                  <span className="text-[11px] text-slate-400 tabular-nums">
                     Visa: {prog.degreeLevel.includes('D-4') ? 'D-4-1 (General Trainee)' : 'D-2 (Student Visa)'}
                   </span>
                   <button
@@ -1286,7 +1286,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   {refundPolicy?.visaRejectionRefund ||
                     '100% full tuition refund (minus nominal wire transfer banking charge) is officially guaranteed upon presentation of the Korean Embassy / Consulate Visa Denial notice.'}
                 </p>
-                <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-mono">
+                <div className="text-[11px] text-emerald-700 dark:text-emerald-400 tabular-nums">
                   Documentation requirement: Original official Visa Refusal Notice issued by the Ministry of Justice / HiKorea.
                 </div>
               </div>
@@ -1323,7 +1323,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             {/* Right 1 col: Application fee & Processing summary */}
             <div className="space-y-4">
               <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-                <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider font-mono">
+                <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider tabular-nums">
                   Application Fee Refund
                 </div>
                 <div className="flex items-center gap-2">
@@ -1344,10 +1344,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-                <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider font-mono">
+                <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider tabular-nums">
                   Remittance Processing Time
                 </div>
-                <div className="text-sm font-bold text-slate-900 dark:text-slate-100 font-mono">
+                <div className="text-sm font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                   {refundPolicy?.refundProcessingTime || '14 to 21 business days'}
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -1363,7 +1363,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 <div className="text-[11px] text-slate-500 space-y-1">
                   <div>Status: <span className="font-semibold text-slate-700 dark:text-slate-300">{refundPolicy?.verificationStatus || 'Verified'}</span></div>
                   <div>Verified By: <span className="font-semibold text-slate-700 dark:text-slate-300">{refundPolicy?.verifiedBy || 'Admissions Head'}</span></div>
-                  <div className="font-mono text-[10px]">
+                  <div className="tabular-nums text-[10px]">
                     Last Checked: {new Date(refundPolicy?.lastVerifiedAt || Date.now()).toLocaleDateString()}
                   </div>
                 </div>
@@ -1413,7 +1413,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
                 </div>
 
-                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                <span className="tabular-nums text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                   Currency: {bankDetails?.currency || 'KRW'}
                 </span>
               </div>
@@ -1421,7 +1421,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               {/* Data rows with 1-click Copy */}
               <div className="space-y-3 text-xs">
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase font-mono block mb-0.5">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block mb-0.5">
                     Account Beneficiary Name (Account Holder)
                   </span>
                   <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 font-semibold text-slate-800 dark:text-slate-200">
@@ -1447,10 +1447,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase font-mono block mb-0.5">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block mb-0.5">
                     Account / Virtual Remittance Number
                   </span>
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 font-mono font-bold text-sm text-slate-900 dark:text-slate-100">
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 tabular-nums font-bold text-sm text-slate-900 dark:text-slate-100">
                     <span>{bankDetails?.accountNumber || '140-002-881920 (Virtual)'}</span>
                     <button
                       type="button"
@@ -1473,10 +1473,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase font-mono block mb-0.5">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block mb-0.5">
                     Bank SWIFT / BIC Code
                   </span>
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 font-mono font-bold text-sm text-purple-600 dark:text-purple-400">
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 tabular-nums font-bold text-sm text-purple-600 dark:text-purple-400">
                     <span>{bankDetails?.swiftCode || 'SHBKKRSE'}</span>
                     <button
                       type="button"
@@ -1502,7 +1502,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <span className="text-slate-700 dark:text-slate-300 font-medium">
                     Virtual Account (Unique per candidate admission):
                   </span>
-                  <span className="font-semibold text-blue-700 dark:text-blue-300 font-mono">
+                  <span className="font-semibold text-blue-700 dark:text-blue-300 tabular-nums">
                     {bankDetails?.isVirtualAccountSupported !== false ? 'Supported & Mandatory' : 'Fixed Direct Account'}
                   </span>
                 </div>
@@ -1536,7 +1536,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
-                <span className="flex items-center gap-1 font-mono">
+                <span className="flex items-center gap-1 tabular-nums">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                   Verified: {new Date(bankDetails?.lastVerifiedAt || Date.now()).toLocaleDateString()}
                 </span>
@@ -1578,7 +1578,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-start justify-between gap-3 hover:border-blue-400/50 transition-colors"
               >
                 <div className="flex items-start gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200/60 dark:border-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
+                  <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200/60 dark:border-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-xs shrink-0 tabular-nums">
                     PDF
                   </div>
                   <div className="min-w-0 space-y-1">
@@ -1590,11 +1590,11 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         {doc.category}
                       </span>
                       <span aria-hidden="true">·</span>
-                      <span className="font-mono">{doc.fileSize}</span>
+                      <span className="tabular-nums">{doc.fileSize}</span>
                       {doc.intakeTerm && (
                         <>
                           <span aria-hidden="true">·</span>
-                          <span className="font-mono">{doc.intakeTerm}</span>
+                          <span className="tabular-nums">{doc.intakeTerm}</span>
                         </>
                       )}
                     </div>
@@ -1667,7 +1667,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     <span className="font-bold text-slate-900 dark:text-slate-100 text-base">
                       {it.term} Academic Intake
                     </span>
-                    <span className="font-mono text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+                    <span className="tabular-nums text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
                       AY {it.academicYear}
                     </span>
                   </div>
@@ -1678,7 +1678,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase font-mono text-slate-400 font-bold block mb-1">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
                       1. Application Open
                     </span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">
@@ -1687,7 +1687,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
 
                   <div className="p-3 rounded-xl bg-red-50/50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/40">
-                    <span className="text-[10px] uppercase font-mono text-red-500 font-bold block mb-1">
+                    <span className="text-[10px] uppercase tabular-nums text-red-500 font-bold block mb-1">
                       2. Portal Deadline
                     </span>
                     <span className="font-bold text-red-600 dark:text-red-400">
@@ -1696,7 +1696,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
 
                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase font-mono text-slate-400 font-bold block mb-1">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
                       3. Document Deadline
                     </span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">
@@ -1705,7 +1705,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
 
                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase font-mono text-slate-400 font-bold block mb-1">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
                       4. Result Date
                     </span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">
@@ -1714,7 +1714,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
 
                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase font-mono text-slate-400 font-bold block mb-1">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
                       5. Visa Submission
                     </span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">
@@ -1723,7 +1723,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
 
                   <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40">
-                    <span className="text-[10px] uppercase font-mono text-emerald-600 font-bold block mb-1">
+                    <span className="text-[10px] uppercase tabular-nums text-emerald-600 font-bold block mb-1">
                       6. Classes Start
                     </span>
                     <span className="font-bold text-emerald-700 dark:text-emerald-300">
@@ -1765,7 +1765,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono">
+                  <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 tabular-nums">
                     <tr>
                       <th className="px-4 py-3">Candidate Name</th>
                       <th className="px-4 py-3">Passport No</th>
@@ -1782,14 +1782,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">
                           {app.fullName}
                         </td>
-                        <td className="px-4 py-3 font-mono font-semibold text-slate-700 dark:text-slate-300">
+                        <td className="px-4 py-3 tabular-nums font-semibold text-slate-700 dark:text-slate-300">
                           {app.passportNumber}
                         </td>
                         <td className="px-4 py-3">
                           <div className="font-semibold text-slate-800 dark:text-slate-200">{app.major}</div>
                           <div className="text-[11px] text-slate-500">{app.degreeLevel}</div>
                         </td>
-                        <td className="px-4 py-3 font-mono text-slate-600 dark:text-slate-400">
+                        <td className="px-4 py-3 tabular-nums text-slate-600 dark:text-slate-400">
                           {app.intakeTerm}
                         </td>
                         <td className="px-4 py-3">
@@ -1936,7 +1936,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="bankBalanceUsd"
                     type="number"
                     defaultValue={uni.bankBalanceUsd}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2055,7 +2055,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     defaultValue={editingProgram?.code || 'KLP'}
                     required
                     placeholder="e.g. KLP, KSU, BS-CS"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2100,7 +2100,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="number"
                     defaultValue={editingProgram?.tuitionFeeKrw ?? 2500000}
                     required
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2109,7 +2109,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="tuitionFeeUsd"
                     type="number"
                     defaultValue={editingProgram?.tuitionFeeUsd ?? 1900}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2118,7 +2118,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="applicationFeeKrw"
                     type="number"
                     defaultValue={editingProgram?.applicationFeeKrw ?? 100000}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2266,7 +2266,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     refundPolicy?.tuitionRefundPolicy ||
                     '• Prior to semester start: 100% refund.\n• Within 30 days after start: 5/6 refund.\n• 31 to 60 days after start: 2/3 refund.\n• 61 to 90 days after start: 1/2 refund.\n• Beyond 90 days: Non-refundable.'
                   }
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                 />
               </div>
 
@@ -2412,7 +2412,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="accountNumber"
                     required
                     defaultValue={bankDetails?.accountNumber || '140-002-881920 (Virtual)'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2421,7 +2421,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="swiftCode"
                     required
                     defaultValue={bankDetails?.swiftCode || 'SHBKKRSE'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2565,7 +2565,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="number"
                     defaultValue={editingIntake?.academicYear || 2027}
                     required
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2578,7 +2578,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="date"
                     required
                     defaultValue={editingIntake?.applicationStart || '2026-10-01'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2588,7 +2588,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="date"
                     required
                     defaultValue={editingIntake?.applicationDeadline || '2026-11-30'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2600,7 +2600,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="documentDeadline"
                     defaultValue={editingIntake?.documentDeadline || 'Dec 5, 2026'}
                     placeholder="e.g. Dec 5, 2026"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2609,7 +2609,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="resultAnnouncementDate"
                     defaultValue={editingIntake?.resultAnnouncementDate || 'Jan 15, 2027'}
                     placeholder="e.g. Jan 15, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2621,7 +2621,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="tuitionPaymentDeadline"
                     defaultValue={editingIntake?.tuitionPaymentDeadline || 'Feb 1, 2027'}
                     placeholder="e.g. Feb 1, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2630,7 +2630,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="visaSubmissionDeadline"
                     defaultValue={editingIntake?.visaSubmissionDeadline || 'Feb 15, 2027'}
                     placeholder="e.g. Feb 15, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2642,7 +2642,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="classesStartDate"
                     defaultValue={editingIntake?.classesStartDate || 'Mar 1, 2027'}
                     placeholder="e.g. Mar 1, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
                 <div>
@@ -2651,7 +2651,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="quota"
                     type="number"
                     defaultValue={editingIntake?.quota || 35}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>
@@ -2804,7 +2804,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <input
                     name="fileSize"
                     defaultValue="2.4 MB"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
                   />
                 </div>
               </div>

@@ -1455,28 +1455,28 @@ export function App() {
           id: 'dashboard',
           label: 'Executive Pipeline',
           icon: LayoutDashboard,
-          accentColor: 'text-[#1769E8] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'students',
           label: 'Student Dossiers',
           icon: Users as any,
           count: students.length,
-          accentColor: 'text-[#16A36A] dark:text-emerald-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'projects',
           label: 'Intake Projects',
           icon: FolderKanban as any,
           count: projects.length,
-          accentColor: 'text-[#36A5F5] dark:text-sky-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'universities',
           label: 'Korean Universities',
           icon: Building2 as any,
           count: universities.length,
-          accentColor: 'text-[#E9A23B] dark:text-amber-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'document-handover',
@@ -1487,7 +1487,7 @@ export function App() {
               ? (handoverStats?.actionNeededRequestsAssignedToMe || 0) +
                 (handoverStats?.myNeedsFollowUp || 0)
               : handoverStats?.myPendingVerifications ?? handoverStats?.pendingReceipts ?? 0,
-          accentColor: 'text-[#1769E8] dark:text-cyan-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
       ],
     },
@@ -1499,34 +1499,34 @@ export function App() {
           label: 'All Tasks Directory',
           icon: ListTodo,
           count: stats.total,
-          accentColor: 'text-[#36A5F5] dark:text-sky-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'my-day',
           label: 'My Day',
           icon: Sun,
           count: stats.todayCount,
-          accentColor: 'text-[#E9A23B] dark:text-amber-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'upcoming',
           label: 'Upcoming Deadlines',
           icon: CalendarClock,
           count: stats.upcomingCount,
-          accentColor: 'text-[#1769E8] dark:text-indigo-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'calendar',
           label: 'Calendar Schedule',
           icon: CalendarIcon,
-          accentColor: 'text-[#DC4545] dark:text-rose-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
         {
           id: 'completed',
           label: 'Completed Archive',
           icon: CheckCircle2,
           count: stats.completedCount,
-          accentColor: 'text-[#16A36A] dark:text-emerald-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
       ],
     },
@@ -1537,14 +1537,14 @@ export function App() {
           id: 'sheets-connection',
           label: 'Google Sheets',
           icon: FileSpreadsheet,
-          accentColor: 'text-[#16A36A] dark:text-green-400',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
           isLiveSync: true,
         },
         {
           id: 'settings',
           label: 'Settings',
           icon: SettingsIcon,
-          accentColor: 'text-[#123B78] dark:text-slate-300',
+          accentColor: 'text-[#1E40AF] dark:text-blue-400',
         },
       ],
     },
@@ -1556,32 +1556,32 @@ export function App() {
     allNavItems.find((item) => item.id === activeNav)?.label || 'Dashboard';
 
   return (
-    <div className="min-h-screen flex bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100">
+    <div className="min-h-screen flex bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100">
       {/* LEFT SIDEBAR NAVIGATION (Collapsible: 256px expanded / 64px collapsed) */}
       <aside
-        className={`shrink-0 bg-[#FFFFFF] dark:bg-slate-900 border-r border-[#E3EAF3] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all duration-300 ease-in-out z-30 ${
+        className={`shrink-0 bg-white dark:bg-slate-900 border-r border-[#E2E8F0] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all duration-300 ease-in-out z-30 ${
           isSidebarCollapsed ? 'w-16' : 'w-64'
         }`}
       >
-        {/* Brand Header — Mathematically aligned with top workspace header (h-14, matching bottom border) */}
-        <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[#E3EAF3] dark:border-slate-800">
+        {/* Brand Header */}
+        <div className="h-14 shrink-0 px-4 flex items-center border-b border-[#E2E8F0] dark:border-slate-800">
           {!isSidebarCollapsed ? (
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-[#1769E8] text-white flex items-center justify-center font-display font-bold text-sm shadow-[0_0_12px_rgba(23,105,232,0.3)] shrink-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-[#1E40AF] text-white flex items-center justify-center font-semibold text-sm shadow-xs shrink-0">
                 SS
               </div>
               <div className="min-w-0">
-                <div className="font-display font-bold text-sm tracking-tight text-[#172B4D] dark:text-slate-100 leading-none truncate">
+                <div className="font-semibold text-sm tracking-tight text-[#0F172A] dark:text-slate-100 leading-none truncate">
                   SheetSync PMS
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                <div className="text-[12px] text-[#64748B] dark:text-slate-400 mt-1 truncate">
                   Korea Visa & Tasks
                 </div>
               </div>
             </div>
           ) : (
             <div className="w-full flex items-center justify-center">
-              <div className="w-8 h-8 rounded-lg bg-[#1769E8] text-white flex items-center justify-center font-display font-bold text-sm shadow-[0_0_12px_rgba(23,105,232,0.3)] shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-[#1E40AF] text-white flex items-center justify-center font-semibold text-sm shadow-xs shrink-0">
                 SS
               </div>
             </div>
@@ -1589,19 +1589,19 @@ export function App() {
         </div>
 
         {/* Middle Scrollable Area: Main Navigation */}
-        <div className={`flex-1 overflow-y-auto overscroll-contain ${isSidebarCollapsed ? 'p-2 py-2' : 'px-4 py-3'}`}>
-          <nav className="space-y-3.5" aria-label="Main Navigation">
+        <div className={`flex-1 overflow-y-auto overscroll-contain ${isSidebarCollapsed ? 'p-2 py-2' : 'px-3 py-3'}`}>
+          <nav className="space-y-3" aria-label="Main Navigation">
             {navSections.map((section, idx) => (
               <div key={section.title} className="space-y-1">
                 {!isSidebarCollapsed ? (
                   <div className="px-2 pt-1 pb-1">
-                    <span className="text-[10px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500 font-mono">
+                    <span className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#64748B] dark:text-slate-400">
                       {section.title}
                     </span>
                   </div>
                 ) : (
                   idx > 0 && (
-                    <div className="my-1.5 mx-2 border-t border-[#E3EAF3] dark:border-slate-800" />
+                    <div className="my-1.5 mx-2 border-t border-[#E2E8F0] dark:border-slate-800" />
                   )
                 )}
                 <div className={`space-y-0.5 ${isSidebarCollapsed ? 'flex flex-col items-center' : ''}`}>
@@ -1616,34 +1616,33 @@ export function App() {
                           type="button"
                           onClick={() => setActiveNav(item.id)}
                           title={`${item.label}${typeof item.count === 'number' ? ` (${item.count})` : ''}`}
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center relative sidebar-nav-btn group ${
+                          className={`w-10 h-10 rounded-lg flex items-center justify-center relative sidebar-nav-btn group transition-colors duration-150 ${
                             isActive
-                              ? 'bg-[#123B78] text-white dark:bg-slate-800 dark:text-white shadow-xs'
-                              : 'text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800/60 hover:text-[#123B78] dark:hover:text-slate-200'
+                              ? 'bg-[#EFF6FF] dark:bg-blue-950/40 text-[#1E40AF] dark:text-blue-400'
+                              : 'text-[#64748B] dark:text-slate-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 hover:text-[#1E40AF] dark:hover:text-slate-200'
                           }`}
                           aria-label={item.label}
                         >
+                          {isActive && (
+                            <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r bg-[#1E40AF] dark:bg-blue-500" />
+                          )}
                           <Icon
-                            className={`sidebar-nav-icon w-4 h-4 shrink-0 group-hover:scale-110 ${
-                              isActive ? 'text-[#36A5F5]' : item.accentColor
-                            } ${
-                              isActive
-                                ? 'opacity-100'
-                                : 'opacity-85 group-hover:opacity-100'
+                            className={`sidebar-nav-icon w-4 h-4 shrink-0 transition-transform duration-150 group-hover:scale-105 ${
+                              isActive ? 'text-[#1E40AF] dark:text-blue-400' : 'text-[#64748B] group-hover:text-[#1E40AF] dark:text-slate-400 dark:group-hover:text-blue-400'
                             }`}
                           />
                           {item.isLiveSync ? (
                             <span
                               className={`absolute top-2 right-2 w-2 h-2 rounded-full ring-2 ring-white dark:ring-slate-900 ${
                                 isOffline || connection.syncStatus === 'Sync Failed'
-                                  ? 'bg-[#DC4545]'
+                                  ? 'bg-[#DC2626]'
                                   : connection.syncStatus === 'Syncing'
-                                  ? 'bg-[#E9A23B]'
-                                  : 'bg-[#16A36A]'
+                                  ? 'bg-[#D97706]'
+                                  : 'bg-[#16A34A]'
                               }`}
                             />
                           ) : typeof item.count === 'number' && item.count > 0 ? (
-                            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1769E8] ring-2 ring-white dark:ring-slate-900" />
+                            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1E40AF] ring-2 ring-white dark:ring-slate-900" />
                           ) : null}
                         </button>
                       );
@@ -1654,20 +1653,19 @@ export function App() {
                         key={item.id}
                         type="button"
                         onClick={() => setActiveNav(item.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium sidebar-nav-btn group whitespace-nowrap shrink-0 ${
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium sidebar-nav-btn group whitespace-nowrap shrink-0 transition-colors duration-150 relative ${
                           isActive
-                            ? 'bg-[#123B78] text-white dark:bg-slate-800 dark:text-white shadow-xs'
-                            : 'text-[#172B4D]/80 dark:text-slate-400 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800/60 hover:text-[#123B78] dark:hover:text-slate-200'
+                            ? 'bg-[#EFF6FF] dark:bg-blue-950/40 text-[#1E40AF] dark:text-blue-400'
+                            : 'text-[#0F172A] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#1E40AF] dark:hover:text-blue-400'
                         }`}
                       >
+                        {isActive && (
+                          <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r bg-[#1E40AF] dark:bg-blue-500" />
+                        )}
                         <span className="flex items-center gap-2.5 truncate">
                           <Icon
-                            className={`sidebar-nav-icon w-4 h-4 shrink-0 group-hover:scale-110 ${
-                              isActive ? 'text-[#36A5F5]' : item.accentColor
-                            } ${
-                              isActive
-                                ? 'opacity-100'
-                                : 'opacity-85 group-hover:opacity-100'
+                            className={`sidebar-nav-icon w-4 h-4 shrink-0 transition-transform duration-150 group-hover:scale-105 ${
+                              isActive ? 'text-[#1E40AF] dark:text-blue-400' : 'text-[#64748B] group-hover:text-[#1E40AF] dark:text-slate-400 dark:group-hover:text-blue-400'
                             }`}
                           />
                           <span className="truncate">{item.label}</span>
@@ -1677,21 +1675,17 @@ export function App() {
                             <span
                               className={`w-2 h-2 rounded-full ${
                                 isOffline || connection.syncStatus === 'Sync Failed'
-                                  ? 'bg-[#DC4545]'
+                                  ? 'bg-[#DC2626]'
                                   : connection.syncStatus === 'Syncing'
-                                  ? 'bg-[#E9A23B]'
-                                  : 'bg-[#16A36A]'
+                                  ? 'bg-[#D97706]'
+                                  : 'bg-[#16A34A]'
                               }`}
                               title={`Google Sheets: ${isOffline ? 'Offline' : connection.syncStatus}`}
                             />
                           )}
                           {typeof item.count === 'number' && (
                             <span
-                              className={`font-mono tabular-nums text-[11px] px-1.5 py-0.2 rounded ${
-                                isActive
-                                  ? 'text-[#DCEBFF] bg-white/15'
-                                  : 'text-[#123B78]/75 dark:text-slate-400 bg-[#F4F2EE] border border-[#E3EAF3] dark:border-slate-700 dark:bg-slate-800/80'
-                              }`}
+                              className="tabular-nums text-xs px-2 py-0.5 rounded-full font-medium text-[#64748B] bg-[#F1F5F9] dark:bg-slate-800 dark:text-slate-400"
                             >
                               {item.count}
                             </span>
@@ -1708,156 +1702,90 @@ export function App() {
 
         {/* Dedicated Sticky Footer Container inside Sidebar */}
         {!isSidebarCollapsed ? (
-          <div className="shrink-0 p-4 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 space-y-3 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-[0_-4px_16px_rgba(0,0,0,0.25)]">
-            {/* Primary Action Button (Pinned in Dedicated Sticky Footer for High Visibility) */}
-            <button
-              type="button"
-              onClick={() => {
-                setTaskContextStudentId(undefined);
-                setTaskContextProjectId(undefined);
-                setIsEnhancedTaskModalOpen(true);
-              }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] active:scale-[0.98] rounded-lg transition-all shadow-[0_2px_10px_rgba(23,105,232,0.28)] whitespace-nowrap shrink-0 group"
+          <div className="shrink-0 p-3 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 space-y-2">
+            {/* Google Sheets Live Sync: Compact Row */}
+            <div
+              className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 group"
+              title={`${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}`}
             >
-              <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
-              <span>{currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}</span>
-            </button>
-
-            {/* Google Sheets Live Sync Card */}
-            <div className="p-3 rounded-lg bg-[#F4F2EE] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#172B4D] dark:text-slate-200 flex items-center gap-1.5">
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A36A] dark:text-emerald-400" />
-                  Google Sheets
-                </span>
-                <span
-                  className={`font-mono text-[11px] font-semibold flex items-center gap-1 ${
-                    isOffline || connection.syncStatus === 'Sync Failed'
-                      ? 'text-[#DC4545] dark:text-red-400'
-                      : connection.syncStatus === 'Syncing'
-                      ? 'text-[#E9A23B] dark:text-amber-400'
-                      : 'text-[#16A36A] dark:text-emerald-400'
-                  }`}
-                >
+              <div className="flex items-center gap-2 min-w-0">
+                <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-emerald-400 shrink-0" />
+                <span className="flex items-center gap-1.5 text-xs text-[#0F172A] dark:text-slate-200 min-w-0">
                   <span
-                    className={`w-1.5 h-1.5 rounded-full ${
+                    className={`w-2 h-2 rounded-full shrink-0 ${
                       isOffline || connection.syncStatus === 'Sync Failed'
-                        ? 'bg-[#DC4545]'
+                        ? 'bg-[#DC2626]'
                         : connection.syncStatus === 'Syncing'
-                        ? 'bg-[#E9A23B]'
-                        : 'bg-[#16A36A]'
+                        ? 'bg-[#D97706]'
+                        : 'bg-[#16A34A]'
                     }`}
                   />
-                  {isOffline ? 'Sync Failed' : connection.syncStatus}
+                  <span className="truncate">{isOffline ? 'Sync Failed' : connection.syncStatus}</span>
                 </span>
               </div>
-
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                {connection.selectedSpreadsheetTitle}
-              </div>
-              <div className="text-[11px] font-mono text-[#172B4D]/80 dark:text-slate-300 truncate">
-                Tab: {connection.selectedWorksheet}
-              </div>
-
-              <div className="pt-1 flex items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={handleManualSyncNow}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold text-[#16A36A] dark:text-emerald-300 bg-[#16A36A]/10 dark:bg-emerald-950/60 hover:bg-[#16A36A]/20 dark:hover:bg-emerald-900/70 rounded-md transition-colors whitespace-nowrap shrink-0"
-                >
-                  <RefreshCw
-                    className={`w-3 h-3 ${
-                      connection.syncStatus === 'Syncing' ? 'animate-spin' : ''
-                    }`}
-                  />
-                  Sync Now
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveNav('sheets-connection')}
-                  className="px-2.5 py-1.5 text-[11px] font-medium text-[#172B4D] dark:text-slate-300 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 rounded-md transition-colors whitespace-nowrap shrink-0"
-                >
-                  Inspect
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleManualSyncNow}
+                title="Sync now with Google Sheets"
+                className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 rounded transition-colors shrink-0"
+              >
+                <RefreshCw
+                  className={`w-3 h-3 ${
+                    connection.syncStatus === 'Syncing' ? 'animate-spin' : ''
+                  }`}
+                />
+                <span>Sync now</span>
+              </button>
             </div>
 
-            {/* Collapse Sidebar Button - Consolidated in Sticky Footer */}
+            {/* Collapse Sidebar Button */}
             <button
               type="button"
               onClick={toggleSidebar}
               title="Collapse sidebar (Ctrl+B)"
-              className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#123B78] dark:hover:text-slate-100 hover:bg-[#F4F2EE] dark:hover:bg-slate-800/80 rounded-lg transition-colors group border border-transparent hover:border-[#E3EAF3] dark:hover:border-slate-700/60"
+              className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-medium text-[#64748B] dark:text-slate-400 hover:text-[#1E40AF] dark:hover:text-slate-100 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/80 rounded-lg transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-slate-700/60"
               aria-label="Collapse sidebar"
             >
               <span className="flex items-center gap-2">
-                <PanelLeftClose className="w-4 h-4 text-slate-400 group-hover:text-[#1769E8] dark:group-hover:text-slate-200 transition-colors" />
+                <PanelLeftClose className="w-4 h-4 text-[#64748B] group-hover:text-[#1E40AF] dark:group-hover:text-slate-200 transition-colors" />
                 <span>Collapse Sidebar</span>
               </span>
-              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-slate-400 dark:text-slate-500 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded">
+              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] text-[#64748B] dark:text-slate-500 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded">
                 Ctrl+B
               </kbd>
             </button>
           </div>
         ) : (
-          <div className="shrink-0 p-3 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 flex flex-col items-center gap-2.5 shadow-[0_-4px_16px_rgba(18,59,120,0.03)] dark:shadow-[0_-4px_16px_rgba(0,0,0,0.25)]">
-            {/* Primary Action Button (Collapsed Icon Form) */}
-            <button
-              type="button"
-              onClick={() => {
-                setTaskContextStudentId(undefined);
-                setTaskContextProjectId(undefined);
-                setIsEnhancedTaskModalOpen(true);
-              }}
-              title={currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
-              className="w-10 h-10 rounded-lg bg-[#1769E8] hover:bg-[#123B78] active:scale-95 text-white flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(23,105,232,0.28)] shrink-0 group"
-              aria-label={currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
-            >
-              <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
-            </button>
-
+          <div className="shrink-0 p-3 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-center gap-2 shadow-xs">
             {/* Collapsed Google Sheets Icon Button */}
             <button
               type="button"
-              onClick={() => setActiveNav('sheets-connection')}
-              title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to inspect connection`}
-              className="w-10 h-10 rounded-lg flex items-center justify-center relative bg-[#F4F2EE] dark:bg-slate-800/50 border border-[#E3EAF3] dark:border-slate-800 hover:border-[#16A36A]/50 transition-colors group"
+              onClick={handleManualSyncNow}
+              title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to sync now`}
+              className="w-9 h-9 rounded-lg flex items-center justify-center relative bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#16A34A]/50 transition-colors group"
               aria-label="Google Sheets synchronization status"
             >
-              <FileSpreadsheet className="w-4 h-4 text-[#16A36A] dark:text-emerald-400 group-hover:scale-110 transition-transform" />
+              <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-emerald-400 group-hover:scale-105 transition-transform" />
               <span
                 className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-slate-900 ${
                   isOffline || connection.syncStatus === 'Sync Failed'
-                    ? 'bg-[#DC4545]'
+                    ? 'bg-[#DC2626]'
                     : connection.syncStatus === 'Syncing'
-                    ? 'bg-[#E9A23B]'
-                    : 'bg-[#16A36A]'
-                }`}
-              />
-            </button>
-            <button
-              type="button"
-              onClick={handleManualSyncNow}
-              title="Sync Now with Google Sheets"
-              className="p-2 text-slate-400 hover:text-[#16A36A] dark:hover:text-emerald-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 rounded-md transition-colors"
-              aria-label="Sync now"
-            >
-              <RefreshCw
-                className={`w-3.5 h-3.5 ${
-                  connection.syncStatus === 'Syncing' ? 'animate-spin text-[#16A36A]' : ''
+                    ? 'bg-[#D97706]'
+                    : 'bg-[#16A34A]'
                 }`}
               />
             </button>
 
-            {/* Expand Sidebar Button - Consolidated in Sticky Footer */}
+            {/* Expand Sidebar Button */}
             <button
               type="button"
               onClick={toggleSidebar}
               title="Expand sidebar (Ctrl+B)"
-              className="w-10 h-10 rounded-lg bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] dark:hover:bg-slate-700 text-[#172B4D] dark:text-slate-300 flex items-center justify-center transition-colors group mt-1 border border-[#E3EAF3] dark:border-slate-700/60"
+              className="w-9 h-9 rounded-lg bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 flex items-center justify-center transition-colors group mt-1 border border-[#E2E8F0] dark:border-slate-700/60"
               aria-label="Expand sidebar"
             >
-              <PanelLeftOpen className="w-4 h-4 transition-transform group-hover:scale-110" />
+              <PanelLeftOpen className="w-4 h-4 transition-transform group-hover:scale-105" />
             </button>
           </div>
         )}
@@ -1865,24 +1793,24 @@ export function App() {
 
       {/* MAIN WORKSPACE CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* TOP HEADER BAR (Fixed, Reduced Height h-14, Perfectly Aligned with Sidebar Brand Logo) */}
-        <header className="sticky top-0 z-20 h-14 px-4 sm:px-6 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between gap-4 shrink-0 shadow-[0_1px_3px_rgba(18,59,120,0.02)]">
+        {/* TOP HEADER BAR */}
+        <header className="sticky top-0 z-20 h-14 px-4 sm:px-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-4 shrink-0 shadow-xs">
           {/* Left: Contextual Breadcrumb */}
           <div className="flex items-center gap-3 text-sm min-w-0">
             <div className="flex items-center gap-2 text-sm min-w-0">
-              <span className="text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap">
+              <span className="text-[#64748B] dark:text-slate-500 font-medium whitespace-nowrap text-xs">
                 Workspace
               </span>
-              <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
+              <span className="text-[#E2E8F0] dark:text-slate-700" aria-hidden="true">
                 /
               </span>
-              <span className="font-semibold text-[#172B4D] dark:text-slate-100 truncate">
+              <span className="font-semibold text-sm text-[#0F172A] dark:text-slate-100 truncate">
                 {currentNavTitle}
               </span>
             </div>
             {stats.overdueCount > 0 && (
               <>
-                <span className="text-[#E3EAF3] dark:text-slate-700" aria-hidden="true">
+                <span className="text-[#E2E8F0] dark:text-slate-700" aria-hidden="true">
                   ·
                 </span>
                 <button
@@ -1890,10 +1818,10 @@ export function App() {
                   onClick={() => {
                     setActiveNav('all-tasks');
                   }}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#DC4545] dark:text-red-400 hover:underline whitespace-nowrap shrink-0"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#FEE2E2] text-[#DC2626] dark:bg-red-950/50 dark:text-red-300 hover:bg-[#FCD8D8] transition-colors whitespace-nowrap shrink-0"
                 >
                   <AlertTriangle className="w-3.5 h-3.5" />
-                  {stats.overdueCount} Overdue
+                  <span><span className="tabular-nums">{stats.overdueCount}</span> Overdue</span>
                 </button>
               </>
             )}
@@ -1901,7 +1829,7 @@ export function App() {
 
           {/* Center: Global Task Search Input */}
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -1911,14 +1839,14 @@ export function App() {
                   setActiveNav('all-tasks');
                 }
               }}
-              placeholder="Search tasks by title, ID (TSK-1001), category, or notes..."
-              className="w-full pl-9 pr-8 py-1.5 text-xs rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none transition-colors"
+              placeholder="Search tasks by title, category, or notes..."
+              className="w-full h-9 pl-9 pr-8 text-sm rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 placeholder:text-[#64748B] focus:border-[#1E40AF] focus:ring-2 focus:ring-[#1E40AF]/20 focus:outline-none transition-colors"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#172B4D]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A]"
                 aria-label="Clear search"
               >
                 <X className="w-3.5 h-3.5" />
@@ -1935,7 +1863,7 @@ export function App() {
               onSwitchUser={handleSwitchUser}
             />
 
-            {/* Offline Simulator / Network Status Button */}
+            {/* Offline Simulator / Network Status */}
             <button
               type="button"
               onClick={() =>
@@ -1949,20 +1877,16 @@ export function App() {
                   ? 'Offline Mode Active — Click to reconnect & flush queue to Google Sheets'
                   : 'Online & Connected — Click to test Offline SQLite Queue'
               }
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap shrink-0 ${
-                isOffline
-                  ? 'bg-[#DC4545]/10 dark:bg-red-950/50 text-[#DC4545] dark:text-red-300 border-[#DC4545]/30 dark:border-red-900'
-                  : 'bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D] dark:text-slate-300 border-[#E3EAF3] dark:border-slate-700 hover:bg-[#DCEBFF]/60'
-              }`}
+              className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-[#0F172A] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0"
             >
               {isOffline ? (
                 <>
-                  <WifiOff className="w-3.5 h-3.5 text-[#DC4545] dark:text-red-400" />
-                  <span>Offline ({syncQueue.length} queued)</span>
+                  <span className="w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
+                  <span className="text-[#DC2626] dark:text-red-400">Offline (<span className="tabular-nums">{syncQueue.length}</span> queued)</span>
                 </>
               ) : (
                 <>
-                  <Wifi className="w-3.5 h-3.5 text-[#16A36A] dark:text-emerald-400" />
+                  <span className="w-2 h-2 rounded-full bg-[#16A34A] shrink-0" />
                   <span>{connection.syncStatus}</span>
                 </>
               )}
@@ -1972,13 +1896,13 @@ export function App() {
             <button
               type="button"
               onClick={() => setIsNotificationDrawerOpen(true)}
-              className="relative p-2 text-[#172B4D] dark:text-slate-300 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              className="relative p-2 text-[#0F172A] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-slate-800"
               title="Open Real-time Notifications & Operational Alerts"
               aria-label="Notifications and Reminders"
             >
               <Bell className="w-4 h-4" />
               {pmsNotifications.filter((n) => !n.read).length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 px-1 min-w-[16px] h-4 rounded-full bg-[#1769E8] text-white font-mono text-[10px] font-bold flex items-center justify-center tabular-nums">
+                <span className="absolute -top-1 -right-1 px-1 min-w-[16px] h-4 rounded-full bg-[#1E40AF] text-white text-[10px] font-semibold flex items-center justify-center tabular-nums">
                   {pmsNotifications.filter((n) => !n.read).length}
                 </span>
               )}
@@ -2006,16 +1930,16 @@ export function App() {
                   }
                 } catch {}
               }}
-              className="p-2 text-[#172B4D] dark:text-slate-300 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 text-[#0F172A] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-slate-800"
               title={`Theme: ${settings.theme === 'system' ? 'System' : settings.theme === 'dark' ? 'Dark' : 'Light'} (Click to cycle)`}
               aria-label="Toggle color theme"
             >
               {settings.theme === 'dark' ? (
-                <Moon className="w-4 h-4 text-[#60B8F5]" />
+                <Moon className="w-4 h-4 text-blue-400" />
               ) : settings.theme === 'system' ? (
-                <Monitor className="w-4 h-4 text-[#1769E8] dark:text-[#60B8F5]" />
+                <Monitor className="w-4 h-4 text-[#1E40AF] dark:text-blue-400" />
               ) : (
-                <Sun className="w-4 h-4 text-[#E9A23B]" />
+                <Sun className="w-4 h-4 text-[#D97706]" />
               )}
             </button>
 
@@ -2027,9 +1951,9 @@ export function App() {
                 setTaskContextProjectId(undefined);
                 setIsEnhancedTaskModalOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-lg shadow-xs transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 h-9 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg shadow-xs transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               {currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
             </button>
           </div>
@@ -2058,34 +1982,34 @@ export function App() {
               />
 
               {/* Welcome Banner & Daily Progress */}
-              <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-4 sm:p-5">
+              <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-4 sm:p-5">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="space-y-1">
                     <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       {formatFullHeaderDate()}
                     </div>
-                    <h1 className="text-2xl font-display font-bold text-[#172B4D] dark:text-slate-100 tracking-tight">
+                    <h1 className="text-2xl font-display font-bold text-[#0F172A] dark:text-slate-100 tracking-tight">
                       Daily Task Command Center
                     </h1>
                     <p className="text-xs text-slate-600 dark:text-slate-400">
                       Connected to Google Sheets:{' '}
-                      <span className="font-mono text-[#123B78] dark:text-slate-200">
+                      <span className="tabular-nums text-[#1E3A8A] dark:text-slate-200">
                         {connection.selectedSpreadsheetTitle} / {connection.selectedWorksheet}
                       </span>{' '}
-                      · Last Synced: <span className="font-mono">{formatTimestamp(connection.lastSyncedAt)}</span>
+                      · Last Synced: <span className="tabular-nums">{formatTimestamp(connection.lastSyncedAt)}</span>
                     </p>
                   </div>
 
                   {/* List vs Calendar Switcher */}
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 p-1 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-lg">
+                    <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg">
                       <button
                         type="button"
                         onClick={() => setDashboardViewMode('list')}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                           dashboardViewMode === 'list'
-                            ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#123B78] dark:text-slate-100 shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-[#172B4D]'
+                            ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-[#0F172A]'
                         }`}
                       >
                         <LayoutList className="w-3.5 h-3.5" />
@@ -2096,8 +2020,8 @@ export function App() {
                         onClick={() => setDashboardViewMode('calendar')}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                           dashboardViewMode === 'calendar'
-                            ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#123B78] dark:text-slate-100 shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-[#172B4D]'
+                            ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-[#0F172A]'
                         }`}
                       >
                         <CalendarIcon className="w-3.5 h-3.5" />
@@ -2108,19 +2032,19 @@ export function App() {
                 </div>
 
                 {/* Daily Progress Bar */}
-                <div className="mt-6 pt-5 border-t border-[#E3EAF3] dark:border-slate-800">
+                <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-slate-800">
                   <div className="flex items-center justify-between text-xs mb-2">
-                    <span className="font-semibold text-[#172B4D] dark:text-slate-300">
+                    <span className="font-semibold text-[#0F172A] dark:text-slate-300">
                       Daily Completion Progress ({stats.todayCompletedCount} of {stats.todayCount}{' '}
                       today&apos;s tasks completed)
                     </span>
-                    <span className="font-mono tabular-nums font-bold text-sm text-[#1769E8] dark:text-blue-400">
+                    <span className="tabular-nums font-bold text-sm text-[#1E40AF] dark:text-blue-400">
                       {stats.dailyCompletionPct}%
                     </span>
                   </div>
-                  <div className="w-full h-2.5 bg-[#DCEBFF]/60 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-2.5 bg-[#EFF6FF]/60 dark:bg-slate-800 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-[#1769E8] dark:bg-blue-500 transition-transform duration-200 origin-left"
+                      className="h-full bg-[#1E40AF] dark:bg-blue-500 transition-transform duration-200 origin-left"
                       style={{
                         transform: `scaleX(${Math.min(1, Math.max(0, stats.dailyCompletionPct / 100))})`,
                       }}
@@ -2129,67 +2053,67 @@ export function App() {
                 </div>
 
                 {/* 7-Metric Task Summary Strip */}
-                <div className="mt-6 pt-5 border-t border-[#E3EAF3] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3.5">
-                  <div className="p-3 rounded-md bg-[#E9A23B]/8 dark:bg-amber-500/10 border border-[#E9A23B]/25 transition-all hover:border-[#E9A23B]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#E9A23B] dark:text-amber-400 font-medium">
+                <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3.5">
+                  <div className="p-3 rounded-md bg-[#D97706]/8 dark:bg-amber-500/10 border border-[#D97706]/25 transition-all hover:border-[#D97706]/50">
+                    <div className="flex items-center gap-1.5 text-xs text-[#D97706] dark:text-amber-400 font-medium">
                       <Sun className="w-3.5 h-3.5 shrink-0" />
                       <span>Today</span>
                     </div>
-                    <div className="mt-1.5 text-xl font-mono font-bold tabular-nums text-[#172B4D] dark:text-slate-100">
+                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
                       {stats.todayCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] transition-all hover:border-[#36A5F5]">
-                    <div className="flex items-center gap-1.5 text-xs text-[#123B78] dark:text-blue-300 font-medium">
+                  <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] transition-all hover:border-[#1E40AF]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-blue-300 font-medium">
                       <CalendarClock className="w-3.5 h-3.5 shrink-0" />
                       <span>Upcoming</span>
                     </div>
-                    <div className="mt-1.5 text-xl font-mono font-bold tabular-nums text-[#123B78] dark:text-blue-300">
+                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#1E3A8A] dark:text-blue-300">
                       {stats.upcomingCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#16A36A]/8 dark:bg-emerald-500/10 border border-[#16A36A]/25 transition-all hover:border-[#16A36A]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#16A36A] dark:text-emerald-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#16A34A]/8 dark:bg-emerald-500/10 border border-[#16A34A]/25 transition-all hover:border-[#16A34A]/50">
+                    <div className="flex items-center gap-1.5 text-xs text-[#16A34A] dark:text-emerald-400 font-medium">
                       <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                       <span>Completed</span>
                     </div>
-                    <div className="mt-1.5 text-xl font-mono font-bold tabular-nums text-[#16A36A] dark:text-emerald-400">
+                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#16A34A] dark:text-emerald-400">
                       {stats.completedCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#DCEBFF]/50 dark:bg-sky-500/10 border border-[#36A5F5]/25 transition-all hover:border-[#36A5F5]/60">
-                    <div className="flex items-center gap-1.5 text-xs text-[#1769E8] dark:text-sky-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#EFF6FF]/50 dark:bg-sky-500/10 border border-[#1E40AF]/25 transition-all hover:border-[#1E40AF]/60">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-sky-400 font-medium">
                       <Clock className="w-3.5 h-3.5 shrink-0" />
                       <span>Pending</span>
                     </div>
-                    <div className="mt-1.5 text-xl font-mono font-bold tabular-nums text-[#172B4D] dark:text-slate-200">
+                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-200">
                       {stats.pendingCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#DC4545]/8 dark:bg-red-500/10 border border-[#DC4545]/25 transition-all hover:border-[#DC4545]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#DC4545] dark:text-red-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#DC2626]/8 dark:bg-red-500/10 border border-[#DC2626]/25 transition-all hover:border-[#DC2626]/50">
+                    <div className="flex items-center gap-1.5 text-xs text-[#DC2626] dark:text-red-400 font-medium">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                       <span>Overdue</span>
                     </div>
-                    <div className="mt-1.5 text-xl font-mono font-bold tabular-nums text-[#DC4545] dark:text-red-400">
+                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#DC2626] dark:text-red-400">
                       {stats.overdueCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#F4F2EE] dark:bg-slate-800/40 border border-[#E3EAF3] transition-all hover:border-[#36A5F5]">
-                    <div className="flex items-center gap-1.5 text-xs text-[#123B78] dark:text-indigo-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] transition-all hover:border-[#1E40AF]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-indigo-400 font-medium">
                       <Layers className="w-3.5 h-3.5 shrink-0" />
                       <span>Total</span>
                     </div>
-                    <div className="mt-1.5 text-xl font-mono font-bold tabular-nums text-[#172B4D] dark:text-slate-100">
+                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
                       {stats.total}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#DCEBFF]/60 dark:bg-blue-950/30 border border-[#36A5F5]/30 transition-all hover:border-[#1769E8]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#1769E8] dark:text-sky-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#EFF6FF]/60 dark:bg-blue-950/30 border border-[#1E40AF]/30 transition-all hover:border-[#1E40AF]/50">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-sky-400 font-medium">
                       <Percent className="w-3.5 h-3.5 shrink-0" />
                       <span>Rate</span>
                     </div>
-                    <div className="mt-1.5 text-xl font-mono font-bold tabular-nums text-[#1769E8] dark:text-sky-400">
+                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#1E40AF] dark:text-sky-400">
                       {stats.dailyCompletionPct}%
                     </div>
                   </div>
@@ -2199,7 +2123,7 @@ export function App() {
               {/* Quick Inline Task Creation Bar */}
               <form
                 onSubmit={handleQuickAddSubmit}
-                className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-4 flex flex-wrap items-center gap-3"
+                className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-4 flex flex-wrap items-center gap-3"
               >
                 <div className="flex-1 min-w-[240px]">
                   <input
@@ -2207,7 +2131,7 @@ export function App() {
                     value={quickTitle}
                     onChange={(e) => setQuickTitle(e.target.value)}
                     placeholder="Quick add a task for today (press Enter to save & sync to Google Sheets)..."
-                    className="w-full px-3.5 py-2 text-sm rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1769E8] focus:outline-none"
+                    className="w-full px-3.5 py-2 text-sm rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1E40AF] focus:outline-none"
                   />
                 </div>
 
@@ -2250,12 +2174,12 @@ export function App() {
                   value={quickDate}
                   onChange={(e) => setQuickDate(e.target.value)}
                   aria-label="Quick task scheduled date"
-                  className="px-3 py-1.5 text-xs font-mono tabular-nums rounded-lg border border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-200"
+                  className="px-3 py-1.5 text-xs tabular-nums rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-200"
                 />
 
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-lg transition-colors whitespace-nowrap shrink-0"
+                  className="px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
                 >
                   Quick Add
                 </button>
@@ -2307,7 +2231,7 @@ export function App() {
                     <section className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <h2 className="text-base font-semibold text-[#172B4D] dark:text-slate-100">
+                          <h2 className="text-base font-semibold text-[#0F172A] dark:text-slate-100">
                             Today&apos;s Tasks ({stats.todayTasks.length})
                           </h2>
                           {stats.todayTasks.length > 1 && (
@@ -2320,15 +2244,15 @@ export function App() {
                         <button
                           type="button"
                           onClick={() => setActiveNav('my-day')}
-                          className="text-xs font-medium text-[#1769E8] dark:text-blue-400 hover:underline"
+                          className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
                         >
                           Focus My Day →
                         </button>
                       </div>
 
                       {stats.todayTasks.length === 0 ? (
-                        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-8 text-center space-y-2">
-                          <p className="text-sm font-medium text-[#172B4D] dark:text-slate-300">
+                        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-8 text-center space-y-2">
+                          <p className="text-sm font-medium text-[#0F172A] dark:text-slate-300">
                             No tasks scheduled for today yet.
                           </p>
                           <p className="text-xs text-slate-500">
@@ -2380,24 +2304,24 @@ export function App() {
                     />
 
                     {/* Live Google Sheets Connection Summary Card */}
-                    <section className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-5 space-y-3">
+                    <section className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-5 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <FileSpreadsheet className="w-4 h-4 text-[#16A36A] dark:text-emerald-400" />
-                          <h3 className="text-sm font-semibold text-[#172B4D] dark:text-slate-100">
+                          <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-emerald-400" />
+                          <h3 className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
                             Connected Google Sheet
                           </h3>
                         </div>
                         <button
                           type="button"
                           onClick={() => setActiveNav('sheets-connection')}
-                          className="text-xs font-medium text-[#1769E8] dark:text-blue-400 hover:underline"
+                          className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
                         >
                           Open Sheet Grid →
                         </button>
                       </div>
 
-                      <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1 font-mono tabular-nums">
+                      <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1 tabular-nums">
                         <div>File: {connection.selectedSpreadsheetTitle}</div>
                         <div>Worksheet: {connection.selectedWorksheet}!A1:L{tasks.length + 1}</div>
                         <div>Account: {connection.accountEmail}</div>
@@ -2475,9 +2399,9 @@ export function App() {
           {/* VIEW 2: MY DAY */}
           {activeNav === 'my-day' && (
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6">
                 <div>
-                  <h1 className="text-xl font-display font-bold text-[#172B4D] dark:text-slate-100">
+                  <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
                     My Day — {formatFullHeaderDate()}
                   </h1>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -2492,7 +2416,7 @@ export function App() {
                     setModalInitialDate(todayIso);
                     setIsTaskModalOpen(true);
                   }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-lg transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Schedule Task for Today
@@ -2543,12 +2467,12 @@ export function App() {
             return (
               <div className="space-y-6">
                 {/* Header Banner */}
-                <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-6">
+                <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2.5">
-                        <CalendarClock className="w-5 h-5 text-[#1769E8] dark:text-blue-400" />
-                        <h1 className="text-xl font-display font-bold text-[#172B4D] dark:text-slate-100">
+                        <CalendarClock className="w-5 h-5 text-[#1E40AF] dark:text-blue-400" />
+                        <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
                           Upcoming Schedule & Deadlines
                         </h1>
                       </div>
@@ -2564,7 +2488,7 @@ export function App() {
                         setModalInitialDate(tomorrowIso);
                         setIsTaskModalOpen(true);
                       }}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-lg transition-colors whitespace-nowrap shrink-0"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       Schedule Upcoming Task
@@ -2572,28 +2496,28 @@ export function App() {
                   </div>
 
                   {/* Horizon Summary Strip */}
-                  <div className="mt-6 pt-5 border-t border-[#E3EAF3] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">Total Upcoming</div>
-                      <div className="mt-1 text-xl font-mono font-bold tabular-nums text-[#172B4D] dark:text-slate-100">
+                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
                         {stats.upcomingTasks.length}
                       </div>
                     </div>
                     <div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">Due Tomorrow</div>
-                      <div className="mt-1 text-xl font-mono font-bold tabular-nums text-[#E9A23B] dark:text-amber-400">
+                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#D97706] dark:text-amber-400">
                         {tomorrowTasks.length}
                       </div>
                     </div>
                     <div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">Due This Week (2–7d)</div>
-                      <div className="mt-1 text-xl font-mono font-bold tabular-nums text-[#1769E8] dark:text-blue-400">
+                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#1E40AF] dark:text-blue-400">
                         {thisWeekTasks.length}
                       </div>
                     </div>
                     <div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">Later Milestones (8d+)</div>
-                      <div className="mt-1 text-xl font-mono font-bold tabular-nums text-[#123B78] dark:text-slate-300">
+                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#1E3A8A] dark:text-slate-300">
                         {laterTasks.length}
                       </div>
                     </div>
@@ -2601,8 +2525,8 @@ export function App() {
                 </div>
 
                 {stats.upcomingTasks.length === 0 ? (
-                  <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-12 text-center space-y-3">
-                    <p className="text-sm font-semibold text-[#172B4D] dark:text-slate-200">
+                  <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-12 text-center space-y-3">
+                    <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
                       No upcoming tasks scheduled yet
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
@@ -2616,7 +2540,7 @@ export function App() {
                           setModalInitialDate(tomorrowIso);
                           setIsTaskModalOpen(true);
                         }}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-lg transition-colors"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Create Your First Upcoming Task
@@ -2628,10 +2552,10 @@ export function App() {
                     {/* Horizon 1: Tomorrow */}
                     {tomorrowTasks.length > 0 && (
                       <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E3EAF3] dark:border-slate-800">
-                          <h2 className="text-sm font-semibold text-[#E9A23B] dark:text-amber-400 flex items-center gap-2">
+                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-slate-800">
+                          <h2 className="text-sm font-semibold text-[#D97706] dark:text-amber-400 flex items-center gap-2">
                             <span>Tomorrow</span>
-                            <span className="font-mono text-xs tabular-nums text-slate-500">
+                            <span className="tabular-nums text-xs tabular-nums text-slate-500">
                               ({tomorrowTasks.length}) · {formatReadableDate(tomorrowIso, todayIso)}
                             </span>
                           </h2>
@@ -2659,10 +2583,10 @@ export function App() {
                     {/* Horizon 2: This Week (2-7 Days) */}
                     {thisWeekTasks.length > 0 && (
                       <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E3EAF3] dark:border-slate-800">
-                          <h2 className="text-sm font-semibold text-[#1769E8] dark:text-blue-400 flex items-center gap-2">
+                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-slate-800">
+                          <h2 className="text-sm font-semibold text-[#1E40AF] dark:text-blue-400 flex items-center gap-2">
                             <span>This Week (Next 2–7 Days)</span>
-                            <span className="font-mono text-xs tabular-nums text-slate-500">
+                            <span className="tabular-nums text-xs tabular-nums text-slate-500">
                               ({thisWeekTasks.length})
                             </span>
                           </h2>
@@ -2690,10 +2614,10 @@ export function App() {
                     {/* Horizon 3: Later (8+ Days) */}
                     {laterTasks.length > 0 && (
                       <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E3EAF3] dark:border-slate-800">
-                          <h2 className="text-sm font-semibold text-[#172B4D] dark:text-slate-300 flex items-center gap-2">
+                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-slate-800">
+                          <h2 className="text-sm font-semibold text-[#0F172A] dark:text-slate-300 flex items-center gap-2">
                             <span>Later Milestones</span>
-                            <span className="font-mono text-xs tabular-nums text-slate-500">
+                            <span className="tabular-nums text-xs tabular-nums text-slate-500">
                               ({laterTasks.length})
                             </span>
                           </h2>
@@ -2771,9 +2695,9 @@ export function App() {
           {/* VIEW 6: COMPLETED ARCHIVE */}
           {activeNav === 'completed' && (
             <div className="space-y-6">
-              <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-6 flex flex-wrap items-center justify-between gap-4">
+              <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h1 className="text-xl font-display font-bold text-[#172B4D] dark:text-slate-100">
+                  <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
                     Completed Tasks Archive ({stats.completedTasks.length})
                   </h1>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -2845,9 +2769,9 @@ export function App() {
 
           {/* VIEW 8: SETTINGS */}
           {activeNav === 'settings' && (
-            <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-6 space-y-6 max-w-3xl">
+            <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6 space-y-6 max-w-3xl">
               <div>
-                <h1 className="text-xl font-display font-bold text-[#172B4D] dark:text-slate-100">
+                <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
                   Application Settings & Preferences
                 </h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -2855,18 +2779,18 @@ export function App() {
                 </p>
               </div>
 
-              <div className="space-y-4 divide-y divide-[#E3EAF3] dark:divide-slate-800">
+              <div className="space-y-4 divide-y divide-[#E2E8F0] dark:divide-slate-800">
                 {/* Appearance */}
                 <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-100">
+                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
                       Color Theme
                     </div>
                     <div className="text-xs text-slate-500 dark:text-slate-400">
                       Select Light, Dark, or follow your System OS preference
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 p-1 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-lg shrink-0">
+                  <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg shrink-0">
                     <button
                       type="button"
                       onClick={() => {
@@ -2884,11 +2808,11 @@ export function App() {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                         settings.theme === 'light'
-                          ? 'bg-[#FFFFFF] text-[#123B78] shadow-xs font-semibold'
+                          ? 'bg-[#FFFFFF] text-[#1E3A8A] shadow-xs font-semibold'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                       }`}
                     >
-                      <Sun className="w-3.5 h-3.5 text-[#E9A23B]" />
+                      <Sun className="w-3.5 h-3.5 text-[#D97706]" />
                       Light
                     </button>
                     <button
@@ -2945,7 +2869,7 @@ export function App() {
                 {/* Reminders */}
                 <div className="pt-4 flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-100">
+                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
                       Task Reminders & Completion Notifications
                     </div>
                     <div className="text-xs text-slate-500">
@@ -2958,14 +2882,14 @@ export function App() {
                     onChange={(e) =>
                       setSettings((p) => ({ ...p, remindersEnabled: e.target.checked }))
                     }
-                    className="w-4 h-4 rounded border-[#E3EAF3] text-[#1769E8]"
+                    className="w-4 h-4 rounded border-[#E2E8F0] text-[#1E40AF]"
                   />
                 </div>
 
                 {/* Offline Mode Test Switch */}
                 <div className="pt-4 flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-[#172B4D] dark:text-slate-100">
+                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
                       Simulate Network Interruption (Offline SQLite Mode)
                     </div>
                     <div className="text-xs text-slate-500">
@@ -2979,7 +2903,7 @@ export function App() {
                     onChange={(e) =>
                       setSettings((p) => ({ ...p, simulateOffline: e.target.checked }))
                     }
-                    className="w-4 h-4 rounded border-[#E3EAF3] text-[#1769E8]"
+                    className="w-4 h-4 rounded border-[#E2E8F0] text-[#1E40AF]"
                   />
                 </div>
               </div>
@@ -3108,17 +3032,17 @@ export function App() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-5 right-5 z-50 max-w-sm rounded-md bg-[#123B78] dark:bg-slate-800 text-white border border-[#1769E8]/40 dark:border-slate-700 px-4 py-3 shadow-xl flex items-start gap-3 animate-toast-enter"
+          className="fixed bottom-5 right-5 z-50 max-w-sm rounded-md bg-[#1E3A8A] dark:bg-slate-800 text-white border border-[#1E40AF]/40 dark:border-slate-700 px-4 py-3 shadow-xl flex items-start gap-3 animate-toast-enter"
         >
-          <Check className="w-4 h-4 text-[#16A36A] shrink-0 mt-0.5" />
+          <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
           <div className="text-xs space-y-0.5">
             <div className="font-semibold">{activeToast.title}</div>
-            <div className="text-[#DCEBFF]">{activeToast.message}</div>
+            <div className="text-[#EFF6FF]">{activeToast.message}</div>
           </div>
           <button
             type="button"
             onClick={() => setActiveToast(null)}
-            className="text-[#DCEBFF]/80 hover:text-white ml-2"
+            className="text-[#EFF6FF]/80 hover:text-white ml-2"
             aria-label="Dismiss notification"
           >
             <X className="w-3.5 h-3.5" />

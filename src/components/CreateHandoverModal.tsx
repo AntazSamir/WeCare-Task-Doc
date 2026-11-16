@@ -272,27 +272,27 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#123B78]/40 dark:bg-slate-950/60 backdrop-blur-xs animate-modal-backdrop">
-      <div className="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh] animate-modal-card">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs animate-modal-backdrop">
+      <div className="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh] animate-modal-card">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-[#DCEBFF] dark:bg-blue-950 border border-[#36A5F5]/40 dark:border-blue-800 flex items-center justify-center text-[#123B78] dark:text-[#36A5F5]">
+            <div className="w-8 h-8 rounded-md bg-[#EFF6FF] dark:bg-blue-950 border border-[#1E40AF]/40 dark:border-blue-800 flex items-center justify-center text-[#1E3A8A] dark:text-[#1E40AF]">
               <FileCheck2 className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-[#172B4D] dark:text-slate-100">
+              <h2 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
                 Create Physical Document Handover
               </h2>
-              <p className="text-[11px] text-[#172B4D]/65 dark:text-slate-400">
-                Initiated by <span className="font-semibold text-[#172B4D] dark:text-slate-300">{currentUser.name}</span> ({currentUser.team || 'Counseling Team'}) · Auto-generates collision-safe Handover ID
+              <p className="text-[11px] text-[#0F172A]/65 dark:text-slate-400">
+                Initiated by <span className="font-semibold text-[#0F172A] dark:text-slate-300">{currentUser.name}</span> ({currentUser.team || 'Counseling Team'}) · Auto-generates collision-safe Handover ID
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-[#172B4D]/50 hover:text-[#172B4D] dark:hover:text-slate-200 rounded-md"
+            className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md"
           >
             <X className="w-4 h-4" />
           </button>
@@ -300,8 +300,8 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-5">
           {!isCounselor && (
-            <div className="p-3 rounded-md bg-[#E9A23B]/10 dark:bg-amber-950/40 border border-[#E9A23B]/35 dark:border-amber-800 text-xs text-[#172B4D] dark:text-amber-200 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-[#E9A23B]" />
+            <div className="p-3 rounded-md bg-[#D97706]/10 dark:bg-amber-950/40 border border-[#D97706]/35 dark:border-amber-800 text-xs text-[#0F172A] dark:text-amber-200 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#D97706]" />
               <span>
                 Creation permissions are counselor-focused. Switch to a Counseling Team member to submit physical handovers.
               </span>
@@ -309,20 +309,20 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
           )}
 
           {errorMsg && (
-            <div className="p-3 rounded-md bg-[#DC4545]/10 dark:bg-rose-950/40 border border-[#DC4545]/35 dark:border-rose-800 text-xs text-[#DC4545] dark:text-rose-300 flex items-center gap-2">
+            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/40 border border-[#DC2626]/35 dark:border-rose-800 text-xs text-[#DC2626] dark:text-rose-300 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {linkedRequest && (
-            <div className="p-3 rounded-md bg-[#DCEBFF]/70 dark:bg-blue-950/40 border border-[#36A5F5]/40 dark:border-blue-800 text-xs text-[#123B78] dark:text-blue-200 flex items-start gap-2.5">
-              <ClipboardList className="w-4 h-4 shrink-0 mt-0.5 text-[#1769E8] dark:text-[#36A5F5]" />
+            <div className="p-3 rounded-md bg-[#EFF6FF]/70 dark:bg-blue-950/40 border border-[#1E40AF]/40 dark:border-blue-800 text-xs text-[#1E3A8A] dark:text-blue-200 flex items-start gap-2.5">
+              <ClipboardList className="w-4 h-4 shrink-0 mt-0.5 text-[#1E40AF] dark:text-[#1E40AF]" />
               <div className="space-y-0.5">
-                <div className="font-bold font-mono">
+                <div className="font-bold tabular-nums">
                   Fulfilling Request {linkedRequest.id} · {linkedRequest.priority} Priority · Due {linkedRequest.deadline}
                 </div>
-                <div className="text-[11px] text-[#172B4D]/80 dark:text-blue-300">
+                <div className="text-[11px] text-[#0F172A]/80 dark:text-blue-300">
                   Requested by {linkedRequest.requestedByName} for {linkedRequest.studentName}. Submitting links this handover directly to the request.
                 </div>
               </div>
@@ -332,9 +332,9 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
           {/* Student & Receiver Metadata Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#172B4D] dark:text-slate-300">
-                <GraduationCap className="w-3.5 h-3.5 text-[#16A36A]" />
-                Student Candidate Dossier <span className="text-[#DC4545]">*</span>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+                <GraduationCap className="w-3.5 h-3.5 text-[#16A34A]" />
+                Student Candidate Dossier <span className="text-[#DC2626]">*</span>
               </label>
               <MorphSelect value={studentId} onValueChange={(v) => setStudentId(v)}>
                 <MorphSelectTrigger>
@@ -351,9 +351,9 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#172B4D] dark:text-slate-300">
-                <UserCheck className="w-3.5 h-3.5 text-[#1769E8]" />
-                Receiving Admission Team Member <span className="text-[#DC4545]">*</span>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+                <UserCheck className="w-3.5 h-3.5 text-[#1E40AF]" />
+                Receiving Admission Team Member <span className="text-[#DC2626]">*</span>
               </label>
               <MorphSelect value={receivingEmployeeId} onValueChange={(v) => setReceivingEmployeeId(v)}>
                 <MorphSelectTrigger>
@@ -371,8 +371,8 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-semibold text-[#172B4D] dark:text-slate-300">
-                  <Calendar className="w-3.5 h-3.5 text-[#172B4D]/55" />
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+                  <Calendar className="w-3.5 h-3.5 text-[#0F172A]/55" />
                   Handover Date
                 </label>
                 <input
@@ -380,12 +380,12 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                   value={handoverDate}
                   onChange={(e) => setHandoverDate(e.target.value)}
                   required
-                  className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none font-mono"
+                  className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none tabular-nums"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-semibold text-[#172B4D] dark:text-slate-300">
-                  <Clock className="w-3.5 h-3.5 text-[#172B4D]/55" />
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+                  <Clock className="w-3.5 h-3.5 text-[#0F172A]/55" />
                   Time
                 </label>
                 <input
@@ -393,14 +393,14 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                   value={handoverTime}
                   onChange={(e) => setHandoverTime(e.target.value)}
                   required
-                  className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none font-mono"
+                  className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none tabular-nums"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#172B4D] dark:text-slate-300">
-                <Package className="w-3.5 h-3.5 text-[#172B4D]/55" />
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+                <Package className="w-3.5 h-3.5 text-[#0F172A]/55" />
                 Envelope / Folder Seal # (Optional)
               </label>
               <input
@@ -408,7 +408,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                 value={packageSealNumber}
                 onChange={(e) => setPackageSealNumber(e.target.value)}
                 placeholder="e.g. ENV-SNU-2026-04"
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none font-mono"
+                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none tabular-nums"
               />
             </div>
           </div>
@@ -416,13 +416,13 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
           {/* Preset Quick Add Strip */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#172B4D] dark:text-slate-200 uppercase tracking-wide">
+              <span className="text-xs font-bold text-[#0F172A] dark:text-slate-200 uppercase tracking-wide">
                 Physical Document Manifest ({documents.length} items · {totalPages} total sheets)
               </span>
               <button
                 type="button"
                 onClick={handleAddRow}
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#123B78] dark:text-[#36A5F5] bg-[#DCEBFF] dark:bg-blue-950/60 hover:bg-[#36A5F5]/25 rounded-md border border-[#36A5F5]/40 dark:border-blue-800 transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#1E3A8A] dark:text-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950/60 hover:bg-[#1E40AF]/25 rounded-md border border-[#1E40AF]/40 dark:border-blue-800 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Custom Row
@@ -435,7 +435,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                   key={preset.label}
                   type="button"
                   onClick={() => handleAddPreset(preset)}
-                  className="px-2.5 py-1 text-[11px] font-medium text-[#172B4D] dark:text-slate-300 bg-[#F4F2EE] dark:bg-slate-800 hover:bg-[#DCEBFF] hover:text-[#123B78] dark:hover:bg-slate-700 rounded-md border border-[#E3EAF3] dark:border-slate-700 transition-colors"
+                  className="px-2.5 py-1 text-[11px] font-medium text-[#0F172A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] hover:text-[#1E3A8A] dark:hover:bg-slate-700 rounded-md border border-[#E2E8F0] dark:border-slate-700 transition-colors"
                 >
                   {preset.label}
                 </button>
@@ -444,15 +444,15 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
           </div>
 
           {/* Dynamic Documents Table */}
-          <div className="border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-hidden">
-            <div className="divide-y divide-[#E3EAF3] dark:divide-slate-800">
+          <div className="border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden">
+            <div className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
               {documents.map((doc, idx) => (
                 <div
                   key={idx}
-                  className="p-3 bg-[#F4F2EE] dark:bg-slate-900/60 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-start"
+                  className="p-3 bg-[#F8FAFC] dark:bg-slate-900/60 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-start"
                 >
                   <div className="sm:col-span-4 space-y-1">
-                    <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">
+                    <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">
                       Document #{idx + 1} Name *
                     </label>
                     <input
@@ -461,12 +461,12 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                       onChange={(e) => handleUpdateRow(idx, { documentName: e.target.value })}
                       placeholder="e.g. Original Bank Balance Certificate"
                       required
-                      className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
                     />
                   </div>
 
                   <div className="sm:col-span-2 space-y-1">
-                    <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">Format</label>
+                    <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">Format</label>
                     <MorphSelect value={doc.format} onValueChange={(v) => handleUpdateRow(idx, { format: v as DocumentFormat })}>
                       <MorphSelectTrigger>
                         <MorphSelectValue placeholder="Select..." />
@@ -482,31 +482,31 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                   </div>
 
                   <div className="sm:col-span-1 space-y-1">
-                    <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">Qty</label>
+                    <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">Qty</label>
                     <input
                       type="number"
                       min={1}
                       max={99}
                       value={doc.quantity}
                       onChange={(e) => handleUpdateRow(idx, { quantity: Math.max(1, Number(e.target.value) || 1) })}
-                      className="w-full px-2 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 font-mono focus:border-[#1769E8] focus:outline-none"
+                      className="w-full px-2 py-1.5 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
                     />
                   </div>
 
                   <div className="sm:col-span-1 space-y-1">
-                    <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">Pages</label>
+                    <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">Pages</label>
                     <input
                       type="number"
                       min={1}
                       max={999}
                       value={doc.pageCount}
                       onChange={(e) => handleUpdateRow(idx, { pageCount: Math.max(1, Number(e.target.value) || 1) })}
-                      className="w-full px-2 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 font-mono focus:border-[#1769E8] focus:outline-none"
+                      className="w-full px-2 py-1.5 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
                     />
                   </div>
 
                   <div className="sm:col-span-3 space-y-1">
-                    <label className="text-[10px] font-semibold text-[#172B4D]/60 dark:text-slate-400 uppercase">
+                    <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">
                       Physical Condition / Notes
                     </label>
                     <input
@@ -514,7 +514,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                       value={doc.conditionRemarks}
                       onChange={(e) => handleUpdateRow(idx, { conditionRemarks: e.target.value })}
                       placeholder="e.g. Embossed stamp verified"
-                      className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
+                      className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
                     />
                   </div>
 
@@ -523,7 +523,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
                       type="button"
                       disabled={documents.length <= 1}
                       onClick={() => handleRemoveRow(idx)}
-                      className="p-1.5 text-[#172B4D]/45 hover:text-[#DC4545] disabled:opacity-30 rounded-md"
+                      className="p-1.5 text-[#0F172A]/45 hover:text-[#DC2626] disabled:opacity-30 rounded-md"
                       title="Remove document item"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -535,7 +535,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-[#172B4D] dark:text-slate-300">
+            <label className="text-xs font-semibold text-[#0F172A] dark:text-slate-300">
               General Handover Remarks
             </label>
             <textarea
@@ -543,21 +543,21 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
               value={generalRemarks}
               onChange={(e) => setGeneralRemarks(e.target.value)}
               placeholder="Desk location, deadline urgency, or special verification instructions for Admission Team..."
-              className="w-full px-3 py-2 text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 focus:border-[#1769E8] focus:outline-none"
+              className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
             />
           </div>
         </form>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/80 flex items-center justify-between gap-3">
-          <div className="text-[11px] text-[#172B4D]/60 dark:text-slate-400 font-mono">
-            Syncs automatically to tabs: <span className="font-semibold text-[#123B78] dark:text-slate-200">HND_{currentUser.id}</span> & receiver tab
+        <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-900/80 flex items-center justify-between gap-3">
+          <div className="text-[11px] text-[#0F172A]/60 dark:text-slate-400 tabular-nums">
+            Syncs automatically to tabs: <span className="font-semibold text-[#1E3A8A] dark:text-slate-200">HND_{currentUser.id}</span> & receiver tab
           </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 text-xs font-semibold text-[#172B4D] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md hover:bg-[#DCEBFF]/40"
+              className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40"
             >
               Cancel
             </button>
@@ -565,7 +565,7 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || !isCounselor}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] disabled:opacity-50 rounded-md transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-md transition-colors"
             >
               <FileCheck2 className="w-3.5 h-3.5" />
               {isSubmitting ? 'Submitting Handover...' : 'Submit Handover & Notify Receiver'}

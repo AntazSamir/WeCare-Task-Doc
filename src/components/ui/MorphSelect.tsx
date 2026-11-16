@@ -31,7 +31,7 @@ const MORPH: Transition = { type: 'spring', duration: 0.5, bounce: 0.22 };
 
 // Trigger and panel header share this row so the morph stays seamless.
 const ROW =
-  'h-[28px] flex w-full items-center justify-between gap-1.5 px-2.5 text-xs leading-none box-border';
+  'h-9 flex w-full items-center justify-between gap-2 px-3 text-xs leading-none box-border';
 
 const LIST: Variants = {
   hidden: {},
@@ -162,7 +162,7 @@ export function MorphSelect({
 
   return (
     <MorphContext.Provider value={ctx}>
-      <div ref={rootRef} className={cn('relative w-full h-[28px] box-border', className)}>
+      <div ref={rootRef} className={cn('relative w-full h-9 box-border', className)}>
         {children}
       </div>
     </MorphContext.Provider>
@@ -184,7 +184,7 @@ export function MorphSelectValue({ placeholder, className }: MorphSelectValuePro
     <span
       className={cn(
         'min-w-0 truncate block text-left',
-        label ? 'text-[#172B4D] dark:text-slate-100' : 'text-[#899BB1] dark:text-slate-500',
+        label ? 'text-[#0F172A] dark:text-slate-100' : 'text-[#64748B] dark:text-slate-500',
         className,
       )}
     >
@@ -214,14 +214,14 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
           aria-controls={ctx.listId}
           onClick={() => ctx.setOpen(true)}
           transition={ctx.reduce ? { duration: 0 } : MORPH}
-          style={{ borderRadius: 6 }}
+          style={{ borderRadius: 8 }}
           className={cn(
             ROW,
-            'rounded-md border border-[#E3EAF3] dark:border-slate-700',
-            'bg-white dark:bg-slate-800 text-[#172B4D] dark:text-slate-100',
-            'outline-none transition-colors cursor-pointer',
-            'hover:border-[#1769E8] dark:hover:border-blue-500',
-            'focus-visible:ring-1 focus-visible:ring-[#1769E8]',
+            'rounded-lg border border-[#E2E8F0] dark:border-slate-700',
+            'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100',
+            'outline-none transition-colors duration-150 cursor-pointer',
+            'hover:border-[#1E40AF] dark:hover:border-blue-500',
+            'focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-2',
             'disabled:pointer-events-none disabled:opacity-50',
             className,
           )}
@@ -229,7 +229,7 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
           <motion.span layout="position" className="min-w-0 truncate text-left flex-1 block">
             {children}
           </motion.span>
-          <motion.span layout="position" className="text-[#899BB1] dark:text-slate-400 shrink-0 ml-1">
+          <motion.span layout="position" className="text-[#64748B] dark:text-slate-400 shrink-0 ml-1">
             <ChevronDown className="h-3.5 w-3.5" />
           </motion.span>
         </motion.button>
@@ -263,7 +263,7 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
             style={{ borderRadius: 6 }}
             className={cn(
               'absolute inset-x-0 top-0 z-50 overflow-hidden',
-              'border border-[#E3EAF3] dark:border-slate-700',
+              'border border-[#E2E8F0] dark:border-slate-700',
               'bg-white dark:bg-slate-800',
               'shadow-xl',
               className,
@@ -275,14 +275,14 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
               layout="position"
               aria-expanded
               onClick={() => ctx.setOpen(false)}
-              className={cn(ROW, 'outline-none hover:bg-[#F4F2EE] dark:hover:bg-slate-700/50 transition-colors cursor-pointer')}
+              className={cn(ROW, 'outline-none hover:bg-[#F8FAFC] dark:hover:bg-slate-700/50 transition-colors cursor-pointer')}
             >
               <span
                 className={cn(
                   'min-w-0 truncate text-left flex-1 block',
                   label
-                    ? 'text-[#172B4D] dark:text-slate-100'
-                    : 'text-[#899BB1] dark:text-slate-500',
+                    ? 'text-[#0F172A] dark:text-slate-100'
+                    : 'text-[#64748B] dark:text-slate-500',
                 )}
               >
                 {label ?? ctx.placeholder}
@@ -290,13 +290,13 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
               <motion.span
                 animate={{ rotate: 180 }}
                 transition={ctx.reduce ? { duration: 0 } : MORPH}
-                className="text-[#899BB1] dark:text-slate-400 shrink-0 ml-1"
+                className="text-[#64748B] dark:text-slate-400 shrink-0 ml-1"
               >
                 <ChevronDown className="h-3.5 w-3.5" />
               </motion.span>
             </motion.button>
 
-            <div className="h-px bg-[#E3EAF3] dark:bg-slate-700" />
+            <div className="h-px bg-[#E2E8F0] dark:bg-slate-700" />
 
             <motion.ul
               initial="hidden"
@@ -346,14 +346,14 @@ export function MorphSelectItem({
         className={cn(
           'flex w-full items-center justify-between gap-2 rounded px-2 py-1 text-left text-xs outline-none transition-colors cursor-pointer',
           selected
-            ? 'bg-[#DCEBFF] dark:bg-blue-900/40 text-[#1769E8] dark:text-blue-300 font-medium'
-            : 'text-[#5E718D] dark:text-slate-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-700/60 hover:text-[#172B4D] dark:hover:text-slate-100',
+            ? 'bg-[#EFF6FF] dark:bg-blue-900/40 text-[#1E40AF] dark:text-blue-300 font-medium'
+            : 'text-[#64748B] dark:text-slate-400 hover:bg-[#F8FAFC] dark:hover:bg-slate-700/60 hover:text-[#0F172A] dark:hover:text-slate-100',
           'disabled:pointer-events-none disabled:opacity-50',
           className,
         )}
       >
         <span className="truncate">{children}</span>
-        {selected ? <Check className="h-3 w-3 shrink-0 text-[#1769E8] dark:text-blue-400" /> : null}
+        {selected ? <Check className="h-3 w-3 shrink-0 text-[#1E40AF] dark:text-blue-400" /> : null}
       </button>
     </motion.li>
   );

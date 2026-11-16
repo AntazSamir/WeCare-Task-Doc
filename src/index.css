@@ -1,38 +1,90 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --color-primary: #1E40AF;
+  --color-primary-hover: #1E3A8A;
+  --color-primary-soft: #EFF6FF;
+  --color-background: #F8FAFC;
+  --color-card: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-text: #0F172A;
+  --color-muted: #64748B;
+  --color-success: #16A34A;
+  --color-success-soft: #DCFCE7;
+  --color-warning: #D97706;
+  --color-warning-soft: #FEF3C7;
+  --color-danger: #DC2626;
+  --color-danger-soft: #FEE2E2;
+}
+
 @layer base {
   :root {
-    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-    /* Light Theme Design Tokens */
-    --color-deep-blue: #123B78;
-    --color-primary-blue: #1769E8;
-    --color-sky-blue: #36A5F5;
-    --color-light-blue: #DCEBFF;
-    --color-main-bg: #F4F2EE;
+    /* Global Design System Tokens */
+    --color-primary: #1E40AF;
+    --color-primary-hover: #1E3A8A;
+    --color-primary-soft: #EFF6FF;
+    --color-background: #F8FAFC;
+    --color-card: #FFFFFF;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-muted: #64748B;
+    --color-success: #16A34A;
+    --color-success-soft: #DCFCE7;
+    --color-warning: #D97706;
+    --color-warning-soft: #FEF3C7;
+    --color-danger: #DC2626;
+    --color-danger-soft: #FEE2E2;
+
+    /* Legacy Token Aliases Mapped to Global Design System */
+    --color-deep-blue: #1E40AF;
+    --color-primary-blue: #1E40AF;
+    --color-sky-blue: #1E40AF;
+    --color-light-blue: #EFF6FF;
+    --color-main-bg: #F8FAFC;
     --color-sidebar-bg: #FFFFFF;
-    --color-workspace-bg: #F4F2EE;
+    --color-workspace-bg: #F8FAFC;
     --color-card-bg: #FFFFFF;
-    --color-elevated-surface: #F4F2EE;
-    --color-border: #E3EAF3;
-    --color-primary-text: #172B4D;
-    --color-secondary-text: #5E718D;
-    --color-muted-text: #899BB1;
-    --color-main-text: #172B4D;
-    --color-success: #16A36A;
-    --color-warning: #E9A23B;
-    --color-danger: #DC4545;
+    --color-elevated-surface: #F8FAFC;
+    --color-border: #E2E8F0;
+    --color-primary-text: #0F172A;
+    --color-secondary-text: #64748B;
+    --color-muted-text: #64748B;
+    --color-main-text: #0F172A;
+    --color-success: #16A34A;
+    --color-warning: #D97706;
+    --color-danger: #DC2626;
   }
 
   .dark {
-    /* Complete Dark Mode Design Tokens (Specified Palette) */
-    --color-deep-blue: #0B1F3A;
+    /* Dark Mode Design Tokens */
+    --color-primary: #1E40AF;
+    --color-primary-hover: #1E3A8A;
+    --color-primary-soft: #1E293B;
+    --color-background: #0B1220;
+    --color-card: #172438;
+    --color-border: #2A3B52;
+    --color-text: #F1F5FB;
+    --color-muted: #899BB1;
+    --color-success: #16A34A;
+    --color-success-soft: #14532D;
+    --color-warning: #D97706;
+    --color-warning-soft: #78350F;
+    --color-danger: #DC2626;
+    --color-danger-soft: #7F1D1D;
+
+    --color-deep-blue: #1E40AF;
     --color-primary-blue: #3B82F6;
     --color-sky-blue: #60B8F5;
-    --color-light-blue: #A9CEFF;
+    --color-light-blue: #EFF6FF;
     --color-main-bg: #0B1220;
     --color-sidebar-bg: #0F1B2D;
     --color-workspace-bg: #111C2E;
@@ -43,47 +95,39 @@
     --color-secondary-text: #A7B6CA;
     --color-muted-text: #71839C;
     --color-main-text: #F1F5FB;
-    --color-success: #22C55E;
-    --color-warning: #F5B942;
-    --color-danger: #F05252;
 
-    /* Tailwind Slate Palette Overrides in Dark Mode to match design tokens */
-    --color-slate-950: #0B1220; /* Main Background */
-    --color-slate-900: #172438; /* Card Background */
-    --color-slate-850: #111C2E; /* Workspace Background */
-    --color-slate-800: #1D2D44; /* Elevated Surface */
-    --color-slate-700: #2A3B52; /* Border */
+    /* Tailwind Slate Palette Overrides in Dark Mode */
+    --color-slate-950: #0B1220;
+    --color-slate-900: #172438;
+    --color-slate-850: #111C2E;
+    --color-slate-800: #1D2D44;
+    --color-slate-700: #2A3B52;
     --color-slate-600: #3E526D;
-    --color-slate-500: #71839C; /* Muted Text */
-    --color-slate-400: #A7B6CA; /* Secondary Text */
+    --color-slate-500: #71839C;
+    --color-slate-400: #A7B6CA;
     --color-slate-300: #C2D0E2;
     --color-slate-200: #E2E8F0;
-    --color-slate-100: #F1F5FB; /* Primary Text */
+    --color-slate-100: #F1F5FB;
 
-    /* Blue accents and active navigation */
     --color-blue-500: #3B82F6;
     --color-blue-600: #2563EB;
     --color-blue-400: #60B8F5;
     --color-blue-300: #A9CEFF;
+  }
 
-    /* Status colors in dark mode */
-    --color-emerald-400: #34D399;
-    --color-emerald-500: #22C55E;
-    --color-amber-400: #FBBF24;
-    --color-amber-500: #F5B942;
-    --color-rose-400: #F87171;
-    --color-rose-500: #F05252;
-    --color-red-500: #F05252;
+  *, ::before, ::after {
+    font-family: var(--font-sans);
   }
 
   body {
     font-family: var(--font-sans);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: var(--color-background);
+    color: var(--color-text);
   }
 
   .dark body {
-    background-color: var(--color-main-bg);
-    color: var(--color-primary-text);
+    background-color: var(--color-background);
+    color: var(--color-text);
   }
 
   button:not(:disabled), [role="button"]:not(:disabled) {
@@ -91,13 +135,38 @@
   }
 
   h1, h2, h3, h4, .font-display {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     text-wrap: balance;
   }
 
-  .font-mono, .tabular-nums {
-    font-family: var(--font-mono);
+  /* Remove all monospace fonts. Numbers use tabular-nums */
+  .font-mono, kbd, code, pre {
+    font-family: var(--font-sans) !important;
     font-variant-numeric: tabular-nums;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Universal focus ring for all buttons and interactive controls: 2px blue, 2px offset */
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #1E40AF !important;
+  }
+
+  .dark button:focus-visible,
+  .dark [role="button"]:focus-visible,
+  .dark a:focus-visible,
+  .dark input:focus-visible,
+  .dark select:focus-visible,
+  .dark textarea:focus-visible {
+    box-shadow: 0 0 0 2px #0B1220, 0 0 0 4px #3B82F6 !important;
   }
 }
 
@@ -396,6 +465,121 @@ button:not(:disabled),
               opacity 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #1E40AF !important;
+}
+
+.dark button:focus-visible,
+.dark [role="button"]:focus-visible,
+.dark a:focus-visible,
+.dark input:focus-visible,
+.dark select:focus-visible,
+.dark textarea:focus-visible {
+  box-shadow: 0 0 0 2px #0B1220, 0 0 0 4px #3B82F6 !important;
+}
+
+/* Card & Button Global Design System Utilities */
+.ui-card {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  padding: 24px;
+}
+
+.dark .ui-card {
+  background-color: var(--color-card-bg);
+  border-color: var(--color-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF !important;
+  background-color: #1E40AF !important;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #1E3A8A !important;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0F172A !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 8px;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+}
+
+.dark .btn-secondary {
+  color: #F1F5FB !important;
+  background-color: #172438 !important;
+  border-color: #2A3B52 !important;
+}
+
+.dark .btn-secondary:hover:not(:disabled) {
+  background-color: #1D2D44 !important;
+}
+
+/* Global Typography Hierarchy */
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.375;
+  color: var(--color-text);
+}
+
+.body-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.meta-text {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
 button:not(:disabled):active,
 [role="button"]:not(:disabled):active,
 .btn-pressed:active {
@@ -422,12 +606,12 @@ select {
 }
 
 .skeleton-pulse {
-  background-color: #E3EAF3;
+  background-color: #E2E8F0;
   animation: subtlePulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .skeleton-shimmer {
-  background-color: #E3EAF3;
+  background-color: #E2E8F0;
 }
 
 .dark .skeleton-pulse {

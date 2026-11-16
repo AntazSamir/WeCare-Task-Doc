@@ -67,12 +67,12 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
   const overdue = isTaskOverdue(task, todayIso);
 
   const stripeColor = isCompleted
-    ? 'bg-[#16A36A]'
+    ? 'bg-[#16A34A]'
     : overdue || task.priority === 'Urgent' || task.priority === 'High'
-    ? 'bg-[#DC4545]'
+    ? 'bg-[#DC2626]'
     : task.priority === 'Medium'
-    ? 'bg-[#E9A23B]'
-    : 'bg-[#1769E8]';
+    ? 'bg-[#D97706]'
+    : 'bg-[#1E40AF]';
 
   // Dynamic context icon matching user's mockup (FileText for STEM/Proposals, Plane for records/visa/travel, GraduationCap for forms/universities)
   const getTaskContextIcon = () => {
@@ -136,87 +136,87 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'Work':
-        return <Briefcase className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400 shrink-0" />;
+        return <Briefcase className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
       case 'Study':
-        return <GraduationCap className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400 shrink-0" />;
+        return <GraduationCap className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
       case 'Business':
-        return <Building2 className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400 shrink-0" />;
+        return <Building2 className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
       case 'Personal':
-        return <User className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400 shrink-0" />;
+        return <User className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
       default:
-        return <CheckSquare className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400 shrink-0" />;
+        return <CheckSquare className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
     }
   };
 
   const getRelativeDayTag = () => {
     if (task.taskDate === todayIso || task.deadline === todayIso) {
-      return <span className="text-xs font-bold text-[#DC4545] dark:text-red-400 tracking-tight">Today</span>;
+      return <span className="text-xs font-bold text-[#DC2626] dark:text-red-400 tracking-tight">Today</span>;
     }
     const tomorrow = addDaysToIsoDate(todayIso, 1);
     if (task.taskDate === tomorrow || task.deadline === tomorrow) {
-      return <span className="text-xs font-bold text-[#1769E8] dark:text-blue-400 tracking-tight">Tomorrow</span>;
+      return <span className="text-xs font-bold text-[#1E40AF] dark:text-blue-400 tracking-tight">Tomorrow</span>;
     }
     const yesterday = addDaysToIsoDate(todayIso, -1);
     if (task.taskDate === yesterday || task.deadline === yesterday) {
-      return <span className="text-xs font-bold text-[#DC4545] tracking-tight">Yesterday</span>;
+      return <span className="text-xs font-bold text-[#DC2626] tracking-tight">Yesterday</span>;
     }
     if (task.taskDate < todayIso) {
-      return <span className="text-xs font-bold text-[#DC4545] tracking-tight">Past Due</span>;
+      return <span className="text-xs font-bold text-[#DC2626] tracking-tight">Past Due</span>;
     }
     return (
-      <span className="text-xs font-semibold text-[#172B4D]/65 dark:text-slate-400">
+      <span className="text-xs font-medium text-[#64748B] dark:text-slate-400">
         {formatReadableDate(task.taskDate, todayIso)}
       </span>
     );
   };
 
   return (
-    <div className="relative bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-2xl p-4 transition-all shadow-xs hover:shadow-sm hover:border-[#36A5F5]/60 dark:hover:border-slate-700 overflow-hidden animate-card-enter">
+    <div className="relative bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 transition-all shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-[#1E40AF]/40 dark:hover:border-slate-700 overflow-hidden animate-card-enter">
       {/* 1. Left Vertical Stripe */}
-      <div className={`absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl ${stripeColor}`} />
+      <div className={`absolute left-0 top-0 bottom-0 w-1.5 rounded-l-[12px] ${stripeColor}`} />
 
       {/* 2. Top Header Row: Priority Pill + Category Pill + Status Pill + Relative Date */}
       <div className="flex items-center justify-between gap-2 mb-2 pl-1">
         <div className="flex items-center gap-2 flex-wrap">
           {/* Priority Pill */}
           {task.priority === 'Urgent' || task.priority === 'High' ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#DC4545]/10 text-[#DC4545] dark:bg-rose-950/50 dark:text-rose-400">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FEE2E2] text-[#DC2626] dark:bg-rose-950/50 dark:text-rose-400">
               <span className="text-[10px]">◆</span>
               <span>{task.priority === 'Urgent' ? 'Urgent Priority' : 'High Priority'}</span>
             </span>
           ) : task.priority === 'Medium' ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#E9A23B]/15 text-[#E9A23B] dark:bg-amber-950/50 dark:text-amber-300">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FEF3C7] text-[#D97706] dark:bg-amber-950/50 dark:text-amber-300">
               <span className="text-[10px]">◆</span>
               <span>Medium Priority</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#DCEBFF] text-[#123B78] dark:bg-blue-950/50 dark:text-blue-400">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] text-[#1E40AF] dark:bg-blue-950/50 dark:text-blue-400">
               <span className="text-[10px]">◆</span>
               <span>Low Priority</span>
             </span>
           )}
 
           {/* Category Pill */}
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-medium bg-[#DCEBFF] text-[#123B78] dark:bg-blue-950/40 dark:text-blue-300">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#EFF6FF] text-[#1E40AF] dark:bg-blue-950/40 dark:text-blue-300">
             {getCategoryIcon(task.category)}
             <span>{task.category}</span>
           </span>
 
           {/* Status Pill */}
           {overdue ? (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#DC4545]/10 text-[#DC4545] dark:bg-rose-950/50 dark:text-rose-400">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FEE2E2] text-[#DC2626] dark:bg-rose-950/50 dark:text-rose-400">
               Overdue
             </span>
           ) : isCompleted ? (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#16A36A]/15 text-[#16A36A] dark:bg-emerald-950/50 dark:text-emerald-300">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#DCFCE7] text-[#16A34A] dark:bg-emerald-950/50 dark:text-emerald-300">
               Completed
             </span>
           ) : task.taskDate === todayIso ? (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#36A5F5]/15 text-[#1769E8] dark:bg-sky-950/50 dark:text-sky-300">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] text-[#1E40AF] dark:bg-sky-950/50 dark:text-sky-300">
               In Progress
             </span>
           ) : (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#E9A23B]/15 text-[#E9A23B] dark:bg-amber-950/50 dark:text-amber-300">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FEF3C7] text-[#D97706] dark:bg-amber-950/50 dark:text-amber-300">
               Pending
             </span>
           )}
@@ -232,24 +232,24 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
         <div className="min-w-0 flex-1">
           <h4
             onClick={() => onEdit(task)}
-            className={`text-sm sm:text-[15px] font-bold leading-snug cursor-pointer transition-colors hover:text-[#1769E8] dark:hover:text-blue-400 ${
+            className={`text-[16px] font-semibold leading-snug cursor-pointer transition-colors hover:text-[#1E40AF] dark:hover:text-blue-400 ${
               isCompleted
-                ? 'line-through text-[#172B4D]/45 dark:text-slate-500'
-                : 'text-[#172B4D] dark:text-slate-100'
+                ? 'line-through text-[#64748B] dark:text-slate-500'
+                : 'text-[#0F172A] dark:text-slate-100'
             }`}
           >
             {task.title}
           </h4>
 
           {task.description && (
-            <p className="text-xs text-[#172B4D]/70 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+            <p className="text-sm text-[#64748B] dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
               {task.description}
             </p>
           )}
 
           {task.notes && (
-            <div className="mt-2 text-[11px] text-[#172B4D] dark:text-amber-300 bg-[#E9A23B]/10 dark:bg-amber-950/30 rounded p-1.5 border border-[#E9A23B]/35 dark:border-amber-900/40">
-              <span className="font-semibold text-[#E9A23B]">Note: </span>
+            <div className="mt-2 text-xs text-[#0F172A] dark:text-amber-300 bg-[#FEF3C7] dark:bg-amber-950/30 rounded-lg p-2 border border-[#D97706]/20 dark:border-amber-900/40">
+              <span className="font-semibold text-[#D97706]">Note: </span>
               <span>{task.notes}</span>
             </div>
           )}
@@ -257,9 +257,9 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
       </div>
 
       {/* 4. Bottom Row: Schedule Time + View Details Action Button */}
-      <div className="flex items-center justify-between gap-3 pt-2.5 mt-2 border-t border-[#E3EAF3] dark:border-slate-800/80 pl-1">
-        <div className="flex items-center gap-1.5 text-xs text-[#172B4D]/70 dark:text-slate-400 font-medium">
-          <Clock className="w-4 h-4 text-[#36A5F5] shrink-0" />
+      <div className="flex items-center justify-between gap-3 pt-3 mt-3 border-t border-[#E2E8F0] dark:border-slate-800/80 pl-1">
+        <div className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-slate-400 font-medium">
+          <Clock className="w-4 h-4 text-[#1E40AF] shrink-0" />
           <span>
             Schedule: {formatMonthDayYear(task.taskDate)}
             {task.scheduledTime ? ` · ${task.scheduledTime}` : ''}
@@ -272,10 +272,10 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
             type="button"
             onClick={() => (isCompleted ? onRestorePending(task) : onRequestComplete(task))}
             title={isCompleted ? 'Restore to Pending' : 'Mark as Completed'}
-            className={`p-1.5 rounded-lg transition-colors ${
+            className={`p-1.5 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2 ${
               isCompleted
-                ? 'bg-[#16A36A]/15 text-[#16A36A] dark:bg-emerald-950/60 dark:text-emerald-300'
-                : 'text-[#172B4D]/50 hover:text-[#16A36A] hover:bg-[#16A36A]/10 dark:hover:bg-emerald-950/40'
+                ? 'bg-[#DCFCE7] text-[#16A34A] dark:bg-emerald-950/60 dark:text-emerald-300'
+                : 'text-[#64748B] hover:text-[#16A34A] hover:bg-[#DCFCE7] dark:hover:bg-emerald-950/40'
             }`}
             aria-label={isCompleted ? 'Restore task' : 'Mark task complete'}
           >
@@ -288,7 +288,7 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
               type="button"
               onClick={() => onQuickReschedule(task, 1)}
               title="Postpone deadline +1 Day"
-              className="p-1.5 text-[#172B4D]/50 hover:text-[#1769E8] hover:bg-[#DCEBFF] dark:hover:bg-blue-950/40 rounded-lg transition-colors"
+              className="p-1.5 text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-blue-950/40 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
               aria-label="Postpone +1 day"
             >
               <CalendarPlus className="w-3.5 h-3.5" />
@@ -299,7 +299,7 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
           <button
             type="button"
             onClick={() => onEdit(task)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#16A36A] dark:text-emerald-300 bg-[#16A36A]/10 hover:bg-[#16A36A]/20 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/60 border border-[#16A36A]/35 dark:border-emerald-700/60 rounded-lg transition-colors whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
           >
             <span>View Details</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -310,7 +310,7 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
             type="button"
             onClick={() => onDelete(task)}
             title="Delete task"
-            className="p-1.5 text-[#172B4D]/50 hover:text-[#DC4545] hover:bg-[#DC4545]/10 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+            className="p-1.5 text-[#64748B] hover:text-[#DC2626] hover:bg-[#FEE2E2] dark:hover:bg-rose-950/40 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             aria-label="Delete task"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -396,10 +396,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Calendar Header & Month Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
         <div className="flex items-center gap-2.5">
-          <Calendar className="w-4.5 h-4.5 text-[#1769E8]" />
-          <h2 className="text-base sm:text-lg font-bold text-[#172B4D] dark:text-slate-100">
+          <Calendar className="w-5 h-5 text-[#1E40AF]" />
+          <h2 className="text-[24px] font-semibold text-[#0F172A] dark:text-slate-100 leading-tight">
             {monthTitle}
           </h2>
         </div>
@@ -408,15 +408,15 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           <button
             type="button"
             onClick={handleJumpToday}
-            className="px-2.5 py-1 text-xs font-semibold text-[#123B78] dark:text-slate-300 bg-[#DCEBFF] dark:bg-slate-800 hover:bg-[#36A5F5]/25 dark:hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap shrink-0"
+            className="h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-slate-300 bg-white border border-[#E2E8F0] dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
           >
             Today
           </button>
-          <div className="flex items-center border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-hidden">
+          <div className="flex items-center border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden h-9">
             <button
               type="button"
               onClick={handlePrevMonth}
-              className="p-1.5 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 transition-colors"
+              className="px-2.5 h-full text-[#64748B] dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               aria-label="Previous month"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -424,7 +424,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <button
               type="button"
               onClick={handleNextMonth}
-              className="p-1.5 text-[#172B4D]/75 dark:text-slate-400 hover:bg-[#F4F2EE] dark:hover:bg-slate-800 transition-colors border-l border-[#E3EAF3] dark:border-slate-800"
+              className="px-2.5 h-full text-[#64748B] dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-l border-[#E2E8F0] dark:border-slate-800"
               aria-label="Next month"
             >
               <ChevronRight className="w-4 h-4" />
@@ -433,30 +433,30 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           <button
             type="button"
             onClick={() => onCreateTaskForDate(selectedDateIso)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-lg transition-colors whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" />
             <span>Add Task</span>
           </button>
         </div>
       </div>
 
       {/* Main Split: Compact Month Calendar + Full Task List */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Compact Month Grid (Reduced Size) */}
-        <div className="lg:col-span-5 xl:col-span-5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
-          <div className="grid grid-cols-7 border-b border-[#E3EAF3] dark:border-slate-800 bg-[#F4F2EE] dark:bg-slate-900/60">
+        <div className="lg:col-span-5 xl:col-span-5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <div className="grid grid-cols-7 border-b border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-900/60">
             {WEEKDAYS.map((day) => (
               <div
                 key={day}
-                className="py-2 text-center text-[11px] font-semibold text-[#172B4D]/65 dark:text-slate-400"
+                className="py-2.5 text-center text-[12px] font-semibold text-[#64748B] dark:text-slate-400"
               >
                 {day}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 divide-x divide-y divide-[#E3EAF3] dark:divide-slate-800">
+          <div className="grid grid-cols-7 divide-x divide-y divide-[#E2E8F0] dark:divide-slate-800">
             {gridCells.map((cell) => {
               const dayTasks = tasks.filter((t) => t.taskDate === cell.dateIso);
               const isToday = cell.dateIso === todayIso;
@@ -468,21 +468,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   key={cell.dateIso}
                   type="button"
                   onClick={() => setSelectedDateIso(cell.dateIso)}
-                  className={`min-h-[58px] sm:min-h-[64px] p-1.5 text-left flex flex-col justify-between transition-colors ${
+                  className={`min-h-[64px] sm:min-h-[70px] p-2 text-left flex flex-col justify-between transition-colors ${
                     !cell.isCurrentMonth
-                      ? 'bg-[#F4F2EE] dark:bg-slate-950/40 text-[#172B4D]/35 dark:text-slate-600'
-                      : 'bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D] dark:text-slate-100'
+                      ? 'bg-[#F8FAFC] dark:bg-slate-950/40 text-[#64748B]/50 dark:text-slate-600'
+                      : 'bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100'
                   } ${
                     isSelected
-                      ? 'ring-2 ring-inset ring-[#1769E8] dark:ring-blue-500 bg-[#DCEBFF]/40 dark:bg-blue-950/20'
-                      : 'hover:bg-[#F4F2EE] dark:hover:bg-slate-800/50'
+                      ? 'ring-2 ring-inset ring-[#1E40AF] dark:ring-blue-500 bg-[#EFF6FF] dark:bg-blue-950/20'
+                      : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">
                     <span
-                      className={`text-[11px] font-mono tabular-nums w-5 h-5 rounded flex items-center justify-center ${
+                      className={`text-[12px] tabular-nums w-5 h-5 rounded flex items-center justify-center ${
                         isToday
-                          ? 'bg-[#1769E8] text-white font-semibold'
+                          ? 'bg-[#1E40AF] text-white font-semibold'
                           : 'font-medium'
                       }`}
                     >
@@ -490,7 +490,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     </span>
 
                     {dayTasks.length > 0 && (
-                      <span className="text-[10px] font-mono tabular-nums text-[#172B4D]/50 dark:text-slate-500">
+                      <span className="text-[10px] tabular-nums text-[#64748B] dark:text-slate-500">
                         {completedCount}/{dayTasks.length}
                       </span>
                     )}
@@ -503,14 +503,14 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                         const isComp = t.status === 'Completed';
                         const isOver = isTaskOverdue(t, todayIso);
                         const dotBg = isComp
-                          ? 'bg-[#16A36A]'
+                          ? 'bg-[#16A34A]'
                           : isOver
-                          ? 'bg-[#DC4545]'
+                          ? 'bg-[#DC2626]'
                           : t.priority === 'Urgent' || t.priority === 'High'
-                          ? 'bg-[#DC4545]'
+                          ? 'bg-[#DC2626]'
                           : t.priority === 'Medium'
-                          ? 'bg-[#E9A23B]'
-                          : 'bg-[#1769E8]';
+                          ? 'bg-[#D97706]'
+                          : 'bg-[#1E40AF]';
                         return (
                           <span
                             key={t.id}
@@ -520,7 +520,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                         );
                       })}
                       {dayTasks.length > 3 && (
-                        <span className="text-[9px] font-mono text-[#172B4D]/50">+{dayTasks.length - 3}</span>
+                        <span className="text-[9px] tabular-nums text-[#64748B]">+{dayTasks.length - 3}</span>
                       )}
                     </div>
                   )}
@@ -531,21 +531,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
 
         {/* Selected Date Agenda Panel (Expanded to lg:col-span-7 xl:col-span-7) */}
-        <div className="lg:col-span-7 xl:col-span-7 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+        <div className="lg:col-span-7 xl:col-span-7 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
           <div key={selectedDateIso} className="animate-tab-enter space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E3EAF3] dark:border-slate-800 pb-3 gap-2">
+          <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3 gap-2">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-[#172B4D] dark:text-slate-100">
+                <h3 className="text-[16px] font-semibold text-[#0F172A] dark:text-slate-100">
                   {formatReadableDate(selectedDateIso, todayIso)}
                 </h3>
                 {selectedDateIso === todayIso && (
-                  <span className="px-2 py-0.5 text-[11px] font-bold bg-[#DC4545]/10 text-[#DC4545] dark:bg-red-950/60 dark:text-red-400 rounded-md">
+                  <span className="px-2 py-0.5 text-xs font-semibold bg-[#FEE2E2] text-[#DC2626] dark:bg-red-950/60 dark:text-red-400 rounded-full">
                     Today
                   </span>
                 )}
               </div>
-              <p className="text-xs font-mono tabular-nums text-[#172B4D]/65 dark:text-slate-400 mt-0.5">
+              <p className="text-xs tabular-nums text-[#64748B] dark:text-slate-400 mt-0.5">
                 {selectedDateIso} · {selectedDateTasks.length}{' '}
                 {selectedDateTasks.length === 1 ? 'task' : 'tasks'}
                 {selectedDateTasks.length > 0 && (
@@ -558,28 +558,28 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <button
               type="button"
               onClick={() => onCreateTaskForDate(selectedDateIso)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-[#123B78] dark:text-blue-300 bg-[#DCEBFF] dark:bg-blue-950/60 hover:bg-[#36A5F5]/25 dark:hover:bg-blue-900/70 rounded-md transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium text-[#1E40AF] dark:text-blue-300 bg-[#EFF6FF] dark:bg-blue-950/60 hover:bg-[#1E40AF] hover:text-white dark:hover:bg-blue-900/70 rounded-lg transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
-              <Plus className="w-3.5 h-3.5 text-[#1769E8]" />
+              <Plus className="w-3.5 h-3.5" />
               Add Task
             </button>
           </div>
 
           {selectedDateTasks.length === 0 ? (
-            <div className="py-10 text-center space-y-2">
-              <p className="text-sm font-medium text-[#172B4D] dark:text-slate-300">
+            <div className="py-12 text-center space-y-2">
+              <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-300">
                 No tasks scheduled for {formatReadableDate(selectedDateIso, todayIso)}
               </p>
-              <p className="text-xs text-[#172B4D]/65 dark:text-slate-400">
+              <p className="text-xs text-[#64748B] dark:text-slate-400">
                 Click the button below to schedule a task on this date and sync with Google Sheets.
               </p>
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={() => onCreateTaskForDate(selectedDateIso)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-md transition-colors"
+                  className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-4 h-4" />
                   Create Task for {selectedDateIso}
                 </button>
               </div>

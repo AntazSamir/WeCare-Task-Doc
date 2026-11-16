@@ -41,81 +41,81 @@ const STAGE_CONFIG: Record<VisaStage, StageBadgeConfig> = {
   Document_Gathering: {
     label: 'Doc Prep',
     dotColor: 'bg-slate-400',
-    bgLight: 'bg-slate-100',
+    bgLight: 'bg-[#F8FAFC]',
     bgDark: 'dark:bg-slate-800/80',
-    textLight: 'text-slate-700',
+    textLight: 'text-[#64748B]',
     textDark: 'dark:text-slate-300',
-    borderColor: 'border-slate-300 dark:border-slate-700',
+    borderColor: 'border-[#E2E8F0] dark:border-slate-700',
   },
   Apostille_Verification: {
     label: 'Apostille & Notary',
-    dotColor: 'bg-[#1769E8]',
-    bgLight: 'bg-[#DCEBFF]',
+    dotColor: 'bg-[#1E40AF]',
+    bgLight: 'bg-[#EFF6FF]',
     bgDark: 'dark:bg-blue-950/60',
-    textLight: 'text-[#123B78]',
-    textDark: 'dark:text-[#60B8F5]',
-    borderColor: 'border-[#36A5F5]/30 dark:border-blue-800',
+    textLight: 'text-[#1E40AF]',
+    textDark: 'dark:text-blue-300',
+    borderColor: 'border-blue-200 dark:border-blue-800',
   },
   University_Submitted: {
     label: 'Univ Submitted',
-    dotColor: 'bg-[#36A5F5]',
-    bgLight: 'bg-sky-50',
-    bgDark: 'dark:bg-sky-950/50',
-    textLight: 'text-sky-800',
-    textDark: 'dark:text-sky-300',
-    borderColor: 'border-sky-200 dark:border-sky-800',
+    dotColor: 'bg-[#1E40AF]',
+    bgLight: 'bg-[#EFF6FF]',
+    bgDark: 'dark:bg-blue-950/50',
+    textLight: 'text-[#1E40AF]',
+    textDark: 'dark:text-blue-300',
+    borderColor: 'border-blue-200 dark:border-blue-800',
   },
   Admission_Granted: {
     label: 'Admitted',
-    dotColor: 'bg-[#16A36A]',
-    bgLight: 'bg-emerald-50',
+    dotColor: 'bg-[#16A34A]',
+    bgLight: 'bg-[#DCFCE7]',
     bgDark: 'dark:bg-emerald-950/50',
-    textLight: 'text-emerald-800',
+    textLight: 'text-[#16A34A]',
     textDark: 'dark:text-emerald-300',
     borderColor: 'border-emerald-200 dark:border-emerald-800',
   },
   Tuition_Paid: {
     label: 'Tuition Paid',
-    dotColor: 'bg-[#E9A23B]',
-    bgLight: 'bg-amber-50',
-    bgDark: 'dark:bg-amber-950/50',
-    textLight: 'text-amber-800',
-    textDark: 'dark:text-amber-300',
-    borderColor: 'border-amber-200 dark:border-amber-800',
+    dotColor: 'bg-[#1E40AF]',
+    bgLight: 'bg-[#EFF6FF]',
+    bgDark: 'dark:bg-blue-950/50',
+    textLight: 'text-[#1E40AF]',
+    textDark: 'dark:text-blue-300',
+    borderColor: 'border-blue-200 dark:border-blue-800',
   },
   CoA_Received: {
     label: 'CoA Ready',
-    dotColor: 'bg-[#E9A23B]',
-    bgLight: 'bg-amber-100/70',
-    bgDark: 'dark:bg-amber-950/70',
-    textLight: 'text-amber-900',
-    textDark: 'dark:text-amber-200',
-    borderColor: 'border-amber-300 dark:border-amber-700',
+    dotColor: 'bg-[#1E40AF]',
+    bgLight: 'bg-[#EFF6FF]',
+    bgDark: 'dark:bg-blue-950/70',
+    textLight: 'text-[#1E40AF]',
+    textDark: 'dark:text-blue-200',
+    borderColor: 'border-blue-200 dark:border-blue-700',
   },
   Embassy_Visa_Filing: {
     label: 'Embassy Filing',
-    dotColor: 'bg-[#123B78] dark:bg-blue-400',
-    bgLight: 'bg-[#123B78]/10',
+    dotColor: 'bg-[#1E40AF]',
+    bgLight: 'bg-[#EFF6FF]',
     bgDark: 'dark:bg-blue-900/50',
-    textLight: 'text-[#123B78]',
+    textLight: 'text-[#1E40AF]',
     textDark: 'dark:text-blue-200',
-    borderColor: 'border-[#123B78]/20 dark:border-blue-700',
+    borderColor: 'border-blue-200 dark:border-blue-700',
   },
   Visa_Issued: {
     label: 'Visa Granted',
-    dotColor: 'bg-[#16A36A]',
-    bgLight: 'bg-emerald-100',
+    dotColor: 'bg-[#16A34A]',
+    bgLight: 'bg-[#DCFCE7]',
     bgDark: 'dark:bg-emerald-950/70',
-    textLight: 'text-emerald-900',
+    textLight: 'text-[#16A34A]',
     textDark: 'dark:text-emerald-200',
     borderColor: 'border-emerald-300 dark:border-emerald-600',
   },
   Rejected: {
     label: 'Rejected',
-    dotColor: 'bg-[#DC4545]',
-    bgLight: 'bg-red-50',
+    dotColor: 'bg-[#DC2626]',
+    bgLight: 'bg-[#FEE2E2]',
     bgDark: 'dark:bg-red-950/50',
-    textLight: 'text-red-800',
+    textLight: 'text-[#DC2626]',
     textDark: 'dark:text-red-300',
     borderColor: 'border-red-200 dark:border-red-800',
   },
@@ -220,19 +220,19 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* 1. Header Bar with Register Action and View Switcher */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-4 shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-[#1769E8]/10 dark:bg-blue-950/60 border border-[#1769E8]/20 flex items-center justify-center text-[#1769E8] dark:text-blue-400">
-              <Users className="w-4 h-4" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] dark:bg-blue-950/60 border border-blue-100 flex items-center justify-center text-[#1E40AF] dark:text-blue-400 shrink-0">
+              <Users className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#172B4D] dark:text-slate-100 leading-tight">
+              <h1 className="text-[24px] font-semibold text-[#0F172A] dark:text-slate-100 leading-tight">
                 Student Application Dossiers
-              </h2>
-              <p className="text-xs text-[#172B4D]/65 dark:text-slate-400 mt-0.5">
+              </h1>
+              <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1">
                 {currentUser.role === 'Admission_Manager'
                   ? `All Active International Student Candidates (${students.length} dossiers)`
                   : `Assigned Candidate Portfolio (${students.length} dossiers assigned to you)`}
@@ -241,17 +241,17 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* View Mode Switcher */}
-          <div className="inline-flex items-center p-0.5 rounded-md bg-[#F4F2EE] dark:bg-slate-800/80 border border-[#E3EAF3] dark:border-slate-700">
+          <div className="inline-flex items-center p-0.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/80 border border-[#E2E8F0] dark:border-slate-700 h-9">
             <button
               type="button"
               onClick={() => setViewMode('table')}
               title="Table View"
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded transition-colors ${
+              className={`inline-flex items-center gap-1.5 px-3 h-full text-xs font-medium rounded-md transition-colors ${
                 viewMode === 'table'
-                  ? 'bg-white dark:bg-slate-900 text-[#1769E8] dark:text-blue-400 shadow-xs'
-                  : 'text-[#172B4D]/70 dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
+                  ? 'bg-white dark:bg-slate-900 text-[#1E40AF] dark:text-blue-400 shadow-xs'
+                  : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
               }`}
             >
               <List className="w-3.5 h-3.5" />
@@ -261,10 +261,10 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               type="button"
               onClick={() => setViewMode('cards')}
               title="Cards View"
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded transition-colors ${
+              className={`inline-flex items-center gap-1.5 px-3 h-full text-xs font-medium rounded-md transition-colors ${
                 viewMode === 'cards'
-                  ? 'bg-white dark:bg-slate-900 text-[#1769E8] dark:text-blue-400 shadow-xs'
-                  : 'text-[#172B4D]/70 dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
+                  ? 'bg-white dark:bg-slate-900 text-[#1E40AF] dark:text-blue-400 shadow-xs'
+                  : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
@@ -275,23 +275,23 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
           <button
             type="button"
             onClick={onOpenNewStudentModal}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-md transition-colors shadow-xs"
+            className="inline-flex items-center justify-center gap-2 px-4 h-9 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2 shadow-xs whitespace-nowrap"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" />
             <span>Register New Student</span>
           </button>
         </div>
       </div>
 
       {/* 2. Interactive Quick-Filter Stage Ribbon */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs scrollbar-thin">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-thin">
         <button
           type="button"
           onClick={() => setStageFilter('All')}
           className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
             stageFilter === 'All'
-              ? 'bg-[#123B78] dark:bg-blue-600 text-white border-[#123B78] dark:border-blue-600 shadow-xs'
-              : 'bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D]/75 dark:text-slate-300 border-[#E3EAF3] dark:border-slate-800 hover:border-[#1769E8]/40'
+              ? 'bg-[#1E40AF] dark:bg-blue-600 text-white border-[#1E40AF] dark:border-blue-600 shadow-xs'
+              : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]'
           }`}
         >
           All Stages ({stageCounts.All || 0})
@@ -318,8 +318,8 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               onClick={() => setStageFilter(isActive ? 'All' : stg)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
                 isActive
-                  ? 'bg-[#1769E8] text-white border-[#1769E8] shadow-xs'
-                  : 'bg-[#FFFFFF] dark:bg-slate-900 text-[#172B4D]/80 dark:text-slate-300 border-[#E3EAF3] dark:border-slate-800 hover:border-[#1769E8]/50'
+                  ? 'bg-[#1E40AF] text-white border-[#1E40AF] shadow-xs'
+                  : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]'
               }`}
             >
               <span
@@ -329,10 +329,10 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               />
               <span>{cfg.label}</span>
               <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono tabular-nums ${
+                className={`px-1.5 py-0.2 rounded-full text-[10px] tabular-nums ${
                   isActive
                     ? 'bg-white/20 text-white font-bold'
-                    : 'bg-[#F4F2EE] dark:bg-slate-800 text-[#172B4D]/70 dark:text-slate-400'
+                    : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#64748B] dark:text-slate-400'
                 }`}
               >
                 {count}
@@ -343,7 +343,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
       </div>
 
       {/* 3. Comprehensive Search, Filters & Sorting Toolbar */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-3 text-xs shadow-xs space-y-2">
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-4 text-xs shadow-[0_1px_2px_rgba(15,23,42,0.04)] space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative flex-1 min-w-[240px]">
@@ -353,7 +353,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by candidate name, passport, university, major, or courier #..."
-              className="w-full pl-9 pr-8 h-[28px] text-xs rounded-md border border-[#E3EAF3] dark:border-slate-700 bg-[#F4F2EE] dark:bg-slate-950 text-[#172B4D] dark:text-slate-100 placeholder:text-slate-400 focus:border-[#1769E8] focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+              className="w-full pl-9 pr-8 h-9 text-xs rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 placeholder:text-slate-400 focus:border-[#1E40AF] focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
             />
             {search && (
               <button
@@ -403,8 +403,8 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
             )}
 
             {/* Sort Dropdown */}
-            <div className="inline-flex items-center gap-1 pl-1 border-l border-[#E3EAF3] dark:border-slate-800">
-              <span className="text-[#172B4D]/60 dark:text-slate-400 text-[11px] font-medium hidden sm:inline">
+            <div className="inline-flex items-center gap-1 pl-1 border-l border-[#E2E8F0] dark:border-slate-800">
+              <span className="text-[#64748B] dark:text-slate-400 text-[11px] font-medium hidden sm:inline">
                 Sort:
               </span>
               <div className="w-40">
@@ -425,7 +425,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                 type="button"
                 onClick={() => setSortAsc(!sortAsc)}
                 title={sortAsc ? 'Ascending' : 'Descending'}
-                className="p-1.5 text-slate-500 hover:text-[#1769E8] rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="h-9 w-9 flex items-center justify-center text-slate-500 hover:text-[#1E40AF] rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <ArrowUpDown className="w-3.5 h-3.5" />
               </button>
@@ -435,7 +435,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="px-2.5 py-1.5 text-xs text-[#DC4545] dark:text-red-400 hover:bg-[#DC4545]/10 rounded font-medium transition-colors"
+                className="h-9 px-3 text-xs text-[#DC2626] dark:text-red-400 hover:bg-[#DC2626]/10 rounded-lg font-medium transition-colors"
               >
                 Reset
               </button>
@@ -444,14 +444,14 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
         </div>
 
         {/* Results Counter and Active Indicators */}
-        <div className="flex items-center justify-between text-[11px] text-[#172B4D]/65 dark:text-slate-400 pt-1 border-t border-[#E3EAF3]/70 dark:border-slate-800/70">
+        <div className="flex items-center justify-between text-xs text-[#64748B] dark:text-slate-400 pt-2 border-t border-[#E2E8F0] dark:border-slate-800/70">
           <span>
-            Showing <strong className="text-[#172B4D] dark:text-slate-100 font-semibold">{filteredAndSorted.length}</strong> of{' '}
+            Showing <strong className="text-[#0F172A] dark:text-slate-100 font-semibold">{filteredAndSorted.length}</strong> of{' '}
             {students.length} candidate dossiers
           </span>
           {copiedText && (
-            <span className="text-[#16A36A] dark:text-emerald-400 font-medium inline-flex items-center gap-1 animate-fade-in">
-              <Check className="w-3 h-3" /> Copied {copiedText} to clipboard
+            <span className="text-[#16A34A] dark:text-emerald-400 font-medium inline-flex items-center gap-1 animate-fade-in">
+              <Check className="w-3.5 h-3.5" /> Copied {copiedText} to clipboard
             </span>
           )}
         </div>
@@ -460,11 +460,11 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
       {/* 4. REDESIGNED CONTENT: Table View or Cards View */}
       <div key={viewMode} className="animate-tab-enter">
       {viewMode === 'table' ? (
-        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg overflow-hidden shadow-xs">
+        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-[#F4F2EE] dark:bg-slate-800/70 border-b border-[#E3EAF3] dark:border-slate-700/80 text-[11px] font-semibold text-[#172B4D]/75 dark:text-slate-300">
+                <tr className="bg-[#F8FAFC] dark:bg-slate-800/70 border-b border-[#E2E8F0] dark:border-slate-700/80 text-[11px] font-semibold text-[#0F172A] dark:text-slate-300">
                   <th className="py-3 px-4 min-w-[250px]">Candidate</th>
                   <th className="py-3 px-4 min-w-[260px]">Applied University & Program</th>
                   <th className="py-3 px-4 min-w-[210px]">Visa Stage & Checklist</th>
@@ -472,16 +472,16 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                   <th className="py-3 px-4 text-right min-w-[110px]">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E3EAF3] dark:divide-slate-800/80">
+              <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800/80">
                 {filteredAndSorted.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-16 text-center text-[#172B4D]/60 dark:text-slate-400 bg-white dark:bg-slate-900"
+                      className="py-16 text-center text-[#64748B] dark:text-slate-400 bg-white dark:bg-slate-900"
                     >
                       <div className="space-y-2">
                         <Users className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto" />
-                        <p className="text-sm font-semibold text-[#172B4D] dark:text-slate-200">
+                        <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
                           No candidate dossiers match the active filters
                         </p>
                         <p className="text-xs text-slate-500 max-w-sm mx-auto">
@@ -492,7 +492,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                             <button
                               type="button"
                               onClick={resetAllFilters}
-                              className="px-3 py-1.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded transition-colors"
+                              className="px-3 py-1.5 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                             >
                               Reset All Filters
                             </button>
@@ -515,35 +515,35 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                       <tr
                         key={student.id}
                         onClick={() => onSelectStudent(student)}
-                        className="group hover:bg-[#F4F2EE]/70 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
+                        className="group hover:bg-[#F8FAFC] dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
                       >
                         {/* COLUMN 1: CANDIDATE */}
                         <td className="py-3.5 px-4 align-top">
                           <div className="space-y-1 min-w-0">
                             {/* Full Name - whitespace-nowrap prevents broken hyphens */}
-                            <div className="font-bold text-sm text-[#172B4D] dark:text-slate-100 group-hover:text-[#1769E8] dark:group-hover:text-[#60B8F5] transition-colors whitespace-nowrap">
+                            <div className="font-semibold text-sm text-[#0F172A] dark:text-slate-100 group-hover:text-[#1E40AF] dark:group-hover:text-blue-400 transition-colors whitespace-nowrap">
                               {student.fullName}
                             </div>
 
                             {/* Passport & Term */}
-                            <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                            <div className="flex flex-wrap items-center gap-1.5 text-xs text-[#64748B]">
                               <button
                                 type="button"
                                 onClick={(e) => handleCopy(e, student.passportNumber)}
                                 title="Click to copy passport number"
-                                className="inline-flex items-center gap-1 font-mono text-[11px] text-[#172B4D]/75 dark:text-slate-300 hover:text-[#1769E8] dark:hover:text-blue-400 transition-colors"
+                                className="inline-flex items-center gap-1 text-xs tabular-nums text-[#64748B] dark:text-slate-300 hover:text-[#1E40AF] dark:hover:text-blue-400 transition-colors"
                               >
                                 <span>{student.passportNumber}</span>
                                 {copiedText === student.passportNumber ? (
-                                  <Check className="w-3 h-3 text-[#16A36A]" />
+                                  <Check className="w-3 h-3 text-[#16A34A]" />
                                 ) : (
-                                  <Copy className="w-2.5 h-2.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+                                  <Copy className="w-2.5 h-2.5 text-[#64748B] group-hover:text-[#0F172A]" />
                                 )}
                               </button>
-                              <span className="text-slate-400" aria-hidden="true">
+                              <span className="text-[#64748B]" aria-hidden="true">
                                 ·
                               </span>
-                              <span className="text-[#172B4D]/60 dark:text-slate-400 font-medium">
+                              <span className="text-[#64748B] dark:text-slate-400 font-medium">
                                 {student.intakeTerm}
                               </span>
                             </div>
@@ -553,21 +553,21 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                         {/* COLUMN 2: APPLIED UNIVERSITY & PROGRAM */}
                         <td className="py-3.5 px-4 align-top">
                           <div className="space-y-1">
-                            <div className="font-semibold text-xs text-[#172B4D] dark:text-slate-200 flex items-center gap-1.5">
-                              <Building2 className="w-3.5 h-3.5 text-[#1769E8] dark:text-[#36A5F5] shrink-0" />
+                            <div className="font-semibold text-xs text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5">
+                              <Building2 className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />
                               <span className="truncate">{student.appliedUniversityName}</span>
                             </div>
 
-                            <div className="text-[11px] text-[#172B4D]/70 dark:text-slate-400 truncate max-w-[260px]">
+                            <div className="text-xs text-[#64748B] dark:text-slate-400 truncate max-w-[260px]">
                               {student.department ? `${student.department} — ` : ''}
                               {student.major}
                             </div>
 
-                            <div className="flex items-center gap-1.5 text-[10px]">
-                              <span className="font-medium text-[#123B78] dark:text-[#60B8F5] bg-[#DCEBFF]/50 dark:bg-blue-950/40 px-1.5 py-0.2 rounded border border-[#36A5F5]/20">
+                            <div className="flex items-center gap-1.5 text-[11px]">
+                              <span className="font-medium text-[#1E40AF] dark:text-blue-300 bg-[#EFF6FF] dark:bg-blue-950/40 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">
                                 {student.degreeLevel}
                               </span>
-                              <span className="text-slate-400 font-mono">
+                              <span className="text-[#64748B]">
                                 Visa: {student.visaType}
                               </span>
                             </div>
@@ -580,7 +580,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                             {/* Stage Badge with colored dot */}
                             <div className="inline-flex items-center gap-1.5">
                               <span
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${stageConfig.bgLight} ${stageConfig.bgDark} ${stageConfig.textLight} ${stageConfig.textDark} ${stageConfig.borderColor}`}
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${stageConfig.bgLight} ${stageConfig.bgDark} ${stageConfig.textLight} ${stageConfig.textDark} ${stageConfig.borderColor}`}
                               >
                                 <span
                                   className={`w-1.5 h-1.5 rounded-full ${stageConfig.dotColor}`}
@@ -591,21 +591,19 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
 
                             {/* Document Readiness Progress Bar */}
                             <div className="space-y-1">
-                              <div className="flex items-center justify-between text-[10px] font-medium text-[#172B4D]/65 dark:text-slate-400">
+                              <div className="flex items-center justify-between text-xs font-medium text-[#64748B] dark:text-slate-400">
                                 <span className="flex items-center gap-1">
-                                  <FileCheck2 className="w-3 h-3 text-slate-400" />
+                                  <FileCheck2 className="w-3.5 h-3.5 text-[#64748B]" />
                                   Docs: {verifiedCount}/{student.documentChecklist?.length || 0}
                                 </span>
-                                <span className="font-mono tabular-nums">{progressPercent}%</span>
+                                <span className="tabular-nums font-semibold">{progressPercent}%</span>
                               </div>
-                              <div className="w-full bg-[#E3EAF3] dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                              <div className="w-full bg-[#E2E8F0] dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
                                 <div
                                   className={`h-full rounded-full transition-all duration-300 ${
                                     progressPercent === 100
-                                      ? 'bg-[#16A36A]'
-                                      : progressPercent >= 50
-                                      ? 'bg-[#1769E8]'
-                                      : 'bg-[#E9A23B]'
+                                      ? 'bg-[#16A34A]'
+                                      : 'bg-[#1E40AF]'
                                   }`}
                                   style={{ width: `${progressPercent}%` }}
                                 />
@@ -617,8 +615,8 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                         {/* COLUMN 4: CONSULTANT & COURIER */}
                         <td className="py-3.5 px-4 align-top">
                           <div className="space-y-1">
-                            <div className="flex items-center gap-1 text-[11px] font-medium text-[#172B4D] dark:text-slate-200">
-                              <User className="w-3 h-3 text-slate-400 shrink-0" />
+                            <div className="flex items-center gap-1 text-xs font-medium text-[#0F172A] dark:text-slate-200">
+                              <User className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
                               <span className="truncate">{student.assignedConsultantName}</span>
                             </div>
 
@@ -628,19 +626,19 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                                   type="button"
                                   onClick={(e) => handleCopy(e, student.courierTrackingNumber!)}
                                   title="Click to copy tracking number"
-                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-[#16A36A]/10 text-[#16A36A] dark:text-emerald-400 border border-[#16A36A]/20 hover:bg-[#16A36A]/20 transition-colors"
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs tabular-nums font-semibold bg-[#DCFCE7] text-[#16A34A] dark:text-emerald-400 border border-[#16A34A]/20 hover:bg-[#bbf7d0] transition-colors"
                                 >
                                   <Truck className="w-3 h-3" />
                                   <span>{student.courierTrackingNumber}</span>
                                   {copiedText === student.courierTrackingNumber ? (
-                                    <Check className="w-2.5 h-2.5 text-[#16A36A]" />
+                                    <Check className="w-2.5 h-2.5 text-[#16A34A]" />
                                   ) : (
                                     <Copy className="w-2.5 h-2.5 opacity-60" />
                                   )}
                                 </button>
                               ) : (
-                                <span className="inline-flex items-center gap-1 text-[10px] text-[#172B4D]/50 dark:text-slate-400 font-mono">
-                                  <Clock className="w-2.5 h-2.5" />
+                                <span className="inline-flex items-center gap-1 text-xs text-[#64748B] dark:text-slate-400">
+                                  <Clock className="w-3 h-3" />
                                   Pending Dispatch
                                 </span>
                               )}
@@ -656,7 +654,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                               e.stopPropagation();
                               onSelectStudent(student);
                             }}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#1769E8] dark:text-blue-400 bg-[#1769E8]/10 dark:bg-blue-950/40 hover:bg-[#1769E8] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-md transition-all shadow-xs"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[#1E40AF] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-950/40 hover:bg-[#1E40AF] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-lg transition-colors duration-150 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                           >
                             <span>Dossier</span>
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -672,17 +670,17 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
         </div>
       ) : (
         /* 5. CARDS GRID VIEW */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSorted.length === 0 ? (
-            <div className="col-span-full py-16 text-center text-[#172B4D]/60 dark:text-slate-400 bg-white dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg">
+            <div className="col-span-full py-16 text-center text-[#64748B] dark:text-slate-400 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
               <Users className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
-              <p className="text-sm font-semibold text-[#172B4D] dark:text-slate-200">
+              <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
                 No candidate dossiers match the active filters
               </p>
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="mt-3 px-3 py-1.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded transition-colors"
+                className="mt-3 px-3 py-1.5 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
               >
                 Reset All Filters
               </button>
@@ -701,22 +699,22 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                 <div
                   key={student.id}
                   onClick={() => onSelectStudent(student)}
-                  className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg p-4 space-y-3 hover:shadow-md hover:border-[#1769E8]/40 transition-all cursor-pointer flex flex-col justify-between"
+                  className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 space-y-4 hover:shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-[#1E40AF]/40 transition-all cursor-pointer flex flex-col justify-between"
                 >
                   {/* Card Header: Name, ID & Stage */}
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h3 className="font-bold text-sm text-[#172B4D] dark:text-slate-100 leading-tight">
+                        <h3 className="font-semibold text-base text-[#0F172A] dark:text-slate-100 leading-tight">
                           {student.fullName}
                         </h3>
-                        <div className="flex items-center gap-1.5 text-[10px] text-[#172B4D]/60 dark:text-slate-400 font-mono mt-0.5">
+                        <div className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
                           <span>{student.intakeTerm}</span>
                         </div>
                       </div>
 
                       <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${stageConfig.bgLight} ${stageConfig.bgDark} ${stageConfig.textLight} ${stageConfig.textDark} ${stageConfig.borderColor}`}
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${stageConfig.bgLight} ${stageConfig.bgDark} ${stageConfig.textLight} ${stageConfig.textDark} ${stageConfig.borderColor}`}
                       >
                         <span className={`w-1.5 h-1.5 rounded-full ${stageConfig.dotColor}`} />
                         {stageConfig.label}
@@ -724,56 +722,54 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                     </div>
 
                     {/* Passport Tag */}
-                    <div className="flex items-center justify-between text-xs pt-1 border-t border-[#E3EAF3]/60 dark:border-slate-800/60">
-                      <span className="text-[#172B4D]/60 dark:text-slate-400 text-[11px]">
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-[#E2E8F0] dark:border-slate-800/60">
+                      <span className="text-[#64748B] dark:text-slate-400 text-xs">
                         Passport:
                       </span>
                       <button
                         type="button"
                         onClick={(e) => handleCopy(e, student.passportNumber)}
                         title="Click to copy"
-                        className="font-mono text-xs font-semibold text-[#172B4D] dark:text-slate-200 hover:text-[#1769E8] inline-flex items-center gap-1"
+                        className="text-xs tabular-nums font-medium text-[#0F172A] dark:text-slate-200 hover:text-[#1E40AF] inline-flex items-center gap-1"
                       >
                         <span>{student.passportNumber}</span>
-                        <Copy className="w-2.5 h-2.5 text-slate-400" />
+                        <Copy className="w-2.5 h-2.5 text-[#64748B]" />
                       </button>
                     </div>
                   </div>
 
                   {/* University & Degree */}
-                  <div className="p-2.5 rounded-md bg-[#F4F2EE] dark:bg-slate-800/60 border border-[#E3EAF3]/70 dark:border-slate-700/60 space-y-1">
-                    <div className="font-semibold text-xs text-[#172B4D] dark:text-slate-200 flex items-center gap-1.5">
-                      <GraduationCap className="w-3.5 h-3.5 text-[#1769E8] dark:text-[#36A5F5]" />
+                  <div className="p-3 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700/60 space-y-1">
+                    <div className="font-semibold text-xs text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5">
+                      <GraduationCap className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400" />
                       <span className="truncate">{student.appliedUniversityName}</span>
                     </div>
-                    <div className="text-[11px] text-[#172B4D]/70 dark:text-slate-400 truncate">
+                    <div className="text-xs text-[#64748B] dark:text-slate-400 truncate">
                       {student.department ? `${student.department} — ` : ''}
                       {student.major}
                     </div>
-                    <div className="text-[10px] text-[#123B78] dark:text-[#60B8F5] font-medium pt-0.5">
+                    <div className="text-[11px] text-[#1E40AF] dark:text-blue-300 font-medium pt-0.5">
                       {student.degreeLevel} (Visa: {student.visaType})
                     </div>
                   </div>
 
                   {/* Checklist Meter */}
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-[#172B4D]/70 dark:text-slate-400 flex items-center gap-1">
-                        <FileCheck2 className="w-3.5 h-3.5 text-slate-400" />
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[#64748B] dark:text-slate-400 flex items-center gap-1">
+                        <FileCheck2 className="w-3.5 h-3.5 text-[#64748B]" />
                         Document Verification
                       </span>
-                      <span className="font-mono text-xs font-semibold text-[#172B4D] dark:text-slate-200">
+                      <span className="text-xs font-semibold tabular-nums text-[#0F172A] dark:text-slate-200">
                         {verifiedCount}/{student.documentChecklist?.length || 0} ({progressPercent}%)
                       </span>
                     </div>
-                    <div className="w-full bg-[#E3EAF3] dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-[#E2E8F0] dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${
                           progressPercent === 100
-                            ? 'bg-[#16A36A]'
-                            : progressPercent >= 50
-                            ? 'bg-[#1769E8]'
-                            : 'bg-[#E9A23B]'
+                            ? 'bg-[#16A34A]'
+                            : 'bg-[#1E40AF]'
                         }`}
                         style={{ width: `${progressPercent}%` }}
                       />
@@ -781,18 +777,18 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                   </div>
 
                   {/* Footer: Consultant, Courier & Action */}
-                  <div className="pt-2 border-t border-[#E3EAF3] dark:border-slate-800 flex items-center justify-between gap-2">
+                  <div className="pt-3 border-t border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-2">
                     <div className="space-y-0.5 min-w-0">
-                      <div className="text-[10px] text-[#172B4D]/60 dark:text-slate-400 truncate">
-                        Consultant: <strong>{student.assignedConsultantName}</strong>
+                      <div className="text-xs text-[#64748B] dark:text-slate-400 truncate">
+                        Consultant: <strong className="text-[#0F172A] dark:text-slate-200">{student.assignedConsultantName}</strong>
                       </div>
                       {student.courierTrackingNumber ? (
-                        <div className="text-[10px] text-[#16A36A] dark:text-emerald-400 font-mono font-medium truncate flex items-center gap-1">
+                        <div className="text-xs text-[#16A34A] dark:text-emerald-400 tabular-nums font-medium truncate flex items-center gap-1">
                           <Truck className="w-3 h-3" />
                           <span>{student.courierTrackingNumber}</span>
                         </div>
                       ) : (
-                        <div className="text-[10px] text-slate-400 font-mono">
+                        <div className="text-xs text-[#64748B]">
                           Pending Dispatch
                         </div>
                       )}
@@ -804,7 +800,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                         e.stopPropagation();
                         onSelectStudent(student);
                       }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#123B78] rounded-md transition-colors shadow-xs shrink-0"
+                      className="inline-flex items-center gap-1 px-3 h-8 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors shadow-xs shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                     >
                       <span>Dossier</span>
                       <ChevronRight className="w-3 h-3" />

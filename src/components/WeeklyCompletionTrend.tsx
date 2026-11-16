@@ -153,40 +153,40 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
     if (active && payload && payload.length) {
       const data: DayTrendPoint = payload[0].payload;
       return (
-        <div className="bg-[#123B78]/95 dark:bg-slate-800/95 backdrop-blur-md text-white border border-[#36A5F5]/40 dark:border-slate-700/80 rounded-md p-3 shadow-xl text-xs space-y-1.5 min-w-[170px]">
+        <div className="bg-[#1E3A8A]/95 dark:bg-slate-800/95 backdrop-blur-md text-white border border-[#1E40AF]/40 dark:border-slate-700/80 rounded-md p-3 shadow-xl text-xs space-y-1.5 min-w-[170px]">
           <div className="font-semibold text-white flex items-center justify-between border-b border-white/15 pb-1">
             <span>{data.fullDateLabel}</span>
             {data.isToday && (
-              <span className="text-[10px] font-mono text-[#16A36A] bg-[#16A36A]/15 px-1.5 py-0.2 rounded">
+              <span className="text-[10px] tabular-nums text-[#16A34A] bg-[#16A34A]/15 px-1.5 py-0.2 rounded">
                 Today
               </span>
             )}
           </div>
           <div className="space-y-1 pt-0.5">
-            <div className="flex items-center justify-between font-mono text-[#16A36A]">
+            <div className="flex items-center justify-between tabular-nums text-[#16A34A]">
               <span className="flex items-center gap-1.5 text-white/80">
-                <span className="w-2 h-2 rounded-full bg-[#16A36A]" />
+                <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
                 Completed:
               </span>
               <span className="font-bold tabular-nums">{data.completed}</span>
             </div>
-            <div className="flex items-center justify-between font-mono text-[#36A5F5]">
+            <div className="flex items-center justify-between tabular-nums text-[#1E40AF]">
               <span className="flex items-center gap-1.5 text-white/80">
-                <span className="w-2 h-2 rounded-full bg-[#36A5F5]" />
+                <span className="w-2 h-2 rounded-full bg-[#1E40AF]" />
                 Scheduled:
               </span>
               <span className="font-bold tabular-nums">{data.scheduled}</span>
             </div>
             {data.pending > 0 && (
-              <div className="flex items-center justify-between font-mono text-[#E9A23B]">
+              <div className="flex items-center justify-between tabular-nums text-[#D97706]">
                 <span className="flex items-center gap-1.5 text-white/80">
-                  <span className="w-2 h-2 rounded-full bg-[#E9A23B]" />
+                  <span className="w-2 h-2 rounded-full bg-[#D97706]" />
                   Pending:
                 </span>
                 <span className="font-bold tabular-nums">{data.pending}</span>
               </div>
             )}
-            <div className="border-t border-white/15 pt-1 flex items-center justify-between text-[11px] font-mono text-white/70">
+            <div className="border-t border-white/15 pt-1 flex items-center justify-between text-[11px] tabular-nums text-white/70">
               <span>Day Velocity:</span>
               <span className="text-white font-semibold">{data.rate}%</span>
             </div>
@@ -198,23 +198,23 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
   };
 
   return (
-    <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800/80 rounded-lg overflow-hidden shadow-xs">
+    <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800/80 rounded-lg overflow-hidden shadow-xs">
       {/* Header with Title & Minimal Segmented Controls */}
-      <div className="px-5 py-3.5 border-b border-[#E3EAF3] dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+      <div className="px-5 py-3.5 border-b border-[#E2E8F0] dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-[#16A36A]/10 border border-[#16A36A]/30 flex items-center justify-center shrink-0">
-            <Percent className="w-4 h-4 text-[#16A36A]" />
+          <div className="w-7 h-7 rounded-md bg-[#16A34A]/10 border border-[#16A34A]/30 flex items-center justify-center shrink-0">
+            <Percent className="w-4 h-4 text-[#16A34A]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-semibold text-[#172B4D] dark:text-slate-100 tracking-tight">
+              <h2 className="text-sm font-semibold text-[#0F172A] dark:text-slate-100 tracking-tight">
                 Weekly Task Completion Trend
               </h2>
-              <span className="font-mono text-xs tabular-nums text-[#16A36A] dark:text-emerald-400 bg-[#16A36A]/10 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded font-medium">
+              <span className="tabular-nums text-xs tabular-nums text-[#16A34A] dark:text-emerald-400 bg-[#16A34A]/10 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded font-medium">
                 {analytics.totalCompleted} done this week
               </span>
             </div>
-            <p className="text-[11px] text-[#172B4D]/65 dark:text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[#0F172A]/65 dark:text-slate-400 mt-0.5">
               Daily velocity and workload delivery curve
             </p>
           </div>
@@ -223,14 +223,14 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
         {/* Action Controls: Timeframe & Chart Style Toggles */}
         <div className="flex items-center gap-2">
           {/* Timeframe Selector */}
-          <div className="flex items-center gap-1 p-0.5 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px]">
+          <div className="flex items-center gap-1 p-0.5 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[11px]">
             <button
               type="button"
               onClick={() => setTimeframe('trailing7')}
               className={`px-2.5 py-1 font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                 timeframe === 'trailing7'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#123B78] dark:text-slate-100 shadow-xs'
-                  : 'text-[#172B4D]/70 dark:text-slate-400 hover:text-[#123B78] dark:hover:text-slate-200'
+                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
+                  : 'text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-200'
               }`}
             >
               Past 7 Days
@@ -240,8 +240,8 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
               onClick={() => setTimeframe('currentWeek')}
               className={`px-2.5 py-1 font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                 timeframe === 'currentWeek'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#123B78] dark:text-slate-100 shadow-xs'
-                  : 'text-[#172B4D]/70 dark:text-slate-400 hover:text-[#123B78] dark:hover:text-slate-200'
+                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
+                  : 'text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-200'
               }`}
             >
               Mon – Sun
@@ -249,15 +249,15 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
           </div>
 
           {/* Chart Style Selector */}
-          <div className="flex items-center gap-1 p-0.5 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px]">
+          <div className="flex items-center gap-1 p-0.5 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[11px]">
             <button
               type="button"
               onClick={() => setChartStyle('area')}
               title="Area Curve"
               className={`p-1 rounded-md transition-colors ${
                 chartStyle === 'area'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#123B78] dark:text-slate-100 shadow-xs'
-                  : 'text-[#172B4D]/60 hover:text-[#123B78] dark:hover:text-slate-200'
+                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
+                  : 'text-[#0F172A]/60 hover:text-[#1E3A8A] dark:hover:text-slate-200'
               }`}
               aria-label="Area curve chart"
             >
@@ -269,8 +269,8 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
               title="Bar Chart"
               className={`p-1 rounded-md transition-colors ${
                 chartStyle === 'bar'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#123B78] dark:text-slate-100 shadow-xs'
-                  : 'text-[#172B4D]/60 hover:text-[#123B78] dark:hover:text-slate-200'
+                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
+                  : 'text-[#0F172A]/60 hover:text-[#1E3A8A] dark:hover:text-slate-200'
               }`}
               aria-label="Bar comparison chart"
             >
@@ -281,56 +281,56 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
       </div>
 
       {/* 4-KPI Quick Analytics Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#F4F2EE] dark:bg-slate-900/40 border-b border-[#E3EAF3] dark:border-slate-800/80">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#F8FAFC] dark:bg-slate-900/40 border-b border-[#E2E8F0] dark:border-slate-800/80">
         <div className="px-2">
-          <div className="text-[11px] font-medium text-[#172B4D]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#16A36A]" />
+          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
             Completed
           </div>
-          <div className="mt-1 text-lg font-mono font-bold tabular-nums text-[#16A36A] dark:text-emerald-400">
+          <div className="mt-1 text-lg tabular-nums font-bold tabular-nums text-[#16A34A] dark:text-emerald-400">
             {analytics.totalCompleted}{' '}
-            <span className="text-xs font-normal text-[#172B4D]/50 dark:text-slate-400">tasks</span>
+            <span className="text-xs font-normal text-[#0F172A]/50 dark:text-slate-400">tasks</span>
           </div>
         </div>
 
-        <div className="px-2 border-l border-[#E3EAF3] dark:border-slate-800">
-          <div className="text-[11px] font-medium text-[#172B4D]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-[#1769E8]" />
+        <div className="px-2 border-l border-[#E2E8F0] dark:border-slate-800">
+          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5 text-[#1E40AF]" />
             Scheduled
           </div>
-          <div className="mt-1 text-lg font-mono font-bold tabular-nums text-[#172B4D] dark:text-slate-200">
+          <div className="mt-1 text-lg tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-200">
             {analytics.totalScheduled}{' '}
-            <span className="text-xs font-normal text-[#172B4D]/50 dark:text-slate-400">tasks</span>
+            <span className="text-xs font-normal text-[#0F172A]/50 dark:text-slate-400">tasks</span>
           </div>
         </div>
 
-        <div className="px-2 border-l border-[#E3EAF3] dark:border-slate-800">
-          <div className="text-[11px] font-medium text-[#172B4D]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <Trophy className="w-3.5 h-3.5 text-[#E9A23B]" />
+        <div className="px-2 border-l border-[#E2E8F0] dark:border-slate-800">
+          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
+            <Trophy className="w-3.5 h-3.5 text-[#D97706]" />
             Peak Day
           </div>
-          <div className="mt-1 text-sm font-semibold truncate text-[#172B4D] dark:text-slate-200">
+          <div className="mt-1 text-sm font-semibold truncate text-[#0F172A] dark:text-slate-200">
             {analytics.peakDay.completed > 0 ? (
               <span>
                 {analytics.peakDay.dayLabel}{' '}
-                <span className="text-xs font-mono font-normal text-[#172B4D]/50 dark:text-slate-400">
+                <span className="text-xs tabular-nums font-normal text-[#0F172A]/50 dark:text-slate-400">
                   ({analytics.peakDay.completed} done)
                 </span>
               </span>
             ) : (
-              <span className="text-[#172B4D]/50 dark:text-slate-400 font-normal">None yet</span>
+              <span className="text-[#0F172A]/50 dark:text-slate-400 font-normal">None yet</span>
             )}
           </div>
         </div>
 
-        <div className="px-2 border-l border-[#E3EAF3] dark:border-slate-800">
-          <div className="text-[11px] font-medium text-[#172B4D]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5 text-[#36A5F5]" />
+        <div className="px-2 border-l border-[#E2E8F0] dark:border-slate-800">
+          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
+            <TrendingUp className="w-3.5 h-3.5 text-[#1E40AF]" />
             Daily Avg
           </div>
-          <div className="mt-1 text-lg font-mono font-bold tabular-nums text-[#1769E8] dark:text-blue-400">
+          <div className="mt-1 text-lg tabular-nums font-bold tabular-nums text-[#1E40AF] dark:text-blue-400">
             {analytics.avgDailyCompleted}{' '}
-            <span className="text-xs font-normal text-[#172B4D]/50 dark:text-slate-400">/ day</span>
+            <span className="text-xs font-normal text-[#0F172A]/50 dark:text-slate-400">/ day</span>
           </div>
         </div>
       </div>
@@ -444,14 +444,14 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
         </div>
 
         {/* Legend & Interactive Day Markers */}
-        <div className="mt-3 pt-3 border-t border-[#E3EAF3] dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-4 text-[11px] text-[#172B4D]/70 dark:text-slate-400">
+        <div className="mt-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-4 text-[11px] text-[#0F172A]/70 dark:text-slate-400">
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#16A36A]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A]" />
               Completed Tasks
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#1769E8]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#1E40AF]" />
               Scheduled Tasks
             </span>
           </div>
@@ -464,12 +464,12 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
                 type="button"
                 onClick={() => onOpenDayTasks?.(d.dateIso)}
                 title={`${d.fullDateLabel}: ${d.completed} completed, ${d.scheduled} scheduled`}
-                className={`px-1.5 py-0.5 text-[10px] font-mono rounded-md transition-colors ${
+                className={`px-1.5 py-0.5 text-[10px] tabular-nums rounded-md transition-colors ${
                   d.isToday
-                    ? 'bg-[#1769E8] text-white font-bold'
+                    ? 'bg-[#1E40AF] text-white font-bold'
                     : d.completed > 0
-                    ? 'bg-[#16A36A]/10 dark:bg-emerald-950/60 text-[#16A36A] dark:text-emerald-300 hover:bg-[#16A36A]/20'
-                    : 'text-[#172B4D]/50 hover:bg-[#DCEBFF]/60 dark:hover:bg-slate-800'
+                    ? 'bg-[#16A34A]/10 dark:bg-emerald-950/60 text-[#16A34A] dark:text-emerald-300 hover:bg-[#16A34A]/20'
+                    : 'text-[#0F172A]/50 hover:bg-[#EFF6FF]/60 dark:hover:bg-slate-800'
                 }`}
               >
                 {d.dayLabel}
