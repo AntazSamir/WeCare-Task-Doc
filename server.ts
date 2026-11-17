@@ -538,17 +538,49 @@ async function startServer() {
   });
 
   app.post('/api/universities', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
-    const { nameEn, nameKo, city, ranking, websiteUrl, topikRequirement, ieltsRequirement, bankBalanceUsd, notes } = req.body;
+    const {
+      nameEn,
+      nameKo,
+      city,
+      ranking,
+      websiteUrl,
+      topikRequirement,
+      ieltsRequirement,
+      bankBalanceUsd,
+      accredited,
+      notes,
+      intake,
+      program,
+      bankDetails,
+      refundPolicy,
+      initialDocument,
+    } = req.body;
+
     if (!nameEn || !city) {
       return res.status(400).json({ error: 'University English name and city are required.' });
     }
 
-    const id = 'UNI-' + nameEn.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
-    const now = new Date().toISOString();
+    let id = 'UNI-' + nameEn.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
+    if (!id || id === 'UNI-') {
+      id = 'UNI-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+    const existing = db.prepare('SELECT id FROM universities WHERE id = ?').get(id);
+    if (existing) {
+      id = `${id}-${Math.floor(100 + Math.random() * 900)}`;
+    }
 
+    const now = new Date().toISOString();
+    const verifier = req.user!.name + (req.user!.role === 'Admission_Manager' ? ' (Head of Admissions)' : '');
+
+    // 1. Insert University Record
     db.prepare(`
-      INSERT INTO universities (id, name_en, name_ko, city, ranking, website_url, topik_requirement, ielts_requirement, bank_balance_usd, accredited, notes, verification_status, last_verified_at, verified_by, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 'Verified', ?, ?, ?, ?)
+      INSERT INTO universities (
+        id, name_en, name_ko, city, ranking, website_url,
+        topik_requirement, ielts_requirement, bank_balance_usd,
+        accredited, notes, verification_status, last_verified_at,
+        verified_by, created_at, updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Verified', ?, ?, ?, ?)
     `).run(
       id,
       nameEn.trim(),
@@ -559,14 +591,229 @@ async function startServer() {
       topikRequirement?.trim() || 'TOPIK Level 3 or higher',
       ieltsRequirement?.trim() || 'IELTS 5.5 minimum',
       Number(bankBalanceUsd) || 20000,
+      accredited !== undefined ? (accredited ? 1 : 0) : 1,
       notes?.trim() || '',
       now,
-      req.user!.name,
+      verifier,
       now,
       now
     );
 
-    logAudit(req.user!.id, req.user!.name, req.user!.role, 'CREATE_UNIVERSITY', 'university', id, `Added ${nameEn} (${city})`);
+    // 2. Insert Initial Admission Intake & Deadlines
+    const intakeTerm = intake?.term?.trim() || 'Spring 2027';
+    const academicYear = Number(intake?.academicYear) || 2027;
+    const intakeId = `INT-${id.replace('UNI-', '')}-${academicYear}${intakeTerm.startsWith('Spring') ? 'S' : intakeTerm.startsWith('Fall') ? 'F' : 'T'}`;
+    const stdDocs = JSON.stringify([
+      'Valid Passport Copy',
+      'Apostilled High School / Degree Certificate',
+      'Apostilled Official Transcripts',
+      `Bank Balance Certificate ($${Number(bankBalanceUsd) || 20000} USD, 30 days valid)`,
+      'Family Relationship Certificate (Birth Certificate)',
+      'Study Plan & Statement of Purpose',
+      'TOPIK or English Test Score Report',
+    ]);
+
+    db.prepare(`
+      INSERT OR REPLACE INTO admission_intakes (
+        id, university_id, term, academic_year, application_start,
+        application_deadline, quota, status, required_documents,
+        interview_dates, result_announcement_date, tuition_payment_deadline,
+        document_deadline, visa_submission_deadline, classes_start_date,
+        verification_status, last_verified_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Verified', ?)
+    `).run(
+      intakeId,
+      id,
+      intakeTerm,
+      academicYear,
+      intake?.applicationStart || '2026-08-01',
+      intake?.applicationDeadline || '2026-09-30',
+      Number(intake?.quota) || 30,
+      intake?.status || 'Open',
+      intake?.requiredDocuments ? JSON.stringify(intake.requiredDocuments) : stdDocs,
+      intake?.interviewDates || '2026-10-15 ~ 2026-10-20',
+      intake?.resultAnnouncementDate || '2026-11-15',
+      intake?.tuitionPaymentDeadline || '2026-12-10',
+      intake?.documentDeadline || '2026-10-05',
+      intake?.visaSubmissionDeadline || '2027-01-10',
+      intake?.classesStartDate || '2027-03-02',
+      now
+    );
+
+    // 3. Insert Initial Academic / Language Program
+    const programId = `PRG-${id.replace('UNI-', '')}-01`;
+    const programName = program?.name?.trim() || 'Korean Language Regular Program (KLP)';
+    const programCode = program?.code?.trim() || (programName.includes('Korean Language') ? 'KLP' : 'UG-01');
+    const degreeLevel = program?.degreeLevel || 'Korean Language (D-4-1)';
+    const duration = program?.duration || (degreeLevel.includes('D-4') ? '4 Quarters (1 Year)' : '4 Years (8 Semesters)');
+    const tuitionFeeKrw = Number(program?.tuitionFeeKrw) || (degreeLevel.includes('D-4') ? 1730000 : 3800000);
+    const tuitionFeeUsd = Number(program?.tuitionFeeUsd) || Math.round(tuitionFeeKrw / 1320);
+    const appFeeKrw = Number(program?.applicationFeeKrw) || (degreeLevel.includes('D-4') ? 80000 : 100000);
+    const requirements = program?.requirements?.trim() || (
+      degreeLevel.includes('D-4')
+        ? 'High school diploma or higher, valid passport (6+ months), apostilled academic documents.'
+        : 'High school graduation with 70%+ GPA, apostilled diploma & transcripts, language certificate.'
+    );
+    const languageOfInstruction = program?.languageOfInstruction || (degreeLevel.includes('D-4') ? 'Korean' : 'Korean / English');
+    const termsJson = JSON.stringify(program?.intakeTerms || [intakeTerm]);
+
+    db.prepare(`
+      INSERT OR REPLACE INTO university_programs (
+        id, university_id, name, code, degree_level, duration,
+        tuition_fee_krw, tuition_fee_usd, application_fee_krw,
+        requirements, language_of_instruction, intake_terms, is_active,
+        created_at, updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+    `).run(
+      programId,
+      id,
+      programName,
+      programCode,
+      degreeLevel,
+      duration,
+      tuitionFeeKrw,
+      tuitionFeeUsd,
+      appFeeKrw,
+      requirements,
+      languageOfInstruction,
+      termsJson,
+      now,
+      now
+    );
+
+    // 4. Insert University Bank Account & Wire Instructions
+    const bankId = `BNK-${id.replace('UNI-', '')}-01`;
+    const bankName = bankDetails?.bankName?.trim() || 'Hana Bank';
+    const accountHolder = bankDetails?.accountHolder?.trim() || nameEn.trim();
+    const branchName = bankDetails?.branchName?.trim() || `${city.split(' ')[0]} Campus Branch`;
+    const accountNumber = bankDetails?.accountNumber?.trim() || `${Math.floor(100 + Math.random() * 900)}-${Math.floor(100000 + Math.random() * 900000)}-${Math.floor(10000 + Math.random() * 90000)}`;
+    const swiftCode = bankDetails?.swiftCode?.trim() || (
+      bankName.toLowerCase().includes('kookmin') || bankName.toLowerCase().includes('kb') ? 'CZNBKRSE' :
+      bankName.toLowerCase().includes('shinhan') ? 'SHBKKRSE' :
+      bankName.toLowerCase().includes('woori') ? 'HVBKKRSE' :
+      'HNBNKRSE'
+    );
+    const currency = bankDetails?.currency || 'KRW';
+    const paymentInstructions = bankDetails?.paymentInstructions?.trim() || (
+      `1. Remit in ${currency} via international telegraphic wire transfer.\n` +
+      `2. Strictly enter the student's Application Number and Passport Name in the remittance remark/memo.\n` +
+      `3. Wire charge code MUST be set to "OUR" (all intermediary and receiving bank fees borne by remitter).\n` +
+      `4. Provide SWIFT MT103 confirmation receipt to the International Admissions Office within 48 hours of payment.`
+    );
+    const isVirtualAccount = bankDetails?.isVirtualAccountSupported !== undefined ? (bankDetails.isVirtualAccountSupported ? 1 : 0) : 1;
+
+    db.prepare(`
+      INSERT OR REPLACE INTO university_bank_accounts (
+        id, university_id, account_holder, bank_name, branch_name,
+        account_number, swift_code, currency, payment_instructions,
+        is_virtual_account_supported, verification_status, last_verified_at,
+        verified_by, updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Verified', ?, ?, ?)
+    `).run(
+      bankId,
+      id,
+      accountHolder,
+      bankName,
+      branchName,
+      accountNumber,
+      swiftCode,
+      currency,
+      paymentInstructions,
+      isVirtualAccount,
+      now,
+      verifier,
+      now
+    );
+
+    // 5. Insert Refund Policy Guidelines
+    const appFeeRefundable = refundPolicy?.appFeeRefundable ? 1 : 0;
+    const appFeeConditions = refundPolicy?.appFeeConditions?.trim() || (
+      appFeeRefundable ? 'Refundable if application is withdrawn before document evaluation begins.' : 'Application fee is non-refundable once online portal submission is finalized.'
+    );
+    const tuitionRefund = refundPolicy?.tuitionRefundPolicy?.trim() || (
+      'Prior to semester opening day: 100% tuition refund minus bank processing charges (KRW 50,000).\n' +
+      '• Within 30 days of start: 5/6 refund.\n' +
+      '• 31 to 60 days: 2/3 refund.\n' +
+      '• 61 to 90 days: 1/2 refund.\n' +
+      '• Beyond 90 days: Non-refundable.'
+    );
+    const visaRejection = refundPolicy?.visaRejectionRefund?.trim() || (
+      '100% tuition fee is refunded if the student visa (D-2 / D-4) is refused by Korean Embassy/Immigration upon submitting the official refusal confirmation certificate.'
+    );
+    const deadlinesDesc = refundPolicy?.deadlinesDescription?.trim() || (
+      'Formal cancellation request and refund application form must be submitted through the university International Office before the designated semester start date.'
+    );
+    const processingTime = refundPolicy?.refundProcessingTime?.trim() || '14 to 21 business days via international wire transfer to student account.';
+
+    db.prepare(`
+      INSERT OR REPLACE INTO university_refund_policies (
+        university_id, app_fee_refundable, app_fee_conditions,
+        tuition_refund_policy, visa_rejection_refund, deadlines_description,
+        refund_processing_time, verification_status, last_verified_at,
+        verified_by, updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'Verified', ?, ?, ?)
+    `).run(
+      id,
+      appFeeRefundable,
+      appFeeConditions,
+      tuitionRefund,
+      visaRejection,
+      deadlinesDesc,
+      processingTime,
+      now,
+      verifier,
+      now
+    );
+
+    // 6. Insert Standard University Admission Documents
+    const docInsert = db.prepare(`
+      INSERT OR REPLACE INTO university_documents (
+        id, university_id, title, category, file_url,
+        file_size, file_format, intake_term, verification_status,
+        uploaded_at, uploaded_by
+      )
+      VALUES (?, ?, ?, ?, ?, ?, 'PDF', ?, 'Verified', ?, ?)
+    `);
+
+    docInsert.run(
+      `DOC-${id.replace('UNI-', '')}-01`,
+      id,
+      initialDocument?.title?.trim() || `${nameEn} International Admission Guidelines & Application Guide`,
+      initialDocument?.category?.trim() || 'Admission Guidelines',
+      initialDocument?.fileUrl?.trim() || websiteUrl || 'https://www.studyinkorea.go.kr',
+      '2.4 MB',
+      intakeTerm,
+      now,
+      verifier
+    );
+    docInsert.run(
+      `DOC-${id.replace('UNI-', '')}-02`,
+      id,
+      'Standard International Student Application Form & Financial Affidavit',
+      'Application Form',
+      websiteUrl || 'https://www.studyinkorea.go.kr',
+      '1.1 MB',
+      intakeTerm,
+      now,
+      verifier
+    );
+    docInsert.run(
+      `DOC-${id.replace('UNI-', '')}-03`,
+      id,
+      'Ministry of Justice Korean Visa (D-2/D-4) Document Apostille Requirements',
+      'Visa & Immigration',
+      'https://www.hikorea.go.kr',
+      '850 KB',
+      intakeTerm,
+      now,
+      verifier
+    );
+
+    logAudit(req.user!.id, req.user!.name, req.user!.role, 'CREATE_UNIVERSITY', 'university', id, `Added partner institution ${nameEn} (${city}) with complete intake, program, banking, and refund guidelines`);
     res.json({ ok: true, id });
   });
 

@@ -1,4 +1,5 @@
 import {
+  AdmissionIntake,
   AuditLogEntry,
   DocumentFormat,
   DocumentHandover,
@@ -128,7 +129,7 @@ export async function fetchUniversities(): Promise<KoreanUniversity[]> {
   return res.json();
 }
 
-export async function createUniversity(data: Partial<KoreanUniversity>): Promise<void> {
+export async function createUniversity(data: any): Promise<{ ok: boolean; id: string }> {
   const res = await fetch('/api/universities', {
     method: 'POST',
     headers: getAuthHeaders(),
@@ -138,6 +139,7 @@ export async function createUniversity(data: Partial<KoreanUniversity>): Promise
     const err = await res.json().catch(() => ({ error: 'Error' }));
     throw new Error(err.message || err.error || 'Failed to create university');
   }
+  return res.json();
 }
 
 export async function updateUniversity(id: string, data: Partial<KoreanUniversity>): Promise<void> {
