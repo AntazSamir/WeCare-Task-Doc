@@ -1721,26 +1721,30 @@ export function App() {
         }`}
       >
         {/* Brand Header */}
-        <div className="h-14 shrink-0 px-4 flex items-center border-b border-[#E2E8F0] dark:border-slate-800">
+        <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[#E2E8F0] dark:border-slate-800">
           {!isSidebarCollapsed ? (
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-[#1E40AF] text-white flex items-center justify-center font-semibold text-sm shadow-xs shrink-0">
-                SS
-              </div>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <img
+                src="/assets/wecare_task_logo.webp"
+                alt="WeCare Task"
+                className="w-10 h-10 object-contain shrink-0 select-none"
+              />
               <div className="min-w-0">
-                <div className="font-semibold text-sm tracking-tight text-[#0F172A] dark:text-slate-100 leading-none truncate">
-                  SheetSync PMS
+                <div className="font-bold text-[15px] tracking-tight text-[#0F172A] dark:text-slate-100 leading-tight truncate">
+                  WeCare Task
                 </div>
-                <div className="text-[12px] text-[#64748B] dark:text-slate-400 mt-1 truncate">
-                  Korea Visa & Tasks
+                <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5 truncate">
+                  Korea Visa &amp; Tasks
                 </div>
               </div>
             </div>
           ) : (
-            <div className="w-full flex items-center justify-center">
-              <div className="w-8 h-8 rounded-lg bg-[#1E40AF] text-white flex items-center justify-center font-semibold text-sm shadow-xs shrink-0">
-                SS
-              </div>
+            <div className="w-full flex items-center justify-center" title="WeCare Task">
+              <img
+                src="/assets/wecare_task_logo.webp"
+                alt="WeCare Task"
+                className="w-10 h-10 object-contain shrink-0 select-none"
+              />
             </div>
           )}
         </div>
@@ -1951,7 +1955,7 @@ export function App() {
       {/* MAIN WORKSPACE CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* TOP HEADER BAR */}
-        <header className="sticky top-0 z-20 h-14 px-4 sm:px-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-4 shrink-0 shadow-xs">
+        <header className="sticky top-0 z-20 h-14 px-3 sm:px-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 shadow-xs">
           {/* Left: Contextual Breadcrumb */}
           <div className="flex items-center gap-3 text-sm min-w-0">
             <div className="flex items-center gap-2 text-sm min-w-0">
@@ -2117,10 +2121,10 @@ export function App() {
         </header>
 
         {/* MAIN SCROLLABLE VIEWPORT */}
-        <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-5 sm:py-3.5 w-full">
+        <main className="flex-1 overflow-y-auto px-2 py-2 sm:px-2.5 sm:py-2.5 w-full">
           <ErrorBoundary viewName={currentNavTitle}>
             <Suspense fallback={<DashboardSkeleton />}>
-              <div key={activeNav} className="animate-page-enter space-y-3.5">
+              <div key={activeNav} className="animate-page-enter space-y-2">
           {/* VIEW 1: DASHBOARD */}
           {activeNav === 'dashboard' && (
             isInitialLoading ? (
@@ -2191,8 +2195,8 @@ export function App() {
                 </div>
 
                 {/* Daily Progress Bar */}
-                <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-slate-800">
-                  <div className="flex items-center justify-between text-xs mb-2">
+                <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+                  <div className="flex items-center justify-between text-xs mb-1.5">
                     <span className="font-semibold text-[#0F172A] dark:text-slate-300">
                       Daily Completion Progress ({stats.todayCompletedCount} of {stats.todayCount}{' '}
                       today&apos;s tasks completed)
@@ -2212,7 +2216,7 @@ export function App() {
                 </div>
 
                 {/* 7-Metric Task Summary Strip */}
-                <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3.5">
+                <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
                   <div className="p-3 rounded-md bg-[#D97706]/8 dark:bg-amber-500/10 border border-[#D97706]/25 transition-all hover:border-[#D97706]/50">
                     <div className="flex items-center gap-1.5 text-xs text-[#D97706] dark:text-amber-400 font-medium">
                       <Sun className="w-3.5 h-3.5 shrink-0" />

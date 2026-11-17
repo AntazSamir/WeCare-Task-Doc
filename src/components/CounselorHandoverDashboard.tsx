@@ -234,9 +234,9 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2.5">
       {/* Header Bar */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-5 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-md bg-[#EFF6FF] dark:bg-blue-950/60 border border-[#1E40AF]/40 dark:border-blue-800 flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 shrink-0">
             <FileCheck2 className="w-5 h-5" />
@@ -277,7 +277,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
       </div>
 
       {/* Counselor KPI Summary Strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5">
         <button
           type="button"
           onClick={() => handleTabChange('requests')}

@@ -126,10 +126,10 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {/* Top Banner / Welcome & Quick Actions */}
-      <div className="bg-[var(--color-deep-blue)] border border-[var(--color-deep-blue)] dark:border-[var(--color-border)] rounded-lg p-4 sm:p-5 text-white shadow-sm flex flex-wrap items-center justify-between gap-4">
-        <div className="space-y-1">
+      <div className="bg-[var(--color-deep-blue)] border border-[var(--color-deep-blue)] dark:border-[var(--color-border)] rounded-lg p-3.5 sm:p-4 text-white shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono font-semibold tracking-wider uppercase text-[var(--color-sky-blue)]">
               South Korea Student Visa & Admission PMS
@@ -168,18 +168,18 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
       </div>
 
       {/* 4 Core Operational KPI Metric Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <div className="p-4 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#36A5F5] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#36A5F5] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-1">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="font-medium">Active Intake Campaigns</span>
             <div className="w-7 h-7 rounded-md bg-[#DCEBFF] dark:bg-blue-950/40 border border-[#36A5F5]/30 dark:border-blue-900/60 flex items-center justify-center">
               <Building2 className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-[#172B4D] dark:text-slate-100">
+          <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#172B4D] dark:text-slate-100">
             {analytics?.totalActiveProjects || 0}
           </div>
-          <div className="mt-1 text-[11px] text-slate-500 flex items-center justify-between">
+          <div className="mt-0.5 text-[11px] text-slate-500 flex items-center justify-between">
             <span>Spring & Fall 2027</span>
             <button
               type="button"
@@ -191,17 +191,17 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           </div>
         </div>
 
-        <div className="p-4 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#36A5F5] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-2">
+        <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#36A5F5] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-2">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="font-medium">Candidate Applications</span>
             <div className="w-7 h-7 rounded-md bg-[#DCEBFF] dark:bg-blue-950/40 border border-[#36A5F5]/30 dark:border-blue-900/60 flex items-center justify-center">
               <Users className="w-3.5 h-3.5 text-[#123B78] dark:text-blue-300" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-[#123B78] dark:text-blue-300">
+          <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#123B78] dark:text-blue-300">
             {analytics?.totalStudents || 0}
           </div>
-          <div className="mt-1 text-[11px] text-slate-500 flex items-center justify-between">
+          <div className="mt-0.5 text-[11px] text-slate-500 flex items-center justify-between">
             <span>{isAdmin ? 'Agency total' : 'Assigned to your roster'}</span>
             <button
               type="button"
@@ -213,17 +213,17 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           </div>
         </div>
 
-        <div className="p-4 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#E9A23B] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-3">
+        <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#E9A23B] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-3">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="font-medium">Pending Tasks</span>
             <div className="w-7 h-7 rounded-md bg-[#E9A23B]/15 dark:bg-amber-950/40 border border-[#E9A23B]/30 dark:border-amber-900/60 flex items-center justify-center">
               <Clock className="w-3.5 h-3.5 text-[#E9A23B] dark:text-amber-400" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-[#E9A23B] dark:text-amber-400">
+          <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#E9A23B] dark:text-amber-400">
             {analytics?.taskStats?.pending || 0}
           </div>
-          <div className="mt-1 text-[11px] text-slate-500 flex items-center justify-between">
+          <div className="mt-0.5 text-[11px] text-slate-500 flex items-center justify-between">
             <span>{analytics?.taskStats?.completed || 0} completed</span>
             <button
               type="button"
@@ -235,17 +235,17 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           </div>
         </div>
 
-        <div className="p-4 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#16A36A] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-4">
+        <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#16A36A] dark:hover:border-slate-700 transition-colors animate-card-enter stagger-4">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="font-medium">Visas Issued (D-2/D-4)</span>
             <div className="w-7 h-7 rounded-md bg-[#16A36A]/15 dark:bg-emerald-950/40 border border-[#16A36A]/30 dark:border-emerald-900/60 flex items-center justify-center">
               <Plane className="w-3.5 h-3.5 text-[#16A36A] dark:text-emerald-400" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-[#16A36A] dark:text-emerald-400">
+          <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#16A36A] dark:text-emerald-400">
             {pipeline?.visaIssued || 0}
           </div>
-          <div className="mt-1 text-[11px] text-slate-500 flex items-center justify-between">
+          <div className="mt-0.5 text-[11px] text-slate-500 flex items-center justify-between">
             <span>{pipeline?.coaReceived || 0} CoA ready</span>
             <span className="text-[#16A36A] dark:text-emerald-400 font-semibold">100% Success</span>
           </div>
@@ -253,7 +253,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
       </div>
 
       {/* PRIMARY FEATURE: South Korean Student Visa Pipeline Stage Matrix */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-5 shadow-xs space-y-4">
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-4 shadow-xs space-y-3">
         <div className="flex items-center justify-between border-b border-[#E3EAF3] dark:border-slate-800 pb-3">
           <div>
             <h2 className="text-sm font-semibold text-[#172B4D] dark:text-slate-100 flex items-center gap-2">
@@ -302,7 +302,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
       </div>
 
       {/* Split Section: Upcoming Korean University Deadlines & Consultant Workload */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 items-start">
         {/* Left: Urgent Korean University Deadlines (7 Cols) */}
         <div className="lg:col-span-7 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-md p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between border-b border-[#E3EAF3] dark:border-slate-800 pb-3">

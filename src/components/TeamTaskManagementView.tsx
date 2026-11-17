@@ -398,9 +398,9 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   ];
 
   return (
-    <div className="space-y-5 animate-page-enter">
+    <div className="space-y-3 animate-page-enter">
       {/* 1. EXECUTIVE TEAM DASHBOARD HEADER */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-sm space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -444,7 +444,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
         </div>
 
         {/* METRICS KPI CARDS */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
           <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800">
             <div className="flex items-center justify-between text-xs text-[#0F172A]/65 dark:text-slate-400 mb-1">
               <span>Total Active Tasks</span>

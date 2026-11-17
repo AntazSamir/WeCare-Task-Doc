@@ -155,7 +155,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     try {
       const exportPayload = {
         exportedAt: new Date().toISOString(),
-        system: 'WeCare Korean Student Visa Consultancy PMS',
+        system: 'WeCare Task',
         settings,
         taskCount: tasks.length,
         studentCount: students.length,
@@ -208,9 +208,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       setDesktopPermission(permission);
       if (permission === 'granted') {
         onUpdateSettings({ desktopNotificationsEnabled: true });
-        new Notification('WeCare PMS Notifications Enabled', {
+        new Notification('WeCare Task Notifications Enabled', {
           body: 'You will receive real-time intake deadlines and handover alerts.',
-          icon: '/favicon.ico',
+          icon: '/assets/wecare_task_logo.webp',
         });
         pushNotification('Notifications Enabled', 'Desktop push notifications granted.', 'success');
       } else {

@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   AreaChart,
   Area,
@@ -281,7 +281,7 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
       </div>
 
       {/* 4-KPI Quick Analytics Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#F8FAFC] dark:bg-slate-900/40 border-b border-[#E2E8F0] dark:border-slate-800/80">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 sm:p-3.5 bg-[#F8FAFC] dark:bg-slate-900/40 border-b border-[#E2E8F0] dark:border-slate-800/80">
         <div className="px-2">
           <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />

@@ -805,7 +805,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
               1. Architecture & Two-Way Google Sheets Synchronization
             </h3>
             <p className="mt-1 text-xs text-[#0F172A]/70 dark:text-slate-400">
-              SheetSync Tasks uses an Offline-First Local SQLite + Google Sheets API v4 architecture:
+              WeCare Task uses an Offline-First Local SQLite + Google Sheets API v4 architecture:
             </p>
             <ul className="mt-2 list-disc list-inside text-xs space-y-1 text-[#0F172A]/70 dark:text-slate-400">
               <li>

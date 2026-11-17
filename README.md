@@ -1,4 +1,4 @@
-# WeCare Korean Student Visa Consultancy — PMS & Task Manager
+# WeCare Task — Korean Student Visa Consultancy PMS
 
 > **Centralized Project Management System** for South Korean university admissions, D-2/D-4 student visa processing, document verification, apostille coordination, DHL dispatch tracking, and team task orchestration — with two-way Google Sheets synchronization.
 
@@ -74,7 +74,7 @@
 
 ## ⚡ Performance Architecture & UX Optimization
 
-SheetSync PMS is engineered for instant interactions, lightweight asset payloads, and high fault tolerance:
+WeCare Task is engineered for instant interactions, lightweight asset payloads, and high fault tolerance:
 
 ### 1. Code-Splitting & Bundle Reduction (81% Smaller Initial Load)
 - **Monolithic vs Chunked**: Initial JavaScript bundle reduced from **1,356.8 kB** to **258.8 kB** (**81% reduction**).
