@@ -11,6 +11,7 @@ import {
 import { DocumentFormat, DocumentHandover, UserProfile } from '../types/pms';
 import { submitHandoverFollowUpApi } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { ModalTransition } from './animations';
 
 interface FollowUpDeliveryModalProps {
   handover: DocumentHandover | null;
@@ -63,16 +64,16 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
     }
   }, [isOpen, handover]);
 
-  if (!isOpen || !handover) return null;
-
   const isCounselor = currentUser.team === 'Counseling Team';
-  const outstandingItems = handover.documents.filter((d) => d.status !== 'Received');
-  const receivedItems = handover.documents.filter((d) => d.status === 'Received');
-  const nextBatchNum = (handover.followUpDeliveries?.length || 0) + 2;
+  const outstandingItems = (handover?.documents || []).filter((d) => d.status !== 'Received');
+  const receivedItems = (handover?.documents || []).filter((d) => d.status === 'Received');
+  const nextBatchNum = (handover?.followUpDeliveries?.length || 0) + 2;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
+
+    if (!handover) return;
 
     if (!isCounselor) {
       setErrorMsg('Only Counseling Team members can submit follow-up deliveries.');
@@ -111,8 +112,14 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs animate-modal-backdrop">
-      <div className="w-full max-w-3xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh] animate-modal-card">
+    <ModalTransition
+      isOpen={isOpen && Boolean(handover)}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      cardClassName="w-full max-w-3xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh]"
+    >
+      {handover && (
+        <>
         {/* Header */}
         <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -372,7 +379,8 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
             {isSubmitting ? 'Submitting Batch...' : `Submit Batch #${nextBatchNum} Under ${handover.id}`}
           </button>
         </div>
-      </div>
-    </div>
+        </>
+      )}
+    </ModalTransition>
   );
 };

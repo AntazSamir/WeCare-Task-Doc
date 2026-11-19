@@ -23,6 +23,7 @@ import {
 } from '../types/pms';
 import { fetchDocumentRequests, fetchHandovers } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { TabTransition } from './animations';
 
 export type CounselorTab =
   | 'requests'
@@ -381,7 +382,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
       </div>
 
       {/* Content Area with smooth tab transition */}
-      <div key={activeTab} className="animate-tab-enter space-y-3.5">
+      <TabTransition viewKey={activeTab} className="space-y-3.5">
         {/* Search & Multi-Facet Filter Bar */}
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5 grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
         <div className="md:col-span-4 relative">
@@ -771,7 +772,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           </table>
         </div>
       )}
-      </div>
+      </TabTransition>
     </div>
   );
 };

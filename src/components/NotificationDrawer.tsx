@@ -14,6 +14,7 @@ import {
 import { InAppNotification } from '../types/pms';
 import { formatTimestamp } from '../utils/dateUtils';
 import { requestDesktopNotificationPermission } from '../services/pmsService';
+import { DrawerTransition } from './animations';
 
 interface NotificationDrawerProps {
   notifications: InAppNotification[];
@@ -43,14 +44,16 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <>
-      <div className="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/40 backdrop-blur-xs animate-modal-backdrop" onClick={onClose} />
-      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#FFFFFF] dark:bg-slate-900 border-l border-[#E2E8F0] dark:border-slate-800 shadow-2xl z-50 flex flex-col animate-drawer-enter">
+    <DrawerTransition
+      isOpen={isOpen}
+      onClose={onClose}
+      side="right"
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      panelClassName="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#FFFFFF] dark:bg-slate-900 border-l border-[#E2E8F0] dark:border-slate-800 shadow-2xl z-50 flex flex-col"
+    >
         {/* Header */}
         <div className="p-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -175,7 +178,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
             })
           )}
         </div>
-      </div>
-    </>
+    </DrawerTransition>
   );
 };

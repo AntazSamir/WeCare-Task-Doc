@@ -20,6 +20,7 @@ import {
 } from '../types/pms';
 import { createDocumentHandoverApi } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { ModalTransition } from './animations';
 
 interface CreateHandoverModalProps {
   isOpen: boolean;
@@ -185,8 +186,6 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
     }
   }, [isOpen, linkedRequest, contextData, currentUser.id]);
 
-  if (!isOpen) return null;
-
   const isCounselor = currentUser.team === 'Counseling Team';
 
   const handleAddRow = () => {
@@ -272,8 +271,12 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs animate-modal-backdrop">
-      <div className="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh] animate-modal-card">
+    <ModalTransition
+      isOpen={isOpen}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      cardClassName="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh]"
+    >
         {/* Header */}
         <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -572,7 +575,6 @@ export const CreateHandoverModal: React.FC<CreateHandoverModalProps> = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </ModalTransition>
   );
 };

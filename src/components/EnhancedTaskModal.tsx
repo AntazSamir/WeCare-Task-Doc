@@ -19,6 +19,7 @@ import { PmsTask, SubtaskItem, UserProfile, KoreanUniversity, IntakeProject, Stu
 import { TaskCategory, TaskPriority } from '../types/task';
 import { getLocalTodayIso } from '../utils/dateUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { ModalTransition } from './animations';
 
 interface EnhancedTaskModalProps {
   isOpen: boolean;
@@ -107,8 +108,6 @@ export function EnhancedTaskModal({
     }
   }, [editingTask, isOpen, initialDate, initialStudentId, initialProjectId, defaultCategory, defaultPriority, todayIso, currentUser, team]);
 
-  if (!isOpen) return null;
-
   const handleAddSubtask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSubtaskTitle.trim()) return;
@@ -164,8 +163,12 @@ export function EnhancedTaskModal({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-modal-backdrop">
-      <div className="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl my-auto overflow-hidden animate-modal-card">
+    <ModalTransition
+      isOpen={isOpen}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
+      cardClassName="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl overflow-hidden"
+    >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/50">
           <div className="flex items-center gap-2.5">
@@ -494,8 +497,7 @@ export function EnhancedTaskModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>,
+    </ModalTransition>,
     document.body
   );
 }

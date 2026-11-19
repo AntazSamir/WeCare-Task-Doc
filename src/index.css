@@ -44,6 +44,27 @@
     --color-danger: #DC2626;
     --color-danger-soft: #FEE2E2;
 
+    /* Centralized Animation Tokens (100ms - 700ms) */
+    --anim-dur-instant: 100ms;
+    --anim-dur-fast: 150ms;
+    --anim-dur-normal: 200ms;
+    --anim-dur-moderate: 250ms;
+    --anim-dur-slow: 350ms;
+    --anim-dur-slower: 500ms;
+    --anim-dur-deliberate: 700ms;
+
+    --anim-ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+    --anim-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --anim-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --anim-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --anim-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    --anim-scale-modal: 0.98;
+    --anim-scale-dropdown: 0.96;
+    --anim-dist-micro: 4px;
+    --anim-dist-sm: 8px;
+    --anim-dist-md: 12px;
+
     /* Legacy Token Aliases Mapped to Global Design System */
     --color-deep-blue: #1E40AF;
     --color-primary-blue: #1E40AF;
@@ -296,11 +317,11 @@
 /* KOREA STUDY HUB PMS — MOTION & TRANSITION ARCHITECTURE                    */
 /* ========================================================================= */
 
-/* 1. Page navigation: Fade + Slide Up (8px), duration 220ms */
+/* 1. Page navigation: Fade + Slide Up */
 @keyframes pageFadeSlideUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(var(--anim-dist-sm));
   }
   to {
     opacity: 1;
@@ -309,14 +330,14 @@
 }
 
 .animate-page-enter {
-  animation: pageFadeSlideUp 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pageFadeSlideUp var(--anim-dur-moderate) var(--anim-ease-standard) forwards;
 }
 
-/* Sub-tab Slide Fade (200ms) */
+/* Sub-tab Slide Fade */
 @keyframes tabSlideFade {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(var(--anim-dist-micro));
   }
   to {
     opacity: 1;
@@ -325,24 +346,24 @@
 }
 
 .animate-tab-enter {
-  animation: tabSlideFade 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: tabSlideFade var(--anim-dur-fast) var(--anim-ease-standard) forwards;
 }
 
-/* 2. Sidebar: Smooth active-item background and icon transition, duration 180ms */
+/* 2. Sidebar: Smooth active-item background and icon transition */
 .sidebar-nav-btn {
-  transition: background-color 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              color 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color var(--anim-dur-fast) var(--anim-ease-standard),
+              color var(--anim-dur-fast) var(--anim-ease-standard),
+              box-shadow var(--anim-dur-fast) var(--anim-ease-standard),
+              border-color var(--anim-dur-fast) var(--anim-ease-standard);
 }
 
 .sidebar-nav-icon {
-  transition: color 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              filter 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color var(--anim-dur-fast) var(--anim-ease-standard),
+              transform var(--anim-dur-fast) var(--anim-ease-standard),
+              filter var(--anim-dur-fast) var(--anim-ease-standard);
 }
 
-/* 3. Cards: Subtle staggered fade-in, duration 200ms, with 40ms delay between items */
+/* 3. Cards: Subtle staggered fade-in */
 @keyframes cardFadeIn {
   from {
     opacity: 0;
@@ -355,27 +376,27 @@
 }
 
 .animate-card-enter {
-  animation: cardFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: cardFadeIn var(--anim-dur-normal) var(--anim-ease-standard) forwards;
 }
 
 .stagger-1  { animation-delay: 0ms; }
-.stagger-2  { animation-delay: 40ms; }
-.stagger-3  { animation-delay: 80ms; }
-.stagger-4  { animation-delay: 120ms; }
-.stagger-5  { animation-delay: 160ms; }
-.stagger-6  { animation-delay: 200ms; }
-.stagger-7  { animation-delay: 240ms; }
-.stagger-8  { animation-delay: 280ms; }
-.stagger-9  { animation-delay: 320ms; }
-.stagger-10 { animation-delay: 360ms; }
-.stagger-11 { animation-delay: 400ms; }
-.stagger-12 { animation-delay: 440ms; }
+.stagger-2  { animation-delay: 35ms; }
+.stagger-3  { animation-delay: 70ms; }
+.stagger-4  { animation-delay: 105ms; }
+.stagger-5  { animation-delay: 140ms; }
+.stagger-6  { animation-delay: 175ms; }
+.stagger-7  { animation-delay: 210ms; }
+.stagger-8  { animation-delay: 245ms; }
+.stagger-9  { animation-delay: 280ms; }
+.stagger-10 { animation-delay: 315ms; }
+.stagger-11 { animation-delay: 350ms; }
+.stagger-12 { animation-delay: 385ms; }
 
-/* 4. Modals: Fade + slight scale from 0.98 to 1.0, duration 200ms */
+/* 4. Modals: Fade + scale from token scale to 1.0 */
 @keyframes modalScaleFadeIn {
   from {
     opacity: 0;
-    transform: scale(0.98) translateY(4px);
+    transform: scale(var(--anim-scale-modal)) translateY(4px);
   }
   to {
     opacity: 1;
@@ -393,19 +414,19 @@
 }
 
 .animate-modal-backdrop {
-  animation: modalBackdropFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: modalBackdropFadeIn var(--anim-dur-fast) var(--anim-ease-out) both;
 }
 
 .animate-modal-card {
-  animation: modalScaleFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: modalScaleFadeIn var(--anim-dur-normal) var(--anim-ease-standard) both;
   will-change: opacity, transform;
 }
 
-/* 5. Dropdowns: Smooth fade and slight downward movement, duration 150ms */
+/* 5. Dropdowns: Smooth fade and downward movement */
 @keyframes dropdownFadeDown {
   from {
     opacity: 0;
-    transform: translateY(-4px) scale(0.99);
+    transform: translateY(-4px) scale(var(--anim-scale-dropdown));
   }
   to {
     opacity: 1;
@@ -414,12 +435,12 @@
 }
 
 .animate-dropdown-enter {
-  animation: dropdownFadeDown 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: dropdownFadeDown var(--anim-dur-fast) var(--anim-ease-standard) both;
   transform-origin: top;
   will-change: opacity, transform;
 }
 
-/* 6. Drawers & Slideout Panels: Smooth slide-in from right (240ms) */
+/* 6. Drawers & Slideout Panels: Smooth slide-in from right */
 @keyframes drawerSlideIn {
   from {
     opacity: 0;
@@ -432,15 +453,15 @@
 }
 
 .animate-drawer-enter {
-  animation: drawerSlideIn 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: drawerSlideIn var(--anim-dur-slow) var(--anim-ease-standard) both;
   will-change: transform, opacity;
 }
 
-/* 7. Toasts & Floating Alerts: Smooth float-in from bottom (220ms) */
+/* 7. Toasts & Floating Alerts: Smooth float-in from bottom */
 @keyframes toastSlideIn {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.96);
+    transform: translateY(var(--anim-dist-md)) scale(var(--anim-scale-dropdown));
   }
   to {
     opacity: 1;
@@ -449,7 +470,7 @@
 }
 
 .animate-toast-enter {
-  animation: toastSlideIn 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: toastSlideIn var(--anim-dur-normal) var(--anim-ease-standard) both;
   will-change: transform, opacity;
 }
 

@@ -33,6 +33,7 @@ import { AppSettings, TaskCategory, TaskPriority, GoogleSheetsConnectionState, T
 import { UserProfile, StudentApplication, KoreanUniversity } from '../types/pms';
 import { playNotificationChime, playCompletionChime } from '../utils/soundUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { TabTransition } from './animations';
 
 interface SettingsViewProps {
   settings: AppSettings;
@@ -396,6 +397,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* RIGHT SECTION DETAIL */}
         <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-6">
+          <TabTransition viewKey={activeSection}>
           {/* SECTION 1: APPEARANCE & DISPLAY */}
           {activeSection === 'appearance' && (
             <div className="space-y-6">
@@ -1264,6 +1266,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </div>
             </div>
           )}
+          </TabTransition>
         </div>
       </div>
     </div>

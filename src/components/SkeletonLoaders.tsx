@@ -1,4 +1,5 @@
 import React from 'react';
+import { FadeTransition, StaggerContainer, StaggerItem } from './animations';
 
 /**
  * Premium Skeleton Loaders for Korea Study Hub PMS
@@ -43,23 +44,20 @@ export const CardGridSkeleton: React.FC<{
   count?: number;
   columns?: string;
 }> = ({ count = 6, columns = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' }) => (
-  <div className={`grid gap-4 ${columns} animate-page-enter`}>
+  <StaggerContainer className={`grid gap-4 ${columns}`}>
     {Array.from({ length: count }).map((_, i) => (
-      <div
-        key={i}
-        className={`animate-card-enter stagger-${Math.min(i + 1, 12)}`}
-      >
+      <StaggerItem key={i}>
         <SkeletonCard lines={3} />
-      </div>
+      </StaggerItem>
     ))}
-  </div>
+  </StaggerContainer>
 );
 
 export const TableSkeleton: React.FC<{
   rows?: number;
   cols?: number;
 }> = ({ rows = 5, cols = 5 }) => (
-  <div className="w-full bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl overflow-hidden animate-page-enter">
+  <FadeTransition className="w-full bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl overflow-hidden">
     <div className="p-4 border-b border-[#E2E8F0] dark:border-slate-800 flex justify-between items-center">
       <SkeletonLine width="w-48" height="h-5" />
       <SkeletonLine width="w-24" height="h-8" />
@@ -77,7 +75,7 @@ export const TableSkeleton: React.FC<{
         </div>
       ))}
     </div>
-  </div>
+  </FadeTransition>
 );
 
 /**
@@ -91,7 +89,7 @@ export const TableSkeleton: React.FC<{
  */
 export const UniversityDetailsSkeleton: React.FC = () => {
   return (
-    <div className="space-y-5 animate-page-enter">
+    <FadeTransition className="space-y-5">
       {/* Top Breadcrumb & Return Action */}
       <div className="flex items-center justify-between">
         <SkeletonLine width="w-36" height="h-8" className="rounded-lg" />
@@ -199,7 +197,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+    </FadeTransition>
   );
 };
 
@@ -207,7 +205,7 @@ export const UniversityDetailsSkeleton: React.FC = () => {
  * Dashboard Overview Skeleton
  */
 export const DashboardSkeleton: React.FC = () => (
-  <div className="space-y-6 animate-page-enter">
+  <FadeTransition className="space-y-6">
     {/* Welcome Banner Skeleton */}
     <div className="p-6 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 space-y-3">
       <SkeletonLine width="w-32" height="h-3.5" />
@@ -217,11 +215,11 @@ export const DashboardSkeleton: React.FC = () => (
     </div>
 
     {/* 4 KPI Strip Skeleton */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div
+        <StaggerItem
           key={i}
-          className={`animate-card-enter stagger-${i + 1} p-4 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 space-y-2`}
+          className="p-4 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 space-y-2"
         >
           <div className="flex justify-between">
             <SkeletonLine width="w-28" height="h-3.5" />
@@ -229,9 +227,9 @@ export const DashboardSkeleton: React.FC = () => (
           </div>
           <SkeletonLine width="w-16" height="h-7" />
           <SkeletonLine width="w-32" height="h-3" />
-        </div>
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerContainer>
 
     {/* Pipeline Stages Skeleton */}
     <div className="p-5 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 space-y-4">
@@ -248,5 +246,5 @@ export const DashboardSkeleton: React.FC = () => (
         ))}
       </div>
     </div>
-  </div>
+  </FadeTransition>
 );

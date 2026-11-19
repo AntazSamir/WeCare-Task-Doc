@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Task, TaskCategory, TaskPriority } from '../types/task';
 import { getLocalTodayIso } from '../utils/dateUtils';
+import { ModalTransition } from './animations';
 
 const renderCategoryIcon = (category: TaskCategory) => {
   switch (category) {
@@ -110,8 +111,6 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
     }
   }, [editingTask, isOpen, defaultCategory, defaultPriority, initialDate, todayIso]);
 
-  if (!isOpen) return null;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSaving) return;
@@ -143,13 +142,12 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   };
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="task-form-title"
+    <ModalTransition
+      isOpen={isOpen}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      cardClassName="w-full max-w-xl rounded-lg bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xl overflow-hidden"
     >
-      <div className="w-full max-w-xl rounded-lg bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xl my-auto overflow-hidden animate-modal-card">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800">
           <div>
             <h2
@@ -374,8 +372,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>,
+    </ModalTransition>,
     document.body
   );
 };

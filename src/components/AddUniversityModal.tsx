@@ -28,6 +28,7 @@ import {
   createProgram,
   createIntake,
 } from '../services/pmsService';
+import { ModalTransition } from './animations';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -460,8 +461,12 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
   // ── Render ───────────────────────────────────────────────────────────────
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#0F172A]/50 dark:bg-slate-950/70 backdrop-blur-xs p-3 md:p-6 overflow-y-auto">
-      <div className="w-full max-w-4xl rounded-[14px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl my-4 flex flex-col max-h-[92vh]">
+    <ModalTransition
+      isOpen={true}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/50 dark:bg-slate-950/70 backdrop-blur-xs"
+      cardClassName="w-full max-w-4xl rounded-[14px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh]"
+    >
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#E2E8F0] dark:border-slate-800 shrink-0">
@@ -1458,8 +1463,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             </div>
           </div>
         </form>
-      </div>
-    </div>,
+    </ModalTransition>,
     document.body
   );
 };

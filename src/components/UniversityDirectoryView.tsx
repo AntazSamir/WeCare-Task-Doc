@@ -22,6 +22,8 @@ import { createIntake } from '../services/pmsService';
 import { UniversityDetailsView } from './UniversityDetailsView';
 import { AddUniversityModal } from './AddUniversityModal';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { PageTransition, TabTransition, ToastTransition, ModalTransition } from './animations';
+import { AnimatePresence } from 'motion/react';
 
 const getUniversityAcronym = (name: string): string => {
   if (name.includes('Sungkyunkwan')) return 'SKKU';
@@ -156,10 +158,9 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
     };
   }, [universities]);
 
-  // Preserve University Dossier & Guidelines view untouched
   if (selectedUniversityId) {
     return (
-      <div key={`uni-${selectedUniversityId}`} className="animate-page-enter">
+      <PageTransition viewKey={`uni-${selectedUniversityId}`}>
         <UniversityDetailsView
           universityId={selectedUniversityId}
           currentUser={currentUser}
@@ -167,7 +168,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
           onRefreshParent={onRefresh}
           onApplyStudentForProgram={onApplyStudentForProgram}
         />
-      </div>
+      </PageTransition>
     );
   }
 
@@ -192,7 +193,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
   };
 
   return (
-    <div key="uni-directory-list" className="animate-page-enter space-y-6">
+    <PageTransition viewKey="uni-directory-list" className="space-y-6">
       {/* Header & Operational Summary */}
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -327,7 +328,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
           </p>
         </div>
       ) : (
-        <div key={viewLayout} className="animate-tab-enter">
+        <TabTransition viewKey={viewLayout}>
           {viewLayout === 'table' ? (
         /* Comparison Table View */
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] overflow-x-auto shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -624,7 +625,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
           })}
         </div>
         )}
-      </div>
+      </TabTransition>
       )}
 
       {/* Add University Modal — replaced with AddUniversityModal component */}
@@ -641,11 +642,15 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
       )}
 
       {/* Success toast for Add University */}
-      {addUniSuccessMsg && createPortal(
-        <div className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl animate-modal-card">
-          <CheckCircle2 className="w-4 h-4 shrink-0" />
-          {addUniSuccessMsg}
-        </div>,
+      {createPortal(
+        <AnimatePresence>
+          {addUniSuccessMsg && (
+            <ToastTransition className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              {addUniSuccessMsg}
+            </ToastTransition>
+          )}
+        </AnimatePresence>,
         document.body
       )}
 
@@ -653,10 +658,13 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
       {false && null /* dead anchor */}
 
       {/* Add Intake Term Modal */}
-      {showAddIntakeModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-md rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={showAddIntakeModal}
+          onClose={() => setShowAddIntakeModal(false)}
+          backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+          cardClassName="w-full max-w-md rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl p-6 space-y-4"
+        >
               <div className="flex items-center justify-between border-b pb-3 border-[#E2E8F0] dark:border-slate-800">
                 <h3 className="text-[16px] font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[#1E40AF]" />
@@ -751,10 +759,9 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   </button>
                 </div>
               </form>
-            </div>
-          </div>,
-          document.body
-        )}
-    </div>
+        </ModalTransition>,
+        document.body
+      )}
+    </PageTransition>
   );
 };

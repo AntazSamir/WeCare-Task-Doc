@@ -4,6 +4,7 @@ import { X, Users } from 'lucide-react';
 import { DegreeLevel, IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createStudent } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { ModalTransition } from './animations';
 
 interface NewStudentModalProps {
   isOpen: boolean;
@@ -30,8 +31,6 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  if (!isOpen) return null;
-
   const [fullName, setFullName] = useState('');
   const [passportNumber, setPassportNumber] = useState('');
   const [email, setEmail] = useState('');
@@ -143,12 +142,12 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
   };
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
-      role="dialog"
-      aria-modal="true"
+    <ModalTransition
+      isOpen={isOpen}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      cardClassName="w-full max-w-lg rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl overflow-hidden"
     >
-      <div className="w-full max-w-lg rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl my-auto overflow-hidden animate-modal-card">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800">
           <div>
             <h2 className="text-base font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
@@ -393,8 +392,7 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>,
+    </ModalTransition>,
     document.body
   );
 };

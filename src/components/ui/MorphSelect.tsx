@@ -22,12 +22,14 @@ import {
   useState,
 } from 'react';
 
+import { animationDurations, animationStaggers, animationDelays } from '../../animations/tokens';
+
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-// Shared-layout morph transition
-const MORPH: Transition = { type: 'spring', duration: 0.5, bounce: 0.22 };
+// Shared-layout morph transition driven by centralized tokens
+const MORPH: Transition = { type: 'spring', duration: animationDurations.slower, bounce: 0.22 };
 
 // Trigger and panel header share this row so the morph stays seamless.
 const ROW =
@@ -35,7 +37,7 @@ const ROW =
 
 const LIST: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.035, delayChildren: 0.08 } },
+  show: { transition: { staggerChildren: animationStaggers.fast, delayChildren: animationDelays.slow * 0.25 } },
 };
 const ITEM: Variants = {
   hidden: { opacity: 0, y: -6, filter: 'blur(3px)' },

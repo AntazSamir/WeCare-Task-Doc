@@ -33,6 +33,7 @@ import {
 } from '../services/pmsService';
 import { formatTimestamp } from '../utils/dateUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { TabTransition } from './animations';
 
 export type AdmissionTab =
   | 'pending'
@@ -478,7 +479,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
       </div>
 
       {/* Content Area with smooth tab transition */}
-      <div key={activeTab} className="animate-tab-enter">
+      <TabTransition viewKey={activeTab}>
         {activeTab === 'outbox' && isAdmin ? (
         <div className="space-y-4">
           {/* Outbox Queue Controls */}
@@ -1037,7 +1038,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
           )}
         </div>
       )}
-      </div>
+      </TabTransition>
     </div>
   );
 };

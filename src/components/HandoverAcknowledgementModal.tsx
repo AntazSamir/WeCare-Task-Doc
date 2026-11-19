@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { DocumentHandover, DocumentItemStatus, UserProfile } from '../types/pms';
 import { acknowledgeHandoverApi } from '../services/pmsService';
+import { ModalTransition } from './animations';
 
 interface HandoverAcknowledgementModalProps {
   handover: DocumentHandover | null;
@@ -51,15 +52,13 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
     }
   }, [isOpen, handover]);
 
-  if (!isOpen || !handover) return null;
-
-  const isOwnCounselor = currentUser.id === handover.counselorId;
+  const isOwnCounselor = currentUser.id === handover?.counselorId;
   const isAssignedAdmission =
-    currentUser.id === handover.receivingEmployeeId && currentUser.team === 'Admission Team';
+    currentUser.id === handover?.receivingEmployeeId && currentUser.team === 'Admission Team';
   const isAdmin = currentUser.role === 'Admission_Manager';
   const canVerify = !isOwnCounselor && (isAssignedAdmission || isAdmin);
 
-  const itemsList = handover.documents;
+  const itemsList = handover?.documents || [];
   const statusCounts = itemsList.reduce(
     (acc, item) => {
       const st = item.status === 'Received' ? 'Received' : decisions[item.id]?.status || 'Pending';
@@ -116,6 +115,8 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
       return;
     }
 
+    if (!handover) return;
+
     if (action === 'Accept' && !allReceived) {
       setErrorMsg('All itemized documents must be marked "Received" before finalizing Acceptance.');
       return;
@@ -150,8 +151,14 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs animate-modal-backdrop">
-      <div className="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh] animate-modal-card">
+    <ModalTransition
+      isOpen={isOpen && Boolean(handover)}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      cardClassName="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh]"
+    >
+      {handover && (
+        <>
         {/* Header */}
         <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -401,7 +408,8 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
             )}
           </div>
         </div>
-      </div>
-    </div>
+        </>
+      )}
+    </ModalTransition>
   );
 };

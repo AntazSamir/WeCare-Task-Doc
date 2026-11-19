@@ -26,6 +26,7 @@ import {
   addDaysToIsoDate,
   formatMonthDayYear,
 } from '../utils/dateUtils';
+import { TabTransition, StaggerContainer, StaggerItem } from './animations';
 
 interface CalendarViewProps {
   tasks: Task[];
@@ -171,7 +172,7 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
   };
 
   return (
-    <div className="relative bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 transition-all shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-[#1E40AF]/40 dark:hover:border-slate-700 overflow-hidden animate-card-enter">
+    <div className="relative bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 transition-all shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-[#1E40AF]/40 dark:hover:border-slate-700 overflow-hidden">
       {/* 1. Left Vertical Stripe */}
       <div className={`absolute left-0 top-0 bottom-0 w-1.5 rounded-l-[12px] ${stripeColor}`} />
 
@@ -532,7 +533,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
         {/* Selected Date Agenda Panel (Expanded to lg:col-span-7 xl:col-span-7) */}
         <div className="lg:col-span-7 xl:col-span-7 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-          <div key={selectedDateIso} className="animate-tab-enter space-y-4">
+          <TabTransition viewKey={selectedDateIso} className="space-y-4">
           <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3 gap-2">
             <div>
               <div className="flex items-center gap-2">
@@ -585,24 +586,25 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <StaggerContainer className="space-y-3">
               {selectedDateTasks.map((task) => (
-                <CalendarAgendaTaskItem
-                  key={task.id}
-                  task={task}
-                  selectedDateIso={selectedDateIso}
-                  todayIso={todayIso}
-                  onRequestComplete={onRequestComplete}
-                  onRestorePending={onRestorePending}
-                  onEdit={onEdit}
-                  onDuplicate={onDuplicate}
-                  onDelete={onDelete}
-                  onQuickReschedule={onQuickReschedule}
-                />
+                <StaggerItem key={task.id}>
+                  <CalendarAgendaTaskItem
+                    task={task}
+                    selectedDateIso={selectedDateIso}
+                    todayIso={todayIso}
+                    onRequestComplete={onRequestComplete}
+                    onRestorePending={onRestorePending}
+                    onEdit={onEdit}
+                    onDuplicate={onDuplicate}
+                    onDelete={onDelete}
+                    onQuickReschedule={onQuickReschedule}
+                  />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           )}
-          </div>
+          </TabTransition>
         </div>
       </div>
     </div>

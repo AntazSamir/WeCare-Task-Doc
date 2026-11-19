@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -11,6 +11,7 @@ import {
 import { DocumentChecklistItem, StudentApplication, UserProfile, VisaStage } from '../types/pms';
 import { updateStudent, updateStudentStage } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { ModalTransition } from './animations';
 
 interface StudentDossierModalProps {
   student: StudentApplication | null;
@@ -41,15 +42,24 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
   onRefresh,
   onCreateTaskForStudent,
 }) => {
-  if (!isOpen || !student) return null;
-
-  const [visaStage, setVisaStage] = useState<VisaStage>(student.visaStage);
-  const [dhlTracking, setDhlTracking] = useState(student.courierTrackingNumber || '');
-  const [courierName, setCourierName] = useState(student.courierName || 'DHL Express');
-  const [coaNumber, setCoaNumber] = useState(student.certificateOfAdmissionNo || '');
-  const [notes, setNotes] = useState(student.notes || '');
-  const [checklist, setChecklist] = useState<DocumentChecklistItem[]>(student.documentChecklist || []);
+  const [visaStage, setVisaStage] = useState<VisaStage>(student?.visaStage || 'Document_Gathering');
+  const [dhlTracking, setDhlTracking] = useState(student?.courierTrackingNumber || '');
+  const [courierName, setCourierName] = useState(student?.courierName || 'DHL Express');
+  const [coaNumber, setCoaNumber] = useState(student?.certificateOfAdmissionNo || '');
+  const [notes, setNotes] = useState(student?.notes || '');
+  const [checklist, setChecklist] = useState<DocumentChecklistItem[]>(student?.documentChecklist || []);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (student) {
+      setVisaStage(student.visaStage);
+      setDhlTracking(student.courierTrackingNumber || '');
+      setCourierName(student.courierName || 'DHL Express');
+      setCoaNumber(student.certificateOfAdmissionNo || '');
+      setNotes(student.notes || '');
+      setChecklist(student.documentChecklist || []);
+    }
+  }, [student]);
 
   const handleDocumentStatusToggle = (docId: string, newStatus: any) => {
     const updated = checklist.map((item) =>
@@ -67,6 +77,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
   const handleSaveChanges = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!student) return;
     setIsSaving(true);
     try {
       await updateStudent(student.id, {
@@ -87,6 +98,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
   };
 
   const handleQuickAdvanceStage = async (nextStage: VisaStage) => {
+    if (!student) return;
     setVisaStage(nextStage);
     try {
       await updateStudentStage(student.id, nextStage);
@@ -97,12 +109,14 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
   };
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
-      role="dialog"
-      aria-modal="true"
+    <ModalTransition
+      isOpen={isOpen && Boolean(student)}
+      onClose={onClose}
+      backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      cardClassName="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl overflow-hidden"
     >
-      <div className="w-full max-w-3xl max-h-[90vh] my-auto flex flex-col rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl overflow-hidden animate-modal-card">
+      {student && (
+        <>
         {/* Header */}
         <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between shrink-0 bg-[#F8FAFC] dark:bg-slate-900">
           <div>
@@ -337,8 +351,9 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>,
+        </>
+      )}
+    </ModalTransition>,
     document.body
   );
 };

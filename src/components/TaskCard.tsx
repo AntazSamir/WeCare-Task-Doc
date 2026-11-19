@@ -28,6 +28,7 @@ import {
   getLocalTodayIso,
   isTaskOverdue,
 } from '../utils/dateUtils';
+import { CollapseTransition } from './animations';
 
 interface TaskCardProps {
   task: Task;
@@ -294,8 +295,8 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
             )}
 
             {/* Expanded Notes & Timestamps */}
-            {expanded && (
-              <div className="mt-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800/80 text-xs text-[#0F172A]/80 dark:text-slate-300 space-y-1.5 animate-tab-enter">
+            <CollapseTransition isOpen={expanded}>
+              <div className="mt-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800/80 text-xs text-[#0F172A]/80 dark:text-slate-300 space-y-1.5">
                 {task.notes ? (
                   <div>
                     <span className="font-semibold text-[#0F172A] dark:text-slate-200">
@@ -323,7 +324,7 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
                   </span>
                 </div>
               </div>
-            )}
+            </CollapseTransition>
           </div>
         </div>
 

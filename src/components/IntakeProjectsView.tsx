@@ -9,6 +9,7 @@ import {
 import { IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createProject } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { ModalTransition, StaggerContainer, StaggerItem } from './animations';
 
 interface IntakeProjectsViewProps {
   projects: IntakeProject[];
@@ -100,15 +101,15 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
       </div>
 
       {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {projects.map((p, idx) => {
+      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {projects.map((p) => {
           const quotaFill = Math.round(((p.studentCount || 0) / (p.targetQuota || 20)) * 100);
           return (
-            <div
-              key={p.id}
-              onClick={() => onSelectProject(p)}
-              className={`p-5 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xs hover:border-[#1E40AF] dark:hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between space-y-4 animate-card-enter stagger-${Math.min(idx + 1, 12)}`}
-            >
+            <StaggerItem key={p.id}>
+              <div
+                onClick={() => onSelectProject(p)}
+                className="p-5 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xs hover:border-[#1E40AF] dark:hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between space-y-4 h-full"
+              >
               <div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="tabular-nums text-[10px] text-[#1E40AF] dark:text-[#1E40AF] font-bold">
@@ -172,20 +173,20 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                   })}
                 </div>
               </div>
-            </div>
+              </div>
+            </StaggerItem>
           );
         })}
-      </div>
+      </StaggerContainer>
 
       {/* Modal: Create Intake Campaign (Admin Only) */}
-      {showCreateModal &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
-            role="dialog"
-            aria-modal="true"
-          >
-            <div className="w-full max-w-lg rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+          cardClassName="w-full max-w-lg rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl p-6 space-y-4"
+        >
             <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3">
               <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-[#1E40AF]" />
@@ -349,8 +350,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
     </div>

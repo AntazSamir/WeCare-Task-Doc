@@ -43,6 +43,7 @@ import {
   reassignPmsTask,
 } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { PageTransition, TabTransition, ModalTransition, StaggerContainer, StaggerItem } from './animations';
 
 export type TaskViewType =
   | 'all'
@@ -398,7 +399,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   ];
 
   return (
-    <div className="space-y-3 animate-page-enter">
+    <PageTransition viewKey="team-tasks" className="space-y-3">
       {/* 1. EXECUTIVE TEAM DASHBOARD HEADER */}
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-sm space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -521,7 +522,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
         </div>
 
         {/* TEAM MEMBERS CARDS GRID */}
-        <div key={selectedTeamTab} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 animate-tab-enter">
+        <TabTransition viewKey={selectedTeamTab}>
+          <StaggerContainer staggerDelay={0.03} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {team
             .filter((m) => {
               if (selectedTeamTab === 'Admission Team') return m.team === 'Admission Team' || (!m.team && m.role === 'Admission_Manager');
@@ -536,15 +538,15 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               const isEmpAdmin = emp.role === 'Admission_Manager';
 
               return (
-                <div
-                  key={emp.id}
-                  onClick={() => setSelectedEmployee(emp)}
-                  className={`relative p-3.5 rounded-lg border transition-all cursor-pointer group text-left ${
-                    isSelected
-                      ? 'border-[#1E40AF] bg-[#EFF6FF]/40 dark:bg-blue-950/20 ring-1 ring-[#1E40AF]'
-                      : 'border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF] dark:hover:border-blue-800 bg-[#FFFFFF] dark:bg-slate-900 shadow-2xs hover:shadow-sm'
-                  }`}
-                >
+                <StaggerItem key={emp.id}>
+                  <div
+                    onClick={() => setSelectedEmployee(emp)}
+                    className={`relative p-3.5 rounded-lg border transition-all cursor-pointer group text-left h-full ${
+                      isSelected
+                        ? 'border-[#1E40AF] bg-[#EFF6FF]/40 dark:bg-blue-950/20 ring-1 ring-[#1E40AF]'
+                        : 'border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF] dark:hover:border-blue-800 bg-[#FFFFFF] dark:bg-slate-900 shadow-2xs hover:shadow-sm'
+                    }`}
+                  >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <img
@@ -615,10 +617,12 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       )}
                     </div>
                   </div>
-                </div>
+                  </div>
+                </StaggerItem>
               );
             })}
-        </div>
+          </StaggerContainer>
+        </TabTransition>
       </div>
 
       {/* 3. 8 SEGMENTED TASK VIEWS NAVIGATION */}
@@ -732,7 +736,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
       </div>
 
       {/* 4. TASK LIST ACCORDING TO VIEW */}
-      <div key={activeView} className="space-y-3 animate-tab-enter">
+      <TabTransition viewKey={activeView} className="space-y-3">
         {displayedTasks.length === 0 ? (
           <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-10 text-center space-y-3 shadow-sm">
             <div className="w-12 h-12 rounded-full bg-[#EFF6FF] dark:bg-slate-800 flex items-center justify-center mx-auto text-[#1E40AF]">
@@ -990,13 +994,18 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             </div>
           </div>
         )}
-      </div>
+      </TabTransition>
 
       {/* 5. EMPLOYEE PROFILE & TASK HISTORY MODAL / SLIDEOUT */}
-      {selectedEmployee &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-modal-backdrop">
-            <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] my-auto flex flex-col overflow-hidden animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={Boolean(selectedEmployee)}
+          onClose={() => setSelectedEmployee(null)}
+          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
+          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
+        >
+          {selectedEmployee && (
+            <>
               {/* Header */}
               <div className="p-5 border-b border-[#E2E8F0] dark:border-slate-800 flex items-start justify-between bg-[#F8FAFC] dark:bg-slate-800/40">
                 <div className="flex items-center gap-4">
@@ -1169,16 +1178,20 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   })
                 )}
               </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </>
+          )}
+        </ModalTransition>,
+        document.body
+      )}
 
       {/* 6. ASSIGN TASK MODAL (Authorized for Managers / Team assignment) */}
-      {isAssignModalOpen &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-modal-backdrop">
-            <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-xl max-h-[90vh] my-auto flex flex-col overflow-hidden animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={isAssignModalOpen}
+          onClose={() => setIsAssignModalOpen(false)}
+          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
+          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden"
+        >
             <div className="p-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between bg-[#F8FAFC] dark:bg-slate-900">
               <div>
                 <h2 className="text-base font-bold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
@@ -1473,16 +1486,20 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
 
       {/* 7. REASSIGN TASK MODAL */}
-      {reassigningTask &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-modal-backdrop">
-            <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-md my-auto p-5 space-y-4 animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={Boolean(reassigningTask)}
+          onClose={() => setReassigningTask(null)}
+          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
+          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-md p-5 space-y-4"
+        >
+          {reassigningTask && (
+            <>
             <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3">
               <div>
                 <h3 className="font-bold text-sm text-[#0F172A] dark:text-slate-100">
@@ -1580,16 +1597,20 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+            </>
+          )}
+        </ModalTransition>,
         document.body
       )}
 
       {/* 8. ADD/EDIT EMPLOYEE MODAL (ADMIN ONLY) */}
-      {isEmployeeModalOpen &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-modal-backdrop">
-            <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-lg my-auto p-5 space-y-4 animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={isEmployeeModalOpen}
+          onClose={() => setIsEmployeeModalOpen(false)}
+          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
+          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-lg p-5 space-y-4"
+        >
             <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3">
               <div>
                 <h3 className="font-bold text-base text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
@@ -1757,10 +1778,9 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
-    </div>
+    </PageTransition>
   );
 };

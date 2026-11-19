@@ -25,6 +25,7 @@ import {
 import { tasksToGoogleSheetRows } from '../services/googleSheetsService';
 import { formatTimestamp } from '../utils/dateUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { TabTransition } from './animations';
 
 interface GoogleSheetsPanelProps {
   tasks: Task[];
@@ -511,7 +512,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
         </div>
       </div>
 
-      <div key={activeSubTab} className="animate-tab-enter space-y-4">
+      <TabTransition viewKey={activeSubTab} className="space-y-4">
       {activeSubTab === 'sheet-grid' && (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md overflow-hidden">
           <div className="px-4 py-3 bg-[#16A34A]/10 dark:bg-emerald-950/20 border-b border-[#E2E8F0] dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -873,7 +874,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           </div>
         </div>
       )}
-      </div>
+      </TabTransition>
     </div>
   );
 };

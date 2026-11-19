@@ -28,6 +28,8 @@ import {
   ChevronDown,
   CheckCircle2,
 } from 'lucide-react';
+import { PageTransition, TabTransition, ModalTransition, ToastTransition } from './animations';
+import { AnimatePresence } from 'motion/react';
 import {
   AdmissionIntake,
   KoreanUniversity,
@@ -209,7 +211,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
   });
 
   return (
-    <div className="space-y-3.5 animate-page-enter">
+    <PageTransition viewKey={universityId} className="space-y-3.5">
 
       <div className="flex items-center justify-between gap-4">
         <button
@@ -432,7 +434,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         </div>
       </div>
 
-      <div key={activeTab} className="animate-tab-enter">
+      <TabTransition viewKey={activeTab}>
 
         {activeTab === 'intakes' && (() => {
 
@@ -1821,7 +1823,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
           )}
         </div>
       )}
-      </div>
+      </TabTransition>
 
       {/* ========================================================================= */}
       {/* ADMIN EDIT MODALS */}
@@ -1843,19 +1845,26 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
       )}
 
       {/* Success toast for Edit University */}
-      {editUniSuccessMsg && createPortal(
-        <div className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl animate-modal-card">
-          <CheckCircle2 className="w-4 h-4 shrink-0" />
-          {editUniSuccessMsg}
-        </div>,
+      {createPortal(
+        <AnimatePresence>
+          {editUniSuccessMsg && (
+            <ToastTransition className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              {editUniSuccessMsg}
+            </ToastTransition>
+          )}
+        </AnimatePresence>,
         document.body
       )}
 
       {/* Edit Program Modal */}
-      {showProgramModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={showProgramModal}
+          onClose={() => setShowProgramModal(false)}
+          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
+          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto"
+        >
             <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-blue-600" />
@@ -2052,16 +2061,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
 
       {/* Edit Refund Policy Modal */}
-      {showEditRefundModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={showEditRefundModal}
+          onClose={() => setShowEditRefundModal(false)}
+          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
+          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto"
+        >
             <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <Percent className="w-4 h-4 text-blue-600" />
@@ -2196,16 +2207,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
 
       {/* Edit Bank Details Modal */}
-      {showEditBankModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={showEditBankModal}
+          onClose={() => setShowEditBankModal(false)}
+          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
+          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto"
+        >
             <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-emerald-600" />
@@ -2359,16 +2372,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
 
       {/* Add / Edit Intake Modal */}
-      {showIntakeModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={showIntakeModal}
+          onClose={() => setShowIntakeModal(false)}
+          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
+          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4"
+        >
             <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-blue-600" />
@@ -2572,16 +2587,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
 
       {/* Add Document Modal */}
-      {showAddDocModal &&
-        createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop">
-            <div className="w-full max-w-md rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl my-auto p-6 space-y-4 animate-modal-card">
+      {createPortal(
+        <ModalTransition
+          isOpen={showAddDocModal}
+          onClose={() => setShowAddDocModal(false)}
+          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
+          cardClassName="w-full max-w-md rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4"
+        >
             <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-600" />
@@ -2695,10 +2712,9 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>,
+        </ModalTransition>,
         document.body
       )}
-    </div>
+    </PageTransition>
   );
 };

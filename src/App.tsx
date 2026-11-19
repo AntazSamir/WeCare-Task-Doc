@@ -97,6 +97,8 @@ import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, 
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useDebounce } from './utils/useDebounce';
 import { playCompletionChime, playNotificationChime } from './utils/soundUtils';
+import { PageTransition, TabTransition, ToastTransition } from './components/animations';
+import { AnimatePresence } from 'motion/react';
 
 // Lazy-loaded Views (Code Splitting)
 const SettingsView = React.lazy(() =>
@@ -1716,9 +1718,13 @@ export function App() {
     <div className="min-h-screen flex bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100">
       {/* LEFT SIDEBAR NAVIGATION (Collapsible: 256px expanded / 64px collapsed) */}
       <aside
-        className={`shrink-0 bg-white dark:bg-slate-900 border-r border-[#E2E8F0] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all duration-300 ease-in-out z-30 ${
+        className={`shrink-0 bg-white dark:bg-slate-900 border-r border-[#E2E8F0] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all z-30 ${
           isSidebarCollapsed ? 'w-16' : 'w-64'
         }`}
+        style={{
+          transitionDuration: 'var(--anim-dur-slow)',
+          transitionTimingFunction: 'var(--anim-ease-standard)',
+        }}
       >
         {/* Brand Header */}
         <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[#E2E8F0] dark:border-slate-800">
@@ -2124,7 +2130,7 @@ export function App() {
         <main className="flex-1 overflow-y-auto px-2 py-2 sm:px-2.5 sm:py-2.5 w-full">
           <ErrorBoundary viewName={currentNavTitle}>
             <Suspense fallback={<DashboardSkeleton />}>
-              <div key={activeNav} className="animate-page-enter space-y-2">
+              <PageTransition viewKey={activeNav} className="space-y-2">
           {/* VIEW 1: DASHBOARD */}
           {activeNav === 'dashboard' && (
             isInitialLoading ? (
@@ -2207,9 +2213,11 @@ export function App() {
                   </div>
                   <div className="w-full h-2.5 bg-[#EFF6FF]/60 dark:bg-slate-800 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-[#1E40AF] dark:bg-blue-500 transition-transform duration-200 origin-left"
+                      className="h-full bg-[#1E40AF] dark:bg-blue-500 transition-transform origin-left"
                       style={{
                         transform: `scaleX(${Math.min(1, Math.max(0, stats.dailyCompletionPct / 100))})`,
+                        transitionDuration: 'var(--anim-dur-normal)',
+                        transitionTimingFunction: 'var(--anim-ease-standard)',
                       }}
                     />
                   </div>
@@ -2348,7 +2356,7 @@ export function App() {
                 </button>
               </form>
 
-              <div key={dashboardViewMode} className="animate-tab-enter">
+              <TabTransition viewKey={dashboardViewMode}>
               {dashboardViewMode === 'calendar' ? (
                 <CalendarView
                   tasks={tasks}
@@ -2493,7 +2501,7 @@ export function App() {
                   </div>
                 </div>
               )}
-              </div>
+              </TabTransition>
 
               {/* Weekly Task Completion Trend Section */}
               <WeeklyCompletionTrend
@@ -2985,7 +2993,7 @@ export function App() {
               onNavigateTab={(tab) => setActiveNav(tab)}
             />
           )}
-          </div>
+          </PageTransition>
             </Suspense>
           </ErrorBoundary>
         </main>
@@ -3108,37 +3116,40 @@ export function App() {
       </Suspense>
 
       {/* FLOATING NOTIFICATION TOAST */}
-      {activeToast && (
-        <div
-          role="status"
-          aria-live="polite"
-          className={`fixed bottom-5 right-5 z-50 max-w-sm rounded-lg text-white px-4 py-3 shadow-xl flex items-start gap-3 animate-toast-enter ${
-            activeToast.type === 'overdue'
-              ? 'bg-[#DC2626] border border-red-700'
-              : activeToast.type === 'warning'
-              ? 'bg-[#D97706] border border-amber-700'
-              : 'bg-[#1E3A8A] dark:bg-slate-800 border border-[#1E40AF]/40 dark:border-slate-700'
-          }`}
-        >
-          {activeToast.type === 'overdue' || activeToast.type === 'warning' ? (
-            <AlertTriangle className="w-4 h-4 text-white shrink-0 mt-0.5" />
-          ) : (
-            <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
-          )}
-          <div className="text-xs space-y-0.5 min-w-0">
-            <div className="font-semibold">{activeToast.title}</div>
-            <div className="text-[#EFF6FF] truncate">{activeToast.message}</div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setActiveToast(null)}
-            className="text-[#EFF6FF]/80 hover:text-white ml-auto"
-            aria-label="Dismiss notification"
+      <AnimatePresence>
+        {activeToast && (
+          <ToastTransition
+            key={activeToast.id}
+            role="status"
+            aria-live="polite"
+            className={`fixed bottom-5 right-5 z-50 max-w-sm rounded-lg text-white px-4 py-3 shadow-xl flex items-start gap-3 ${
+              activeToast.type === 'overdue'
+                ? 'bg-[#DC2626] border border-red-700'
+                : activeToast.type === 'warning'
+                ? 'bg-[#D97706] border border-amber-700'
+                : 'bg-[#1E3A8A] dark:bg-slate-800 border border-[#1E40AF]/40 dark:border-slate-700'
+            }`}
           >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
+            {activeToast.type === 'overdue' || activeToast.type === 'warning' ? (
+              <AlertTriangle className="w-4 h-4 text-white shrink-0 mt-0.5" />
+            ) : (
+              <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
+            )}
+            <div className="text-xs space-y-0.5 min-w-0">
+              <div className="font-semibold">{activeToast.title}</div>
+              <div className="text-[#EFF6FF] truncate">{activeToast.message}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveToast(null)}
+              className="text-[#EFF6FF]/80 hover:text-white ml-auto"
+              aria-label="Dismiss notification"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </ToastTransition>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

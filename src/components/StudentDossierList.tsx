@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { StudentApplication, UserProfile, VisaStage } from '../types/pms';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
+import { TabTransition, FadeTransition } from './animations';
 
 interface StudentDossierListProps {
   students: StudentApplication[];
@@ -451,16 +452,14 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
             Showing <strong className="text-[#0F172A] dark:text-slate-100 font-semibold">{filteredAndSorted.length}</strong> of{' '}
             {students.length} candidate dossiers
           </span>
-          {copiedText && (
-            <span className="text-[#16A34A] dark:text-emerald-400 font-medium inline-flex items-center gap-1 animate-fade-in">
-              <Check className="w-3.5 h-3.5" /> Copied {copiedText} to clipboard
-            </span>
-          )}
+          <FadeTransition show={Boolean(copiedText)} className="text-[#16A34A] dark:text-emerald-400 font-medium inline-flex items-center gap-1">
+            <Check className="w-3.5 h-3.5" /> Copied {copiedText} to clipboard
+          </FadeTransition>
         </div>
       </div>
 
       {/* 4. REDESIGNED CONTENT: Table View or Cards View */}
-      <div key={viewMode} className="animate-tab-enter">
+      <TabTransition viewKey={viewMode}>
       {viewMode === 'table' ? (
         <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
           <div className="overflow-x-auto">
@@ -814,7 +813,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
           )}
         </div>
       )}
-      </div>
+      </TabTransition>
     </div>
   );
 };

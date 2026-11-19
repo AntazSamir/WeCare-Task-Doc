@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, CheckCircle2, FileSpreadsheet, Check } from 'lucide-react';
 import { Task } from '../types/task';
 import { formatReadableDate } from '../utils/dateUtils';
+import { ModalTransition } from './animations';
 
 interface CompletionConfirmModalProps {
   task: Task | null;
@@ -42,14 +43,13 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
   });
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto animate-modal-backdrop"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-complete-title"
+    <ModalTransition
+      isOpen={Boolean(task)}
+      onClose={onCancel}
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
+      cardClassName="w-full max-w-md rounded-lg bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xl overflow-hidden"
     >
-      <div className="w-full max-w-md rounded-lg bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xl my-auto overflow-hidden animate-modal-card">
-        {/* Header */}
+      {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800">
           <div className="flex items-center gap-2.5">
             <CheckCircle2 className="w-5 h-5 text-[#16A34A] shrink-0" />
@@ -153,8 +153,7 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
             {isSubmitting ? 'Saving & Syncing...' : 'Confirm Completion'}
           </button>
         </div>
-      </div>
-    </div>,
+    </ModalTransition>,
     document.body
   );
 };
