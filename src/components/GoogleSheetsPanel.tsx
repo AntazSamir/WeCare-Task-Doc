@@ -14,6 +14,7 @@ import {
   WifiOff,
   FileSpreadsheet,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import {
   GOOGLE_SHEETS_HEADERS,
   GoogleSheetsConnectionState,
@@ -222,11 +223,11 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
               disabled={connection.syncStatus === 'Syncing'}
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] disabled:opacity-60 rounded transition-colors whitespace-nowrap shrink-0"
             >
-              <RefreshCw
-                className={`w-3.5 h-3.5 ${
-                  connection.syncStatus === 'Syncing' ? 'animate-spin' : ''
-                }`}
-              />
+              {connection.syncStatus === 'Syncing' ? (
+                <Spinner size="sm" shade="inherit" aria-hidden="true" />
+              ) : (
+                <RefreshCw className="w-3.5 h-3.5" />
+              )}
               {connection.syncStatus === 'Syncing' ? 'Syncing Sheet...' : 'Sync Now'}
             </button>
 
@@ -341,8 +342,8 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                     Sync Failed {syncQueue.length > 0 ? `(${syncQueue.length} queued)` : ''}
                   </span>
                 ) : connection.syncStatus === 'Syncing' ? (
-                  <span className="inline-flex items-center gap-1 text-[#D97706] dark:text-amber-400">
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span className="inline-flex items-center gap-1.5 text-[#D97706] dark:text-amber-400">
+                    <Spinner size="sm" shade="inherit" aria-hidden="true" />
                     Syncing...
                   </span>
                 ) : (

@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
-import { db, initDatabase, createBackupSnapshot } from './server/db';
+import { db, initDatabase, createBackupSnapshot, buildIntakeDocumentsForStudent, syncIntakeStudentApplications } from './server/db';
 import {
   acknowledgeDocumentHandover,
   cancelDocumentRequest,
@@ -1131,22 +1131,76 @@ async function startServer() {
   });
 
   // ==========================================
-  // INTAKE PROJECTS API
+  // INTAKE PROJECTS & WORKSPACE API
   // ==========================================
+  const VALID_INTAKE_WORKFLOW_STAGES = [
+    'Student Registered',
+    'Document Collection',
+    'Document Verification',
+    'Notarization / Apostille',
+    'Application Preparation',
+    'Ready for Submission',
+    'Submitted to University',
+    'Additional Documents Requested',
+    'Admission Result Received',
+    'Tuition Payment',
+    'CoA Received',
+  ] as const;
+
+  const VALID_INTAKE_DOC_STATUSES = [
+    'Missing',
+    'Incorrect',
+    'Pending',
+    'Collected',
+    'Notarized',
+    'Apostilled',
+    'Verified',
+  ] as const;
+
+  function computeDocumentReadiness(docs: any[]) {
+    const required = (docs || []).filter((d) => d.required !== false);
+    const totalRequired = required.length || (docs || []).length;
+    const verifiedCount = (required.length > 0 ? required : docs || []).filter((d) => d.status === 'Verified').length;
+    const missingCount = (docs || []).filter((d) => d.status === 'Missing').length;
+    const incorrectCount = (docs || []).filter((d) => d.status === 'Incorrect').length;
+    const pendingCount = (docs || []).filter((d) => d.status === 'Pending' || d.status === 'Collected').length;
+    const notarizedCount = (docs || []).filter((d) => d.notarized || d.status === 'Notarized' || d.status === 'Apostilled' || d.status === 'Verified').length;
+    const apostilledCount = (docs || []).filter((d) => d.apostilled || d.status === 'Apostilled' || (String(d.name || '').toLowerCase().includes('apostille') && d.status === 'Verified')).length;
+    const readinessPercentage = totalRequired > 0 ? Math.round((verifiedCount / totalRequired) * 100) : 0;
+    const isSubmissionReady = totalRequired > 0 && verifiedCount === totalRequired && missingCount === 0 && incorrectCount === 0;
+    return {
+      totalDocs: (docs || []).length,
+      totalRequired,
+      verifiedCount,
+      missingCount,
+      incorrectCount,
+      pendingCount,
+      notarizedCount,
+      apostilledCount,
+      readinessPercentage,
+      isSubmissionReady,
+    };
+  }
+
   app.get('/api/projects', (_req: AuthenticatedRequest, res: Response) => {
     const projects = db.prepare(`
       SELECT 
         p.*,
         u.name_en as university_name,
         m.name as manager_name,
-        (SELECT COUNT(*) FROM student_applications WHERE project_id = p.id) as student_count
+        (
+          SELECT COUNT(DISTINCT student_id) FROM (
+            SELECT id as student_id FROM student_applications WHERE project_id = p.id
+            UNION
+            SELECT student_id FROM intake_student_applications WHERE project_id = p.id
+          )
+        ) as student_count
       FROM intake_projects p
       JOIN universities u ON p.university_id = u.id
       JOIN users m ON p.manager_id = m.id
       ORDER BY p.deadline ASC
     `).all() as any[];
 
-    // Fetch assigned consultants for each project
     const consultants = db.prepare('SELECT project_id, user_id FROM project_consultants').all() as any[];
     const consultantMap = new Map<string, string[]>();
     for (const c of consultants) {
@@ -1154,12 +1208,12 @@ async function startServer() {
       consultantMap.get(c.project_id)!.push(c.user_id);
     }
 
-    // RBAC: Consultants see all projects or assigned projects
     const mapped = projects.map((p) => ({
       id: p.id,
       name: p.name,
       universityId: p.university_id,
       universityName: p.university_name,
+      intakeId: p.intake_id || null,
       intakeTerm: p.intake_term,
       academicYear: p.academic_year,
       managerId: p.manager_id,
@@ -1187,15 +1241,20 @@ async function startServer() {
 
     const id = 'PRJ-' + universityId.replace('UNI-', '') + '-' + Date.now().toString(36).toUpperCase().slice(-4);
     const now = new Date().toISOString();
+    const resolvedTerm = intakeTerm || 'Spring 2027';
+    const matchedIntake = db.prepare(
+      'SELECT id FROM admission_intakes WHERE university_id = ? AND term = ? LIMIT 1'
+    ).get(universityId, resolvedTerm) as { id: string } | undefined;
 
     db.prepare(`
-      INSERT INTO intake_projects (id, name, university_id, intake_term, academic_year, manager_id, status, start_date, deadline, target_quota, progress_percentage, notes, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, 'Active', ?, ?, ?, 0, ?, ?, ?)
+      INSERT INTO intake_projects (id, name, university_id, intake_id, intake_term, academic_year, manager_id, status, start_date, deadline, target_quota, progress_percentage, notes, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'Active', ?, ?, ?, 0, ?, ?, ?)
     `).run(
       id,
       name.trim(),
       universityId,
-      intakeTerm || 'Spring 2027',
+      matchedIntake?.id || null,
+      resolvedTerm,
       Number(academicYear) || 2027,
       req.user!.id,
       now.slice(0, 10),
@@ -1215,6 +1274,936 @@ async function startServer() {
 
     logAudit(req.user!.id, req.user!.name, req.user!.role, 'CREATE_PROJECT', 'project', id, `Created intake project "${name}"`);
     res.json({ ok: true, id });
+  });
+
+  app.get('/api/projects/:id/workspace', (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const isConsultant = req.user?.role === 'Consultant';
+    const userId = req.user!.id;
+
+    // Ensure any students directly on student_applications.project_id are synced cleanly
+    syncIntakeStudentApplications();
+
+    const p = db.prepare(`
+      SELECT p.*, u.name_en as university_name, m.name as manager_name, m.email as manager_email,
+             m.title as manager_title, m.avatar as manager_avatar
+      FROM intake_projects p
+      JOIN universities u ON p.university_id = u.id
+      JOIN users m ON p.manager_id = m.id
+      WHERE p.id = ?
+    `).get(id) as any;
+
+    if (!p) {
+      return res.status(404).json({ error: 'Intake campaign not found.' });
+    }
+
+    // Assigned consultants
+    const consultantRows = db.prepare(`
+      SELECT u.id, u.name, u.email, u.role, u.title, u.avatar, u.phone, COALESCE(u.team, 'Admission Team') as team
+      FROM project_consultants pc
+      JOIN users u ON pc.user_id = u.id
+      WHERE pc.project_id = ?
+      ORDER BY u.name ASC
+    `).all(id) as any[];
+
+    // Matched Admission Intake schedule
+    const intakeRow = db.prepare(`
+      SELECT * FROM admission_intakes
+      WHERE id = ? OR (university_id = ? AND term = ?)
+      ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END
+      LIMIT 1
+    `).get(p.intake_id || '', p.university_id, p.intake_term, p.intake_id || '') as any;
+
+    const admissionIntake = intakeRow
+      ? {
+          id: intakeRow.id,
+          universityId: intakeRow.university_id,
+          term: intakeRow.term,
+          academicYear: intakeRow.academic_year,
+          applicationStart: intakeRow.application_start,
+          applicationDeadline: intakeRow.application_deadline,
+          quota: intakeRow.quota,
+          status: intakeRow.status,
+          requiredDocuments: JSON.parse(intakeRow.required_documents || '[]'),
+          interviewDates: intakeRow.interview_dates,
+          resultAnnouncementDate: intakeRow.result_announcement_date,
+          tuitionPaymentDeadline: intakeRow.tuition_payment_deadline,
+          documentDeadline: intakeRow.document_deadline,
+          visaSubmissionDeadline: intakeRow.visa_submission_deadline,
+          classesStartDate: intakeRow.classes_start_date,
+          verificationStatus: intakeRow.verification_status || 'Verified',
+          lastVerifiedAt: intakeRow.last_verified_at,
+        }
+      : null;
+
+    // University details (only real DB rows)
+    const uniRow = db.prepare('SELECT * FROM universities WHERE id = ?').get(p.university_id) as any;
+    const programs = db.prepare('SELECT * FROM university_programs WHERE university_id = ? AND is_active = 1 ORDER BY degree_level ASC, name ASC').all(p.university_id) as any[];
+    const refundPolicy = db.prepare('SELECT * FROM university_refund_policies WHERE university_id = ?').get(p.university_id) as any;
+    const bankDetails = db.prepare('SELECT * FROM university_bank_accounts WHERE university_id = ?').get(p.university_id) as any;
+    const uniDocs = db.prepare('SELECT * FROM university_documents WHERE university_id = ? ORDER BY uploaded_at DESC').all(p.university_id) as any[];
+
+    const university = uniRow
+      ? {
+          id: uniRow.id,
+          nameEn: uniRow.name_en,
+          nameKo: uniRow.name_ko,
+          city: uniRow.city,
+          ranking: uniRow.ranking,
+          websiteUrl: uniRow.website_url,
+          topikRequirement: uniRow.topik_requirement,
+          ieltsRequirement: uniRow.ielts_requirement,
+          bankBalanceUsd: uniRow.bank_balance_usd,
+          accredited: Boolean(uniRow.accredited),
+          notes: uniRow.notes,
+          verificationStatus: uniRow.verification_status || 'Verified',
+          lastVerifiedAt: uniRow.last_verified_at || uniRow.updated_at,
+          verifiedBy: uniRow.verified_by,
+          programs: programs.map((pr) => ({
+            id: pr.id,
+            universityId: pr.university_id,
+            name: pr.name,
+            code: pr.code,
+            degreeLevel: pr.degree_level,
+            duration: pr.duration,
+            tuitionFeeKrw: pr.tuition_fee_krw,
+            tuitionFeeUsd: pr.tuition_fee_usd,
+            applicationFeeKrw: pr.application_fee_krw,
+            requirements: pr.requirements,
+            languageOfInstruction: pr.language_of_instruction,
+            intakeTerms: JSON.parse(pr.intake_terms || '[]'),
+            isActive: Boolean(pr.is_active),
+            updatedAt: pr.updated_at,
+          })),
+          refundPolicy: refundPolicy
+            ? {
+                universityId: refundPolicy.university_id,
+                appFeeRefundable: Boolean(refundPolicy.app_fee_refundable),
+                appFeeConditions: refundPolicy.app_fee_conditions,
+                tuitionRefundPolicy: refundPolicy.tuition_refund_policy,
+                visaRejectionRefund: refundPolicy.visa_rejection_refund,
+                deadlinesDescription: refundPolicy.deadlines_description,
+                refundProcessingTime: refundPolicy.refund_processing_time,
+                verificationStatus: refundPolicy.verification_status || 'Verified',
+                lastVerifiedAt: refundPolicy.last_verified_at,
+                verifiedBy: refundPolicy.verified_by,
+                updatedAt: refundPolicy.updated_at,
+              }
+            : null,
+          bankDetails: bankDetails
+            ? {
+                id: bankDetails.id,
+                universityId: bankDetails.university_id,
+                accountHolder: bankDetails.account_holder,
+                bankName: bankDetails.bank_name,
+                branchName: bankDetails.branch_name,
+                accountNumber: bankDetails.account_number,
+                swiftCode: bankDetails.swift_code,
+                currency: bankDetails.currency,
+                paymentInstructions: bankDetails.payment_instructions,
+                isVirtualAccountSupported: Boolean(bankDetails.is_virtual_account_supported),
+                verificationStatus: bankDetails.verification_status || 'Verified',
+                lastVerifiedAt: bankDetails.last_verified_at,
+                verifiedBy: bankDetails.verified_by,
+                updatedAt: bankDetails.updated_at,
+              }
+            : null,
+          documents: uniDocs.map((d) => ({
+            id: d.id,
+            universityId: d.university_id,
+            title: d.title,
+            category: d.category,
+            fileUrl: d.file_url,
+            fileSize: d.file_size,
+            fileFormat: d.file_format,
+            intakeTerm: d.intake_term,
+            verificationStatus: d.verification_status,
+            uploadedAt: d.uploaded_at,
+            uploadedBy: d.uploaded_by,
+          })),
+        }
+      : null;
+
+    // Enrolled students via intake_student_applications (RBAC filtered for Consultant)
+    let studentQuery = `
+      SELECT
+        isa.id as intake_app_id,
+        isa.project_id as app_project_id,
+        isa.student_id,
+        isa.assigned_consultant_id as isa_consultant_id,
+        isa.program_id as isa_program_id,
+        isa.program_name as isa_program_name,
+        isa.workflow_stage,
+        isa.stage_status,
+        isa.workflow_dates_json,
+        isa.stage_history_json,
+        isa.documents_json,
+        isa.stage_notes,
+        isa.submitted_by,
+        isa.submitted_at,
+        isa.completed_by,
+        isa.completed_at,
+        isa.created_at as enrolled_at,
+        isa.updated_at as app_updated_at,
+        s.*,
+        u.name_en as university_name,
+        proj.name as primary_project_name,
+        c.name as consultant_name,
+        c.avatar as consultant_avatar,
+        (SELECT COUNT(*) FROM document_handovers h WHERE h.student_id = s.id) as handover_count
+      FROM intake_student_applications isa
+      JOIN student_applications s ON isa.student_id = s.id
+      JOIN universities u ON s.applied_university_id = u.id
+      JOIN intake_projects proj ON s.project_id = proj.id
+      JOIN users c ON COALESCE(isa.assigned_consultant_id, s.assigned_consultant_id) = c.id
+      WHERE isa.project_id = ?
+    `;
+    const stuParams: any[] = [id];
+    if (isConsultant) {
+      studentQuery += ' AND (s.assigned_consultant_id = ? OR isa.assigned_consultant_id = ?)';
+      stuParams.push(userId, userId);
+    }
+    studentQuery += ' ORDER BY isa.updated_at DESC';
+
+    const rawApplications = db.prepare(studentQuery).all(...stuParams) as any[];
+    const applications = rawApplications.map((row) => {
+      const intakeDocs = JSON.parse(row.documents_json || '[]');
+      const fallbackChecklist = JSON.parse(row.checklist_json || '[]');
+      const resolvedDocs =
+        intakeDocs.length > 0
+          ? intakeDocs
+          : buildIntakeDocumentsForStudent(admissionIntake?.requiredDocuments || [], fallbackChecklist);
+      const readiness = computeDocumentReadiness(resolvedDocs);
+      const stageIndex = VALID_INTAKE_WORKFLOW_STAGES.indexOf(row.workflow_stage);
+      const workflowProgress =
+        stageIndex >= 0
+          ? Math.round(((stageIndex + 1) / VALID_INTAKE_WORKFLOW_STAGES.length) * 100)
+          : 9;
+
+      return {
+        intakeAppId: row.intake_app_id,
+        projectId: id,
+        studentId: row.student_id,
+        isPrimaryProject: row.project_id === id,
+        workflowStage: row.workflow_stage,
+        stageStatus: row.stage_status,
+        workflowProgress,
+        workflowDates: JSON.parse(row.workflow_dates_json || '{}'),
+        stageHistory: JSON.parse(row.stage_history_json || '[]'),
+        intakeDocuments: resolvedDocs,
+        readiness,
+        stageNotes: row.stage_notes || '',
+        submittedBy: row.submitted_by || null,
+        submittedAt: row.submitted_at || null,
+        completedBy: row.completed_by || null,
+        completedAt: row.completed_at || null,
+        enrolledAt: row.enrolled_at,
+        appUpdatedAt: row.app_updated_at,
+        handoverCount: row.handover_count || 0,
+        student: {
+          id: row.id,
+          fullName: row.full_name,
+          passportNumber: row.passport_number,
+          dateOfBirth: row.date_of_birth,
+          nationality: row.nationality,
+          contactEmail: row.contact_email,
+          contactPhone: row.contact_phone,
+          appliedUniversityId: row.applied_university_id,
+          appliedUniversityName: row.university_name,
+          projectId: row.project_id,
+          projectName: row.primary_project_name,
+          department: row.department,
+          major: row.major,
+          degreeLevel: row.degree_level,
+          intakeTerm: row.intake_term,
+          programId: row.isa_program_id || row.program_id,
+          programName: row.isa_program_name || row.program_name,
+          visaStage: row.visa_stage,
+          visaType: row.visa_type,
+          assignedConsultantId: row.isa_consultant_id || row.assigned_consultant_id,
+          assignedConsultantName: row.consultant_name,
+          submissionDate: row.submission_date,
+          admissionResult: row.admission_result,
+          certificateOfAdmissionNo: row.certificate_of_admission_no,
+          tuitionFeePaid: Boolean(row.tuition_fee_paid),
+          courierName: row.courier_name,
+          courierTrackingNumber: row.courier_tracking_number,
+          courierDispatchDate: row.courier_dispatch_date,
+          documentChecklist: fallbackChecklist,
+          notes: row.notes,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at,
+        },
+      };
+    });
+
+    // Existing students eligible to be added (not already assigned to this intake)
+    let availQuery = `
+      SELECT s.id, s.full_name, s.passport_number, s.major, s.degree_level, s.intake_term,
+             s.assigned_consultant_id, c.name as consultant_name, u.name_en as university_name
+      FROM student_applications s
+      JOIN users c ON s.assigned_consultant_id = c.id
+      LEFT JOIN universities u ON s.applied_university_id = u.id
+      WHERE s.id NOT IN (SELECT student_id FROM intake_student_applications WHERE project_id = ?)
+    `;
+    const availParams: any[] = [id];
+    if (isConsultant) {
+      availQuery += ' AND s.assigned_consultant_id = ?';
+      availParams.push(userId);
+    }
+    availQuery += ' ORDER BY s.full_name ASC';
+    const availableStudents = (db.prepare(availQuery).all(...availParams) as any[]).map((st) => ({
+      id: st.id,
+      fullName: st.full_name,
+      passportNumber: st.passport_number,
+      major: st.major,
+      degreeLevel: st.degree_level,
+      intakeTerm: st.intake_term,
+      assignedConsultantId: st.assigned_consultant_id,
+      consultantName: st.consultant_name,
+      universityName: st.university_name,
+    }));
+
+    // Tasks linked to this intake project (respecting RBAC)
+    let taskQuery = `
+      SELECT t.*, s.full_name as student_name, u.name_en as university_name,
+             a.name as assigned_to_name, a.avatar as assignee_avatar, a.title as assignee_title,
+             COALESCE(t.team, a.team, 'Admission Team') as computed_team, b.name as assigned_by_name
+      FROM tasks t
+      LEFT JOIN student_applications s ON t.student_id = s.id
+      LEFT JOIN universities u ON t.university_id = u.id
+      LEFT JOIN users a ON t.assigned_to_id = a.id
+      LEFT JOIN users b ON t.assigned_by_id = b.id
+      WHERE t.project_id = ?
+    `;
+    const taskParams: any[] = [id];
+    if (isConsultant) {
+      taskQuery += ' AND (t.assigned_to_id = ? OR t.team = (SELECT team FROM users WHERE id = ?) OR t.assigned_to_id IS NULL)';
+      taskParams.push(userId, userId);
+    }
+    taskQuery += ' ORDER BY t.status ASC, t.deadline ASC';
+    const projectTasks = (db.prepare(taskQuery).all(...taskParams) as any[]).map((t) => ({
+      id: t.id,
+      title: t.title,
+      description: t.description || '',
+      category: t.category,
+      priority: t.priority,
+      taskDate: t.task_date,
+      deadline: t.deadline,
+      scheduledTime: t.scheduled_time,
+      status: t.status,
+      createdAt: t.created_at,
+      completedAt: t.completed_at,
+      notes: t.notes || '',
+      lastUpdated: t.last_updated,
+      syncState: t.sync_state,
+      sheetRowNumber: t.sheet_row_number,
+      projectId: t.project_id,
+      projectName: p.name,
+      studentId: t.student_id,
+      studentName: t.student_name,
+      universityId: t.university_id,
+      universityName: t.university_name,
+      assignedToId: t.assigned_to_id,
+      assignedToName: t.assigned_to_name,
+      assigneeAvatar: t.assignee_avatar,
+      assigneeTitle: t.assignee_title,
+      team: t.computed_team,
+      assignedById: t.assigned_by_id,
+      assignedByName: t.assigned_by_name,
+      subtasks: JSON.parse(t.subtasks_json || '[]'),
+    }));
+
+    // Activity history across project, intake schedule, enrolled students, linked tasks, and handovers
+    const enrolledStudentIds = applications.map((a) => a.studentId);
+    const linkedTaskIds = projectTasks.map((t) => t.id);
+
+    const allCandidateLogs = db.prepare(`
+      SELECT * FROM audit_logs
+      ORDER BY timestamp DESC
+      LIMIT 400
+    `).all() as any[];
+
+    const studentSet = new Set(enrolledStudentIds);
+    const taskSet = new Set(linkedTaskIds);
+    const handoverIdsForStudents = new Set<string>();
+    if (enrolledStudentIds.length > 0) {
+      const hRows = db.prepare(`SELECT id, student_id FROM document_handovers`).all() as any[];
+      for (const h of hRows) {
+        if (studentSet.has(h.student_id)) handoverIdsForStudents.add(h.id);
+      }
+    }
+
+    const activities = allCandidateLogs.filter((log) => {
+      if (log.entity_type === 'project' && log.entity_id === id) return true;
+      if (admissionIntake && log.entity_type === 'intake' && log.entity_id === admissionIntake.id) return true;
+      if (log.entity_type === 'student' && studentSet.has(log.entity_id)) return true;
+      if (log.entity_type === 'task' && taskSet.has(log.entity_id)) return true;
+      if (log.entity_type === 'handover' && handoverIdsForStudents.has(log.entity_id)) return true;
+      return false;
+    }).map((l) => ({
+      id: l.id,
+      actorId: l.actor_id,
+      actorName: l.actor_name,
+      actorRole: l.actor_role,
+      action: l.action,
+      entityType: l.entity_type,
+      entityId: l.entity_id,
+      details: l.details,
+      timestamp: l.timestamp,
+    }));
+
+    // Total quota & enrollment summary (full cohort counts even when consultant is viewing filtered subset)
+    const totalApplicantRow = db.prepare(`
+      SELECT COUNT(*) as total,
+             SUM(CASE WHEN workflow_stage IN ('Admission Result Received', 'Tuition Payment', 'CoA Received') OR stage_status = 'Completed' THEN 1 ELSE 0 END) as enrolled_count,
+             SUM(CASE WHEN workflow_stage IN ('Submitted to University', 'Additional Documents Requested', 'Admission Result Received', 'Tuition Payment', 'CoA Received') THEN 1 ELSE 0 END) as submitted_count
+      FROM intake_student_applications
+      WHERE project_id = ?
+    `).get(id) as any;
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const pendingTaskCount = projectTasks.filter((t) => t.status === 'Pending').length;
+    const overdueTaskCount = projectTasks.filter((t) => t.status === 'Pending' && t.deadline < todayStr).length;
+    const avgProgress =
+      applications.length > 0
+        ? Math.round(applications.reduce((acc, a) => acc + a.workflowProgress, 0) / applications.length)
+        : p.progress_percentage || 0;
+
+    res.json({
+      project: {
+        id: p.id,
+        name: p.name,
+        universityId: p.university_id,
+        universityName: p.university_name,
+        intakeId: admissionIntake?.id || p.intake_id || null,
+        intakeTerm: p.intake_term,
+        academicYear: p.academic_year,
+        managerId: p.manager_id,
+        managerName: p.manager_name,
+        managerEmail: p.manager_email,
+        managerTitle: p.manager_title,
+        managerAvatar: p.manager_avatar,
+        assignedConsultantIds: consultantRows.map((c) => c.id),
+        consultants: consultantRows,
+        startDate: p.start_date,
+        deadline: p.deadline,
+        status: p.status,
+        targetQuota: p.target_quota,
+        studentCount: totalApplicantRow?.total || 0,
+        enrolledCount: totalApplicantRow?.enrolled_count || 0,
+        submittedCount: totalApplicantRow?.submitted_count || 0,
+        availableSeats: Math.max(0, (p.target_quota || 0) - (totalApplicantRow?.total || 0)),
+        progressPercentage: avgProgress,
+        notes: p.notes || '',
+        createdAt: p.created_at,
+        updatedAt: p.updated_at,
+      },
+      admissionIntake,
+      university,
+      applications,
+      availableStudents,
+      tasks: projectTasks,
+      taskSummary: {
+        total: projectTasks.length,
+        pending: pendingTaskCount,
+        completed: projectTasks.length - pendingTaskCount,
+        overdue: overdueTaskCount,
+      },
+      activities,
+    });
+  });
+
+  app.put('/api/projects/:id', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const existing = db.prepare('SELECT * FROM intake_projects WHERE id = ?').get(id) as any;
+    if (!existing) {
+      return res.status(404).json({ error: 'Intake campaign not found.' });
+    }
+
+    const { name, status, deadline, startDate, targetQuota, notes, intakeTerm, assignedConsultantIds } = req.body;
+    const allowedStatuses = ['Planning', 'Active', 'Under Review', 'Completed', 'Archived'];
+    if (status && !allowedStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid intake status value.' });
+    }
+
+    const now = new Date().toISOString();
+    db.prepare(`
+      UPDATE intake_projects SET
+        name = COALESCE(?, name),
+        status = COALESCE(?, status),
+        deadline = COALESCE(?, deadline),
+        start_date = COALESCE(?, start_date),
+        target_quota = COALESCE(?, target_quota),
+        notes = COALESCE(?, notes),
+        intake_term = COALESCE(?, intake_term),
+        updated_at = ?
+      WHERE id = ?
+    `).run(
+      name ? String(name).trim() : null,
+      status || null,
+      deadline || null,
+      startDate || null,
+      targetQuota !== undefined ? Number(targetQuota) : null,
+      notes !== undefined ? String(notes).trim() : null,
+      intakeTerm || null,
+      now,
+      id
+    );
+
+    if (Array.isArray(assignedConsultantIds)) {
+      const tx = db.transaction((ids: string[]) => {
+        db.prepare('DELETE FROM project_consultants WHERE project_id = ?').run(id);
+        const ins = db.prepare('INSERT OR IGNORE INTO project_consultants (project_id, user_id, assigned_at) VALUES (?, ?, ?)');
+        for (const uid of ids) {
+          ins.run(id, uid, now);
+        }
+      });
+      tx(assignedConsultantIds);
+      logAudit(req.user!.id, req.user!.name, req.user!.role, 'UPDATE_PROJECT_TEAM', 'project', id, `Updated consultant team assignments (${assignedConsultantIds.length} member(s))`);
+    }
+
+    if (deadline && deadline !== existing.deadline) {
+      logAudit(req.user!.id, req.user!.name, req.user!.role, 'DEADLINE_CHANGED', 'project', id, `Application deadline updated from ${existing.deadline} to ${deadline}`);
+    }
+    if (status && status !== existing.status) {
+      logAudit(req.user!.id, req.user!.name, req.user!.role, 'UPDATE_PROJECT_STATUS', 'project', id, `Changed intake status from "${existing.status}" to "${status}"`);
+    } else if (!deadline || deadline === existing.deadline) {
+      if (!Array.isArray(assignedConsultantIds)) {
+        logAudit(req.user!.id, req.user!.name, req.user!.role, 'UPDATE_PROJECT', 'project', id, `Updated intake campaign configuration for ${id}`);
+      }
+    }
+
+    res.json({ ok: true });
+  });
+
+  app.post('/api/projects/:id/students', (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const { studentId, assignedConsultantId, programId, programName, notes } = req.body;
+    if (!studentId) {
+      return res.status(400).json({ error: 'studentId is required.' });
+    }
+
+    const project = db.prepare('SELECT * FROM intake_projects WHERE id = ?').get(id) as any;
+    if (!project) {
+      return res.status(404).json({ error: 'Intake campaign not found.' });
+    }
+
+    const student = db.prepare('SELECT * FROM student_applications WHERE id = ?').get(studentId) as any;
+    if (!student) {
+      return res.status(404).json({ error: 'Student application not found.' });
+    }
+
+    if (req.user?.role === 'Consultant' && student.assigned_consultant_id !== req.user.id) {
+      return res.status(403).json({ error: 'You are only authorized to assign students on your own roster.' });
+    }
+
+    // Strict duplicate check
+    const existingApp = db.prepare('SELECT id FROM intake_student_applications WHERE project_id = ? AND student_id = ?').get(id, studentId);
+    if (existingApp) {
+      return res.status(409).json({
+        error: 'Duplicate assignment prevented',
+        message: `${student.full_name} is already assigned to this intake campaign.`,
+      });
+    }
+
+    const intakeRow = db.prepare(
+      'SELECT required_documents FROM admission_intakes WHERE id = ? OR (university_id = ? AND term = ?) LIMIT 1'
+    ).get(project.intake_id || '', project.university_id, project.intake_term) as any;
+
+    const reqDocs = intakeRow ? JSON.parse(intakeRow.required_documents || '[]') : [];
+    const existingChecklist = JSON.parse(student.checklist_json || '[]');
+    const docs = buildIntakeDocumentsForStudent(reqDocs, existingChecklist);
+
+    const now = new Date().toISOString();
+    const todayStr = now.slice(0, 10);
+    const appId = `ISA-${id}-${studentId}`;
+    const consultantId = assignedConsultantId || student.assigned_consultant_id;
+
+    const history = [
+      {
+        id: 'STG-' + Date.now().toString(36),
+        stage: 'Student Registered',
+        status: 'In Progress',
+        date: todayStr,
+        actorName: req.user!.name,
+        notes: notes?.trim() || `Assigned existing student ${student.full_name} to ${project.name}`,
+        timestamp: now,
+      },
+    ];
+
+    db.prepare(`
+      INSERT INTO intake_student_applications (
+        id, project_id, student_id, assigned_consultant_id, program_id, program_name,
+        workflow_stage, stage_status, workflow_dates_json, stage_history_json,
+        documents_json, stage_notes, added_by, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, 'Student Registered', 'In Progress', ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      appId,
+      id,
+      studentId,
+      consultantId,
+      programId || student.program_id || null,
+      programName || student.program_name || null,
+      JSON.stringify({ registeredDate: todayStr }),
+      JSON.stringify(history),
+      JSON.stringify(docs),
+      notes?.trim() || '',
+      req.user!.id,
+      now,
+      now
+    );
+
+    logAudit(
+      req.user!.id,
+      req.user!.name,
+      req.user!.role,
+      'ASSIGN_STUDENT_TO_INTAKE',
+      'project',
+      id,
+      `Assigned ${student.full_name} (${student.id}) to intake ${project.name}`
+    );
+
+    res.status(201).json({ ok: true, id: appId });
+  });
+
+  app.delete('/api/projects/:id/students/:studentId', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+    const { id, studentId } = req.params;
+    const student = db.prepare('SELECT full_name, project_id FROM student_applications WHERE id = ?').get(studentId) as any;
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found.' });
+    }
+    if (student.project_id === id) {
+      return res.status(400).json({
+        error: 'Cannot remove primary cohort student directly; reassign their primary campaign from Student Dossiers if moving cohorts.',
+      });
+    }
+    db.prepare('DELETE FROM intake_student_applications WHERE project_id = ? AND student_id = ?').run(id, studentId);
+    logAudit(req.user!.id, req.user!.name, req.user!.role, 'REMOVE_STUDENT_FROM_INTAKE', 'project', id, `Removed ${student.full_name} (${studentId}) from intake campaign ${id}`);
+    res.json({ ok: true });
+  });
+
+  app.put('/api/projects/:id/students/:studentId/workflow', (req: AuthenticatedRequest, res: Response) => {
+    const { id, studentId } = req.params;
+    const {
+      workflowStage,
+      stageStatus,
+      stageDate,
+      remarks,
+      admissionResult,
+      tuitionFeePaid,
+      certificateOfAdmissionNo,
+      assignedConsultantId,
+    } = req.body;
+
+    if (!workflowStage || !(VALID_INTAKE_WORKFLOW_STAGES as readonly string[]).includes(workflowStage)) {
+      return res.status(400).json({ error: 'A valid workflow stage is required.' });
+    }
+
+    const appRow = db.prepare(`
+      SELECT isa.*, s.full_name, s.assigned_consultant_id as stu_consultant_id
+      FROM intake_student_applications isa
+      JOIN student_applications s ON isa.student_id = s.id
+      WHERE isa.project_id = ? AND isa.student_id = ?
+    `).get(id, studentId) as any;
+
+    if (!appRow) {
+      return res.status(404).json({ error: 'Student application record not found in this intake.' });
+    }
+
+    if (
+      req.user?.role === 'Consultant' &&
+      appRow.stu_consultant_id !== req.user.id &&
+      appRow.assigned_consultant_id !== req.user.id
+    ) {
+      return res.status(403).json({ error: 'You are only authorized to record workflow progress for students assigned to you.' });
+    }
+
+    const now = new Date().toISOString();
+    const effectiveDate = stageDate || now.slice(0, 10);
+    const dates = JSON.parse(appRow.workflow_dates_json || '{}');
+    const history = JSON.parse(appRow.stage_history_json || '[]');
+
+    const dateKeyMap: Record<string, string> = {
+      'Student Registered': 'registeredDate',
+      'Document Collection': 'collectionDate',
+      'Document Verification': 'verificationDate',
+      'Notarization / Apostille': 'apostilleDate',
+      'Application Preparation': 'preparationDate',
+      'Ready for Submission': 'readyDate',
+      'Submitted to University': 'submittedDate',
+      'Additional Documents Requested': 'additionalDocsDate',
+      'Admission Result Received': 'resultDate',
+      'Tuition Payment': 'tuitionPaidDate',
+      'CoA Received': 'coaReceivedDate',
+    };
+    const dateKey = dateKeyMap[workflowStage];
+    if (dateKey) dates[dateKey] = effectiveDate;
+
+    const resolvedStatus =
+      stageStatus ||
+      (workflowStage === 'CoA Received'
+        ? 'Completed'
+        : workflowStage === 'Submitted to University'
+        ? 'Submitted'
+        : workflowStage === 'Additional Documents Requested'
+        ? 'Action Required'
+        : 'In Progress');
+
+    history.unshift({
+      id: 'STG-' + Date.now().toString(36),
+      stage: workflowStage,
+      status: resolvedStatus,
+      date: effectiveDate,
+      actorName: req.user!.name,
+      notes: remarks?.trim() || '',
+      timestamp: now,
+    });
+
+    const submittedBy = workflowStage === 'Submitted to University' ? req.user!.name : appRow.submitted_by;
+    const submittedAt = workflowStage === 'Submitted to University' ? now : appRow.submitted_at;
+    const completedBy = workflowStage === 'CoA Received' ? req.user!.name : appRow.completed_by;
+    const completedAt = workflowStage === 'CoA Received' ? now : appRow.completed_at;
+
+    db.prepare(`
+      UPDATE intake_student_applications SET
+        workflow_stage = ?,
+        stage_status = ?,
+        workflow_dates_json = ?,
+        stage_history_json = ?,
+        stage_notes = COALESCE(?, stage_notes),
+        assigned_consultant_id = COALESCE(?, assigned_consultant_id),
+        submitted_by = ?,
+        submitted_at = ?,
+        completed_by = ?,
+        completed_at = ?,
+        updated_at = ?
+      WHERE project_id = ? AND student_id = ?
+    `).run(
+      workflowStage,
+      resolvedStatus,
+      JSON.stringify(dates),
+      JSON.stringify(history),
+      remarks !== undefined ? String(remarks).trim() : null,
+      assignedConsultantId || null,
+      submittedBy,
+      submittedAt,
+      completedBy,
+      completedAt,
+      now,
+      id,
+      studentId
+    );
+
+    // Sync milestone fields safely back to student_applications without altering unrelated columns
+    const stageToVisa: Partial<Record<string, string>> = {
+      'Document Collection': 'Document_Gathering',
+      'Notarization / Apostille': 'Apostille_Verification',
+      'Submitted to University': 'University_Submitted',
+      'Admission Result Received': 'Admission_Granted',
+      'Tuition Payment': 'Tuition_Paid',
+      'CoA Received': 'CoA_Received',
+    };
+    const nextVisaStage = stageToVisa[workflowStage] || null;
+
+    db.prepare(`
+      UPDATE student_applications SET
+        visa_stage = COALESCE(?, visa_stage),
+        submission_date = CASE WHEN ? = 'Submitted to University' THEN ? ELSE submission_date END,
+        admission_result = COALESCE(?, admission_result),
+        tuition_fee_paid = CASE WHEN ? IS NOT NULL THEN ? ELSE tuition_fee_paid END,
+        certificate_of_admission_no = COALESCE(?, certificate_of_admission_no),
+        updated_at = ?
+      WHERE id = ?
+    `).run(
+      nextVisaStage,
+      workflowStage,
+      effectiveDate,
+      admissionResult || null,
+      tuitionFeePaid !== undefined ? 1 : null,
+      tuitionFeePaid ? 1 : 0,
+      certificateOfAdmissionNo || null,
+      now,
+      studentId
+    );
+
+    const auditAction =
+      workflowStage === 'Submitted to University'
+        ? 'APPLICATION_SUBMITTED'
+        : workflowStage === 'Admission Result Received' || workflowStage === 'Additional Documents Requested'
+        ? 'UNIVERSITY_RESPONSE'
+        : workflowStage === 'CoA Received'
+        ? 'COA_RECORDED'
+        : 'WORKFLOW_STAGE_UPDATED';
+
+    logAudit(
+      req.user!.id,
+      req.user!.name,
+      req.user!.role,
+      auditAction,
+      'project',
+      id,
+      `${appRow.full_name} (${studentId}) moved to "${workflowStage}" [${resolvedStatus}] on ${effectiveDate}${remarks ? ` — ${remarks}` : ''}`
+    );
+
+    if (req.user?.role === 'Consultant') {
+      const notif = {
+        id: 'NTF-' + Date.now().toString(36),
+        recipient_id: 'USR-ADMIN',
+        sender_id: req.user.id,
+        title: `Intake Workflow Updated: ${appRow.full_name}`,
+        message: `${req.user.name} recorded "${workflowStage}" for ${appRow.full_name} in ${id}.`,
+        type: 'application_submitted',
+        target_entity: 'project',
+        target_entity_id: id,
+        read_status: 0,
+        created_at: now,
+      };
+      db.prepare('INSERT INTO notifications VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(
+        notif.id, notif.recipient_id, notif.sender_id, notif.title, notif.message, notif.type, notif.target_entity, notif.target_entity_id, 0, now
+      );
+      broadcastNotification('USR-ADMIN', notif);
+    }
+
+    res.json({ ok: true });
+  });
+
+  app.put('/api/projects/:id/students/:studentId/documents', (req: AuthenticatedRequest, res: Response) => {
+    const { id, studentId } = req.params;
+    const { docId, docName, status, notarized, apostilled, remarks } = req.body;
+
+    if (!status || !(VALID_INTAKE_DOC_STATUSES as readonly string[]).includes(status)) {
+      return res.status(400).json({ error: 'Valid document status is required.' });
+    }
+
+    const appRow = db.prepare(`
+      SELECT isa.*, s.full_name, s.assigned_consultant_id as stu_consultant_id, s.checklist_json
+      FROM intake_student_applications isa
+      JOIN student_applications s ON isa.student_id = s.id
+      WHERE isa.project_id = ? AND isa.student_id = ?
+    `).get(id, studentId) as any;
+
+    if (!appRow) {
+      return res.status(404).json({ error: 'Student application not found in this intake.' });
+    }
+
+    if (
+      req.user?.role === 'Consultant' &&
+      appRow.stu_consultant_id !== req.user.id &&
+      appRow.assigned_consultant_id !== req.user.id
+    ) {
+      return res.status(403).json({ error: 'You are only authorized to update documents for students assigned to you.' });
+    }
+
+    const now = new Date().toISOString();
+    const docs = JSON.parse(appRow.documents_json || '[]') as any[];
+    let targetName = docName || docId;
+    let prevStatus = 'Pending';
+
+    let found = false;
+    const updatedDocs = docs.map((d) => {
+      if ((docId && d.id === docId) || (docName && d.name === docName)) {
+        found = true;
+        targetName = d.name;
+        prevStatus = d.status;
+        return {
+          ...d,
+          status,
+          collected: ['Collected', 'Notarized', 'Apostilled', 'Verified'].includes(status),
+          notarized: notarized !== undefined ? Boolean(notarized) : ['Notarized', 'Apostilled', 'Verified'].includes(status),
+          apostilled: apostilled !== undefined ? Boolean(apostilled) : status === 'Apostilled',
+          verified: status === 'Verified',
+          remarks: remarks !== undefined ? String(remarks).trim() : d.remarks || '',
+          verifiedBy: status === 'Verified' ? req.user!.name : d.verifiedBy,
+          verifiedAt: status === 'Verified' ? now : d.verifiedAt,
+          updatedBy: req.user!.name,
+          updatedAt: now,
+        };
+      }
+      return d;
+    });
+
+    if (!found && docName) {
+      updatedDocs.push({
+        id: docId || 'idoc-' + Date.now().toString(36),
+        name: String(docName).trim(),
+        required: true,
+        status,
+        collected: ['Collected', 'Notarized', 'Apostilled', 'Verified'].includes(status),
+        notarized: Boolean(notarized) || ['Notarized', 'Apostilled', 'Verified'].includes(status),
+        apostilled: Boolean(apostilled) || status === 'Apostilled',
+        verified: status === 'Verified',
+        remarks: remarks ? String(remarks).trim() : '',
+        verifiedBy: status === 'Verified' ? req.user!.name : null,
+        verifiedAt: status === 'Verified' ? now : null,
+        updatedBy: req.user!.name,
+        updatedAt: now,
+      });
+    }
+
+    db.prepare(`
+      UPDATE intake_student_applications SET documents_json = ?, updated_at = ?
+      WHERE project_id = ? AND student_id = ?
+    `).run(JSON.stringify(updatedDocs), now, id, studentId);
+
+    // Sync compatible status back to student_applications.checklist_json
+    try {
+      const checklist = JSON.parse(appRow.checklist_json || '[]') as any[];
+      const mappedLegacyStatus =
+        status === 'Missing' || status === 'Incorrect' ? 'Pending' : status;
+      const syncedChecklist = checklist.map((c) => {
+        const cname = String(c.name || '').toLowerCase();
+        const tname = String(targetName || '').toLowerCase();
+        if (c.id === docId || cname === tname || cname.includes(tname) || tname.includes(cname)) {
+          return {
+            ...c,
+            status: mappedLegacyStatus,
+            verifiedBy: req.user!.name,
+            verifiedAt: now,
+            notes: remarks !== undefined ? String(remarks).trim() : c.notes,
+          };
+        }
+        return c;
+      });
+      db.prepare('UPDATE student_applications SET checklist_json = ?, updated_at = ? WHERE id = ?')
+        .run(JSON.stringify(syncedChecklist), now, studentId);
+    } catch {
+      // Ignore checklist sync error if malformed
+    }
+
+    logAudit(
+      req.user!.id,
+      req.user!.name,
+      req.user!.role,
+      'DOCUMENT_STATUS_UPDATED',
+      'project',
+      id,
+      `${appRow.full_name}: "${targetName}" changed from ${prevStatus} to ${status}${remarks ? ` (${remarks})` : ''}`
+    );
+
+    res.json({ ok: true, documents: updatedDocs, readiness: computeDocumentReadiness(updatedDocs) });
+  });
+
+  app.post('/api/projects/:id/activity', (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const { type, message } = req.body;
+    if (!message || !String(message).trim()) {
+      return res.status(400).json({ error: 'Activity message is required.' });
+    }
+    const project = db.prepare('SELECT id FROM intake_projects WHERE id = ?').get(id);
+    if (!project) {
+      return res.status(404).json({ error: 'Intake campaign not found.' });
+    }
+
+    const action =
+      type === 'University Response'
+        ? 'UNIVERSITY_RESPONSE'
+        : type === 'Team Activity'
+        ? 'TEAM_ACTIVITY'
+        : 'INTAKE_REMARK';
+
+    logAudit(req.user!.id, req.user!.name, req.user!.role, action, 'project', id, String(message).trim());
+    res.status(201).json({ ok: true });
   });
 
   // ==========================================
@@ -1352,7 +2341,52 @@ async function startServer() {
       now
     );
 
-    logAudit(req.user!.id, req.user!.name, req.user!.role, 'CREATE_STUDENT', 'student', id, `Registered new candidate ${fullName} (${passportNumber})`);
+    // Create intake-specific student application tracking row
+    try {
+      const projRow = db.prepare('SELECT intake_id, university_id, intake_term, name FROM intake_projects WHERE id = ?').get(projectId) as any;
+      const intakeRow = projRow
+        ? (db.prepare('SELECT required_documents FROM admission_intakes WHERE id = ? OR (university_id = ? AND term = ?) LIMIT 1').get(projRow.intake_id || '', projRow.university_id, projRow.intake_term) as any)
+        : null;
+      const reqDocs = intakeRow ? JSON.parse(intakeRow.required_documents || '[]') : [];
+      const intakeDocs = buildIntakeDocumentsForStudent(reqDocs, defaultChecklist);
+      const todayStr = now.slice(0, 10);
+
+      db.prepare(`
+        INSERT OR IGNORE INTO intake_student_applications (
+          id, project_id, student_id, assigned_consultant_id, program_id, program_name,
+          workflow_stage, stage_status, workflow_dates_json, stage_history_json,
+          documents_json, stage_notes, added_by, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, 'Student Registered', 'In Progress', ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        `ISA-${projectId}-${id}`,
+        projectId,
+        id,
+        consultantId,
+        programId || null,
+        programName || null,
+        JSON.stringify({ registeredDate: todayStr }),
+        JSON.stringify([
+          {
+            id: 'STG-' + Date.now().toString(36),
+            stage: 'Student Registered',
+            status: 'In Progress',
+            date: todayStr,
+            actorName: req.user!.name,
+            notes: notes?.trim() || 'New candidate registered directly into intake campaign.',
+            timestamp: now,
+          },
+        ]),
+        JSON.stringify(intakeDocs),
+        notes?.trim() || '',
+        req.user!.id,
+        now,
+        now
+      );
+    } catch (err) {
+      console.warn('[Intake App Sync] Could not initialize intake_student_applications row:', err);
+    }
+
+    logAudit(req.user!.id, req.user!.name, req.user!.role, 'CREATE_STUDENT', 'student', id, `Registered new candidate ${fullName} (${passportNumber}) for intake ${projectId}`);
 
     // Notify assigned consultant
     if (consultantId !== req.user?.id) {
@@ -1910,27 +2944,23 @@ async function startServer() {
     const totalProjects = db.prepare("SELECT COUNT(*) as count FROM intake_projects WHERE status = 'Active'").get() as any;
 
     // 2. Student Dossier counts
-    let stuCountQuery = 'SELECT COUNT(*) as count FROM student_applications';
-    if (isConsultant) stuCountQuery += ` WHERE assigned_consultant_id = '${userId}'`;
-    const totalStudents = db.prepare(stuCountQuery).get() as any;
+    const totalStudents = isConsultant
+      ? (db.prepare('SELECT COUNT(*) as count FROM student_applications WHERE assigned_consultant_id = ?').get(userId) as any)
+      : (db.prepare('SELECT COUNT(*) as count FROM student_applications').get() as any);
 
     // 3. Korean Visa Pipeline distribution
-    const stageQuery = `
-      SELECT visa_stage, COUNT(*) as count
-      FROM student_applications
-      ${isConsultant ? `WHERE assigned_consultant_id = '${userId}'` : ''}
-      GROUP BY visa_stage
-    `;
-    const stages = db.prepare(stageQuery).all() as any[];
+    const stages = (isConsultant
+      ? db.prepare('SELECT visa_stage, COUNT(*) as count FROM student_applications WHERE assigned_consultant_id = ? GROUP BY visa_stage').all(userId)
+      : db.prepare('SELECT visa_stage, COUNT(*) as count FROM student_applications GROUP BY visa_stage').all()) as any[];
     const stageMap: Record<string, number> = {};
     for (const s of stages) {
       stageMap[s.visa_stage] = s.count;
     }
 
     // 4. Tasks metrics
-    let taskCountQuery = "SELECT COUNT(*) as total, SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed, SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending FROM tasks";
-    if (isConsultant) taskCountQuery += ` WHERE assigned_to_id = '${userId}' OR assigned_to_id IS NULL`;
-    const taskStats = db.prepare(taskCountQuery).get() as any;
+    const taskStats = (isConsultant
+      ? db.prepare("SELECT COUNT(*) as total, SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed, SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending FROM tasks WHERE assigned_to_id = ? OR assigned_to_id IS NULL").get(userId)
+      : db.prepare("SELECT COUNT(*) as total, SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed, SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending FROM tasks").get()) as any;
 
     // 5. Consultant Workload (Admin only or self)
     const consultantWorkload = db.prepare(`

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
   Calendar,
@@ -75,8 +74,20 @@ export function EnhancedTaskModal({
   const [subtasks, setSubtasks] = useState<SubtaskItem[]>([]);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
 
-  // Synchronize state when opening / switching task
+  const wasOpenRef = useRef(false);
+
+  // Synchronize state only when opening or switching editingTask (do not reset user selection on background refreshes)
   useEffect(() => {
+    const justOpened = isOpen && !wasOpenRef.current;
+    wasOpenRef.current = isOpen;
+
+    if (!isOpen) return;
+    if (!justOpened && !editingTask) {
+      // If team arrived after opening and assignedToId wasn't set yet, backfill it
+      setAssignedToId((prev) => prev || (currentUser.role === 'Consultant' ? currentUser.id : team[1]?.id || team[0]?.id || currentUser.id));
+      return;
+    }
+
     if (editingTask) {
       setTitle(editingTask.title || '');
       setDescription(editingTask.description || '');
@@ -100,7 +111,7 @@ export function EnhancedTaskModal({
       setDeadline(initialDate || todayIso);
       setScheduledTime('');
       setNotes('');
-      setAssignedToId(currentUser.role === 'Consultant' ? currentUser.id : team[1]?.id || currentUser.id);
+      setAssignedToId(currentUser.role === 'Consultant' ? currentUser.id : team[1]?.id || team[0]?.id || currentUser.id);
       setProjectId(initialProjectId || '');
       setStudentId(initialStudentId || '');
       setUniversityId('');
@@ -162,15 +173,15 @@ export function EnhancedTaskModal({
     onClose();
   };
 
-  return createPortal(
+  return (
     <ModalTransition
       isOpen={isOpen}
       onClose={onClose}
       backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
-      cardClassName="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl overflow-hidden"
+      cardClassName="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl overflow-visible"
     >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/50 rounded-t-lg">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] dark:bg-blue-900/50 text-[#1E3A8A] dark:text-blue-400 flex items-center justify-center font-bold text-sm">
               {editingTask ? '✏️' : '📋'}
@@ -234,17 +245,22 @@ export function EnhancedTaskModal({
               <MorphSelect
                 value={assignedToId}
                 onValueChange={(v) => setAssignedToId(v)}
-                disabled={currentUser.role === 'Consultant'}
               >
                 <MorphSelectTrigger>
                   <MorphSelectValue placeholder="Select..." />
                 </MorphSelectTrigger>
                 <MorphSelectContent>
-                  {team.map((m) => (
-                    <MorphSelectItem key={m.id} value={m.id}>
-                      {m.name} ({m.role === 'Admission_Manager' ? 'Manager' : 'Consultant'})
+                  {team.length > 0 ? (
+                    team.map((m) => (
+                      <MorphSelectItem key={m.id} value={m.id}>
+                        {m.name} ({m.role === 'Admission_Manager' ? 'Manager' : 'Consultant'})
+                      </MorphSelectItem>
+                    ))
+                  ) : (
+                    <MorphSelectItem value={currentUser.id}>
+                      {currentUser.name} ({currentUser.role === 'Admission_Manager' ? 'Manager' : 'Consultant'})
                     </MorphSelectItem>
-                  ))}
+                  )}
                 </MorphSelectContent>
               </MorphSelect>
             </div>
@@ -497,7 +513,6 @@ export function EnhancedTaskModal({
             </button>
           </div>
         </form>
-    </ModalTransition>,
-    document.body
+    </ModalTransition>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Users } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { DegreeLevel, IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createStudent } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
@@ -15,6 +16,7 @@ interface NewStudentModalProps {
   initialUniversityId?: string;
   initialProgramId?: string;
   initialIntakeTerm?: string;
+  initialProjectId?: string;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -28,6 +30,7 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
   initialUniversityId,
   initialProgramId,
   initialIntakeTerm,
+  initialProjectId,
   onClose,
   onSuccess,
 }) => {
@@ -38,7 +41,7 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
   const [universityId, setUniversityId] = useState(initialUniversityId || universities[0]?.id || '');
   const [programId, setProgramId] = useState(initialProgramId || '');
   const [programName, setProgramName] = useState('');
-  const [projectId, setProjectId] = useState(projects[0]?.id || '');
+  const [projectId, setProjectId] = useState(initialProjectId || projects[0]?.id || '');
   const [department, setDepartment] = useState('College of Engineering');
   const [major, setMajor] = useState('Computer Science');
   const [degreeLevel, setDegreeLevel] = useState<DegreeLevel>('Bachelor (D-2-2)');
@@ -49,8 +52,15 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync initial props
+  // Sync initial props when opening
   React.useEffect(() => {
+    if (!isOpen) return;
+    setError(null);
+    if (initialProjectId) {
+      setProjectId(initialProjectId);
+    } else if (!projectId && projects[0]?.id) {
+      setProjectId(projects[0].id);
+    }
     if (initialUniversityId) {
       setUniversityId(initialUniversityId);
       const uni = universities.find((u) => u.id === initialUniversityId);
@@ -64,7 +74,7 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
         }
       }
     }
-  }, [initialUniversityId, initialProgramId, universities]);
+  }, [isOpen, initialProjectId, initialUniversityId, initialProgramId, universities, projects]);
 
   const selectedUni = universities.find((u) => u.id === universityId);
   const availablePrograms = selectedUni?.programs || [];
@@ -386,8 +396,9 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded transition-colors"
             >
+              {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               {isSubmitting ? 'Registering...' : 'Register Candidate'}
             </button>
           </div>

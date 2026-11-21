@@ -30,6 +30,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { AppSettings, TaskCategory, TaskPriority, GoogleSheetsConnectionState, Task, NavigationTab } from '../types/task';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { UserProfile, StudentApplication, KoreanUniversity } from '../types/pms';
 import { playNotificationChime, playCompletionChime } from '../utils/soundUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
@@ -1175,7 +1176,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   >
                     {isBackingUp ? (
                       <>
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <Spinner size="sm" shade="inherit" aria-hidden="true" />
                         Generating Snapshot...
                       </>
                     ) : (
@@ -1231,7 +1232,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   onClick={handleClearLocalCache}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-rose-200 text-rose-700 hover:bg-rose-50 dark:border-rose-900 dark:text-rose-400 dark:hover:bg-rose-950/40 transition-colors"
                 >
-                  {isFlushingCache ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                  {isFlushingCache ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <Trash2 className="w-3.5 h-3.5" />}
                   Flush Cache
                 </button>
               </div>

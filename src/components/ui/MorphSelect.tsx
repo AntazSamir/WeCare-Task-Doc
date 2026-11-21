@@ -10,7 +10,9 @@ import {
   type Variants,
 } from 'motion/react';
 import {
+  Children,
   createContext,
+  isValidElement,
   type ReactNode,
   useCallback,
   useContext,
@@ -22,10 +24,19 @@ import {
   useState,
 } from 'react';
 
-import { animationDurations, animationStaggers, animationDelays } from '../../animations/tokens';
+import { animationDurations } from '../../animations/tokens';
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(' ');
+}
+
+function extractText(node: ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join('');
+  if (isValidElement<{ children?: ReactNode }>(node)) {
+    return extractText(node.props.children);
+  }
+  return Children.toArray(node).map(extractText).join('');
 }
 
 // Shared-layout morph transition driven by centralized tokens
@@ -37,11 +48,11 @@ const ROW =
 
 const LIST: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: animationStaggers.fast, delayChildren: animationDelays.slow * 0.25 } },
+  show: { transition: { staggerChildren: 0.012, delayChildren: 0.015 } },
 };
 const ITEM: Variants = {
-  hidden: { opacity: 0, y: -6, filter: 'blur(3px)' },
-  show: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  hidden: { opacity: 0, y: -4 },
+  show: { opacity: 1, y: 0 },
 };
 
 interface MorphContextValue {
@@ -164,7 +175,7 @@ export function MorphSelect({
 
   return (
     <MorphContext.Provider value={ctx}>
-      <div ref={rootRef} className={cn('relative w-full h-9 box-border', className)}>
+      <div ref={rootRef} className={cn('relative w-full h-9 box-border', open && 'z-50', className)}>
         {children}
       </div>
     </MorphContext.Provider>
@@ -262,9 +273,9 @@ export function MorphSelectContent({ className, children }: MorphSelectContentPr
             role="listbox"
             aria-labelledby={ctx.triggerId}
             transition={ctx.reduce ? { duration: 0 } : MORPH}
-            style={{ borderRadius: 6 }}
+            style={{ borderRadius: 8 }}
             className={cn(
-              'absolute inset-x-0 top-0 z-50 overflow-hidden',
+              'absolute inset-x-0 top-0 z-50 overflow-hidden rounded-lg',
               'border border-[#E2E8F0] dark:border-slate-700',
               'bg-white dark:bg-slate-800',
               'shadow-xl',
@@ -330,7 +341,8 @@ export function MorphSelectItem({
 }: MorphSelectItemProps) {
   const ctx = useMorphContext('MorphSelectItem');
   const selected = ctx.value === value;
-  const label = typeof children === 'string' ? children : value;
+  const extracted = extractText(children).trim();
+  const label = extracted || value;
 
   useLayoutEffect(() => {
     ctx.register(value, label);

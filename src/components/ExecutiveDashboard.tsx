@@ -174,9 +174,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#36A5F5] dark:hover:border-slate-700 transition-colors h-full">
             <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span className="font-medium">Active Intake Campaigns</span>
-              <div className="w-7 h-7 rounded-md bg-[#DCEBFF] dark:bg-blue-950/40 border border-[#36A5F5]/30 dark:border-blue-900/60 flex items-center justify-center">
-                <Building2 className="w-3.5 h-3.5 text-[#1769E8] dark:text-blue-400" />
-              </div>
+              <Building2 className="w-6 h-6 text-[#1769E8] dark:text-blue-400 shrink-0" />
             </div>
             <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#172B4D] dark:text-slate-100">
               {analytics?.totalActiveProjects || 0}
@@ -198,9 +196,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#36A5F5] dark:hover:border-slate-700 transition-colors h-full">
             <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span className="font-medium">Candidate Applications</span>
-              <div className="w-7 h-7 rounded-md bg-[#DCEBFF] dark:bg-blue-950/40 border border-[#36A5F5]/30 dark:border-blue-900/60 flex items-center justify-center">
-                <Users className="w-3.5 h-3.5 text-[#123B78] dark:text-blue-300" />
-              </div>
+              <Users className="w-6 h-6 text-[#123B78] dark:text-blue-300 shrink-0" />
             </div>
             <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#123B78] dark:text-blue-300">
               {analytics?.totalStudents || 0}
@@ -222,9 +218,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#E9A23B] dark:hover:border-slate-700 transition-colors h-full">
             <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span className="font-medium">Pending Tasks</span>
-              <div className="w-7 h-7 rounded-md bg-[#E9A23B]/15 dark:bg-amber-950/40 border border-[#E9A23B]/30 dark:border-amber-900/60 flex items-center justify-center">
-                <Clock className="w-3.5 h-3.5 text-[#E9A23B] dark:text-amber-400" />
-              </div>
+              <Clock className="w-6 h-6 text-[#E9A23B] dark:text-amber-400 shrink-0" />
             </div>
             <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#E9A23B] dark:text-amber-400">
               {analytics?.taskStats?.pending || 0}
@@ -246,9 +240,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           <div className="p-3.5 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E3EAF3] dark:border-slate-800 rounded-lg shadow-xs hover:border-[#16A36A] dark:hover:border-slate-700 transition-colors h-full">
             <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span className="font-medium">Visas Issued (D-2/D-4)</span>
-              <div className="w-7 h-7 rounded-md bg-[#16A36A]/15 dark:bg-emerald-950/40 border border-[#16A36A]/30 dark:border-emerald-900/60 flex items-center justify-center">
-                <Plane className="w-3.5 h-3.5 text-[#16A36A] dark:text-emerald-400" />
-              </div>
+              <Plane className="w-6 h-6 text-[#16A36A] dark:text-emerald-400 shrink-0" />
             </div>
             <div className="mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#16A36A] dark:text-emerald-400">
               {pipeline?.visaIssued || 0}

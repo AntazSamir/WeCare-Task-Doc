@@ -1,24 +1,6 @@
-import React, { useState, useMemo } from 'react';
-import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import {
-  BarChart3,
-  Activity,
-  Percent,
-  CheckCircle2,
-  Calendar,
-  Trophy,
-  TrendingUp,
-} from 'lucide-react';
+import React, { useMemo } from 'react';
+import { CalendarPlus } from 'lucide-react';
+import { MixChart, type MixPoint, type MixRange, type MixSeries } from '@/components/mix-chart';
 import { Task } from '../types/task';
 import { addDaysToIsoDate, getLocalTodayIso } from '../utils/dateUtils';
 
@@ -27,457 +9,203 @@ interface WeeklyCompletionTrendProps {
   onOpenDayTasks?: (dateIso: string) => void;
 }
 
-type TimeframeMode = 'trailing7' | 'currentWeek';
-type ChartStyleMode = 'area' | 'bar';
-
-interface DayTrendPoint {
-  dateIso: string;
-  dayLabel: string;
-  fullDateLabel: string;
-  completed: number;
-  scheduled: number;
-  pending: number;
-  isToday: boolean;
-  rate: number;
-}
+const TASK_SERIES: MixSeries[] = [
+  { key: 'completed', label: 'Completed', color: '#16A34A' },
+  { key: 'pending', label: 'Pending', color: '#1E40AF' },
+  { key: 'overdue', label: 'Overdue', color: '#DC2626' },
+];
 
 export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
   tasks,
   onOpenDayTasks,
 }) => {
   const todayIso = getLocalTodayIso();
-  const [timeframe, setTimeframe] = useState<TimeframeMode>('trailing7');
-  const [chartStyle, setChartStyle] = useState<ChartStyleMode>('area');
 
-  // Compute 7 days series based on selected timeframe
-  const trendData = useMemo<DayTrendPoint[]>(() => {
-    const days: string[] = [];
+  const { ranges, quickDays } = useMemo(() => {
+    const getDayValues = (dateIso: string): [number, number, number] => {
+      let completed = 0;
+      let pending = 0;
+      let overdue = 0;
 
-    if (timeframe === 'trailing7') {
-      // Past 6 days + today = 7 days
-      for (let i = -6; i <= 0; i++) {
-        days.push(addDaysToIsoDate(todayIso, i));
+      for (const t of tasks) {
+        if (t.status === 'Completed') {
+          const doneDate = t.completedAt ? t.completedAt.slice(0, 10) : t.taskDate;
+          if (doneDate === dateIso) {
+            completed += 1;
+          }
+        } else if (t.status === 'Pending' && t.taskDate === dateIso) {
+          const isOverdue = t.deadline ? t.deadline < todayIso : t.taskDate < todayIso;
+          if (isOverdue) {
+            overdue += 1;
+          } else {
+            pending += 1;
+          }
+        }
       }
-    } else {
-      // Current Week (Monday to Sunday)
-      const [y, m, d] = todayIso.split('-').map(Number);
-      const curr = new Date(y, (m || 1) - 1, d || 1);
-      const dayOfWeek = curr.getDay(); // 0 is Sun, 1 is Mon...
-      const distanceToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
-      for (let i = 0; i < 7; i++) {
-        days.push(addDaysToIsoDate(todayIso, distanceToMon + i));
-      }
-    }
+      return [completed, pending, overdue];
+    };
 
-    return days.map((dateIso) => {
+    const formatShortDate = (dateIso: string) => {
       const [y, m, d] = dateIso.split('-').map(Number);
-      const dateObj = new Date(y, (m || 1) - 1, d || 1);
-      const dayLabel = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-      const fullDateLabel = dateObj.toLocaleDateString('en-US', {
+      const dt = new Date(y, (m || 1) - 1, d || 1);
+      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+
+    const toPoint = (dateIso: string): MixPoint => {
+      const [y, m, d] = dateIso.split('-').map(Number);
+      const dt = new Date(y, (m || 1) - 1, d || 1);
+      const label = dt.toLocaleDateString('en-US', { weekday: 'short' });
+      const fullDate = dt.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
         day: 'numeric',
       });
+      return {
+        label,
+        detail: dateIso === todayIso ? `${fullDate} (Today)` : fullDate,
+        values: getDayValues(dateIso),
+      };
+    };
 
-      // Tasks completed on this specific day
-      const completedOnThisDay = tasks.filter((t) => {
-        if (t.status !== 'Completed') return false;
-        if (t.completedAt) {
-          return t.completedAt.slice(0, 10) === dateIso;
-        }
-        return t.taskDate === dateIso;
-      }).length;
+    const sumCompleted = (dateList: string[]) =>
+      dateList.reduce((acc, iso) => acc + getDayValues(iso)[0], 0);
 
-      // Tasks scheduled for this day
-      const scheduledOnThisDay = tasks.filter((t) => t.taskDate === dateIso).length;
+    const calcPctChange = (current: number, previous: number): number | undefined => {
+      if (previous <= 0) {
+        return current > 0 ? 100 : undefined;
+      }
+      return Math.round(((current - previous) / previous) * 1000) / 10;
+    };
 
-      // Pending tasks scheduled for this day
-      const pendingOnThisDay = tasks.filter(
-        (t) => t.status === 'Pending' && t.taskDate === dateIso
-      ).length;
+    // 1. Trailing 7 days (past 6 days + today)
+    const trailing7Dates: string[] = [];
+    const prevTrailing7Dates: string[] = [];
+    for (let i = -6; i <= 0; i++) {
+      trailing7Dates.push(addDaysToIsoDate(todayIso, i));
+      prevTrailing7Dates.push(addDaysToIsoDate(todayIso, i - 7));
+    }
+    const trailing7Points = trailing7Dates.map(toPoint);
+    const trailing7Change = calcPctChange(
+      sumCompleted(trailing7Dates),
+      sumCompleted(prevTrailing7Dates)
+    );
 
-      const rate =
-        scheduledOnThisDay > 0
-          ? Math.round((completedOnThisDay / scheduledOnThisDay) * 100)
-          : completedOnThisDay > 0
-          ? 100
-          : 0;
+    // 2. Current Mon-Sun week
+    const [ty, tm, td] = todayIso.split('-').map(Number);
+    const currDate = new Date(ty, (tm || 1) - 1, td || 1);
+    const dow = currDate.getDay();
+    const distToMon = dow === 0 ? -6 : 1 - dow;
+    const weekDates: string[] = [];
+    const prevWeekDates: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      weekDates.push(addDaysToIsoDate(todayIso, distToMon + i));
+      prevWeekDates.push(addDaysToIsoDate(todayIso, distToMon + i - 7));
+    }
+    const weekPoints = weekDates.map(toPoint);
+    const weekChange = calcPctChange(sumCompleted(weekDates), sumCompleted(prevWeekDates));
 
+    // 3. Last 4 weeks (4 weekly bars ending today)
+    const fourWeekPoints: MixPoint[] = [];
+    const fourWeekCompletedCounts: number[] = [];
+    for (let w = 3; w >= 0; w--) {
+      const endOffset = -w * 7;
+      const startOffset = endOffset - 6;
+      let c = 0;
+      let p = 0;
+      let o = 0;
+      for (let d = startOffset; d <= endOffset; d++) {
+        const [dc, dp, do_] = getDayValues(addDaysToIsoDate(todayIso, d));
+        c += dc;
+        p += dp;
+        o += do_;
+      }
+      const startIso = addDaysToIsoDate(todayIso, startOffset);
+      const endIso = addDaysToIsoDate(todayIso, endOffset);
+      fourWeekCompletedCounts.push(c);
+      fourWeekPoints.push({
+        label: `W${4 - w}`,
+        detail: `${formatShortDate(startIso)} – ${formatShortDate(endIso)}`,
+        values: [c, p, o],
+      });
+    }
+    const recentTwoWeeks = fourWeekCompletedCounts[2] + fourWeekCompletedCounts[3];
+    const priorTwoWeeks = fourWeekCompletedCounts[0] + fourWeekCompletedCounts[1];
+    const fourWeekChange = calcPctChange(recentTwoWeeks, priorTwoWeeks);
+
+    const builtRanges: MixRange[] = [
+      {
+        id: 'trailing7',
+        label: 'Past 7 Days',
+        points: trailing7Points,
+        change: trailing7Change,
+        caption: 'tasks tracked over the past 7 days',
+      },
+      {
+        id: 'currentWeek',
+        label: 'Mon – Sun',
+        points: weekPoints,
+        change: weekChange,
+        caption: 'tasks scheduled & completed this week',
+      },
+      {
+        id: 'fourWeeks',
+        label: '4 Weeks',
+        points: fourWeekPoints,
+        change: fourWeekChange,
+        caption: 'tasks across the last 4 weeks',
+      },
+    ];
+
+    const quickDayLinks = trailing7Dates.map((dateIso) => {
+      const [y, m, d] = dateIso.split('-').map(Number);
+      const dt = new Date(y, (m || 1) - 1, d || 1);
       return {
         dateIso,
-        dayLabel,
-        fullDateLabel,
-        completed: completedOnThisDay,
-        scheduled: scheduledOnThisDay,
-        pending: pendingOnThisDay,
+        dayLabel: dt.toLocaleDateString('en-US', { weekday: 'short' }),
         isToday: dateIso === todayIso,
-        rate,
       };
     });
-  }, [tasks, todayIso, timeframe]);
 
-  // Aggregate Weekly Analytics KPIs
-  const analytics = useMemo(() => {
-    const totalCompleted = trendData.reduce((sum, d) => sum + d.completed, 0);
-    const totalScheduled = trendData.reduce((sum, d) => sum + d.scheduled, 0);
-
-    // Find peak completion day
-    let peakDay = trendData[0];
-    for (const d of trendData) {
-      if (d.completed > peakDay.completed) {
-        peakDay = d;
-      }
-    }
-
-    const overallRate =
-      totalScheduled > 0
-        ? Math.round((totalCompleted / totalScheduled) * 100)
-        : totalCompleted > 0
-        ? 100
-        : 0;
-
-    const avgDailyCompleted = (totalCompleted / 7).toFixed(1);
-
-    return {
-      totalCompleted,
-      totalScheduled,
-      overallRate,
-      avgDailyCompleted,
-      peakDay,
-    };
-  }, [trendData]);
-
-  // Custom Dark/Light Tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data: DayTrendPoint = payload[0].payload;
-      return (
-        <div className="bg-[#1E3A8A]/95 dark:bg-slate-800/95 backdrop-blur-md text-white border border-[#1E40AF]/40 dark:border-slate-700/80 rounded-md p-3 shadow-xl text-xs space-y-1.5 min-w-[170px]">
-          <div className="font-semibold text-white flex items-center justify-between border-b border-white/15 pb-1">
-            <span>{data.fullDateLabel}</span>
-            {data.isToday && (
-              <span className="text-[10px] tabular-nums text-[#16A34A] bg-[#16A34A]/15 px-1.5 py-0.2 rounded">
-                Today
-              </span>
-            )}
-          </div>
-          <div className="space-y-1 pt-0.5">
-            <div className="flex items-center justify-between tabular-nums text-[#16A34A]">
-              <span className="flex items-center gap-1.5 text-white/80">
-                <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
-                Completed:
-              </span>
-              <span className="font-bold tabular-nums">{data.completed}</span>
-            </div>
-            <div className="flex items-center justify-between tabular-nums text-[#1E40AF]">
-              <span className="flex items-center gap-1.5 text-white/80">
-                <span className="w-2 h-2 rounded-full bg-[#1E40AF]" />
-                Scheduled:
-              </span>
-              <span className="font-bold tabular-nums">{data.scheduled}</span>
-            </div>
-            {data.pending > 0 && (
-              <div className="flex items-center justify-between tabular-nums text-[#D97706]">
-                <span className="flex items-center gap-1.5 text-white/80">
-                  <span className="w-2 h-2 rounded-full bg-[#D97706]" />
-                  Pending:
-                </span>
-                <span className="font-bold tabular-nums">{data.pending}</span>
-              </div>
-            )}
-            <div className="border-t border-white/15 pt-1 flex items-center justify-between text-[11px] tabular-nums text-white/70">
-              <span>Day Velocity:</span>
-              <span className="text-white font-semibold">{data.rate}%</span>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
+    return { ranges: builtRanges, quickDays: quickDayLinks };
+  }, [tasks, todayIso]);
 
   return (
-    <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800/80 rounded-lg overflow-hidden shadow-xs">
-      {/* Header with Title & Minimal Segmented Controls */}
-      <div className="px-5 py-3.5 border-b border-[#E2E8F0] dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-[#16A34A]/10 border border-[#16A34A]/30 flex items-center justify-center shrink-0">
-            <Percent className="w-4 h-4 text-[#16A34A]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-semibold text-[#0F172A] dark:text-slate-100 tracking-tight">
-                Weekly Task Completion Trend
-              </h2>
-              <span className="tabular-nums text-xs tabular-nums text-[#16A34A] dark:text-emerald-400 bg-[#16A34A]/10 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded font-medium">
-                {analytics.totalCompleted} done this week
-              </span>
-            </div>
-            <p className="text-[11px] text-[#0F172A]/65 dark:text-slate-400 mt-0.5">
-              Daily velocity and workload delivery curve
-            </p>
-          </div>
-        </div>
+    <div className="space-y-2">
+      <MixChart
+        title="Weekly Task Completion Trend"
+        series={TASK_SERIES}
+        ranges={ranges}
+        unit="tasks"
+        decimals={0}
+        className="w-full rounded-xl border border-[#E2E8F0] dark:border-slate-800/80 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 shadow-xs"
+      />
 
-        {/* Action Controls: Timeframe & Chart Style Toggles */}
-        <div className="flex items-center gap-2">
-          {/* Timeframe Selector */}
-          <div className="flex items-center gap-1 p-0.5 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[11px]">
-            <button
-              type="button"
-              onClick={() => setTimeframe('trailing7')}
-              className={`px-2.5 py-1 font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-                timeframe === 'trailing7'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
-                  : 'text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-200'
-              }`}
-            >
-              Past 7 Days
-            </button>
-            <button
-              type="button"
-              onClick={() => setTimeframe('currentWeek')}
-              className={`px-2.5 py-1 font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-                timeframe === 'currentWeek'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
-                  : 'text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-200'
-              }`}
-            >
-              Mon – Sun
-            </button>
-          </div>
-
-          {/* Chart Style Selector */}
-          <div className="flex items-center gap-1 p-0.5 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[11px]">
-            <button
-              type="button"
-              onClick={() => setChartStyle('area')}
-              title="Area Curve"
-              className={`p-1 rounded-md transition-colors ${
-                chartStyle === 'area'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
-                  : 'text-[#0F172A]/60 hover:text-[#1E3A8A] dark:hover:text-slate-200'
-              }`}
-              aria-label="Area curve chart"
-            >
-              <Activity className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setChartStyle('bar')}
-              title="Bar Chart"
-              className={`p-1 rounded-md transition-colors ${
-                chartStyle === 'bar'
-                  ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
-                  : 'text-[#0F172A]/60 hover:text-[#1E3A8A] dark:hover:text-slate-200'
-              }`}
-              aria-label="Bar comparison chart"
-            >
-              <BarChart3 className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 4-KPI Quick Analytics Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 sm:p-3.5 bg-[#F8FAFC] dark:bg-slate-900/40 border-b border-[#E2E8F0] dark:border-slate-800/80">
-        <div className="px-2">
-          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
-            Completed
-          </div>
-          <div className="mt-1 text-lg tabular-nums font-bold tabular-nums text-[#16A34A] dark:text-emerald-400">
-            {analytics.totalCompleted}{' '}
-            <span className="text-xs font-normal text-[#0F172A]/50 dark:text-slate-400">tasks</span>
-          </div>
-        </div>
-
-        <div className="px-2 border-l border-[#E2E8F0] dark:border-slate-800">
-          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-[#1E40AF]" />
-            Scheduled
-          </div>
-          <div className="mt-1 text-lg tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-200">
-            {analytics.totalScheduled}{' '}
-            <span className="text-xs font-normal text-[#0F172A]/50 dark:text-slate-400">tasks</span>
-          </div>
-        </div>
-
-        <div className="px-2 border-l border-[#E2E8F0] dark:border-slate-800">
-          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <Trophy className="w-3.5 h-3.5 text-[#D97706]" />
-            Peak Day
-          </div>
-          <div className="mt-1 text-sm font-semibold truncate text-[#0F172A] dark:text-slate-200">
-            {analytics.peakDay.completed > 0 ? (
-              <span>
-                {analytics.peakDay.dayLabel}{' '}
-                <span className="text-xs tabular-nums font-normal text-[#0F172A]/50 dark:text-slate-400">
-                  ({analytics.peakDay.completed} done)
-                </span>
-              </span>
-            ) : (
-              <span className="text-[#0F172A]/50 dark:text-slate-400 font-normal">None yet</span>
-            )}
-          </div>
-        </div>
-
-        <div className="px-2 border-l border-[#E2E8F0] dark:border-slate-800">
-          <div className="text-[11px] font-medium text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5 text-[#1E40AF]" />
-            Daily Avg
-          </div>
-          <div className="mt-1 text-lg tabular-nums font-bold tabular-nums text-[#1E40AF] dark:text-blue-400">
-            {analytics.avgDailyCompleted}{' '}
-            <span className="text-xs font-normal text-[#0F172A]/50 dark:text-slate-400">/ day</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Recharts Graph Viewport */}
-      <div className="p-4 sm:p-5">
-        <div className="w-full h-56 sm:h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            {chartStyle === 'area' ? (
-              <AreaChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="var(--color-border)"
-                />
-
-                <XAxis
-                  dataKey="dayLabel"
-                  stroke="var(--color-border)"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={{ stroke: 'var(--color-border)' }}
-                  tick={{ fill: 'var(--color-secondary-text)' }}
-                />
-
-                <YAxis
-                  allowDecimals={false}
-                  stroke="var(--color-border)"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: 'var(--color-secondary-text)' }}
-                />
-
-                <Tooltip content={<CustomTooltip />} />
-
-                {/* Scheduled Workload Area */}
-                <Area
-                  type="monotone"
-                  dataKey="scheduled"
-                  name="Scheduled"
-                  stroke="var(--color-primary-blue)"
-                  strokeWidth={1.75}
-                  strokeDasharray="4 4"
-                  fill="var(--color-primary-blue)"
-                  fillOpacity={0.1}
-                />
-
-                {/* Completed Tasks Primary Area */}
-                <Area
-                  type="monotone"
-                  dataKey="completed"
-                  name="Completed"
-                  stroke="var(--color-success)"
-                  strokeWidth={2.5}
-                  fill="var(--color-success)"
-                  fillOpacity={0.14}
-                  activeDot={{
-                    r: 5,
-                    stroke: 'var(--color-success)',
-                    strokeWidth: 2,
-                    fill: 'var(--color-card-bg)',
-                  }}
-                />
-              </AreaChart>
-            ) : (
-              <BarChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="var(--color-border)"
-                />
-
-                <XAxis
-                  dataKey="dayLabel"
-                  stroke="var(--color-border)"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={{ stroke: 'var(--color-border)' }}
-                  tick={{ fill: 'var(--color-secondary-text)' }}
-                />
-
-                <YAxis
-                  allowDecimals={false}
-                  stroke="var(--color-border)"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: 'var(--color-secondary-text)' }}
-                />
-
-                <Tooltip content={<CustomTooltip />} />
-
-                <Bar
-                  dataKey="scheduled"
-                  name="Scheduled"
-                  fill="var(--color-sky-blue)"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={28}
-                />
-                <Bar
-                  dataKey="completed"
-                  name="Completed"
-                  fill="var(--color-success)"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={28}
-                />
-              </BarChart>
-            )}
-          </ResponsiveContainer>
-        </div>
-
-        {/* Legend & Interactive Day Markers */}
-        <div className="mt-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-4 text-[11px] text-[#0F172A]/70 dark:text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A]" />
-              Completed Tasks
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#1E40AF]" />
-              Scheduled Tasks
-            </span>
-          </div>
-
-          {/* Quick Clickable Day Pills */}
-          <div className="flex items-center gap-1">
-            {trendData.map((d) => (
+      {onOpenDayTasks && (
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-[#64748B] dark:text-slate-400">
+          <span className="inline-flex items-center gap-1.5 font-medium">
+            <CalendarPlus className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400" />
+            Quick schedule by day:
+          </span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {quickDays.map((d) => (
               <button
                 key={d.dateIso}
                 type="button"
-                onClick={() => onOpenDayTasks?.(d.dateIso)}
-                title={`${d.fullDateLabel}: ${d.completed} completed, ${d.scheduled} scheduled`}
-                className={`px-1.5 py-0.5 text-[10px] tabular-nums rounded-md transition-colors ${
+                onClick={() => onOpenDayTasks(d.dateIso)}
+                className={`px-2 py-0.5 rounded-md text-[11px] tabular-nums transition-colors whitespace-nowrap shrink-0 ${
                   d.isToday
-                    ? 'bg-[#1E40AF] text-white font-bold'
-                    : d.completed > 0
-                    ? 'bg-[#16A34A]/10 dark:bg-emerald-950/60 text-[#16A34A] dark:text-emerald-300 hover:bg-[#16A34A]/20'
-                    : 'text-[#0F172A]/50 hover:bg-[#EFF6FF]/60 dark:hover:bg-slate-800'
+                    ? 'font-semibold text-[#1E40AF] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-blue-950/60'
+                    : 'hover:text-[#0F172A] dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
+                title={`Create task for ${d.dateIso}`}
               >
-                {d.dayLabel}
+                {d.isToday ? `${d.dayLabel} (Today)` : d.dayLabel}
               </button>
             ))}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

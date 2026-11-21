@@ -194,25 +194,148 @@ export interface AdmissionIntake {
   lastVerifiedAt?: string;
 }
 
+export const INTAKE_WORKFLOW_STAGES = [
+  'Student Registered',
+  'Document Collection',
+  'Document Verification',
+  'Notarization / Apostille',
+  'Application Preparation',
+  'Ready for Submission',
+  'Submitted to University',
+  'Additional Documents Requested',
+  'Admission Result Received',
+  'Tuition Payment',
+  'CoA Received',
+] as const;
+
+export type IntakeWorkflowStage = (typeof INTAKE_WORKFLOW_STAGES)[number];
+
+export type IntakeDocumentStatus =
+  | 'Missing'
+  | 'Incorrect'
+  | 'Pending'
+  | 'Collected'
+  | 'Notarized'
+  | 'Apostilled'
+  | 'Verified';
+
+export interface IntakeDocumentItem {
+  id: string;
+  name: string;
+  required: boolean;
+  status: IntakeDocumentStatus;
+  collected?: boolean;
+  notarized?: boolean;
+  apostilled?: boolean;
+  verified?: boolean;
+  remarks?: string;
+  verifiedBy?: string | null;
+  verifiedAt?: string | null;
+  updatedBy?: string | null;
+  updatedAt?: string | null;
+}
+
+export interface IntakeDocumentReadiness {
+  totalDocs: number;
+  totalRequired: number;
+  verifiedCount: number;
+  missingCount: number;
+  incorrectCount: number;
+  pendingCount: number;
+  notarizedCount: number;
+  apostilledCount: number;
+  readinessPercentage: number;
+  isSubmissionReady: boolean;
+}
+
+export interface IntakeStageHistoryEntry {
+  id: string;
+  stage: IntakeWorkflowStage;
+  status: string;
+  date: string;
+  actorName: string;
+  notes?: string;
+  timestamp: string;
+}
+
+export interface IntakeApplicationRecord {
+  intakeAppId: string;
+  projectId: string;
+  studentId: string;
+  isPrimaryProject: boolean;
+  workflowStage: IntakeWorkflowStage;
+  stageStatus: string;
+  workflowProgress: number;
+  workflowDates: Record<string, string>;
+  stageHistory: IntakeStageHistoryEntry[];
+  intakeDocuments: IntakeDocumentItem[];
+  readiness: IntakeDocumentReadiness;
+  stageNotes: string;
+  submittedBy: string | null;
+  submittedAt: string | null;
+  completedBy: string | null;
+  completedAt: string | null;
+  enrolledAt: string;
+  appUpdatedAt: string;
+  handoverCount: number;
+  student: StudentApplication;
+}
+
+export interface AvailableIntakeCandidate {
+  id: string;
+  fullName: string;
+  passportNumber: string;
+  major: string;
+  degreeLevel: string;
+  intakeTerm: string;
+  assignedConsultantId: string;
+  consultantName: string;
+  universityName: string;
+}
+
 export interface IntakeProject {
   id: string; // e.g. PRJ-SNU-2027S
   name: string;
   universityId: string;
   universityName: string;
+  intakeId?: string | null;
   intakeTerm: string;
   academicYear: number;
   managerId: string;
   managerName: string;
+  managerEmail?: string;
+  managerTitle?: string;
+  managerAvatar?: string;
   assignedConsultantIds: string[];
+  consultants?: UserProfile[];
   startDate: string;
   deadline: string;
   status: 'Planning' | 'Active' | 'Under Review' | 'Completed' | 'Archived';
   targetQuota: number;
   studentCount: number;
+  enrolledCount?: number;
+  submittedCount?: number;
+  availableSeats?: number;
   progressPercentage: number;
   notes: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IntakeWorkspaceData {
+  project: IntakeProject;
+  admissionIntake: AdmissionIntake | null;
+  university: KoreanUniversity | null;
+  applications: IntakeApplicationRecord[];
+  availableStudents: AvailableIntakeCandidate[];
+  tasks: PmsTask[];
+  taskSummary: {
+    total: number;
+    pending: number;
+    completed: number;
+    overdue: number;
+  };
+  activities: AuditLogEntry[];
 }
 
 export interface SubtaskItem {

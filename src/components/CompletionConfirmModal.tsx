@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, CheckCircle2, FileSpreadsheet, Check } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { Task } from '../types/task';
 import { formatReadableDate } from '../utils/dateUtils';
 import { ModalTransition } from './animations';
@@ -149,7 +150,11 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
               isSubmitting ? 'opacity-60 cursor-not-allowed' : ''
             }`}
           >
-            <Check className="w-4 h-4" />
+            {isSubmitting ? (
+              <Spinner size="sm" shade="inherit" aria-hidden="true" />
+            ) : (
+              <Check className="w-4 h-4" />
+            )}
             {isSubmitting ? 'Saving & Syncing...' : 'Confirm Completion'}
           </button>
         </div>

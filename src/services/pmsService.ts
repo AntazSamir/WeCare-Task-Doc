@@ -8,7 +8,10 @@ import {
   HandoverContextData,
   HandoverStats,
   InAppNotification,
+  IntakeDocumentStatus,
   IntakeProject,
+  IntakeWorkflowStage,
+  IntakeWorkspaceData,
   KoreanUniversity,
   PmsTask,
   RequestPriority,
@@ -268,6 +271,136 @@ export async function createProject(data: Partial<IntakeProject>): Promise<void>
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: 'Error' }));
     throw new Error(err.message || err.error || 'Failed to create project');
+  }
+}
+
+export async function fetchProjectWorkspace(projectId: string): Promise<IntakeWorkspaceData> {
+  const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}/workspace`, {
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.message || err.error || 'Failed to load intake workspace');
+  }
+  return res.json();
+}
+
+export async function updateProjectCampaign(
+  projectId: string,
+  data: Partial<IntakeProject>
+): Promise<void> {
+  const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.message || err.error || 'Failed to update intake campaign');
+  }
+}
+
+export async function assignExistingStudentToIntake(
+  projectId: string,
+  payload: {
+    studentId: string;
+    assignedConsultantId?: string;
+    programId?: string;
+    programName?: string;
+    notes?: string;
+  }
+): Promise<void> {
+  const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}/students`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.message || err.error || 'Failed to assign student to intake');
+  }
+}
+
+export async function removeStudentFromIntake(projectId: string, studentId: string): Promise<void> {
+  const res = await fetch(
+    `/api/projects/${encodeURIComponent(projectId)}/students/${encodeURIComponent(studentId)}`,
+    {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    }
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.message || err.error || 'Failed to remove student from intake');
+  }
+}
+
+export async function updateIntakeStudentWorkflow(
+  projectId: string,
+  studentId: string,
+  payload: {
+    workflowStage: IntakeWorkflowStage;
+    stageStatus?: string;
+    stageDate?: string;
+    remarks?: string;
+    admissionResult?: string;
+    tuitionFeePaid?: boolean;
+    certificateOfAdmissionNo?: string;
+    assignedConsultantId?: string;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `/api/projects/${encodeURIComponent(projectId)}/students/${encodeURIComponent(studentId)}/workflow`,
+    {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload),
+    }
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.message || err.error || 'Failed to update application workflow stage');
+  }
+}
+
+export async function updateIntakeStudentDocument(
+  projectId: string,
+  studentId: string,
+  payload: {
+    docId?: string;
+    docName: string;
+    status: IntakeDocumentStatus;
+    notarized?: boolean;
+    apostilled?: boolean;
+    remarks?: string;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `/api/projects/${encodeURIComponent(projectId)}/students/${encodeURIComponent(studentId)}/documents`,
+    {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload),
+    }
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.message || err.error || 'Failed to update document status');
+  }
+}
+
+export async function logIntakeActivity(
+  projectId: string,
+  payload: { type: 'Remark' | 'University Response' | 'Team Activity'; message: string }
+): Promise<void> {
+  const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}/activity`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error' }));
+    throw new Error(err.message || err.error || 'Failed to record activity entry');
   }
 }
 

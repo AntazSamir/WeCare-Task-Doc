@@ -8,6 +8,7 @@ import {
   Plus,
   ExternalLink,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentChecklistItem, StudentApplication, UserProfile, VisaStage } from '../types/pms';
 import { updateStudent, updateStudentStage } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
@@ -345,8 +346,9 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
             <button
               type="submit"
               disabled={isSaving}
-              className="h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
+              {isSaving && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               {isSaving ? 'Saving...' : 'Save Dossier Updates'}
             </button>
           </div>

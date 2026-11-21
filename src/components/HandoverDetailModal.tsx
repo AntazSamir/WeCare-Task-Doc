@@ -8,6 +8,7 @@ import {
   Package,
   ClipboardList,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentHandover, DocumentItemStatus } from '../types/pms';
 import { fetchHandoverDetails } from '../services/pmsService';
 import { formatTimestamp } from '../utils/dateUtils';
@@ -143,7 +144,10 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-5">
           {loading && (
-            <div className="py-12 text-center text-xs text-[#0F172A]/60 dark:text-slate-400">Loading handover audit manifest...</div>
+            <div className="py-12 flex flex-col items-center justify-center gap-2.5 text-center text-xs text-[#0F172A]/60 dark:text-slate-400">
+              <Spinner size="lg" aria-label="Loading handover audit manifest" />
+              <span>Loading handover audit manifest...</span>
+            </div>
           )}
           {errorMsg && (
             <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/40 border border-[#DC2626]/35 text-xs text-[#DC2626]">

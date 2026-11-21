@@ -12,6 +12,7 @@ import {
   User,
   Tag,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { Task, TaskCategory, TaskPriority } from '../types/task';
 import { getLocalTodayIso } from '../utils/dateUtils';
 import { ModalTransition } from './animations';
@@ -364,10 +365,11 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             <button
               type="submit"
               disabled={isSaving}
-              className={`px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors whitespace-nowrap shrink-0 ${
+              className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors whitespace-nowrap shrink-0 ${
                 isSaving ? 'opacity-60 cursor-not-allowed' : ''
               }`}
             >
+              {isSaving && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               {isSaving ? 'Saving & Syncing...' : editingTask ? 'Save & Sync Changes' : 'Create & Sync Task'}
             </button>
           </div>

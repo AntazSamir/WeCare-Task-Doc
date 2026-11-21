@@ -6,6 +6,7 @@ import {
   Plus,
   X,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createProject } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
@@ -344,8 +345,9 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded disabled:opacity-50 transition-colors"
                 >
+                  {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
                   {isSubmitting ? 'Creating...' : 'Initialize Project'}
                 </button>
               </div>

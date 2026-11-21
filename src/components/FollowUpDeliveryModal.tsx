@@ -8,6 +8,7 @@ import {
   AlertCircle,
   AlertTriangle,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentFormat, DocumentHandover, UserProfile } from '../types/pms';
 import { submitHandoverFollowUpApi } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
@@ -375,7 +376,11 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
             onClick={handleSubmit}
             className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-md transition-colors"
           >
-            <PackageCheck className="w-3.5 h-3.5" />
+            {isSubmitting ? (
+              <Spinner size="sm" shade="inherit" aria-hidden="true" />
+            ) : (
+              <PackageCheck className="w-3.5 h-3.5" />
+            )}
             {isSubmitting ? 'Submitting Batch...' : `Submit Batch #${nextBatchNum} Under ${handover.id}`}
           </button>
         </div>

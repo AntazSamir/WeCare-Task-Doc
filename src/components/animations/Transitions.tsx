@@ -1,4 +1,5 @@
 import React, { createContext, useContext, forwardRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   motion,
   AnimatePresence,
@@ -13,6 +14,7 @@ import {
   animationDistances,
   animationStaggers,
 } from '../../animations/tokens';
+import { cn } from '../../lib/utils';
 
 // ─── 1. PageTransition ──────────────────────────────────────────────────────
 export interface PageTransitionProps extends HTMLMotionProps<'div'> {
@@ -176,13 +178,13 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
   isOpen,
   onClose,
   children,
-  backdropClassName = 'fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/70 backdrop-blur-xs',
-  cardClassName = 'w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl relative z-50',
-  containerClassName = 'fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto',
+  backdropClassName = 'fixed inset-0 bg-[#1E3A8A]/40 dark:bg-slate-950/70 backdrop-blur-xs',
+  cardClassName = 'w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl',
+  containerClassName = 'fixed inset-0 z-50 flex justify-center p-4 overflow-y-auto',
 }) => {
   const shouldReduceMotion = useReducedMotion();
 
-  return (
+  const content = (
     <AnimatePresence>
       {isOpen && (
         <div className={containerClassName}>
@@ -196,7 +198,7 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
               ease: animationEasings.out,
             }}
             onClick={onClose}
-            className={backdropClassName}
+            className={cn(backdropClassName, 'fixed inset-0 z-40')}
             aria-hidden="true"
           />
 
@@ -218,7 +220,7 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
               ease: animationEasings.standard,
             }}
             style={{ willChange: 'opacity, transform' }}
-            className={cardClassName}
+            className={cn(cardClassName, 'relative z-[60] my-auto')}
             role="dialog"
             aria-modal="true"
           >
@@ -228,6 +230,8 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
       )}
     </AnimatePresence>
   );
+
+  return typeof document !== 'undefined' ? createPortal(content, document.body) : content;
 };
 
 // ─── 5. DrawerTransition ────────────────────────────────────────────────────
@@ -251,7 +255,7 @@ export const DrawerTransition: React.FC<DrawerTransitionProps> = ({
   const shouldReduceMotion = useReducedMotion();
   const initialOffset = side === 'right' ? '100%' : '-100%';
 
-  return (
+  const content = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -265,7 +269,7 @@ export const DrawerTransition: React.FC<DrawerTransitionProps> = ({
               ease: animationEasings.out,
             }}
             onClick={onClose}
-            className={backdropClassName}
+            className={cn(backdropClassName, 'fixed inset-0 z-50')}
             aria-hidden="true"
           />
 
@@ -279,7 +283,7 @@ export const DrawerTransition: React.FC<DrawerTransitionProps> = ({
               ease: animationEasings.standard,
             }}
             style={{ willChange: 'transform' }}
-            className={panelClassName}
+            className={cn(panelClassName, 'z-[60]')}
             role="dialog"
             aria-modal="true"
           >
@@ -289,6 +293,8 @@ export const DrawerTransition: React.FC<DrawerTransitionProps> = ({
       )}
     </AnimatePresence>
   );
+
+  return typeof document !== 'undefined' ? createPortal(content, document.body) : content;
 };
 
 // ─── 6. DropdownTransition ──────────────────────────────────────────────────

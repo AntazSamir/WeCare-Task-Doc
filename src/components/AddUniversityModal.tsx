@@ -10,7 +10,6 @@ import {
   CreditCard,
   CheckCircle2,
   AlertCircle,
-  Loader2,
   ShieldCheck,
   FileText,
   ChevronRight,
@@ -20,6 +19,7 @@ import {
   Clock,
   Sparkles,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { KoreanUniversity } from '../types/pms';
 import {
   updateUniversity,
@@ -29,6 +29,13 @@ import {
   createIntake,
 } from '../services/pmsService';
 import { ModalTransition } from './animations';
+import {
+  MorphSelect,
+  MorphSelectTrigger,
+  MorphSelectValue,
+  MorphSelectContent,
+  MorphSelectItem,
+} from './ui/MorphSelect';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -622,19 +629,29 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     <label className={LABEL_CLS}>
                       City / Metropolitan Region <span className="text-red-500">*</span>
                     </label>
-                    <select
+                    <MorphSelect
                       value={city}
-                      onChange={(e) => {
-                        setCity(e.target.value);
+                      onValueChange={(v) => {
+                        setCity(v);
                         setErrors((p) => ({ ...p, city: undefined }));
                       }}
-                      className={errors.city ? ERROR_INPUT_CLS : INPUT_CLS}
                     >
-                      {['Seoul', 'Busan', 'Daejeon', 'Incheon', 'Gwangju', 'Daegu', 'Suwon', 'Cheongju', 'Jeonju', 'Cheonan', 'Pohang', 'Chuncheon'].map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                      <option value="Other">Other Region</option>
-                    </select>
+                      <MorphSelectTrigger
+                        className={
+                          errors.city
+                            ? 'border-red-400 bg-red-50 dark:bg-red-950/20'
+                            : undefined
+                        }
+                      >
+                        <MorphSelectValue placeholder="Select city" />
+                      </MorphSelectTrigger>
+                      <MorphSelectContent>
+                        {['Seoul', 'Busan', 'Daejeon', 'Incheon', 'Gwangju', 'Daegu', 'Suwon', 'Cheongju', 'Jeonju', 'Cheonan', 'Pohang', 'Chuncheon'].map((c) => (
+                          <MorphSelectItem key={c} value={c}>{c}</MorphSelectItem>
+                        ))}
+                        <MorphSelectItem value="Other">Other Region</MorphSelectItem>
+                      </MorphSelectContent>
+                    </MorphSelect>
                     <FieldError msg={errors.city} />
                   </div>
                   <div>
@@ -808,16 +825,17 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div>
                         <label className={LABEL_CLS}>Intake Term</label>
-                        <select
-                          value={intakeTerm}
-                          onChange={(e) => setIntakeTerm(e.target.value)}
-                          className={INPUT_CLS}
-                        >
-                          <option value="Spring 2027">Spring 2027 (March Intake)</option>
-                          <option value="Fall 2027">Fall 2027 (September Intake)</option>
-                          <option value="Summer 2027">Summer 2027 (June KLP)</option>
-                          <option value="Winter 2026">Winter 2026 (December KLP)</option>
-                        </select>
+                        <MorphSelect value={intakeTerm} onValueChange={setIntakeTerm}>
+                          <MorphSelectTrigger>
+                            <MorphSelectValue placeholder="Select intake term" />
+                          </MorphSelectTrigger>
+                          <MorphSelectContent>
+                            <MorphSelectItem value="Spring 2027">Spring 2027 (March Intake)</MorphSelectItem>
+                            <MorphSelectItem value="Fall 2027">Fall 2027 (September Intake)</MorphSelectItem>
+                            <MorphSelectItem value="Summer 2027">Summer 2027 (June KLP)</MorphSelectItem>
+                            <MorphSelectItem value="Winter 2026">Winter 2026 (December KLP)</MorphSelectItem>
+                          </MorphSelectContent>
+                        </MorphSelect>
                       </div>
                       <div>
                         <label className={LABEL_CLS}>Academic Year</label>
@@ -1008,17 +1026,18 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className={LABEL_CLS}>Degree Level / Visa Track</label>
-                        <select
-                          value={progDegreeLevel}
-                          onChange={(e) => setProgDegreeLevel(e.target.value)}
-                          className={INPUT_CLS}
-                        >
-                          <option value="Korean Language (D-4-1)">Korean Language Immersion (D-4-1)</option>
-                          <option value="Bachelor (D-2-2)">Undergraduate / Bachelor (D-2-2)</option>
-                          <option value="Master (D-2-3)">Graduate / Master (D-2-3)</option>
-                          <option value="Doctorate (D-2-4)">Doctorate / PhD (D-2-4)</option>
-                          <option value="Exchange (D-2-6)">Pathway / Exchange (D-2-6)</option>
-                        </select>
+                        <MorphSelect value={progDegreeLevel} onValueChange={setProgDegreeLevel}>
+                          <MorphSelectTrigger>
+                            <MorphSelectValue placeholder="Select degree level" />
+                          </MorphSelectTrigger>
+                          <MorphSelectContent>
+                            <MorphSelectItem value="Korean Language (D-4-1)">Korean Language Immersion (D-4-1)</MorphSelectItem>
+                            <MorphSelectItem value="Bachelor (D-2-2)">Undergraduate / Bachelor (D-2-2)</MorphSelectItem>
+                            <MorphSelectItem value="Master (D-2-3)">Graduate / Master (D-2-3)</MorphSelectItem>
+                            <MorphSelectItem value="Doctorate (D-2-4)">Doctorate / PhD (D-2-4)</MorphSelectItem>
+                            <MorphSelectItem value="Exchange (D-2-6)">Pathway / Exchange (D-2-6)</MorphSelectItem>
+                          </MorphSelectContent>
+                        </MorphSelect>
                       </div>
                       <div>
                         <label className={LABEL_CLS}>Program Duration</label>
@@ -1058,15 +1077,16 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       </div>
                       <div>
                         <label className={LABEL_CLS}>Language of Instruction</label>
-                        <select
-                          value={progLanguage}
-                          onChange={(e) => setProgLanguage(e.target.value)}
-                          className={INPUT_CLS}
-                        >
-                          <option value="Korean">Korean 100%</option>
-                          <option value="English 100%">English 100%</option>
-                          <option value="Bilingual (Korean + English)">Bilingual (Korean + English)</option>
-                        </select>
+                        <MorphSelect value={progLanguage} onValueChange={setProgLanguage}>
+                          <MorphSelectTrigger>
+                            <MorphSelectValue placeholder="Select language" />
+                          </MorphSelectTrigger>
+                          <MorphSelectContent>
+                            <MorphSelectItem value="Korean">Korean 100%</MorphSelectItem>
+                            <MorphSelectItem value="English 100%">English 100%</MorphSelectItem>
+                            <MorphSelectItem value="Bilingual (Korean + English)">Bilingual (Korean + English)</MorphSelectItem>
+                          </MorphSelectContent>
+                        </MorphSelect>
                       </div>
                     </div>
 
@@ -1125,26 +1145,29 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       </div>
                       <div>
                         <label className={LABEL_CLS}>Receiving Bank Name</label>
-                        <select
+                        <MorphSelect
                           value={bankName}
-                          onChange={(e) => {
-                            setBankName(e.target.value);
-                            // Auto-set matching SWIFT code
-                            if (e.target.value.includes('Shinhan')) setSwiftCode('SHBKKRSE');
-                            else if (e.target.value.includes('Hana')) setSwiftCode('HNBNKRSE');
-                            else if (e.target.value.includes('Kookmin') || e.target.value.includes('KB')) setSwiftCode('CZNBKRSE');
-                            else if (e.target.value.includes('Woori')) setSwiftCode('HVBKKRSE');
-                            else if (e.target.value.includes('IBK')) setSwiftCode('IBKOKRSE');
+                          onValueChange={(val) => {
+                            setBankName(val);
+                            if (val.includes('Shinhan')) setSwiftCode('SHBKKRSE');
+                            else if (val.includes('Hana')) setSwiftCode('HNBNKRSE');
+                            else if (val.includes('Kookmin') || val.includes('KB')) setSwiftCode('CZNBKRSE');
+                            else if (val.includes('Woori')) setSwiftCode('HVBKKRSE');
+                            else if (val.includes('IBK')) setSwiftCode('IBKOKRSE');
                           }}
-                          className={INPUT_CLS}
                         >
-                          <option value="Shinhan Bank">Shinhan Bank (신한은행)</option>
-                          <option value="Hana Bank">Hana Bank (하나은행)</option>
-                          <option value="KB Kookmin Bank">KB Kookmin Bank (국민은행)</option>
-                          <option value="Woori Bank">Woori Bank (우리은행)</option>
-                          <option value="IBK Industrial Bank of Korea">IBK Industrial Bank of Korea</option>
-                          <option value="NongHyup Bank">NH NongHyup Bank (농협은행)</option>
-                        </select>
+                          <MorphSelectTrigger>
+                            <MorphSelectValue placeholder="Select bank" />
+                          </MorphSelectTrigger>
+                          <MorphSelectContent>
+                            <MorphSelectItem value="Shinhan Bank">Shinhan Bank (신한은행)</MorphSelectItem>
+                            <MorphSelectItem value="Hana Bank">Hana Bank (하나은행)</MorphSelectItem>
+                            <MorphSelectItem value="KB Kookmin Bank">KB Kookmin Bank (국민은행)</MorphSelectItem>
+                            <MorphSelectItem value="Woori Bank">Woori Bank (우리은행)</MorphSelectItem>
+                            <MorphSelectItem value="IBK Industrial Bank of Korea">IBK Industrial Bank of Korea</MorphSelectItem>
+                            <MorphSelectItem value="NongHyup Bank">NH NongHyup Bank (농협은행)</MorphSelectItem>
+                          </MorphSelectContent>
+                        </MorphSelect>
                       </div>
                     </div>
 
@@ -1184,15 +1207,16 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
                       <div>
                         <label className={LABEL_CLS}>Settlement Currency</label>
-                        <select
-                          value={bankCurrency}
-                          onChange={(e) => setBankCurrency(e.target.value)}
-                          className={INPUT_CLS}
-                        >
-                          <option value="KRW">KRW — South Korean Won (Primary)</option>
-                          <option value="USD">USD — US Dollar</option>
-                          <option value="EUR">EUR — Euro</option>
-                        </select>
+                        <MorphSelect value={bankCurrency} onValueChange={setBankCurrency}>
+                          <MorphSelectTrigger>
+                            <MorphSelectValue placeholder="Select currency" />
+                          </MorphSelectTrigger>
+                          <MorphSelectContent>
+                            <MorphSelectItem value="KRW">KRW — South Korean Won (Primary)</MorphSelectItem>
+                            <MorphSelectItem value="USD">USD — US Dollar</MorphSelectItem>
+                            <MorphSelectItem value="EUR">EUR — Euro</MorphSelectItem>
+                          </MorphSelectContent>
+                        </MorphSelect>
                       </div>
                       <div>
                         <label className={LABEL_CLS}>Virtual Account (VA) Support</label>
@@ -1359,16 +1383,17 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     </div>
                     <div>
                       <label className={LABEL_CLS}>Document Classification</label>
-                      <select
-                        value={docCategory}
-                        onChange={(e) => setDocCategory(e.target.value)}
-                        className={INPUT_CLS}
-                      >
-                        <option value="Admission Guidelines">Admission Guidelines (PDF)</option>
-                        <option value="Application Form">Application Form &amp; Affidavit</option>
-                        <option value="Visa & Immigration">Visa &amp; Immigration Protocol</option>
-                        <option value="Tuition Schedule">Tuition Schedule &amp; Bank Coordinates</option>
-                      </select>
+                      <MorphSelect value={docCategory} onValueChange={setDocCategory}>
+                        <MorphSelectTrigger>
+                          <MorphSelectValue placeholder="Select category" />
+                        </MorphSelectTrigger>
+                        <MorphSelectContent>
+                          <MorphSelectItem value="Admission Guidelines">Admission Guidelines (PDF)</MorphSelectItem>
+                          <MorphSelectItem value="Application Form">Application Form &amp; Affidavit</MorphSelectItem>
+                          <MorphSelectItem value="Visa & Immigration">Visa &amp; Immigration Protocol</MorphSelectItem>
+                          <MorphSelectItem value="Tuition Schedule">Tuition Schedule &amp; Bank Coordinates</MorphSelectItem>
+                        </MorphSelectContent>
+                      </MorphSelect>
                     </div>
                   </div>
 
@@ -1451,7 +1476,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
               >
                 {isSaving ? (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <Spinner size="sm" shade="inherit" aria-hidden="true" />
                     Saving Dossier…
                   </>
                 ) : isEditMode ? (

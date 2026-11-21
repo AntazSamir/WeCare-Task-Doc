@@ -9,6 +9,7 @@ import {
   AlertCircle,
   ClipboardList,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentHandover, DocumentItemStatus, UserProfile } from '../types/pms';
 import { acknowledgeHandoverApi } from '../services/pmsService';
 import { ModalTransition } from './animations';
@@ -378,7 +379,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                 onClick={() => handleSubmit('Dispute')}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#DC2626] hover:bg-[#B93535] disabled:opacity-50 rounded-md transition-colors"
               >
-                <XCircle className="w-3.5 h-3.5" />
+                {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <XCircle className="w-3.5 h-3.5" />}
                 Report Dispute / Incorrect
               </button>
             )}
@@ -390,7 +391,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                 onClick={() => handleSubmit('Partial')}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#D97706] hover:bg-[#CF8B28] disabled:opacity-50 rounded-md transition-colors"
               >
-                <AlertTriangle className="w-3.5 h-3.5" />
+                {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <AlertTriangle className="w-3.5 h-3.5" />}
                 Confirm Partial Receipt
               </button>
             )}
@@ -402,7 +403,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                 onClick={() => handleSubmit('Accept')}
                 className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] disabled:opacity-50 rounded-md transition-colors"
               >
-                <CheckCircle2 className="w-3.5 h-3.5" />
+                {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                 Accept All Received
               </button>
             )}

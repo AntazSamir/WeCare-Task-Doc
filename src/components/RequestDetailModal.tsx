@@ -10,6 +10,7 @@ import {
   ArrowRight,
   PackageCheck,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentRequest, UserProfile } from '../types/pms';
 import {
   cancelDocumentRequestApi,
@@ -160,8 +161,9 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
           {loading && (
-            <div className="py-12 text-center text-xs text-[#0F172A]/60 dark:text-slate-400">
-              Loading document request details...
+            <div className="py-12 flex flex-col items-center justify-center gap-2.5 text-center text-xs text-[#0F172A]/60 dark:text-slate-400">
+              <Spinner size="lg" aria-label="Loading document request details" />
+              <span>Loading document request details...</span>
             </div>
           )}
 

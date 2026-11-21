@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } from 'react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import {
   LayoutDashboard,
   Sun,
@@ -9,7 +10,6 @@ import {
   FileSpreadsheet,
   Settings as SettingsIcon,
   Plus,
-  Search,
   RefreshCw,
   Bell,
   Moon,
@@ -90,14 +90,17 @@ import {
   subscribeToNotificationStream,
   createPmsTask,
   fetchHandoverStats,
+  togglePmsTask,
+  deletePmsTask,
 } from './services/pmsService';
 import { RoleSwitcherBar } from './components/RoleSwitcherBar';
 import { DashboardSkeleton } from './components/SkeletonLoaders';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './components/ui/MorphSelect';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { useDebounce } from './utils/useDebounce';
 import { playCompletionChime, playNotificationChime } from './utils/soundUtils';
 import { PageTransition, TabTransition, ToastTransition } from './components/animations';
+import { SidebarTabBar } from '@/components/tab-bar';
+import { SearchModal, type SearchModalItem, type SearchModalAction } from 'motion-brew/search-modal';
 import { AnimatePresence } from 'motion/react';
 
 // Lazy-loaded Views (Code Splitting)
@@ -118,6 +121,9 @@ const StudentDossierList = React.lazy(() =>
 );
 const IntakeProjectsView = React.lazy(() =>
   import('./components/IntakeProjectsView').then((m) => ({ default: m.IntakeProjectsView }))
+);
+const IntakeWorkspaceView = React.lazy(() =>
+  import('./components/IntakeWorkspaceView').then((m) => ({ default: m.IntakeWorkspaceView }))
 );
 const UniversityDirectoryView = React.lazy(() =>
   import('./components/UniversityDirectoryView').then((m) => ({ default: m.UniversityDirectoryView }))
@@ -271,9 +277,7 @@ export function App() {
   );
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
-  // Filters & Search
-  const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearchQuery = useDebounce(searchQuery, 250);
+  // Pagination
   const [completedPage, setCompletedPage] = useState(1);
   const COMPLETED_PAGE_SIZE = 20;
 
@@ -313,6 +317,9 @@ export function App() {
   const [isEnhancedTaskModalOpen, setIsEnhancedTaskModalOpen] = useState(false);
   const [taskContextStudentId, setTaskContextStudentId] = useState<string | undefined>(undefined);
   const [taskContextProjectId, setTaskContextProjectId] = useState<string | undefined>(undefined);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [workspaceRefreshNonce, setWorkspaceRefreshNonce] = useState(0);
+  const [prefillStudentProjectId, setPrefillStudentProjectId] = useState<string | undefined>(undefined);
   const [prefillStudentUniversityId, setPrefillStudentUniversityId] = useState<string | undefined>(undefined);
   const [prefillStudentProgramId, setPrefillStudentProgramId] = useState<string | undefined>(undefined);
   const [prefillStudentIntakeTerm, setPrefillStudentIntakeTerm] = useState<string | undefined>(undefined);
@@ -567,6 +574,7 @@ export function App() {
       setAnalytics(aData);
       setPmsNotifications(nList);
       if (hStats) setHandoverStats(hStats);
+      setWorkspaceRefreshNonce((n) => n + 1);
     } catch (err) {
       console.warn('Failed to refresh PMS records', err);
     }
@@ -1040,6 +1048,14 @@ export function App() {
     if (settings.soundEnabled !== false) {
       playCompletionChime();
     }
+
+    if (task.status !== 'Completed') {
+      togglePmsTask(task.id, completionNote.trim() || undefined)
+        .then(() => {
+          setWorkspaceRefreshNonce((n) => n + 1);
+        })
+        .catch(() => {});
+    }
   };
 
   // Unified handler for task completion requests respecting settings
@@ -1094,6 +1110,14 @@ export function App() {
       'info',
       task.id
     );
+
+    if (task.status === 'Completed') {
+      togglePmsTask(task.id)
+        .then(() => {
+          setWorkspaceRefreshNonce((n) => n + 1);
+        })
+        .catch(() => {});
+    }
   };
 
   // Duplicate Task
@@ -1153,6 +1177,12 @@ export function App() {
       'warning',
       task.id
     );
+
+    deletePmsTask(task.id)
+      .then(() => {
+        setWorkspaceRefreshNonce((n) => n + 1);
+      })
+      .catch(() => {});
   };
 
   // Quick Reschedule (+1 Day)
@@ -1714,12 +1744,143 @@ export function App() {
   const currentNavTitle =
     allNavItems.find((item) => item.id === activeNav)?.label || 'Dashboard';
 
+  const searchItems = useMemo<SearchModalItem[]>(() => {
+    const taskItems: SearchModalItem[] = tasks.map((t) => ({
+      id: `task:${t.id}`,
+      title: t.title,
+      group: 'Tasks',
+      meta: `${t.category} · ${t.deadline || t.taskDate} · ${t.status}`,
+      tint:
+        t.status === 'Completed'
+          ? '#e7efe4'
+          : t.priority === 'Urgent' || t.priority === 'High'
+          ? '#f1e6e6'
+          : '#e3e9f2',
+    }));
+
+    const studentItems: SearchModalItem[] = students.map((s) => ({
+      id: `student:${s.id}`,
+      title: s.fullName,
+      group: 'Students',
+      meta: `${s.appliedUniversityName || 'Korean University'} · ${s.visaStage}`,
+      tint: '#e3e9f2',
+    }));
+
+    const uniItems: SearchModalItem[] = universities.map((u) => ({
+      id: `uni:${u.id}`,
+      title: u.nameEn,
+      group: 'Universities',
+      meta: u.city || u.nameKo || 'Partner University',
+      tint: '#ece6f3',
+    }));
+
+    const projectItems: SearchModalItem[] = projects.map((p) => ({
+      id: `project:${p.id}`,
+      title: p.name,
+      group: 'Projects',
+      meta: `${p.intakeTerm} · ${p.status}`,
+      tint: '#f3ebe0',
+    }));
+
+    return [...taskItems, ...studentItems, ...uniItems, ...projectItems];
+  }, [tasks, students, universities, projects]);
+
+  const recentSearchIds = useMemo<string[]>(() => {
+    const ids: string[] = [];
+    const pendingTasks = tasks.filter((t) => t.status === 'Pending').slice(0, 2);
+    for (const t of pendingTasks) ids.push(`task:${t.id}`);
+    if (students[0]) ids.push(`student:${students[0].id}`);
+    if (universities[0]) ids.push(`uni:${universities[0].id}`);
+    return ids.slice(0, 4);
+  }, [tasks, students, universities]);
+
+  const searchActions = useMemo<SearchModalAction[]>(
+    () => [
+      { id: 'nav:dashboard', label: 'Executive Pipeline', icon: 'chart', key: '1' },
+      { id: 'nav:all-tasks', label: 'All Tasks Directory', icon: 'grid', key: '2' },
+      { id: 'nav:universities', label: 'Korean Universities', icon: 'compass', key: '3' },
+      { id: 'nav:team-tasks', label: 'Team Workload', icon: 'trend', key: '4' },
+    ],
+    []
+  );
+
+  const searchExamples = useMemo<string[]>(() => {
+    const list: string[] = [];
+    if (universities[0]?.nameEn) list.push(universities[0].nameEn.split(' ')[0]);
+    if (students[0]?.fullName) list.push(students[0].fullName);
+    list.push('Visa', 'Documents', 'Spring 2027');
+    return Array.from(new Set(list)).slice(0, 4);
+  }, [universities, students]);
+
+  const closeInlineSearch = useCallback(() => {
+    const combobox = document.querySelector<HTMLInputElement>(
+      '[role="combobox"][aria-label="Search"]'
+    );
+    combobox?.blur();
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+  }, []);
+
+  useEffect(() => {
+    const onShortcut = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const combobox = document.querySelector<HTMLInputElement>(
+          '[role="combobox"][aria-label="Search"]'
+        );
+        combobox?.focus();
+      }
+    };
+    window.addEventListener('keydown', onShortcut);
+    return () => window.removeEventListener('keydown', onShortcut);
+  }, []);
+
+  const handleSearchModalSelect = useCallback(
+    (entry: SearchModalItem | SearchModalAction) => {
+      closeInlineSearch();
+      if ('label' in entry) {
+        const navTarget = entry.id.replace('nav:', '') as NavigationTab;
+        setActiveNav(navTarget);
+        return;
+      }
+      if (entry.id.startsWith('task:')) {
+        const taskId = entry.id.slice(5);
+        const found = tasks.find((t) => t.id === taskId);
+        if (found) {
+          setEditingTask(found);
+          setIsTaskModalOpen(true);
+        } else {
+          setActiveNav('all-tasks');
+        }
+        return;
+      }
+      if (entry.id.startsWith('student:')) {
+        const studentId = entry.id.slice(8);
+        const found = students.find((s) => s.id === studentId);
+        setActiveNav('students');
+        if (found) {
+          setSelectedStudentForDossier(found);
+        }
+        return;
+      }
+      if (entry.id.startsWith('uni:')) {
+        setActiveNav('universities');
+        return;
+      }
+      if (entry.id.startsWith('project:')) {
+        const projectId = entry.id.slice(8);
+        setSelectedProjectId(projectId);
+        setActiveNav('projects');
+      }
+    },
+    [tasks, students, closeInlineSearch]
+  );
+
   return (
     <div className="min-h-screen flex bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100">
-      {/* LEFT SIDEBAR NAVIGATION (Collapsible: 256px expanded / 64px collapsed) */}
+      {/* LEFT SIDEBAR NAVIGATION (Collapsible: 224px expanded / 56px collapsed) */}
       <aside
         className={`shrink-0 bg-white dark:bg-slate-900 border-r border-[#E2E8F0] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all z-30 ${
-          isSidebarCollapsed ? 'w-16' : 'w-64'
+          isSidebarCollapsed ? 'w-14' : 'w-56'
         }`}
         style={{
           transitionDuration: 'var(--anim-dur-slow)',
@@ -1727,19 +1888,19 @@ export function App() {
         }}
       >
         {/* Brand Header */}
-        <div className="h-14 shrink-0 px-3.5 flex items-center border-b border-[#E2E8F0] dark:border-slate-800">
+        <div className="h-14 shrink-0 px-3 flex items-center border-b border-[#E2E8F0] dark:border-slate-800">
           {!isSidebarCollapsed ? (
-            <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
               <img
                 src="/assets/wecare_task_logo.webp"
                 alt="WeCare Task"
-                className="w-10 h-10 object-contain shrink-0 select-none"
+                className="w-8 h-8 object-contain shrink-0 select-none"
               />
               <div className="min-w-0">
-                <div className="font-bold text-[15px] tracking-tight text-[#0F172A] dark:text-slate-100 leading-tight truncate">
+                <div className="font-bold text-[13.5px] tracking-tight text-[#0F172A] dark:text-slate-100 leading-tight truncate">
                   WeCare Task
                 </div>
-                <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5 truncate">
+                <div className="text-[10px] text-[#64748B] dark:text-slate-400 mt-0.5 truncate">
                   Korea Visa &amp; Tasks
                 </div>
               </div>
@@ -1749,137 +1910,54 @@ export function App() {
               <img
                 src="/assets/wecare_task_logo.webp"
                 alt="WeCare Task"
-                className="w-10 h-10 object-contain shrink-0 select-none"
+                className="w-8 h-8 object-contain shrink-0 select-none"
               />
             </div>
           )}
         </div>
 
         {/* Middle Scrollable Area: Main Navigation */}
-        <div className={`flex-1 overflow-y-auto overscroll-contain ${isSidebarCollapsed ? 'p-2 py-2' : 'px-3 py-3'}`}>
-          <nav className="space-y-3" aria-label="Main Navigation">
-            {navSections.map((section, idx) => (
-              <div key={section.title} className="space-y-1">
-                {!isSidebarCollapsed ? (
-                  <div className="px-2 pt-1 pb-1">
-                    <span className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#64748B] dark:text-slate-400">
-                      {section.title}
-                    </span>
-                  </div>
-                ) : (
-                  idx > 0 && (
-                    <div className="my-1.5 mx-2 border-t border-[#E2E8F0] dark:border-slate-800" />
-                  )
-                )}
-                <div className={`space-y-0.5 ${isSidebarCollapsed ? 'flex flex-col items-center' : ''}`}>
-                  {section.items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeNav === item.id;
-
-                    if (isSidebarCollapsed) {
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => setActiveNav(item.id)}
-                          title={`${item.label}${typeof item.count === 'number' ? ` (${item.count})` : ''}`}
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center relative sidebar-nav-btn group transition-colors duration-150 ${
-                            isActive
-                              ? 'bg-[#EFF6FF] dark:bg-blue-950/40 text-[#1E40AF] dark:text-blue-400'
-                              : 'text-[#64748B] dark:text-slate-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 hover:text-[#1E40AF] dark:hover:text-slate-200'
-                          }`}
-                          aria-label={item.label}
-                        >
-                          {isActive && (
-                            <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r bg-[#1E40AF] dark:bg-blue-500" />
-                          )}
-                          <Icon
-                            className={`sidebar-nav-icon w-4 h-4 shrink-0 transition-transform duration-150 group-hover:scale-105 ${
-                              isActive ? 'text-[#1E40AF] dark:text-blue-400' : 'text-[#64748B] group-hover:text-[#1E40AF] dark:text-slate-400 dark:group-hover:text-blue-400'
-                            }`}
-                          />
-                          {item.isLiveSync ? (
-                            <span
-                              className={`absolute top-2 right-2 w-2 h-2 rounded-full ring-2 ring-white dark:ring-slate-900 ${
-                                isOffline || connection.syncStatus === 'Sync Failed'
-                                  ? 'bg-[#DC2626]'
-                                  : connection.syncStatus === 'Syncing'
-                                  ? 'bg-[#D97706]'
-                                  : 'bg-[#16A34A]'
-                              }`}
-                            />
-                          ) : typeof item.count === 'number' && item.count > 0 ? (
-                            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1E40AF] ring-2 ring-white dark:ring-slate-900" />
-                          ) : null}
-                        </button>
-                      );
-                    }
-
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setActiveNav(item.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium sidebar-nav-btn group whitespace-nowrap shrink-0 transition-colors duration-150 relative ${
-                          isActive
-                            ? 'bg-[#EFF6FF] dark:bg-blue-950/40 text-[#1E40AF] dark:text-blue-400'
-                            : 'text-[#0F172A] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#1E40AF] dark:hover:text-blue-400'
-                        }`}
-                      >
-                        {isActive && (
-                          <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r bg-[#1E40AF] dark:bg-blue-500" />
-                        )}
-                        <span className="flex items-center gap-2.5 truncate">
-                          <Icon
-                            className={`sidebar-nav-icon w-4 h-4 shrink-0 transition-transform duration-150 group-hover:scale-105 ${
-                              isActive ? 'text-[#1E40AF] dark:text-blue-400' : 'text-[#64748B] group-hover:text-[#1E40AF] dark:text-slate-400 dark:group-hover:text-blue-400'
-                            }`}
-                          />
-                          <span className="truncate">{item.label}</span>
-                        </span>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {item.isLiveSync && (
-                            <span
-                              className={`w-2 h-2 rounded-full ${
-                                isOffline || connection.syncStatus === 'Sync Failed'
-                                  ? 'bg-[#DC2626]'
-                                  : connection.syncStatus === 'Syncing'
-                                  ? 'bg-[#D97706]'
-                                  : 'bg-[#16A34A]'
-                              }`}
-                              title={`Google Sheets: ${isOffline ? 'Offline' : connection.syncStatus}`}
-                            />
-                          )}
-                          {typeof item.count === 'number' && (
-                            <span
-                              className="tabular-nums text-xs px-2 py-0.5 rounded-full font-medium text-[#64748B] bg-[#F1F5F9] dark:bg-slate-800 dark:text-slate-400"
-                            >
-                              {item.count}
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </nav>
+        <div className={`flex-1 overflow-y-auto overscroll-contain ${isSidebarCollapsed ? 'p-1.5 py-2' : 'px-2.5 py-2.5'}`}>
+          <SidebarTabBar
+            sections={navSections.map((section) => ({
+              title: section.title,
+              items: section.items.map((item) => ({
+                id: item.id,
+                label: item.label,
+                icon: item.icon,
+                count: item.count,
+                isLiveSync: item.isLiveSync,
+                syncStatusColor:
+                  isOffline || connection.syncStatus === 'Sync Failed'
+                    ? 'bg-[#DC2626]'
+                    : connection.syncStatus === 'Syncing'
+                    ? 'bg-[#D97706]'
+                    : 'bg-[#16A34A]',
+                syncTitle: `Google Sheets: ${isOffline ? 'Offline' : connection.syncStatus}`,
+              })),
+            }))}
+            value={activeNav}
+            onChange={(id) => {
+              setActiveNav(id as NavigationTab);
+              setSelectedProjectId(null);
+            }}
+            collapsed={isSidebarCollapsed}
+          />
         </div>
 
         {/* Dedicated Sticky Footer Container inside Sidebar */}
         {!isSidebarCollapsed ? (
-          <div className="shrink-0 p-3 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 space-y-2">
+          <div className="shrink-0 p-2.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 space-y-1.5">
             {/* Google Sheets Live Sync: Compact Row */}
             <div
-              className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 group"
+              className="flex items-center justify-between px-2 py-1 rounded-md bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 group"
               title={`${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}`}
             >
-              <div className="flex items-center gap-2 min-w-0">
-                <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-emerald-400 shrink-0" />
-                <span className="flex items-center gap-1.5 text-xs text-[#0F172A] dark:text-slate-200 min-w-0">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-emerald-400 shrink-0" />
+                <span className="flex items-center gap-1.5 text-[11px] text-[#0F172A] dark:text-slate-200 min-w-0">
                   <span
-                    className={`w-2 h-2 rounded-full shrink-0 ${
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                       isOffline || connection.syncStatus === 'Sync Failed'
                         ? 'bg-[#DC2626]'
                         : connection.syncStatus === 'Syncing'
@@ -1894,13 +1972,13 @@ export function App() {
                 type="button"
                 onClick={handleManualSyncNow}
                 title="Sync now with Google Sheets"
-                className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 rounded transition-colors shrink-0"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10.5px] font-medium text-[#1E40AF] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 rounded transition-colors shrink-0"
               >
-                <RefreshCw
-                  className={`w-3 h-3 ${
-                    connection.syncStatus === 'Syncing' ? 'animate-spin' : ''
-                  }`}
-                />
+                {connection.syncStatus === 'Syncing' ? (
+                  <Spinner size="sm" shade="inherit" aria-hidden="true" />
+                ) : (
+                  <RefreshCw className="w-2.5 h-2.5" />
+                )}
                 <span>Sync now</span>
               </button>
             </div>
@@ -1910,31 +1988,31 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Collapse sidebar (Ctrl+B)"
-              className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-medium text-[#64748B] dark:text-slate-400 hover:text-[#1E40AF] dark:hover:text-slate-100 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/80 rounded-lg transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-slate-700/60"
+              className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-medium text-[#64748B] dark:text-slate-400 hover:text-[#1E40AF] dark:hover:text-slate-100 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/80 rounded-md transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-slate-700/60"
               aria-label="Collapse sidebar"
             >
-              <span className="flex items-center gap-2">
-                <PanelLeftClose className="w-4 h-4 text-[#64748B] group-hover:text-[#1E40AF] dark:group-hover:text-slate-200 transition-colors" />
+              <span className="flex items-center gap-1.5">
+                <PanelLeftClose className="w-3.5 h-3.5 text-[#64748B] group-hover:text-[#1E40AF] dark:group-hover:text-slate-200 transition-colors" />
                 <span>Collapse Sidebar</span>
               </span>
-              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] text-[#64748B] dark:text-slate-500 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded">
+              <kbd className="hidden sm:inline-block px-1 py-0.5 text-[9.5px] text-[#64748B] dark:text-slate-500 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded">
                 Ctrl+B
               </kbd>
             </button>
           </div>
         ) : (
-          <div className="shrink-0 p-3 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-center gap-2 shadow-xs">
+          <div className="shrink-0 p-2 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-center gap-1.5 shadow-xs">
             {/* Collapsed Google Sheets Icon Button */}
             <button
               type="button"
               onClick={handleManualSyncNow}
               title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to sync now`}
-              className="w-9 h-9 rounded-lg flex items-center justify-center relative bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#16A34A]/50 transition-colors group"
+              className="w-8 h-8 rounded-md flex items-center justify-center relative bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#16A34A]/50 transition-colors group"
               aria-label="Google Sheets synchronization status"
             >
-              <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-emerald-400 group-hover:scale-105 transition-transform" />
+              <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-emerald-400 group-hover:scale-105 transition-transform" />
               <span
-                className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-slate-900 ${
+                className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-slate-900 ${
                   isOffline || connection.syncStatus === 'Sync Failed'
                     ? 'bg-[#DC2626]'
                     : connection.syncStatus === 'Syncing'
@@ -1949,10 +2027,10 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Expand sidebar (Ctrl+B)"
-              className="w-9 h-9 rounded-lg bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 flex items-center justify-center transition-colors group mt-1 border border-[#E2E8F0] dark:border-slate-700/60"
+              className="w-8 h-8 rounded-md bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 flex items-center justify-center transition-colors group border border-[#E2E8F0] dark:border-slate-700/60"
               aria-label="Expand sidebar"
             >
-              <PanelLeftOpen className="w-4 h-4 transition-transform group-hover:scale-105" />
+              <PanelLeftOpen className="w-3.5 h-3.5 transition-transform group-hover:scale-105" />
             </button>
           </div>
         )}
@@ -1961,65 +2039,18 @@ export function App() {
       {/* MAIN WORKSPACE CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* TOP HEADER BAR */}
-        <header className="sticky top-0 z-20 h-14 px-3 sm:px-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 shadow-xs">
-          {/* Left: Contextual Breadcrumb */}
-          <div className="flex items-center gap-3 text-sm min-w-0">
-            <div className="flex items-center gap-2 text-sm min-w-0">
-              <span className="text-[#64748B] dark:text-slate-500 font-medium whitespace-nowrap text-xs">
-                Workspace
-              </span>
-              <span className="text-[#E2E8F0] dark:text-slate-700" aria-hidden="true">
-                /
-              </span>
-              <span className="font-semibold text-sm text-[#0F172A] dark:text-slate-100 truncate">
-                {currentNavTitle}
-              </span>
-            </div>
-            {stats.overdueCount > 0 && (
-              <>
-                <span className="text-[#E2E8F0] dark:text-slate-700" aria-hidden="true">
-                  ·
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveNav('all-tasks');
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#FEE2E2] text-[#DC2626] dark:bg-red-950/50 dark:text-red-300 hover:bg-[#FCD8D8] transition-colors whitespace-nowrap shrink-0"
-                >
-                  <AlertTriangle className="w-3.5 h-3.5" />
-                  <span><span className="tabular-nums">{stats.overdueCount}</span> Overdue</span>
-                </button>
-              </>
-            )}
-          </div>
-
-          {/* Center: Global Task Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                if (activeNav === 'sheets-connection' || activeNav === 'settings') {
-                  setActiveNav('all-tasks');
-                }
-              }}
-              placeholder="Search tasks by title, category, or notes..."
-              className="w-full h-9 pl-9 pr-8 text-sm rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 placeholder:text-[#64748B] focus:border-[#1E40AF] focus:ring-2 focus:ring-[#1E40AF]/20 focus:outline-none transition-colors"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A]"
-                aria-label="Clear search"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
+        <header className="sticky top-0 z-30 h-14 px-3 sm:px-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 shadow-xs">
+          {/* Global Inline Animated Search Bar */}
+          <SearchModal
+            items={searchItems}
+            groups={['Tasks', 'Students', 'Universities', 'Projects']}
+            recent={recentSearchIds}
+            actions={searchActions}
+            examples={searchExamples}
+            placeholder="Search tasks, students, universities..."
+            onSelect={handleSearchModalSelect}
+            className="w-full flex-1 max-w-[460px] lg:max-w-[520px] z-40 [&>div:first-child]:h-10 [&>div:first-child]:rounded-xl [&>div:first-child]:border [&>div:first-child]:border-[#E2E8F0] dark:[&>div:first-child]:border-slate-700/80 [&>div:first-child]:bg-white [&>div:first-child]:!shadow-xs [&>div:first-child]:pl-3.5 [&>div:first-child]:pr-2 [&>div:first-child>div>input]:text-sm [&>div:first-child>div>span]:text-sm"
+          />
 
           {/* Right: Role Switcher, Offline Toggle, Notification Center, Theme Toggle, Primary Action */}
           <div className="flex items-center gap-2.5 shrink-0">
@@ -2526,20 +2557,44 @@ export function App() {
             />
           )}
 
-          {/* VIEW: INTAKE PROJECTS */}
-          {activeNav === 'projects' && (
-            <IntakeProjectsView
-              projects={projects}
-              universities={universities}
-              team={team}
-              currentUser={currentUser}
-              onRefresh={refreshPmsData}
-              onSelectProject={(proj) => {
-                setTaskContextProjectId(proj.id);
-                setIsEnhancedTaskModalOpen(true);
-              }}
-            />
-          )}
+          {/* VIEW: INTAKE PROJECTS & WORKSPACE */}
+          {activeNav === 'projects' &&
+            (selectedProjectId ? (
+              <IntakeWorkspaceView
+                projectId={selectedProjectId}
+                currentUser={currentUser}
+                team={team}
+                refreshKey={workspaceRefreshNonce}
+                onBack={() => setSelectedProjectId(null)}
+                onRefreshParent={refreshPmsData}
+                onReloadTasks={handleReloadTasks}
+                onOpenStudentDossier={(student) => setSelectedStudentForDossier(student)}
+                onOpenNewStudentModal={(proj) => {
+                  setPrefillStudentProjectId(proj.id);
+                  setPrefillStudentUniversityId(proj.universityId);
+                  setPrefillStudentIntakeTerm(proj.intakeTerm);
+                  setIsNewStudentModalOpen(true);
+                }}
+                onCreateIntakeTask={(pid) => {
+                  setTaskContextProjectId(pid);
+                  setIsEnhancedTaskModalOpen(true);
+                }}
+                onRequestCompleteTask={handleRequestCompleteTask}
+                onRestoreTaskToPending={handleRestoreTaskToPending}
+                onDeleteTask={handleDeleteTask}
+              />
+            ) : (
+              <IntakeProjectsView
+                projects={projects}
+                universities={universities}
+                team={team}
+                currentUser={currentUser}
+                onRefresh={refreshPmsData}
+                onSelectProject={(proj) => {
+                  setSelectedProjectId(proj.id);
+                }}
+              />
+            ))}
 
           {/* VIEW: KOREAN UNIVERSITY DIRECTORY */}
           {activeNav === 'universities' && (
@@ -3066,17 +3121,20 @@ export function App() {
           projects={projects}
           team={team}
           currentUser={currentUser}
+          initialProjectId={prefillStudentProjectId}
           initialUniversityId={prefillStudentUniversityId}
           initialProgramId={prefillStudentProgramId}
           initialIntakeTerm={prefillStudentIntakeTerm}
           onClose={() => {
             setIsNewStudentModalOpen(false);
+            setPrefillStudentProjectId(undefined);
             setPrefillStudentUniversityId(undefined);
             setPrefillStudentProgramId(undefined);
             setPrefillStudentIntakeTerm(undefined);
           }}
           onSuccess={() => {
             setIsNewStudentModalOpen(false);
+            setPrefillStudentProjectId(undefined);
             setPrefillStudentUniversityId(undefined);
             setPrefillStudentProgramId(undefined);
             setPrefillStudentIntakeTerm(undefined);
@@ -3103,10 +3161,16 @@ export function App() {
               if (found) setSelectedStudentForDossier(found);
               setActiveNav('students');
             } else if (entityType === 'project') {
+              setSelectedProjectId(entityId);
               setActiveNav('projects');
             } else if (entityType === 'task') {
-              setActiveNav('all-tasks');
-              setSearchQuery(entityId);
+              const found = tasks.find((t) => t.id === entityId);
+              if (found) {
+                setEditingTask(found);
+                setIsTaskModalOpen(true);
+              } else {
+                setActiveNav('all-tasks');
+              }
             } else if (entityType === 'handover') {
               setSelectedHandoverIdFromNotif(entityId);
               setActiveNav('document-handover');

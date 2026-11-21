@@ -385,6 +385,45 @@ export function initDatabase(): void {
       FOREIGN KEY (assigned_counselor_id) REFERENCES users(id) ON DELETE RESTRICT,
       FOREIGN KEY (linked_handover_id) REFERENCES document_handovers(id) ON DELETE RESTRICT
     );
+
+    -- Intake-Specific Student Application Tracking (11-Stage Workflow & Document Readiness)
+    CREATE TABLE IF NOT EXISTS intake_student_applications (
+      id TEXT PRIMARY KEY,
+      project_id TEXT NOT NULL,
+      student_id TEXT NOT NULL,
+      assigned_consultant_id TEXT,
+      program_id TEXT,
+      program_name TEXT,
+      workflow_stage TEXT NOT NULL DEFAULT 'Student Registered'
+        CHECK(workflow_stage IN (
+          'Student Registered',
+          'Document Collection',
+          'Document Verification',
+          'Notarization / Apostille',
+          'Application Preparation',
+          'Ready for Submission',
+          'Submitted to University',
+          'Additional Documents Requested',
+          'Admission Result Received',
+          'Tuition Payment',
+          'CoA Received'
+        )),
+      stage_status TEXT NOT NULL DEFAULT 'In Progress',
+      workflow_dates_json TEXT NOT NULL DEFAULT '{}',
+      stage_history_json TEXT NOT NULL DEFAULT '[]',
+      documents_json TEXT NOT NULL DEFAULT '[]',
+      stage_notes TEXT,
+      submitted_by TEXT,
+      submitted_at TEXT,
+      completed_by TEXT,
+      completed_at TEXT,
+      added_by TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      UNIQUE(project_id, student_id),
+      FOREIGN KEY (project_id) REFERENCES intake_projects(id) ON DELETE CASCADE,
+      FOREIGN KEY (student_id) REFERENCES student_applications(id) ON DELETE CASCADE
+    );
   `);
 
   // Immutability triggers to protect handover audit history and handover records from tampering or cascading deletion
@@ -424,6 +463,8 @@ export function initDatabase(): void {
     CREATE INDEX IF NOT EXISTS idx_tasks_assignee ON tasks(assigned_to_id);
     CREATE INDEX IF NOT EXISTS idx_students_project ON student_applications(project_id);
     CREATE INDEX IF NOT EXISTS idx_students_consultant ON student_applications(assigned_consultant_id);
+    CREATE INDEX IF NOT EXISTS idx_intake_stu_apps_project ON intake_student_applications(project_id);
+    CREATE INDEX IF NOT EXISTS idx_intake_stu_apps_student ON intake_student_applications(student_id);
     CREATE INDEX IF NOT EXISTS idx_notifications_recipient ON notifications(recipient_id);
     CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_logs(timestamp);
     CREATE INDEX IF NOT EXISTS idx_programs_university ON university_programs(university_id);
@@ -482,8 +523,180 @@ export function initDatabase(): void {
   // 6. Migrate legacy tasks from JSON if exists and not already imported
   migrateLegacyTasksIfPresent();
 
-  // 7. Create an automatic backup snapshot
+  // 7. Backfill intake_student_applications for existing student dossiers
+  syncIntakeStudentApplications();
+
+  // 8. Create an automatic backup snapshot
   createBackupSnapshot();
+}
+
+function mapVisaStageToWorkflowStage(visaStage: string): string {
+  switch (visaStage) {
+    case 'Document_Gathering':
+      return 'Document Collection';
+    case 'Apostille_Verification':
+      return 'Notarization / Apostille';
+    case 'University_Submitted':
+      return 'Submitted to University';
+    case 'Admission_Granted':
+      return 'Admission Result Received';
+    case 'Tuition_Paid':
+      return 'Tuition Payment';
+    case 'CoA_Received':
+    case 'Embassy_Visa_Filing':
+    case 'Visa_Issued':
+      return 'CoA Received';
+    default:
+      return 'Student Registered';
+  }
+}
+
+export function buildIntakeDocumentsForStudent(
+  requiredDocs: string[],
+  existingChecklist: any[]
+): any[] {
+  const result: any[] = [];
+  const usedNames = new Set<string>();
+
+  requiredDocs.forEach((docName, idx) => {
+    const cleanName = String(docName || '').trim();
+    if (!cleanName) return;
+    const norm = cleanName.toLowerCase();
+    // Match against existing student checklist by partial keyword similarity
+    const matched = (existingChecklist || []).find((c) => {
+      const cname = String(c.name || '').toLowerCase();
+      if (!cname) return false;
+      if (cname === norm || cname.includes(norm) || norm.includes(cname)) return true;
+      const keywords = ['passport', 'transcript', 'bank', 'family', 'birth', 'study plan', 'statement', 'topik', 'ielts', 'diploma', 'degree'];
+      return keywords.some((kw) => norm.includes(kw) && cname.includes(kw));
+    });
+
+    const status = matched?.status || 'Pending';
+    usedNames.add(matched?.name ? String(matched.name).toLowerCase() : norm);
+    result.push({
+      id: matched?.id || `idoc-${idx + 1}`,
+      name: cleanName,
+      required: matched?.required !== undefined ? Boolean(matched.required) : true,
+      status,
+      collected: ['Collected', 'Notarized', 'Apostilled', 'Verified'].includes(status),
+      notarized: ['Notarized', 'Apostilled', 'Verified'].includes(status) || (norm.includes('apostille') && status === 'Verified'),
+      apostilled: status === 'Apostilled' || (norm.includes('apostille') && status === 'Verified'),
+      verified: status === 'Verified',
+      remarks: matched?.notes || '',
+      verifiedBy: matched?.verifiedBy || null,
+      verifiedAt: matched?.verifiedAt || null,
+      updatedBy: matched?.verifiedBy || null,
+      updatedAt: matched?.verifiedAt || null,
+    });
+  });
+
+  // Include any extra checklist items not already covered
+  (existingChecklist || []).forEach((c, idx) => {
+    const cname = String(c.name || '').trim();
+    if (!cname) return;
+    if (!usedNames.has(cname.toLowerCase())) {
+      const status = c.status || 'Pending';
+      result.push({
+        id: c.id || `extra-${idx + 1}`,
+        name: cname,
+        required: Boolean(c.required),
+        status,
+        collected: ['Collected', 'Notarized', 'Apostilled', 'Verified'].includes(status),
+        notarized: ['Notarized', 'Apostilled', 'Verified'].includes(status),
+        apostilled: status === 'Apostilled',
+        verified: status === 'Verified',
+        remarks: c.notes || '',
+        verifiedBy: c.verifiedBy || null,
+        verifiedAt: c.verifiedAt || null,
+        updatedBy: c.verifiedBy || null,
+        updatedAt: c.verifiedAt || null,
+      });
+    }
+  });
+
+  return result;
+}
+
+export function syncIntakeStudentApplications(): void {
+  const students = db.prepare(`
+    SELECT s.*, p.university_id as proj_uni_id, p.intake_id as proj_intake_id, p.intake_term as proj_intake_term
+    FROM student_applications s
+    JOIN intake_projects p ON s.project_id = p.id
+  `).all() as any[];
+
+  const checkExisting = db.prepare('SELECT id FROM intake_student_applications WHERE project_id = ? AND student_id = ?');
+  const findIntake = db.prepare(`
+    SELECT required_documents FROM admission_intakes
+    WHERE id = ? OR (university_id = ? AND term = ?)
+    LIMIT 1
+  `);
+  const insertApp = db.prepare(`
+    INSERT INTO intake_student_applications (
+      id, project_id, student_id, assigned_consultant_id, program_id, program_name,
+      workflow_stage, stage_status, workflow_dates_json, stage_history_json,
+      documents_json, stage_notes, submitted_by, submitted_at, completed_by, completed_at,
+      added_by, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  for (const s of students) {
+    const exists = checkExisting.get(s.project_id, s.id);
+    if (exists) continue;
+
+    const intakeRow = findIntake.get(s.proj_intake_id || '', s.proj_uni_id, s.proj_intake_term) as any;
+    const reqDocs = intakeRow ? JSON.parse(intakeRow.required_documents || '[]') : [];
+    const existingChecklist = JSON.parse(s.checklist_json || '[]');
+    const docs = buildIntakeDocumentsForStudent(reqDocs, existingChecklist);
+    const workflowStage = mapVisaStageToWorkflowStage(s.visa_stage);
+    const stageStatus =
+      workflowStage === 'CoA Received'
+        ? 'Completed'
+        : workflowStage === 'Submitted to University'
+        ? 'Submitted'
+        : 'In Progress';
+
+    const dates: Record<string, string> = {
+      registeredDate: (s.created_at || new Date().toISOString()).slice(0, 10),
+    };
+    if (s.submission_date) dates.submittedDate = s.submission_date;
+    if (s.tuition_fee_paid) dates.tuitionPaidDate = (s.updated_at || new Date().toISOString()).slice(0, 10);
+    if (s.certificate_of_admission_no) dates.coaReceivedDate = (s.updated_at || new Date().toISOString()).slice(0, 10);
+
+    const history = [
+      {
+        id: 'STG-INIT-' + s.id,
+        stage: workflowStage,
+        status: stageStatus,
+        date: (s.updated_at || s.created_at || new Date().toISOString()).slice(0, 10),
+        actorName: 'System Sync',
+        notes: s.notes || `Initialized from student application ${s.id}`,
+        timestamp: s.updated_at || s.created_at || new Date().toISOString(),
+      },
+    ];
+
+    const appId = `ISA-${s.project_id}-${s.id}`;
+    insertApp.run(
+      appId,
+      s.project_id,
+      s.id,
+      s.assigned_consultant_id,
+      s.program_id || null,
+      s.program_name || null,
+      workflowStage,
+      stageStatus,
+      JSON.stringify(dates),
+      JSON.stringify(history),
+      JSON.stringify(docs),
+      s.notes || '',
+      s.submission_date ? 'Intake Officer' : null,
+      s.submission_date || null,
+      workflowStage === 'CoA Received' ? 'Intake Officer' : null,
+      workflowStage === 'CoA Received' ? (s.updated_at || null) : null,
+      'USR-ADMIN',
+      s.created_at || new Date().toISOString(),
+      s.updated_at || new Date().toISOString()
+    );
+  }
 }
 
 function ensureColumnExists(table: string, column: string, definition: string): void {

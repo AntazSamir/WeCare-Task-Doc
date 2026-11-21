@@ -25,10 +25,12 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium border transition-all ${
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        className={`h-9 flex items-center gap-2 px-3 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
           isAdmin
-            ? 'bg-[#EFF6FF] dark:bg-blue-950/40 border-[#1E40AF]/40 dark:border-blue-900/60 text-[#1E3A8A] dark:text-blue-300 hover:bg-[#EFF6FF]/80'
-            : 'bg-[#F8FAFC] dark:bg-slate-800 border-[#E2E8F0] dark:border-slate-700 text-[#0F172A] dark:text-slate-200 hover:bg-[#EFF6FF]/60'
+            ? 'bg-white dark:bg-slate-800 border-[#E2E8F0] dark:border-slate-700 text-[#0F172A] dark:text-slate-100 hover:border-[#1E40AF] dark:hover:border-blue-500'
+            : 'bg-white dark:bg-slate-800 border-[#E2E8F0] dark:border-slate-700 text-[#0F172A] dark:text-slate-100 hover:border-[#1E40AF] dark:hover:border-blue-500'
         }`}
         title="Admin Persona Switcher: Switch between Admission Manager and Consultants to test access & notifications"
       >
@@ -38,12 +40,16 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
           ) : (
             <UserCheck className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />
           )}
-          <span className="font-semibold">{currentUser.name}</span>
-          <span className="text-[11px] opacity-75 hidden sm:inline">
+          <span className="font-medium">{currentUser.name}</span>
+          <span className="text-[11px] text-[#64748B] dark:text-slate-400 hidden sm:inline">
             ({isAdmin ? 'Manager / Admin' : 'Consultant'})
           </span>
         </span>
-        <ChevronDown className="w-3 h-3 opacity-60" />
+        <ChevronDown
+          className={`w-3.5 h-3.5 text-[#64748B] dark:text-slate-400 transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        />
       </button>
 
       <AnimatePresence>
@@ -52,9 +58,9 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
             <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
             <DropdownTransition
               align="right"
-              className="absolute right-0 mt-1 w-72 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xl z-50 p-1.5 space-y-1 max-h-80 overflow-y-auto"
+              className="absolute right-0 mt-1 w-72 rounded-lg bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 shadow-xl z-50 p-1 space-y-0.5 max-h-80 overflow-y-auto"
             >
-              <div className="px-2 py-1 text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase tabular-nums border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between sticky top-0 bg-[#FFFFFF] dark:bg-slate-900 z-10">
+              <div className="px-2 py-1 text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase tabular-nums border-b border-[#E2E8F0] dark:border-slate-700 flex items-center justify-between sticky top-0 bg-white dark:bg-slate-800 z-10">
                 <span>Switch Operational Persona</span>
                 <span>{team.length} Members</span>
               </div>
@@ -71,10 +77,10 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                       onSwitchUser(user);
                       setIsOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-left text-xs transition-colors ${
+                    className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-left text-xs transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-[#EFF6FF] dark:bg-slate-800 font-semibold text-[#1E3A8A] dark:text-slate-100'
-                        : 'text-[#0F172A] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50'
+                        ? 'bg-[#EFF6FF] dark:bg-blue-900/40 font-medium text-[#1E40AF] dark:text-blue-300'
+                        : 'text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-700/60 hover:text-[#0F172A] dark:hover:text-slate-100'
                     }`}
                   >
                     <div className="flex items-center gap-2 min-w-0">
@@ -102,7 +108,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                       </div>
                     </div>
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />
+                      <Check className="h-3 w-3 shrink-0 text-[#1E40AF] dark:text-blue-400" />
                     )}
                   </button>
                 );

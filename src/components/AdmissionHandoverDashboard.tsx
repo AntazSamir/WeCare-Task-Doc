@@ -15,6 +15,7 @@ import {
   Flag,
   ClipboardList,
 } from 'lucide-react';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import {
   DocumentHandover,
   DocumentRequest,
@@ -343,13 +344,18 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
         <div className="flex items-center gap-2">
           <button
             type="button"
+            disabled={loading}
             onClick={() => {
               onRefreshAll();
               loadTabData();
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF]/60 border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF]/60 border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors disabled:opacity-60"
           >
-            <RefreshCw className="w-3.5 h-3.5 text-[#1E40AF]" />
+            {loading ? (
+              <Spinner size="sm" aria-hidden="true" />
+            ) : (
+              <RefreshCw className="w-3.5 h-3.5 text-[#1E40AF]" />
+            )}
             Refresh
           </button>
 
@@ -771,7 +777,10 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                   {loading && requests.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="px-6 py-10 text-center text-[#0F172A]/60 dark:text-slate-400">
-                        Loading Admission document requests...
+                        <div className="inline-flex items-center justify-center gap-2">
+                          <Spinner size="md" aria-label="Loading Admission document requests" />
+                          <span>Loading Admission document requests...</span>
+                        </div>
                       </td>
                     </tr>
                   ) : requests.length === 0 ? (
@@ -912,7 +921,10 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                   {loading && handovers.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="px-6 py-10 text-center text-[#0F172A]/60 dark:text-slate-400">
-                        Loading Admission handover records...
+                        <div className="inline-flex items-center justify-center gap-2">
+                          <Spinner size="md" aria-label="Loading Admission handover records" />
+                          <span>Loading Admission handover records...</span>
+                        </div>
                       </td>
                     </tr>
                   ) : handovers.length === 0 ? (
