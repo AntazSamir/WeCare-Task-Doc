@@ -12,7 +12,7 @@ import {
 import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentHandover, DocumentItemStatus, UserProfile } from '../types/pms';
 import { acknowledgeHandoverApi } from '../services/pmsService';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 interface HandoverAcknowledgementModalProps {
   handover: DocumentHandover | null;
@@ -175,13 +175,14 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
               </p>
             </div>
           </div>
-          <button
+          <MotionButton
             type="button"
             onClick={onClose}
-            className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md"
+            className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md transition-colors"
+            aria-label="Close modal"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
@@ -295,7 +296,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                                 ? 'bg-[#D97706] text-white border-[#D97706]'
                                 : 'bg-[#DC2626] text-white border-[#DC2626]';
                             return (
-                              <button
+                              <MotionButton
                                 key={st}
                                 type="button"
                                 disabled={!canVerify}
@@ -307,7 +308,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                                 }`}
                               >
                                 {st}
-                              </button>
+                              </MotionButton>
                             );
                           }
                         )}
@@ -363,17 +364,17 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
 
         {/* Footer Actions */}
         <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-900/80 flex flex-wrap items-center justify-between gap-2">
-          <button
+          <MotionButton
             type="button"
             onClick={onClose}
-            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40"
+            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40 transition-colors"
           >
             Cancel
-          </button>
+          </MotionButton>
 
           <div className="flex flex-wrap items-center gap-2">
             {hasIncorrectOrRejected && (
-              <button
+              <MotionButton
                 type="button"
                 disabled={!canVerify || isSubmitting}
                 onClick={() => handleSubmit('Dispute')}
@@ -381,11 +382,11 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
               >
                 {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <XCircle className="w-3.5 h-3.5" />}
                 Report Dispute / Incorrect
-              </button>
+              </MotionButton>
             )}
 
             {!allReceived && (hasMissing || hasIncorrectOrRejected) && (
-              <button
+              <MotionButton
                 type="button"
                 disabled={!canVerify || isSubmitting}
                 onClick={() => handleSubmit('Partial')}
@@ -393,11 +394,11 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
               >
                 {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <AlertTriangle className="w-3.5 h-3.5" />}
                 Confirm Partial Receipt
-              </button>
+              </MotionButton>
             )}
 
             {allReceived && (
-              <button
+              <MotionButton
                 type="button"
                 disabled={!canVerify || isSubmitting}
                 onClick={() => handleSubmit('Accept')}
@@ -405,7 +406,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
               >
                 {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                 Accept All Received
-              </button>
+              </MotionButton>
             )}
           </div>
         </div>

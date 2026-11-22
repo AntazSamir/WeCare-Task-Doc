@@ -34,7 +34,7 @@ import { Spinner } from '@astryxdesign/core/Spinner';
 import { UserProfile, StudentApplication, KoreanUniversity } from '../types/pms';
 import { playNotificationChime, playCompletionChime } from '../utils/soundUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { TabTransition } from './animations';
+import { TabTransition, MotionButton } from './animations';
 
 interface SettingsViewProps {
   settings: AppSettings;
@@ -323,15 +323,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <span>Preferences Auto-Saved</span>
           </div>
 
-          <button
-            type="button"
+          <MotionButton
             onClick={handleResetDefaults}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
             title="Reset preferences to default values"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Reset Defaults
-          </button>
+          </MotionButton>
         </div>
       </div>
 
@@ -346,10 +345,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             const Icon = item.icon;
             const isActive = activeSection === item.id;
             return (
-              <button
+              <MotionButton
                 key={item.id}
-                type="button"
                 onClick={() => setActiveSection(item.id)}
+                whileHover={{ scale: 1.01 }}
                 className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors ${
                   isActive
                     ? 'bg-[#EFF6FF] dark:bg-blue-950/50 text-[#1E40AF] dark:text-blue-400 font-semibold'
@@ -361,7 +360,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <div className="text-xs font-medium leading-snug">{item.label}</div>
                   <div className="text-[11px] text-slate-400 dark:text-slate-500 truncate">{item.description}</div>
                 </div>
-              </button>
+              </MotionButton>
             );
           })}
 
@@ -417,10 +416,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   Color Theme
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <button
-                    type="button"
+                  <MotionButton
                     onClick={() => onUpdateSettings({ theme: 'light' })}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-all ${
+                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
                       settings.theme === 'light'
                         ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950/40 ring-2 ring-[#1E40AF]/20'
                         : 'border-[#E2E8F0] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
@@ -433,12 +431,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       <div className="text-xs font-semibold text-[#0F172A] dark:text-slate-100">Light Mode</div>
                       <div className="text-[11px] text-slate-500 mt-0.5">High-contrast daytime clarity</div>
                     </div>
-                  </button>
+                  </MotionButton>
 
-                  <button
-                    type="button"
+                  <MotionButton
                     onClick={() => onUpdateSettings({ theme: 'dark' })}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-all ${
+                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
                       settings.theme === 'dark'
                         ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950/40 ring-2 ring-[#1E40AF]/20'
                         : 'border-[#E2E8F0] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
@@ -451,12 +448,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       <div className="text-xs font-semibold text-[#0F172A] dark:text-slate-100">Dark Navy</div>
                       <div className="text-[11px] text-slate-500 mt-0.5">Reduced eye strain for night shifts</div>
                     </div>
-                  </button>
+                  </MotionButton>
 
-                  <button
-                    type="button"
+                  <MotionButton
                     onClick={() => onUpdateSettings({ theme: 'system' })}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-all ${
+                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
                       settings.theme === 'system'
                         ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950/40 ring-2 ring-[#1E40AF]/20'
                         : 'border-[#E2E8F0] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
@@ -469,7 +465,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       <div className="text-xs font-semibold text-[#0F172A] dark:text-slate-100">System OS</div>
                       <div className="text-[11px] text-slate-500 mt-0.5">Sync with Windows/macOS</div>
                     </div>
-                  </button>
+                  </MotionButton>
                 </div>
               </div>
 
@@ -583,9 +579,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {["Bachelor's", "Master's", 'Doctoral', 'Language Training', 'Associate'].map((lvl) => (
-                    <button
+                    <MotionButton
                       key={lvl}
-                      type="button"
                       onClick={() => onUpdateSettings({ defaultDegreeLevel: lvl })}
                       className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
                         (settings.defaultDegreeLevel || "Bachelor's") === lvl
@@ -594,7 +589,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       }`}
                     >
                       {lvl}
-                    </button>
+                    </MotionButton>
                   ))}
                 </div>
               </div>
@@ -738,14 +733,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button
-                    type="button"
+                  <MotionButton
                     onClick={() => playCompletionChime()}
-                    className="p-1.5 text-xs text-slate-500 hover:text-[#1E40AF] bg-slate-100 dark:bg-slate-800 rounded hover:bg-slate-200 dark:hover:bg-slate-700"
+                    className="p-1.5 text-xs text-slate-500 hover:text-[#1E40AF] bg-slate-100 dark:bg-slate-800 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                     title="Test audio chime"
+                    aria-label="Test audio chime"
                   >
                     <Volume2 className="w-3.5 h-3.5" />
-                  </button>
+                  </MotionButton>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
@@ -818,13 +813,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
 
                 {onNavigateTab && (
-                  <button
-                    type="button"
+                  <MotionButton
                     onClick={() => onNavigateTab('sheets-connection')}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline shrink-0"
                   >
                     Open Sheets Console <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  </MotionButton>
                 )}
               </div>
 
@@ -999,14 +993,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button
-                    type="button"
+                  <MotionButton
                     onClick={() => playNotificationChime()}
-                    className="p-1.5 text-xs text-slate-500 hover:text-[#1E40AF] bg-slate-100 dark:bg-slate-800 rounded hover:bg-slate-200 dark:hover:bg-slate-700"
+                    className="p-1.5 text-xs text-slate-500 hover:text-[#1E40AF] bg-slate-100 dark:bg-slate-800 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                     title="Test chime"
+                    aria-label="Test notification chime"
                   >
                     <Volume2 className="w-3.5 h-3.5" />
-                  </button>
+                  </MotionButton>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
@@ -1029,13 +1023,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     Status: <span className="font-semibold uppercase text-xs">{desktopPermission}</span>
                   </div>
                 </div>
-                <button
-                  type="button"
+                <MotionButton
                   onClick={handleRequestDesktopNotifications}
                   className="px-3 py-1.5 text-xs font-semibold rounded-md border border-[#1E40AF] text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-blue-950/40 transition-colors"
                 >
                   {desktopPermission === 'granted' ? 'Notifications Granted' : 'Request Permission'}
-                </button>
+                </MotionButton>
               </div>
             </div>
           )}
@@ -1061,11 +1054,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   {team.map((user) => {
                     const isSelected = user.id === currentUser.id;
                     return (
-                      <button
+                      <MotionButton
                         key={user.id}
-                        type="button"
                         onClick={() => onSwitchUser(user)}
-                        className={`p-3.5 rounded-lg border text-left transition-all flex items-start gap-3 ${
+                        whileHover={{ scale: 1.01 }}
+                        className={`p-3.5 rounded-lg border text-left transition-colors flex items-start gap-3 ${
                           isSelected
                             ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950/40 ring-2 ring-[#1E40AF]/20'
                             : 'border-[#E2E8F0] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
@@ -1094,7 +1087,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             Team: {user.team || 'General Operations'}
                           </div>
                         </div>
-                      </button>
+                      </MotionButton>
                     );
                   })}
                 </div>
@@ -1168,8 +1161,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     </div>
                   </div>
 
-                  <button
-                    type="button"
+                  <MotionButton
                     disabled={isBackingUp}
                     onClick={handleBackupDatabase}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-[#1E40AF] hover:bg-blue-800 text-white shadow-xs disabled:opacity-50 transition-colors shrink-0"
@@ -1185,7 +1177,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         Create Snapshot Now
                       </>
                     )}
-                  </button>
+                  </MotionButton>
                 </div>
 
                 {lastBackupFile && (
@@ -1206,14 +1198,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     Download full client data payload including tasks, student applications, and configuration settings.
                   </div>
                 </div>
-                <button
-                  type="button"
+                <MotionButton
                   onClick={handleExportJson}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-[#E2E8F0] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5 text-slate-500" />
                   Download JSON
-                </button>
+                </MotionButton>
               </div>
 
               {/* Clear Local Cache */}
@@ -1226,15 +1217,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     Clears client-side browser cache and revalidates fresh state from the SQLite database.
                   </div>
                 </div>
-                <button
-                  type="button"
+                <MotionButton
                   disabled={isFlushingCache}
                   onClick={handleClearLocalCache}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-rose-200 text-rose-700 hover:bg-rose-50 dark:border-rose-900 dark:text-rose-400 dark:hover:bg-rose-950/40 transition-colors"
                 >
                   {isFlushingCache ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <Trash2 className="w-3.5 h-3.5" />}
                   Flush Cache
-                </button>
+                </MotionButton>
               </div>
 
               {/* System Diagnostics Table */}

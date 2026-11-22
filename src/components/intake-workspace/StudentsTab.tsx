@@ -22,6 +22,7 @@ import {
   MorphSelectContent,
   MorphSelectItem,
 } from '../ui/MorphSelect';
+import { MotionButton } from '../animations';
 
 interface StudentsTabProps {
   applications: IntakeApplicationRecord[];
@@ -149,7 +150,7 @@ export const StudentsTab: React.FC<StudentsTabProps> = ({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <button
+          <MotionButton
             type="button"
             onClick={onOpenAssignExisting}
             disabled={availableCount === 0}
@@ -158,16 +159,16 @@ export const StudentsTab: React.FC<StudentsTabProps> = ({
           >
             <Users className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400" />
             Add Existing ({availableCount})
-          </button>
+          </MotionButton>
 
-          <button
+          <MotionButton
             type="button"
             onClick={onOpenRegisterNew}
             className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap"
           >
             <UserPlus className="w-3.5 h-3.5" />
             Register New Student
-          </button>
+          </MotionButton>
         </div>
       </div>
 
@@ -189,21 +190,21 @@ export const StudentsTab: React.FC<StudentsTabProps> = ({
             {applications.length === 0 && (
               <div className="flex items-center justify-center gap-2 pt-1">
                 {availableCount > 0 && (
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={onOpenAssignExisting}
                     className="h-9 px-3.5 text-xs font-medium text-[#0F172A] dark:text-slate-200 border border-[#E2E8F0] dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800"
                   >
                     Add Existing Student
-                  </button>
+                  </MotionButton>
                 )}
-                <button
+                <MotionButton
                   type="button"
                   onClick={onOpenRegisterNew}
                   className="h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg"
                 >
                   Register First Student
-                </button>
+                </MotionButton>
               </div>
             )}
           </div>
@@ -301,7 +302,7 @@ export const StudentsTab: React.FC<StudentsTabProps> = ({
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="inline-flex items-center gap-1.5">
-                          <button
+                          <MotionButton
                             type="button"
                             onClick={() => onOpenRecordStage(app)}
                             title="Record application workflow stage"
@@ -309,9 +310,9 @@ export const StudentsTab: React.FC<StudentsTabProps> = ({
                           >
                             <GitBranch className="w-3 h-3" />
                             Stage
-                          </button>
+                          </MotionButton>
 
-                          <button
+                          <MotionButton
                             type="button"
                             onClick={() => onOpenStudentDossier(s)}
                             title="Open existing Student Dossier"
@@ -319,17 +320,17 @@ export const StudentsTab: React.FC<StudentsTabProps> = ({
                           >
                             Dossier
                             <ExternalLink className="w-3 h-3" />
-                          </button>
+                          </MotionButton>
 
                           {isAdmin && !app.isPrimaryProject && (
-                            <button
+                            <MotionButton
                               type="button"
                               onClick={() => onRequestRemoveStudent(app)}
                               title="Detach student from this intake"
                               className="p-1 text-[#64748B] hover:text-[#DC2626] rounded transition-colors"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                            </MotionButton>
                           )}
                         </div>
                       </td>

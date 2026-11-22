@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { MotionButton } from './ui/MotionButton';
 
 interface Props {
   children: ReactNode;
@@ -59,21 +60,21 @@ export class ErrorBoundary extends Component<Props, State> {
             )}
           </div>
           <div className="flex items-center gap-3 pt-2">
-            <button
+            <MotionButton
               type="button"
               onClick={this.handleReset}
               className="inline-flex items-center gap-1.5 px-4 h-9 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               Try Again
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="button"
               onClick={this.handleReload}
               className="inline-flex items-center gap-1.5 px-4 h-9 text-xs font-medium text-[#0F172A] dark:text-slate-200 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 hover:bg-[#F8FAFC] rounded-lg transition-colors"
             >
               Reload Page
-            </button>
+            </MotionButton>
           </div>
         </div>
       );

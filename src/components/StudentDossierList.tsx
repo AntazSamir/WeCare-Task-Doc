@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import { StudentApplication, UserProfile, VisaStage } from '../types/pms';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { TabTransition, FadeTransition } from './animations';
+import { TabTransition, FadeTransition, MotionButton } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 
 interface StudentDossierListProps {
   students: StudentApplication[];
@@ -246,104 +247,87 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
 
         <div className="flex items-center gap-3">
           {/* View Mode Switcher */}
-          <div className="inline-flex items-center p-0.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/80 border border-[#E2E8F0] dark:border-slate-700 h-9">
-            <button
-              type="button"
-              onClick={() => setViewMode('table')}
-              title="Table View"
-              className={`inline-flex items-center gap-1.5 px-3 h-full text-xs font-medium rounded-md transition-colors ${
-                viewMode === 'table'
-                  ? 'bg-white dark:bg-slate-900 text-[#1E40AF] dark:text-blue-400 shadow-xs'
-                  : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
-              }`}
-            >
-              <List className="w-3.5 h-3.5" />
-              <span>Table</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode('cards')}
-              title="Cards View"
-              className={`inline-flex items-center gap-1.5 px-3 h-full text-xs font-medium rounded-md transition-colors ${
-                viewMode === 'cards'
-                  ? 'bg-white dark:bg-slate-900 text-[#1E40AF] dark:text-blue-400 shadow-xs'
-                  : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
-              }`}
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
-              <span>Cards</span>
-            </button>
-          </div>
+          <RoundedSlidingTabs
+            variant="segmented"
+            value={viewMode}
+            stretch={0}
+            blur={10}
+            label="Dossier view mode"
+            onValueChange={(id) => setViewMode(id as 'table' | 'cards')}
+            className="h-9"
+            buttonClassName="h-full px-3"
+            tabs={[
+              { id: 'table', label: 'Table', icon: <List className="w-3.5 h-3.5" />, title: 'Table View' },
+              { id: 'cards', label: 'Cards', icon: <LayoutGrid className="w-3.5 h-3.5" />, title: 'Cards View' },
+            ]}
+          />
 
-          <button
-            type="button"
+          <MotionButton
             onClick={onOpenNewStudentModal}
             className="inline-flex items-center justify-center gap-2 px-4 h-9 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2 shadow-xs whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             <span>Register New Student</span>
-          </button>
+          </MotionButton>
         </div>
       </div>
 
       {/* 2. Interactive Quick-Filter Stage Ribbon */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-thin">
-        <button
-          type="button"
-          onClick={() => setStageFilter('All')}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
-            stageFilter === 'All'
-              ? 'bg-[#1E40AF] dark:bg-blue-600 text-white border-[#1E40AF] dark:border-blue-600 shadow-xs'
-              : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]'
-          }`}
-        >
-          All Stages ({stageCounts.All || 0})
-        </button>
-
-        {(
-          [
-            'Document_Gathering',
-            'Apostille_Verification',
-            'University_Submitted',
-            'Admission_Granted',
-            'CoA_Received',
-            'Visa_Issued',
-          ] as VisaStage[]
-        ).map((stg) => {
-          const cfg = STAGE_CONFIG[stg];
-          const count = stageCounts[stg] || 0;
-          const isActive = stageFilter === stg;
-
-          return (
-            <button
-              key={stg}
-              type="button"
-              onClick={() => setStageFilter(isActive ? 'All' : stg)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
-                isActive
-                  ? 'bg-[#1E40AF] text-white border-[#1E40AF] shadow-xs'
-                  : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]'
-              }`}
-            >
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isActive ? 'bg-white' : cfg.dotColor
-                }`}
-              />
-              <span>{cfg.label}</span>
-              <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] tabular-nums ${
-                  isActive
-                    ? 'bg-white/20 text-white font-bold'
-                    : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#64748B] dark:text-slate-400'
-                }`}
-              >
-                {count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      <RoundedSlidingTabs
+        variant="cards"
+        value={stageFilter}
+        stretch={0}
+        blur={10}
+        label="Visa stage filter"
+        onValueChange={setStageFilter}
+        className="gap-2 pb-1 pt-0 scrollbar-thin"
+        indicatorClassName="rounded-md bg-[#1E40AF] dark:bg-blue-600 shadow-xs"
+        buttonClassName="px-3 h-[30px] rounded-md text-xs font-medium"
+        activeButtonClassName="text-white"
+        inactiveButtonClassName="bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]"
+        tabs={[
+          {
+            id: 'All',
+            label: `All Stages (${stageCounts.All || 0})`,
+          },
+          ...(
+            [
+              'Document_Gathering',
+              'Apostille_Verification',
+              'University_Submitted',
+              'Admission_Granted',
+              'CoA_Received',
+              'Visa_Issued',
+            ] as VisaStage[]
+          ).map((stg) => {
+            const cfg = STAGE_CONFIG[stg];
+            const count = stageCounts[stg] || 0;
+            const isActive = stageFilter === stg;
+            return {
+              id: stg,
+              label: cfg.label,
+              icon: (
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    isActive ? 'bg-white' : cfg.dotColor
+                  }`}
+                />
+              ),
+              trailing: (
+                <span
+                  className={`px-1.5 py-0.2 rounded text-[10px] tabular-nums ${
+                    isActive
+                      ? 'bg-white/20 text-white font-bold'
+                      : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#64748B] dark:text-slate-400'
+                  }`}
+                >
+                  {count}
+                </span>
+              ),
+            };
+          }),
+        ]}
+      />
 
       {/* 3. Comprehensive Search, Filters & Sorting Toolbar */}
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-4 text-xs shadow-[0_1px_2px_rgba(15,23,42,0.04)] space-y-3">
@@ -359,14 +343,13 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               className="w-full pl-9 pr-8 h-9 text-xs rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 placeholder:text-slate-400 focus:border-[#1E40AF] focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
             />
             {search && (
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded"
                 aria-label="Clear search"
               >
                 <X className="w-3.5 h-3.5" />
-              </button>
+              </MotionButton>
             )}
           </div>
 
@@ -424,24 +407,23 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                   </MorphSelectContent>
                 </MorphSelect>
               </div>
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => setSortAsc(!sortAsc)}
                 title={sortAsc ? 'Ascending' : 'Descending'}
+                aria-label={sortAsc ? 'Sort Ascending' : 'Sort Descending'}
                 className="h-9 w-9 flex items-center justify-center text-slate-500 hover:text-[#1E40AF] rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <ArrowUpDown className="w-3.5 h-3.5" />
-              </button>
+              </MotionButton>
             </div>
 
             {hasActiveFilters && (
-              <button
-                type="button"
+              <MotionButton
                 onClick={resetAllFilters}
                 className="h-9 px-3 text-xs text-[#DC2626] dark:text-red-400 hover:bg-[#DC2626]/10 rounded-lg font-medium transition-colors"
               >
                 Reset
-              </button>
+              </MotionButton>
             )}
           </div>
         </div>
@@ -490,13 +472,12 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                         </p>
                         {hasActiveFilters && (
                           <div className="pt-2">
-                            <button
-                              type="button"
+                            <MotionButton
                               onClick={resetAllFilters}
                               className="px-3 py-1.5 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                             >
                               Reset All Filters
-                            </button>
+                            </MotionButton>
                           </div>
                         )}
                       </div>
@@ -528,11 +509,10 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
 
                             {/* Passport & Term */}
                             <div className="flex flex-wrap items-center gap-1.5 text-xs text-[#64748B]">
-                              <button
-                                type="button"
+                              <MotionButton
                                 onClick={(e) => handleCopy(e, student.passportNumber)}
                                 title="Click to copy passport number"
-                                className="inline-flex items-center gap-1 text-xs tabular-nums text-[#64748B] dark:text-slate-300 hover:text-[#1E40AF] dark:hover:text-blue-400 transition-colors"
+                                className="inline-flex items-center gap-1 text-xs tabular-nums text-[#64748B] dark:text-slate-300 hover:text-[#1E40AF] dark:hover:text-blue-400 transition-colors rounded"
                               >
                                 <span>{student.passportNumber}</span>
                                 {copiedText === student.passportNumber ? (
@@ -540,7 +520,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                                 ) : (
                                   <Copy className="w-2.5 h-2.5 text-[#64748B] group-hover:text-[#0F172A]" />
                                 )}
-                              </button>
+                              </MotionButton>
                               <span className="text-[#64748B]" aria-hidden="true">
                                 ·
                               </span>
@@ -623,8 +603,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
 
                             <div className="pt-0.5">
                               {student.courierTrackingNumber ? (
-                                <button
-                                  type="button"
+                                <MotionButton
                                   onClick={(e) => handleCopy(e, student.courierTrackingNumber!)}
                                   title="Click to copy tracking number"
                                   className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs tabular-nums font-semibold bg-[#DCFCE7] text-[#16A34A] dark:text-emerald-400 border border-[#16A34A]/20 hover:bg-[#bbf7d0] transition-colors"
@@ -636,7 +615,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                                   ) : (
                                     <Copy className="w-2.5 h-2.5 opacity-60" />
                                   )}
-                                </button>
+                                </MotionButton>
                               ) : (
                                 <span className="inline-flex items-center gap-1 text-xs text-[#64748B] dark:text-slate-400">
                                   <Clock className="w-3 h-3" />
@@ -649,8 +628,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
 
                         {/* COLUMN 5: ACTION */}
                         <td className="py-3.5 px-4 align-middle text-right whitespace-nowrap">
-                          <button
-                            type="button"
+                          <MotionButton
                             onClick={(e) => {
                               e.stopPropagation();
                               onSelectStudent(student);
@@ -659,7 +637,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                           >
                             <span>Dossier</span>
                             <ChevronRight className="w-3.5 h-3.5" />
-                          </button>
+                          </MotionButton>
                         </td>
                       </tr>
                     );
@@ -678,13 +656,12 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
                 No candidate dossiers match the active filters
               </p>
-              <button
-                type="button"
+              <MotionButton
                 onClick={resetAllFilters}
                 className="mt-3 px-3 py-1.5 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
               >
                 Reset All Filters
-              </button>
+              </MotionButton>
             </div>
           ) : (
             filteredAndSorted.map((student) => {
@@ -727,15 +704,14 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                       <span className="text-[#64748B] dark:text-slate-400 text-xs">
                         Passport:
                       </span>
-                      <button
-                        type="button"
+                      <MotionButton
                         onClick={(e) => handleCopy(e, student.passportNumber)}
                         title="Click to copy"
-                        className="text-xs tabular-nums font-medium text-[#0F172A] dark:text-slate-200 hover:text-[#1E40AF] inline-flex items-center gap-1"
+                        className="text-xs tabular-nums font-medium text-[#0F172A] dark:text-slate-200 hover:text-[#1E40AF] inline-flex items-center gap-1 rounded"
                       >
                         <span>{student.passportNumber}</span>
                         <Copy className="w-2.5 h-2.5 text-[#64748B]" />
-                      </button>
+                      </MotionButton>
                     </div>
                   </div>
 
@@ -795,8 +771,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                       )}
                     </div>
 
-                    <button
-                      type="button"
+                    <MotionButton
                       onClick={(e) => {
                         e.stopPropagation();
                         onSelectStudent(student);
@@ -805,7 +780,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
                     >
                       <span>Dossier</span>
                       <ChevronRight className="w-3 h-3" />
-                    </button>
+                    </MotionButton>
                   </div>
                 </div>
               );

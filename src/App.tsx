@@ -98,7 +98,7 @@ import { DashboardSkeleton } from './components/SkeletonLoaders';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './components/ui/MorphSelect';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { playCompletionChime, playNotificationChime } from './utils/soundUtils';
-import { PageTransition, TabTransition, ToastTransition } from './components/animations';
+import { PageTransition, TabTransition, ToastTransition, MotionButton } from './components/animations';
 import { SidebarTabBar } from '@/components/tab-bar';
 import { SearchModal, type SearchModalItem, type SearchModalAction } from 'motion-brew/search-modal';
 import { AnimatePresence } from 'motion/react';
@@ -1968,7 +1968,7 @@ export function App() {
                   <span className="truncate">{isOffline ? 'Sync Failed' : connection.syncStatus}</span>
                 </span>
               </div>
-              <button
+              <MotionButton
                 type="button"
                 onClick={handleManualSyncNow}
                 title="Sync now with Google Sheets"
@@ -1980,11 +1980,11 @@ export function App() {
                   <RefreshCw className="w-2.5 h-2.5" />
                 )}
                 <span>Sync now</span>
-              </button>
+              </MotionButton>
             </div>
 
             {/* Collapse Sidebar Button */}
-            <button
+            <MotionButton
               type="button"
               onClick={toggleSidebar}
               title="Collapse sidebar (Ctrl+B)"
@@ -1998,12 +1998,12 @@ export function App() {
               <kbd className="hidden sm:inline-block px-1 py-0.5 text-[9.5px] text-[#64748B] dark:text-slate-500 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded">
                 Ctrl+B
               </kbd>
-            </button>
+            </MotionButton>
           </div>
         ) : (
           <div className="shrink-0 p-2 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-center gap-1.5 shadow-xs">
             {/* Collapsed Google Sheets Icon Button */}
-            <button
+            <MotionButton
               type="button"
               onClick={handleManualSyncNow}
               title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to sync now`}
@@ -2020,10 +2020,10 @@ export function App() {
                     : 'bg-[#16A34A]'
                 }`}
               />
-            </button>
+            </MotionButton>
 
             {/* Expand Sidebar Button */}
-            <button
+            <MotionButton
               type="button"
               onClick={toggleSidebar}
               title="Expand sidebar (Ctrl+B)"
@@ -2031,7 +2031,7 @@ export function App() {
               aria-label="Expand sidebar"
             >
               <PanelLeftOpen className="w-3.5 h-3.5 transition-transform group-hover:scale-105" />
-            </button>
+            </MotionButton>
           </div>
         )}
       </aside>
@@ -2062,7 +2062,7 @@ export function App() {
             />
 
             {/* Offline Simulator / Network Status */}
-            <button
+            <MotionButton
               type="button"
               onClick={() =>
                 setSettings((prev) => ({
@@ -2088,10 +2088,10 @@ export function App() {
                   <span>{connection.syncStatus}</span>
                 </>
               )}
-            </button>
+            </MotionButton>
 
             {/* Real-time In-App Notification Center Drawer Trigger */}
-            <button
+            <MotionButton
               type="button"
               onClick={() => setIsNotificationDrawerOpen(true)}
               className="relative p-2 text-[#0F172A] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-slate-800"
@@ -2104,10 +2104,10 @@ export function App() {
                   {pmsNotifications.filter((n) => !n.read).length}
                 </span>
               )}
-            </button>
+            </MotionButton>
 
             {/* Theme Toggle (Light / Dark / System) */}
-            <button
+            <MotionButton
               type="button"
               onClick={() => {
                 const nextTheme: 'light' | 'dark' | 'system' =
@@ -2139,10 +2139,10 @@ export function App() {
               ) : (
                 <Sun className="w-4 h-4 text-[#D97706]" />
               )}
-            </button>
+            </MotionButton>
 
             {/* Primary CTA: Assign Task / New Task */}
-            <button
+            <MotionButton
               type="button"
               onClick={() => {
                 setTaskContextStudentId(undefined);
@@ -2153,7 +2153,7 @@ export function App() {
             >
               <Plus className="w-4 h-4" />
               {currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
-            </button>
+            </MotionButton>
           </div>
         </header>
 
@@ -2203,7 +2203,7 @@ export function App() {
                   {/* List vs Calendar Switcher */}
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg">
-                      <button
+                      <MotionButton
                         type="button"
                         onClick={() => setDashboardViewMode('list')}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
@@ -2214,8 +2214,8 @@ export function App() {
                       >
                         <LayoutList className="w-3.5 h-3.5" />
                         List View
-                      </button>
-                      <button
+                      </MotionButton>
+                      <MotionButton
                         type="button"
                         onClick={() => setDashboardViewMode('calendar')}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
@@ -2226,7 +2226,7 @@ export function App() {
                       >
                         <CalendarIcon className="w-3.5 h-3.5" />
                         Calendar View
-                      </button>
+                      </MotionButton>
                     </div>
                   </div>
                 </div>
@@ -2379,12 +2379,12 @@ export function App() {
                   className="px-3 py-1.5 text-xs tabular-nums rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-200"
                 />
 
-                <button
+                <MotionButton
                   type="submit"
                   className="px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
                 >
                   Quick Add
-                </button>
+                </MotionButton>
               </form>
 
               <TabTransition viewKey={dashboardViewMode}>
@@ -2443,13 +2443,13 @@ export function App() {
                             </span>
                           )}
                         </div>
-                        <button
+                        <MotionButton
                           type="button"
                           onClick={() => setActiveNav('my-day')}
                           className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
                         >
                           Focus My Day →
-                        </button>
+                        </MotionButton>
                       </div>
 
                       {stats.todayTasks.length === 0 ? (
@@ -2514,13 +2514,13 @@ export function App() {
                             Connected Google Sheet
                           </h3>
                         </div>
-                        <button
+                        <MotionButton
                           type="button"
                           onClick={() => setActiveNav('sheets-connection')}
                           className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
                         >
                           Open Sheet Grid →
-                        </button>
+                        </MotionButton>
                       </div>
 
                       <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1 tabular-nums">
@@ -2635,7 +2635,7 @@ export function App() {
                     today ({stats.dailyCompletionPct}% complete)
                   </p>
                 </div>
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => {
                     setEditingTask(null);
@@ -2646,7 +2646,7 @@ export function App() {
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Schedule Task for Today
-                </button>
+                </MotionButton>
               </div>
 
               <div className="space-y-3">
@@ -2707,7 +2707,7 @@ export function App() {
                       </p>
                     </div>
 
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => {
                         setEditingTask(null);
@@ -2718,7 +2718,7 @@ export function App() {
                     >
                       <Plus className="w-3.5 h-3.5" />
                       Schedule Upcoming Task
-                    </button>
+                    </MotionButton>
                   </div>
 
                   {/* Horizon Summary Strip */}
@@ -2759,7 +2759,7 @@ export function App() {
                       Schedule your future tasks and deadlines to stay organized and keep Google Sheets in sync.
                     </p>
                     <div className="pt-2">
-                      <button
+                      <MotionButton
                         type="button"
                         onClick={() => {
                           setEditingTask(null);
@@ -2770,7 +2770,7 @@ export function App() {
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Create Your First Upcoming Task
-                      </button>
+                      </MotionButton>
                     </div>
                   </div>
                 ) : (
@@ -2965,25 +2965,25 @@ export function App() {
                       <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{stats.completedTasks.length}</span> tasks
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <button
+                      <MotionButton
                         type="button"
                         disabled={completedPage === 1}
                         onClick={() => setCompletedPage((p) => Math.max(1, p - 1))}
                         className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
                       >
                         Previous
-                      </button>
+                      </MotionButton>
                       <span className="px-2 font-medium text-[#0F172A] dark:text-slate-200 tabular-nums">
                         Page {completedPage} of {totalPages}
                       </span>
-                      <button
+                      <MotionButton
                         type="button"
                         disabled={completedPage >= totalPages}
                         onClick={() => setCompletedPage((p) => Math.min(totalPages, p + 1))}
                         className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
                       >
                         Next
-                      </button>
+                      </MotionButton>
                     </div>
                   </div>
                 )}
@@ -3203,14 +3203,14 @@ export function App() {
               <div className="font-semibold">{activeToast.title}</div>
               <div className="text-[#EFF6FF] truncate">{activeToast.message}</div>
             </div>
-            <button
+            <MotionButton
               type="button"
               onClick={() => setActiveToast(null)}
               className="text-[#EFF6FF]/80 hover:text-white ml-auto"
               aria-label="Dismiss notification"
             >
               <X className="w-3.5 h-3.5" />
-            </button>
+            </MotionButton>
           </ToastTransition>
         )}
       </AnimatePresence>

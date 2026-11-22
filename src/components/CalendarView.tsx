@@ -26,7 +26,7 @@ import {
   addDaysToIsoDate,
   formatMonthDayYear,
 } from '../utils/dateUtils';
-import { TabTransition, StaggerContainer, StaggerItem } from './animations';
+import { TabTransition, StaggerContainer, StaggerItem, MotionButton } from './animations';
 
 interface CalendarViewProps {
   tasks: Task[];
@@ -269,8 +269,7 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
 
         <div className="flex items-center gap-1.5">
           {/* Quick Complete / Restore Button */}
-          <button
-            type="button"
+          <MotionButton
             onClick={() => (isCompleted ? onRestorePending(task) : onRequestComplete(task))}
             title={isCompleted ? 'Restore to Pending' : 'Mark as Completed'}
             className={`p-1.5 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2 ${
@@ -281,41 +280,38 @@ const CalendarAgendaTaskItem: React.FC<CalendarAgendaTaskItemProps> = ({
             aria-label={isCompleted ? 'Restore task' : 'Mark task complete'}
           >
             <Check className={`w-3.5 h-3.5 ${isCompleted ? 'stroke-[2.5]' : ''}`} />
-          </button>
+          </MotionButton>
 
           {/* Quick Reschedule +1 Day */}
           {!isCompleted && (
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onQuickReschedule(task, 1)}
               title="Postpone deadline +1 Day"
               className="p-1.5 text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-blue-950/40 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
               aria-label="Postpone +1 day"
             >
               <CalendarPlus className="w-3.5 h-3.5" />
-            </button>
+            </MotionButton>
           )}
 
           {/* Primary View Details Button */}
-          <button
-            type="button"
+          <MotionButton
             onClick={() => onEdit(task)}
             className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
           >
             <span>View Details</span>
             <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          </MotionButton>
 
           {/* Delete Task */}
-          <button
-            type="button"
+          <MotionButton
             onClick={() => onDelete(task)}
             title="Delete task"
             className="p-1.5 text-[#64748B] hover:text-[#DC2626] hover:bg-[#FEE2E2] dark:hover:bg-rose-950/40 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             aria-label="Delete task"
           >
             <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          </MotionButton>
         </div>
       </div>
     </div>
@@ -406,39 +402,35 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <MotionButton
             onClick={handleJumpToday}
             className="h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-slate-300 bg-white border border-[#E2E8F0] dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
           >
             Today
-          </button>
+          </MotionButton>
           <div className="flex items-center border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden h-9">
-            <button
-              type="button"
+            <MotionButton
               onClick={handlePrevMonth}
               className="px-2.5 h-full text-[#64748B] dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               aria-label="Previous month"
             >
               <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
+            </MotionButton>
+            <MotionButton
               onClick={handleNextMonth}
               className="px-2.5 h-full text-[#64748B] dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-l border-[#E2E8F0] dark:border-slate-800"
               aria-label="Next month"
             >
               <ChevronRight className="w-4 h-4" />
-            </button>
+            </MotionButton>
           </div>
-          <button
-            type="button"
+          <MotionButton
             onClick={() => onCreateTaskForDate(selectedDateIso)}
             className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
           >
             <Plus className="w-4 h-4" />
             <span>Add Task</span>
-          </button>
+          </MotionButton>
         </div>
       </div>
 
@@ -556,14 +548,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 )}
               </p>
             </div>
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onCreateTaskForDate(selectedDateIso)}
               className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium text-[#1E40AF] dark:text-blue-300 bg-[#EFF6FF] dark:bg-blue-950/60 hover:bg-[#1E40AF] hover:text-white dark:hover:bg-blue-900/70 rounded-lg transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Task
-            </button>
+            </MotionButton>
           </div>
 
           {selectedDateTasks.length === 0 ? (
@@ -575,14 +566,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 Click the button below to schedule a task on this date and sync with Google Sheets.
               </p>
               <div className="pt-2">
-                <button
-                  type="button"
+                <MotionButton
                   onClick={() => onCreateTaskForDate(selectedDateIso)}
                   className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                 >
                   <Plus className="w-4 h-4" />
                   Create Task for {selectedDateIso}
-                </button>
+                </MotionButton>
               </div>
             </div>
           ) : (

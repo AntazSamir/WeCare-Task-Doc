@@ -12,7 +12,7 @@ import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentHandover, DocumentItemStatus } from '../types/pms';
 import { fetchHandoverDetails } from '../services/pmsService';
 import { formatTimestamp } from '../utils/dateUtils';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 interface HandoverDetailModalProps {
   handoverId: string | null;
@@ -113,32 +113,33 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
           <div className="flex items-center gap-2">
             {handover && (
               <>
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setShowPrintSlip(!showPrintSlip)}
                   className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-[#1E3A8A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   {showPrintSlip ? 'Back to Audit View' : 'Printable Slip'}
-                </button>
+                </MotionButton>
                 {showPrintSlip && (
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={handlePrint}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors"
                   >
                     Print
-                  </button>
+                  </MotionButton>
                 )}
               </>
             )}
-            <button
+            <MotionButton
               type="button"
               onClick={onClose}
-              className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md"
+              className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md transition-colors"
+              aria-label="Close modal"
             >
               <X className="w-4 h-4" />
-            </button>
+            </MotionButton>
           </div>
         </div>
 
@@ -220,7 +221,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                     </div>
                   </div>
                   {onOpenRequest && (
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => {
                         onClose();
@@ -230,7 +231,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                     >
                       <span>View Request {handover.requestId}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    </MotionButton>
                   )}
                 </div>
               )}
@@ -457,7 +458,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
           </div>
           <div className="flex items-center gap-2">
             {handover && canFollowUp && canFollowUp(handover) && onOpenFollowUp && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => {
                   onClose();
@@ -466,10 +467,10 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 className="px-3.5 py-2 text-xs font-semibold text-white bg-[#D97706] hover:bg-[#CF8B28] rounded-md transition-colors"
               >
                 Deliver Missing / Corrected Items
-              </button>
+              </MotionButton>
             )}
             {handover && canVerify && canVerify(handover) && onOpenVerify && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => {
                   onClose();
@@ -478,15 +479,15 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 className="px-3.5 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded-md transition-colors"
               >
                 Inspect & Acknowledge Receipt
-              </button>
+              </MotionButton>
             )}
-            <button
+            <MotionButton
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40"
+              className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40 transition-colors"
             >
               Close
-            </button>
+            </MotionButton>
           </div>
         </div>
     </ModalTransition>

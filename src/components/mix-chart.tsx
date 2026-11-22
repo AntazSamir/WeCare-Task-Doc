@@ -19,6 +19,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 import { type ClassValue, clsx } from "clsx";
 import { animate, AnimatePresence, motion, useAnimation, useInView, useMotionValue, useMotionValueEvent, useReducedMotion, type Variants } from "motion/react";
 import { twMerge } from "tailwind-merge";
+import { MotionButton } from "./animations";
 
 // cn(): merges Tailwind classes, later ones win.
 /** Merge Tailwind classes, letting later classes win conflicts. */
@@ -445,7 +446,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
       {/* Legend: each source switches on and off. */}
       <div className="mt-4 flex flex-wrap gap-1.5">
         {series.map((s, i) => (
-          <button
+          <MotionButton
             key={s.key}
             type="button"
             aria-pressed={visible[i]}
@@ -464,7 +465,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
             <span className={cn("transition-colors", visible[i] ? "text-[#242423] dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-500")}>
               {s.label}
             </span>
-          </button>
+          </MotionButton>
         ))}
       </div>
 

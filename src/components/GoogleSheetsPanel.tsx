@@ -26,7 +26,8 @@ import {
 import { tasksToGoogleSheetRows } from '../services/googleSheetsService';
 import { formatTimestamp } from '../utils/dateUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { TabTransition } from './animations';
+import { TabTransition, MotionButton } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 
 interface GoogleSheetsPanelProps {
   tasks: Task[];
@@ -217,8 +218,7 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
-            <button
-              type="button"
+            <MotionButton
               onClick={onSyncNow}
               disabled={connection.syncStatus === 'Syncing'}
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] disabled:opacity-60 rounded transition-colors whitespace-nowrap shrink-0"
@@ -229,23 +229,21 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                 <RefreshCw className="w-3.5 h-3.5" />
               )}
               {connection.syncStatus === 'Syncing' ? 'Syncing Sheet...' : 'Sync Now'}
-            </button>
+            </MotionButton>
 
-            <button
-              type="button"
+            <MotionButton
               onClick={onPullFromSheet}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#0F172A] dark:text-slate-200 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 border border-[#E2E8F0] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
             >
               Load Tasks from Sheet
-            </button>
+            </MotionButton>
 
-            <button
-              type="button"
+            <MotionButton
               onClick={onEnsureHeaders}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#0F172A] dark:text-slate-200 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 border border-[#E2E8F0] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
             >
               Verify 12 Headers
-            </button>
+            </MotionButton>
           </div>
         </div>
 
@@ -276,14 +274,13 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                   </MorphSelectContent>
                 </MorphSelect>
               </div>
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => setShowCreateSheetModal((v) => !v)}
                 className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-[#1E3A8A] dark:text-blue-300 bg-[#EFF6FF] dark:bg-blue-950/60 hover:bg-[#1E40AF]/25 dark:hover:bg-blue-900/70 rounded transition-colors whitespace-nowrap shrink-0"
               >
                 <FolderPlus className="w-3.5 h-3.5 text-[#1E40AF]" />
                 New Sheet
-              </button>
+              </MotionButton>
             </div>
           </div>
 
@@ -312,14 +309,13 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                   </MorphSelectContent>
                 </MorphSelect>
               </div>
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => setShowAddTabInput((v) => !v)}
                 className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-[#0F172A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 border border-[#E2E8F0] dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
               >
                 <Layers className="w-3.5 h-3.5 text-[#1E40AF]" />
                 + Tab
-              </button>
+              </MotionButton>
             </div>
           </div>
 
@@ -390,19 +386,18 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                 className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-xs tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
               />
             </div>
-            <button
+            <MotionButton
               type="submit"
               className="px-4 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded transition-colors"
             >
               Create & Initialize 12 Headers
-            </button>
-            <button
-              type="button"
+            </MotionButton>
+            <MotionButton
               onClick={() => setShowCreateSheetModal(false)}
               className="px-3 py-1.5 text-xs font-medium text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A]"
             >
               Cancel
-            </button>
+            </MotionButton>
           </form>
         )}
 
@@ -424,87 +419,69 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                 className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-xs tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
               />
             </div>
-            <button
+            <MotionButton
               type="submit"
               className="px-4 py-1.5 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded transition-colors"
             >
               Create Tab & Sync Tasks
-            </button>
-            <button
-              type="button"
+            </MotionButton>
+            <MotionButton
               onClick={() => setShowAddTabInput(false)}
               className="px-3 py-1.5 text-xs font-medium text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A]"
             >
               Cancel
-            </button>
+            </MotionButton>
           </form>
         )}
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md">
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('sheet-grid')}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              activeSubTab === 'sheet-grid'
-                ? 'bg-[#1E3A8A] dark:bg-slate-800 text-white shadow-xs'
-                : 'text-[#0F172A]/75 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-100'
-            }`}
-          >
-            <Table className="w-3.5 h-3.5" />
-            Live Google Sheet Grid ({sheetRows.length} rows)
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('connection-config')}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              activeSubTab === 'connection-config'
-                ? 'bg-[#1E3A8A] dark:bg-slate-800 text-white shadow-xs'
-                : 'text-[#0F172A]/75 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-100'
-            }`}
-          >
-            <KeyRound className="w-3.5 h-3.5" />
-            Google OAuth 2.0 & API Settings
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('sync-logs')}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              activeSubTab === 'sync-logs'
-                ? 'bg-[#1E3A8A] dark:bg-slate-800 text-white shadow-xs'
-                : 'text-[#0F172A]/75 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-100'
-            }`}
-          >
-            <History className="w-3.5 h-3.5" />
-            Sync Audit Log & Queue ({syncLogs.length})
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('setup-guide')}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
-              activeSubTab === 'setup-guide'
-                ? 'bg-[#1E3A8A] dark:bg-slate-800 text-white shadow-xs'
-                : 'text-[#0F172A]/75 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-100'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            Google Cloud & Windows PC Setup Guide
-          </button>
-        </div>
+        <RoundedSlidingTabs
+          variant="segmented"
+          value={activeSubTab}
+          stretch={0}
+          blur={10}
+          label="Google Sheets sub-sections"
+          onValueChange={(id) =>
+            setActiveSubTab(id as 'sheet-grid' | 'connection-config' | 'sync-logs' | 'setup-guide')
+          }
+          className="gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md"
+          indicatorClassName="rounded-md bg-[#1E3A8A] dark:bg-slate-800 shadow-xs"
+          buttonClassName="px-3.5 h-[30px] rounded-md text-xs font-medium"
+          activeButtonClassName="text-white dark:text-white"
+          inactiveButtonClassName="text-[#0F172A]/75 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-100"
+          tabs={[
+            {
+              id: 'sheet-grid',
+              label: `Live Google Sheet Grid (${sheetRows.length} rows)`,
+              icon: <Table className="w-3.5 h-3.5" />,
+            },
+            {
+              id: 'connection-config',
+              label: 'Google OAuth 2.0 & API Settings',
+              icon: <KeyRound className="w-3.5 h-3.5" />,
+            },
+            {
+              id: 'sync-logs',
+              label: `Sync Audit Log & Queue (${syncLogs.length})`,
+              icon: <History className="w-3.5 h-3.5" />,
+            },
+            {
+              id: 'setup-guide',
+              label: 'Google Cloud & Windows PC Setup Guide',
+              icon: <BookOpen className="w-3.5 h-3.5" />,
+            },
+          ]}
+        />
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <MotionButton
             onClick={onExportCsv}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 rounded transition-colors whitespace-nowrap shrink-0"
           >
             <Download className="w-3.5 h-3.5 text-[#1E40AF]" />
             Export .CSV
-          </button>
+          </MotionButton>
           <label className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 rounded transition-colors cursor-pointer whitespace-nowrap shrink-0">
             <Upload className="w-3.5 h-3.5 text-[#1E40AF]" />
             Import Sheet .CSV
@@ -702,13 +679,12 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
                   placeholder="e.g., 1234567890-abcdefg.apps.googleusercontent.com"
                   className="flex-1 rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-2 text-xs tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
                 />
-                <button
-                  type="button"
+                <MotionButton
                   onClick={handleLaunchGoogleOAuthPopup}
                   className="px-3.5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded transition-colors whitespace-nowrap shrink-0"
                 >
                   Sign in with Google OAuth 2.0
-                </button>
+                </MotionButton>
               </div>
             </div>
 
@@ -726,12 +702,12 @@ export const GoogleSheetsPanel: React.FC<GoogleSheetsPanelProps> = ({
             </div>
 
             <div className="flex items-center gap-3 pt-2">
-              <button
+              <MotionButton
                 type="submit"
                 className="px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded transition-colors"
               >
                 Save Connection Configuration
-              </button>
+              </MotionButton>
             </div>
           </form>
         </div>

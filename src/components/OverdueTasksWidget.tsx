@@ -18,6 +18,7 @@ import {
   getDaysDifference,
   getLocalTodayIso,
 } from '../utils/dateUtils';
+import { MotionButton } from './ui/MotionButton';
 
 const PriorityIndicator: React.FC<{ priority: TaskPriority }> = ({ priority }) => {
   const dotColor =
@@ -88,14 +89,14 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
         </div>
 
         {tasks.length > 1 && (
-          <button
+          <MotionButton
             type="button"
             onClick={onRescheduleAllToToday}
             className="text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 hover:text-[#1E3A8A] dark:hover:text-blue-300 hover:underline transition-colors inline-flex items-center gap-1"
           >
             <Sun className="w-3.5 h-3.5 text-[#D97706]" />
             <span>Move all to Today</span>
-          </button>
+          </MotionButton>
         )}
       </div>
 
@@ -174,7 +175,7 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                 )}
 
                 {/* Minimal Circular Checkbox */}
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => onRequestComplete(task)}
                   title="Click to complete task"
@@ -182,7 +183,7 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                   aria-label={`Complete task ${task.title}`}
                 >
                   <Check className="w-2.5 h-2.5 text-transparent group-hover/check:text-[#16A34A] dark:group-hover/check:text-emerald-400 transition-colors stroke-[2.5]" />
-                </button>
+                </MotionButton>
 
                 {/* Main Content Area */}
                 <div className="min-w-0 flex-1">
@@ -242,7 +243,7 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
 
                 {/* Quick Actions (Reveal on Hover) */}
                 <div className="flex items-center gap-0.5 shrink-0 pt-0.5 opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => onRescheduleToToday(task)}
                     title="Reschedule to Today"
@@ -250,9 +251,9 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                     aria-label="Move to today"
                   >
                     <Sun className="w-3.5 h-3.5 text-[#D97706]" />
-                  </button>
+                  </MotionButton>
 
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => onQuickReschedule(task, 1)}
                     title="Postpone +1 Day"
@@ -260,9 +261,9 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                     aria-label="Postpone 1 day"
                   >
                     <CalendarPlus className="w-3.5 h-3.5 text-[#1E40AF]" />
-                  </button>
+                  </MotionButton>
 
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => onEdit(task)}
                     title="Edit Task"
@@ -270,9 +271,9 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                     aria-label="Edit task"
                   >
                     <Edit3 className="w-3.5 h-3.5 text-[#D97706]" />
-                  </button>
+                  </MotionButton>
 
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => onDuplicate(task)}
                     title="Duplicate Task"
@@ -280,9 +281,9 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                     aria-label="Duplicate task"
                   >
                     <Copy className="w-3.5 h-3.5 text-[#1E40AF]" />
-                  </button>
+                  </MotionButton>
 
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => onDelete(task)}
                     title="Delete Task"
@@ -290,7 +291,7 @@ export const OverdueTasksWidget: React.FC<OverdueTasksWidgetProps> = ({
                     aria-label="Delete task"
                   >
                     <Trash2 className="w-3.5 h-3.5 text-[#DC2626]" />
-                  </button>
+                  </MotionButton>
                 </div>
               </div>
             </div>

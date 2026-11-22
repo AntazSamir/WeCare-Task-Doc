@@ -10,7 +10,8 @@ import {
   Building2,
 } from 'lucide-react';
 import { UserProfile } from '../types/pms';
-import { StaggerContainer, StaggerItem } from './animations';
+import { StaggerContainer, StaggerItem, MotionButton } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 
 interface ExecutiveDashboardProps {
   analytics: any;
@@ -149,22 +150,20 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
         </div>
 
         <div className="flex items-center gap-2.5">
-          <button
-            type="button"
+          <MotionButton
             onClick={onOpenNewStudentModal}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1769E8] hover:bg-[#36A5F5] dark:hover:bg-[var(--color-primary-blue-hover)] rounded-md transition-colors shadow-sm"
           >
             <Users className="w-3.5 h-3.5" />
             Register Student
-          </button>
-          <button
-            type="button"
+          </MotionButton>
+          <MotionButton
             onClick={onOpenNewTaskModal}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-[#123B78] dark:text-[var(--color-light-blue)] bg-[#DCEBFF] dark:bg-[var(--color-elevated-surface)] hover:bg-white dark:hover:bg-[var(--color-border)] dark:border dark:border-[var(--color-border)] rounded-md transition-colors shadow-sm"
           >
             <FileCheck2 className="w-3.5 h-3.5" />
             Assign Task
-          </button>
+          </MotionButton>
         </div>
       </div>
 
@@ -181,13 +180,12 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </div>
             <div className="mt-0.5 text-[11px] text-slate-500 flex items-center justify-between">
               <span>Spring & Fall 2027</span>
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => onNavigateTab('projects')}
                 className="text-[#1769E8] dark:text-blue-400 font-semibold hover:underline"
               >
                 View Projects →
-              </button>
+              </MotionButton>
             </div>
           </div>
         </StaggerItem>
@@ -203,13 +201,12 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </div>
             <div className="mt-0.5 text-[11px] text-slate-500 flex items-center justify-between">
               <span>{isAdmin ? 'Agency total' : 'Assigned to your roster'}</span>
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => onNavigateTab('students')}
                 className="text-[#1769E8] dark:text-blue-400 font-semibold hover:underline"
               >
                 Student CRM →
-              </button>
+              </MotionButton>
             </div>
           </div>
         </StaggerItem>
@@ -225,13 +222,12 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </div>
             <div className="mt-0.5 text-[11px] text-slate-500 flex items-center justify-between">
               <span>{analytics?.taskStats?.completed || 0} completed</span>
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => onNavigateTab('all-tasks')}
                 className="text-[#1769E8] dark:text-blue-400 font-semibold hover:underline"
               >
                 Task Board →
-              </button>
+              </MotionButton>
             </div>
           </div>
         </StaggerItem>
@@ -265,14 +261,13 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               Live progression of registered student dossiers from initial apostille document audit through embassy visa issuance
             </p>
           </div>
-          <button
-            type="button"
+          <MotionButton
             onClick={() => onNavigateTab('students')}
             className="text-xs text-[#1769E8] dark:text-blue-400 hover:underline font-medium inline-flex items-center gap-1"
           >
             Manage All Dossiers
             <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          </MotionButton>
         </div>
 
         {/* 8-Stage Funnel Horizontal Matrix */}
@@ -314,13 +309,12 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                 Approaching University Intake Deadlines
               </h3>
             </div>
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onNavigateTab('universities')}
               className="text-xs text-[#1769E8] dark:text-blue-400 font-medium hover:underline"
             >
               University Directory →
-            </button>
+            </MotionButton>
           </div>
 
           <div className="divide-y divide-[#E3EAF3] dark:divide-slate-800/70 max-h-[280px] overflow-y-auto pr-1">
@@ -369,53 +363,37 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                 Team Workload & Accountability
               </h3>
             </div>
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onNavigateTab('all-tasks')}
               className="text-xs text-[#1769E8] dark:text-blue-400 font-medium hover:underline inline-flex items-center gap-1"
             >
               <span>Manage Teams</span>
               <ArrowRight className="w-3 h-3" />
-            </button>
+            </MotionButton>
           </div>
 
           {/* Quick Team Filter Tabs & Workload Summary */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <div className="inline-flex p-0.5 bg-[#F4F2EE] dark:bg-slate-800 border border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px] font-medium">
-              <button
-                type="button"
-                onClick={() => setWorkloadTeamFilter('All')}
-                className={`px-2 py-0.5 rounded transition-colors ${
-                  workloadTeamFilter === 'All'
-                    ? 'bg-[#FFFFFF] dark:bg-slate-700 text-[#123B78] dark:text-slate-100 shadow-2xs font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
-                }`}
-              >
-                All ({rawWorkload.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setWorkloadTeamFilter('Admission Team')}
-                className={`px-2 py-0.5 rounded transition-colors ${
-                  workloadTeamFilter === 'Admission Team'
-                    ? 'bg-[#FFFFFF] dark:bg-slate-700 text-[#123B78] dark:text-slate-100 shadow-2xs font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
-                }`}
-              >
-                Admission
-              </button>
-              <button
-                type="button"
-                onClick={() => setWorkloadTeamFilter('Counseling Team')}
-                className={`px-2 py-0.5 rounded transition-colors ${
-                  workloadTeamFilter === 'Counseling Team'
-                    ? 'bg-[#FFFFFF] dark:bg-slate-700 text-[#123B78] dark:text-slate-100 shadow-2xs font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
-                }`}
-              >
-                Counseling
-              </button>
-            </div>
+            <RoundedSlidingTabs
+              variant="segmented"
+              value={workloadTeamFilter}
+              stretch={0}
+              blur={10}
+              label="Team workload filter"
+              onValueChange={(id) =>
+                setWorkloadTeamFilter(id as 'All' | 'Admission Team' | 'Counseling Team')
+              }
+              className="p-0.5 bg-[#F4F2EE] dark:bg-slate-800 border-[#E3EAF3] dark:border-slate-700 rounded-md text-[11px]"
+              indicatorClassName="rounded bg-white dark:bg-slate-700 shadow-2xs"
+              buttonClassName="px-2 h-[22px] text-[11px] rounded font-medium"
+              activeButtonClassName="text-[#123B78] dark:text-slate-100 font-semibold"
+              inactiveButtonClassName="text-slate-600 dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200"
+              tabs={[
+                { id: 'All', label: `All (${rawWorkload.length})` },
+                { id: 'Admission Team', label: 'Admission' },
+                { id: 'Counseling Team', label: 'Counseling' },
+              ]}
+            />
 
             <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
               <span className="font-semibold text-[#E9A23B] dark:text-amber-400">{totalPendingWorkload}</span> pending tasks

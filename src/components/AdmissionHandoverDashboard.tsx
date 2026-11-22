@@ -34,7 +34,8 @@ import {
 } from '../services/pmsService';
 import { formatTimestamp } from '../utils/dateUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { TabTransition } from './animations';
+import { TabTransition, MotionButton } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 
 export type AdmissionTab =
   | 'pending'
@@ -342,7 +343,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <MotionButton
             type="button"
             disabled={loading}
             onClick={() => {
@@ -357,22 +358,22 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
               <RefreshCw className="w-3.5 h-3.5 text-[#1E40AF]" />
             )}
             Refresh
-          </button>
+          </MotionButton>
 
-          <button
+          <MotionButton
             type="button"
             onClick={onOpenCreateRequest}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
             Request Documents from Counselor
-          </button>
+          </MotionButton>
         </div>
       </div>
 
       {/* Admission KPI Summary Strip */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5">
-        <button
+        <MotionButton
           type="button"
           onClick={() => handleTabChange('pending')}
           className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#D97706] dark:hover:border-amber-700 rounded-lg p-3.5 transition-colors"
@@ -384,9 +385,9 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
             {stats?.myPendingVerifications ?? 0}
           </div>
           <div className="mt-0.5 text-[11px] text-[#0F172A]/60 dark:text-slate-400">Awaiting physical inspection</div>
-        </button>
+        </MotionButton>
 
-        <button
+        <MotionButton
           type="button"
           onClick={() => handleTabChange('my-requests')}
           className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF] dark:hover:border-blue-700 rounded-lg p-3.5 transition-colors"
@@ -401,9 +402,9 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
           <div className="mt-0.5 text-[11px] text-[#0F172A]/60 dark:text-slate-400 tabular-nums">
             {stats?.myCompletedAdmissionRequests ?? 0} completed · {stats?.myTotalAdmissionRequests ?? 0} total
           </div>
-        </button>
+        </MotionButton>
 
-        <button
+        <MotionButton
           type="button"
           onClick={() => handleTabChange('received')}
           className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#16A34A] dark:hover:border-emerald-700 rounded-lg p-3.5 transition-colors"
@@ -415,9 +416,9 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
             {stats?.accepted ?? 0}
           </div>
           <div className="mt-0.5 text-[11px] text-[#0F172A]/60 dark:text-slate-400">Confirmed in Admission custody</div>
-        </button>
+        </MotionButton>
 
-        <button
+        <MotionButton
           type="button"
           onClick={() => handleTabChange('disputed')}
           className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#DC2626] dark:hover:border-rose-700 rounded-lg p-3.5 transition-colors"
@@ -429,7 +430,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
             {(stats?.partiallyReceived ?? 0) + (stats?.disputed ?? 0)}
           </div>
           <div className="mt-0.5 text-[11px] text-[#0F172A]/60 dark:text-slate-400">Open missing or disputed</div>
-        </button>
+        </MotionButton>
 
         <div
           onClick={() => isAdmin && handleTabChange('outbox')}
@@ -453,35 +454,39 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
       </div>
 
       {/* Role Segmented Navigation */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-2 flex flex-wrap items-center gap-1.5">
-        {tabs
-          .filter((t) => t.visible)
-          .map((tab) => {
-            const active = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleTabChange(tab.id)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-                  active
-                    ? 'bg-[#1E3A8A] text-white dark:bg-[#1E40AF] dark:text-white'
-                    : 'text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#EFF6FF]/60 hover:text-[#1E3A8A] dark:hover:bg-slate-800'
-                }`}
-              >
-                <span>{tab.label}</span>
-                {tab.count !== undefined && (
-                  <span
-                    className={`tabular-nums text-[11px] tabular-nums ${
-                      active ? 'text-[#EFF6FF]' : 'text-[#0F172A]/50 dark:text-slate-400'
-                    }`}
-                  >
-                    ({tab.count})
-                  </span>
-                )}
-              </button>
-            );
-          })}
+      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-2">
+        <RoundedSlidingTabs
+          variant="cards"
+          value={activeTab}
+          stretch={0}
+          blur={10}
+          label="Admission handover sections"
+          onValueChange={(id) => handleTabChange(id as AdmissionTab)}
+          className="flex-wrap gap-1.5 pb-0 pt-0 overflow-visible"
+          indicatorClassName="rounded-md bg-[#1E3A8A] dark:bg-[#1E40AF] shadow-xs"
+          buttonClassName="px-3 h-[30px] rounded-md text-xs font-semibold"
+          activeButtonClassName="text-white"
+          inactiveButtonClassName="border-transparent bg-transparent text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#EFF6FF]/60 hover:text-[#1E3A8A] dark:hover:bg-slate-800"
+          tabs={tabs
+            .filter((t) => t.visible)
+            .map((tab) => {
+              const active = activeTab === tab.id;
+              return {
+                id: tab.id,
+                label: tab.label,
+                trailing:
+                  tab.count !== undefined ? (
+                    <span
+                      className={`tabular-nums text-[11px] ${
+                        active ? 'text-[#EFF6FF]' : 'text-[#0F172A]/50 dark:text-slate-400'
+                      }`}
+                    >
+                      ({tab.count})
+                    </span>
+                  ) : undefined,
+              };
+            })}
+        />
       </div>
 
       {/* Content Area with smooth tab transition */}
@@ -510,7 +515,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
               </div>
             </div>
 
-            <button
+            <MotionButton
               type="button"
               disabled={isRetryingOutbox}
               onClick={handleRetryAllFailed}
@@ -518,7 +523,7 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Retry All Failed Jobs
-            </button>
+            </MotionButton>
           </div>
 
           {/* Jobs Table */}
@@ -579,14 +584,14 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                       </td>
                       <td className="px-3.5 py-2.5 text-right">
                         {(job.status === 'failed' || job.status === 'pending') && (
-                          <button
+                          <MotionButton
                             type="button"
                             disabled={isRetryingOutbox}
                             onClick={() => handleRetrySingleJob(job.id)}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-[#1E3A8A] bg-[#EFF6FF] hover:bg-[#1E40AF]/25 border border-[#1E40AF]/40 rounded-md"
+                            className="px-2.5 py-1 text-[11px] font-semibold text-[#1E3A8A] bg-[#EFF6FF] hover:bg-[#1E40AF]/25 border border-[#1E40AF]/40 rounded-md transition-colors"
                           >
                             Retry
-                          </button>
+                          </MotionButton>
                         )}
                       </td>
                     </tr>
@@ -747,13 +752,13 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                 className="w-full px-2 h-[28px] text-[11px] rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
               />
               {hasActiveFilters && (
-                <button
+                <MotionButton
                   type="button"
                   onClick={resetFilters}
-                  className="px-2 py-1.5 text-[11px] font-semibold text-[#1E40AF] hover:text-[#1E3A8A] dark:hover:text-slate-100"
+                  className="px-2 py-1.5 text-[11px] font-semibold text-[#1E40AF] hover:text-[#1E3A8A] dark:hover:text-slate-100 transition-colors"
                 >
                   Reset
-                </button>
+                </MotionButton>
               )}
             </div>
           </div>
@@ -807,13 +812,13 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                           className="hover:bg-[#F8FAFC] dark:hover:bg-slate-800/30 transition-colors"
                         >
                           <td className="px-4 py-3 align-top">
-                            <button
+                            <MotionButton
                               type="button"
                               onClick={() => onOpenRequestDetail(req.id)}
                               className="tabular-nums font-bold text-[#1E40AF] dark:text-[#1E40AF] hover:underline text-left"
                             >
                               {req.id}
-                            </button>
+                            </MotionButton>
                             {isAdmin && (
                               <div className="text-[10px] text-[#0F172A]/55 dark:text-slate-400 mt-0.5">
                                 By {req.requestedByName}
@@ -861,13 +866,13 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                               {req.status}
                             </div>
                             {req.linkedHandoverId ? (
-                              <button
+                              <MotionButton
                                 type="button"
                                 onClick={() => onOpenHandoverDetail(req.linkedHandoverId!)}
                                 className="mt-0.5 text-[11px] tabular-nums font-semibold text-[#1E40AF] dark:text-[#1E40AF] hover:underline"
                               >
                                 {req.linkedHandoverId} ({req.linkedHandoverStatus})
-                              </button>
+                              </MotionButton>
                             ) : (
                               <div className="mt-0.5 text-[11px] text-[#0F172A]/50 dark:text-slate-400">
                                 Pending counselor submission
@@ -878,22 +883,22 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                           <td className="px-4 py-3 align-top text-right whitespace-nowrap">
                             <div className="inline-flex items-center gap-1.5">
                               {canInspectLinked && req.linkedHandoverId && (
-                                <button
+                                <MotionButton
                                   type="button"
                                   onClick={() => onOpenHandoverDetail(req.linkedHandoverId!)}
                                   className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded-md transition-colors"
                                 >
                                   Inspect Handover
-                                </button>
+                                </MotionButton>
                               )}
-                              <button
+                              <MotionButton
                                 type="button"
                                 onClick={() => onOpenRequestDetail(req.id)}
                                 className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#1E3A8A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors"
                               >
                                 <span>Details</span>
                                 <ChevronRight className="w-3 h-3" />
-                              </button>
+                              </MotionButton>
                             </div>
                           </td>
                         </tr>
@@ -953,25 +958,25 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                           className="hover:bg-[#F8FAFC] dark:hover:bg-slate-800/30 transition-colors"
                         >
                           <td className="px-4 py-3 align-top">
-                            <button
+                            <MotionButton
                               type="button"
                               onClick={() => onOpenHandoverDetail(h.id)}
                               className="tabular-nums font-bold text-[#1E40AF] dark:text-[#1E40AF] hover:underline text-left"
                             >
                               {h.id}
-                            </button>
+                            </MotionButton>
                             <div className="text-[10px] tabular-nums text-[#0F172A]/50 dark:text-slate-400 mt-0.5">
                               v{h.version}
                               {h.packageSealNumber ? ` · ${h.packageSealNumber}` : ''}
                             </div>
                             {h.requestId && (
-                              <button
+                              <MotionButton
                                 type="button"
                                 onClick={() => onOpenRequestDetail(h.requestId!)}
                                 className="mt-0.5 block text-[10px] tabular-nums font-semibold text-[#1E3A8A] dark:text-[#1E40AF] hover:underline"
                               >
                                 Req: {h.requestId}
-                              </button>
+                              </MotionButton>
                             )}
                           </td>
 
@@ -1022,22 +1027,22 @@ export const AdmissionHandoverDashboard: React.FC<AdmissionHandoverDashboardProp
                           <td className="px-4 py-3 align-top text-right whitespace-nowrap">
                             <div className="inline-flex items-center gap-1.5">
                               {canVerifyThis && (
-                                <button
+                                <MotionButton
                                   type="button"
                                   onClick={() => onOpenVerify(h)}
                                   className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded-md transition-colors"
                                 >
                                   Inspect & Verify
-                                </button>
+                                </MotionButton>
                               )}
-                              <button
+                              <MotionButton
                                 type="button"
                                 onClick={() => onOpenHandoverDetail(h.id)}
                                 className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#1E3A8A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors"
                               >
                                 <span>Manifest</span>
                                 <ChevronRight className="w-3 h-3" />
-                              </button>
+                              </MotionButton>
                             </div>
                           </td>
                         </tr>

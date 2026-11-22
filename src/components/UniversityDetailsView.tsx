@@ -28,7 +28,8 @@ import {
   ChevronDown,
   CheckCircle2,
 } from 'lucide-react';
-import { PageTransition, TabTransition, ModalTransition, ToastTransition } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
+import { PageTransition, TabTransition, ModalTransition, ToastTransition, MotionButton } from './animations';
 import { AnimatePresence } from 'motion/react';
 import {
   AdmissionIntake,
@@ -182,14 +183,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <div className="text-sm font-semibold text-red-600 dark:text-red-400">
           {error || 'University profile not found'}
         </div>
-        <button
+        <MotionButton
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200"
+          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Directory
-        </button>
+        </MotionButton>
       </div>
     );
   }
@@ -214,18 +215,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
     <PageTransition viewKey={universityId} className="space-y-3.5">
 
       <div className="flex items-center justify-between gap-4">
-        <button
+        <MotionButton
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all shadow-xs group"
+          className="inline-flex items-center gap-2 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors shadow-xs group"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5 text-slate-600 dark:text-slate-300" />
           <span>Back to Universities</span>
-        </button>
+        </MotionButton>
 
         <div className="flex items-center gap-2">
           {isAdmin && (
-            <button
+            <MotionButton
               type="button"
               onClick={handleReverify}
               disabled={isVerifying}
@@ -234,18 +235,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             >
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               <span>{isVerifying ? 'Re-verifying...' : 'Re-verify Criteria'}</span>
-            </button>
+            </MotionButton>
           )}
 
           {isAdmin && (
-            <button
+            <MotionButton
               type="button"
               onClick={() => setShowEditUniModal(true)}
               className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
             >
               <Edit2 className="w-3.5 h-3.5" />
               <span>Edit Info</span>
-            </button>
+            </MotionButton>
           )}
         </div>
       </div>
@@ -326,113 +327,27 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 text-xs">
-        <button
-          type="button"
-          onClick={() => setActiveTab('intakes')}
-          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-            activeTab === 'intakes'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <Calendar className="w-3.5 h-3.5" />
-          <span>Current Intake</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('programs')}
-          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-            activeTab === 'programs'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <GraduationCap className="w-3.5 h-3.5" />
-          <span>Programs</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('tuition')}
-          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-            activeTab === 'tuition'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <DollarSign className="w-3.5 h-3.5" />
-          <span>Tuition & Fees</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('refund')}
-          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-            activeTab === 'refund'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Refund Policy</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('bank')}
-          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-            activeTab === 'bank'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <Building2 className="w-3.5 h-3.5" />
-          <span>Bank Details</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('documents')}
-          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-            activeTab === 'documents'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <FileText className="w-3.5 h-3.5" />
-          <span>Documents</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('dates')}
-          className={`inline-flex items-center gap-1.5 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-            activeTab === 'dates'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <Clock className="w-3.5 h-3.5" />
-          <span>Important Dates</span>
-        </button>
-
-        <div className="relative inline-block text-left">
-          <button
-            type="button"
-            onClick={() => setActiveTab('applicants')}
-            className={`inline-flex items-center gap-1 px-3 h-[28px] box-border rounded-md font-medium transition-all shrink-0 ${
-              activeTab === 'applicants'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-            }`}
-          >
-            <span>More ({applicants.length})</span>
-            <ChevronDown className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
+      <RoundedSlidingTabs
+        value={activeTab}
+        stretch={0}
+        blur={10}
+        label="University details sections"
+        onValueChange={(id) => setActiveTab(id as TabType)}
+        tabs={[
+          { id: 'intakes', label: 'Current Intake', icon: <Calendar className="w-3.5 h-3.5" /> },
+          { id: 'programs', label: 'Programs', icon: <GraduationCap className="w-3.5 h-3.5" /> },
+          { id: 'tuition', label: 'Tuition & Fees', icon: <DollarSign className="w-3.5 h-3.5" /> },
+          { id: 'refund', label: 'Refund Policy', icon: <ShieldCheck className="w-3.5 h-3.5" /> },
+          { id: 'bank', label: 'Bank Details', icon: <Building2 className="w-3.5 h-3.5" /> },
+          { id: 'documents', label: 'Documents', icon: <FileText className="w-3.5 h-3.5" /> },
+          { id: 'dates', label: 'Important Dates', icon: <Clock className="w-3.5 h-3.5" /> },
+          {
+            id: 'applicants',
+            label: `More (${applicants.length})`,
+            trailing: <ChevronDown className="w-3.5 h-3.5" />,
+          },
+        ]}
+      />
 
       <TabTransition viewKey={activeTab}>
 
@@ -562,7 +477,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 text-center">
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => {
                       if (isAdmin) {
@@ -574,7 +489,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   >
                     <span>View All Intakes</span>
                     <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
+                  </MotionButton>
                 </div>
               </div>
 
@@ -586,14 +501,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       <GraduationCap className="w-4 h-4 text-blue-600" />
                       <span className="font-bold text-sm">Available Programs</span>
                     </div>
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => setActiveTab('programs')}
                       className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
                     >
                       <span>View All Programs</span>
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    </MotionButton>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-2.5">
@@ -728,7 +643,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                 <div className="pt-2 text-right">
                   {isAdmin && (
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => {
                         setEditingProgram(null);
@@ -738,7 +653,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     >
                       <Plus className="w-3 h-3" />
                       <span>Configure Programs</span>
-                    </button>
+                    </MotionButton>
                   )}
                 </div>
               </div>
@@ -798,14 +713,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                 {/* Footer View Policy Details Link Button matching reference */}
                 <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 text-center">
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => setActiveTab('refund')}
-                    className="w-full py-2 px-3 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-slate-50 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200/60 dark:border-slate-700/60 rounded-xl transition-all inline-flex items-center justify-center gap-1"
+                    className="w-full py-2 px-3 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-slate-50 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200/60 dark:border-slate-700/60 rounded-xl transition-colors inline-flex items-center justify-center gap-1"
                   >
                     <span>View Policy Details</span>
                     <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
+                  </MotionButton>
                 </div>
               </div>
             </div>
@@ -820,14 +735,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       <Building2 className="w-4 h-4 text-blue-600" />
                       <span>Bank Details</span>
                     </div>
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => setActiveTab('bank')}
                       className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
                     >
                       <span>View All</span>
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    </MotionButton>
                   </div>
 
                   {/* Bank Name with KB symbol icon */}
@@ -874,7 +789,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                 {/* 1-click Copy Details button matching mockup */}
                 <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => {
                       const text = `Bank: ${bankDetails?.bankName || 'Kookmin Bank'}\nHolder: ${bankDetails?.accountHolder || 'Seoul National University'}\nAccount: ${bankDetails?.accountNumber || '123-456-7890'}\nSWIFT: ${bankDetails?.swiftCode || 'CZNBKRSE'}`;
@@ -893,7 +808,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         <span>Copy Details</span>
                       </>
                     )}
-                  </button>
+                  </MotionButton>
                 </div>
               </div>
 
@@ -905,14 +820,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       <Clock className="w-4 h-4 text-blue-600" />
                       <span>Important Dates</span>
                     </div>
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => setActiveTab('dates')}
                       className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
                     >
                       <span>View Calendar</span>
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    </MotionButton>
                   </div>
 
                   {/* Dates list */}
@@ -970,14 +885,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       <FileText className="w-4 h-4 text-blue-600" />
                       <span>Documents</span>
                     </div>
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => setActiveTab('documents')}
                       className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
                     >
                       <span>View All</span>
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    </MotionButton>
                   </div>
 
                   {/* Documents List */}
@@ -1058,14 +973,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                 <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
                   {isAdmin && (
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => setShowAddDocModal(true)}
                       className="text-xs text-slate-400 hover:text-blue-600 inline-flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" />
                       <span>Upload Document</span>
-                    </button>
+                    </MotionButton>
                   )}
                 </div>
               </div>
@@ -1089,25 +1004,25 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
             <div className="flex items-center gap-2">
               {/* Program Segmented Filters */}
-              <div className="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs h-[28px] box-border">
-                {['All', 'KLP', 'Undergraduate', 'Graduate', 'Pathway'].map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setProgramFilter(cat)}
-                    className={`px-2.5 h-[24px] box-border inline-flex items-center font-medium rounded-md transition-colors ${
-                      programFilter === cat
-                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+              <RoundedSlidingTabs
+                variant="segmented"
+                value={programFilter}
+                stretch={0}
+                blur={10}
+                label="Program category filter"
+                onValueChange={setProgramFilter}
+                className="h-[28px] p-0.5 bg-slate-100 dark:bg-slate-800 border-transparent dark:border-slate-700"
+                buttonClassName="px-2.5 h-[22px] text-xs rounded-md"
+                activeButtonClassName="text-slate-900 dark:text-slate-100 font-medium"
+                inactiveButtonClassName="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                tabs={['All', 'KLP', 'Undergraduate', 'Graduate', 'Pathway'].map((cat) => ({
+                  id: cat,
+                  label: cat,
+                }))}
+              />
 
               {isAdmin && (
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => {
                     setEditingProgram(null);
@@ -1117,7 +1032,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Add Program
-                </button>
+                </MotionButton>
               )}
             </div>
           </div>
@@ -1146,7 +1061,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                     {isAdmin && (
                       <div className="flex items-center gap-1">
-                        <button
+                        <MotionButton
                           type="button"
                           onClick={() => {
                             setEditingProgram(prog);
@@ -1156,15 +1071,15 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           title="Edit Program"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
+                        </MotionButton>
+                        <MotionButton
                           type="button"
                           onClick={() => handleDeleteProgram(prog.id)}
                           className="p-1 text-slate-400 hover:text-red-600 rounded"
                           title="Delete Program"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        </MotionButton>
                       </div>
                     )}
                   </div>
@@ -1233,7 +1148,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <span className="text-[11px] text-slate-400 tabular-nums">
                     Visa: {prog.degreeLevel.includes('D-4') ? 'D-4-1 (General Trainee)' : 'D-2 (Student Visa)'}
                   </span>
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => {
                       if (onApplyStudentForProgram) {
@@ -1244,7 +1159,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Apply Candidate
-                  </button>
+                  </MotionButton>
                 </div>
               </div>
             ))}
@@ -1265,14 +1180,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </p>
             </div>
             {isAdmin && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowEditRefundModal(true)}
                 className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 Edit Refund Terms
-              </button>
+              </MotionButton>
             )}
           </div>
 
@@ -1389,14 +1304,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </p>
             </div>
             {isAdmin && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowEditBankModal(true)}
                 className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 Edit Bank Details
-              </button>
+              </MotionButton>
             )}
           </div>
 
@@ -1429,7 +1344,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </span>
                   <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 font-semibold text-slate-800 dark:text-slate-200">
                     <span>{bankDetails?.accountHolder || uni.nameEn}</span>
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => handleCopy(bankDetails?.accountHolder || uni.nameEn, 'holder')}
                       className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0"
@@ -1445,7 +1360,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           <span>Copy</span>
                         </>
                       )}
-                    </button>
+                    </MotionButton>
                   </div>
                 </div>
 
@@ -1455,7 +1370,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </span>
                   <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 tabular-nums font-bold text-sm text-slate-900 dark:text-slate-100">
                     <span>{bankDetails?.accountNumber || '140-002-881920 (Virtual)'}</span>
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => handleCopy(bankDetails?.accountNumber || '140-002-881920', 'acct')}
                       className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0"
@@ -1471,7 +1386,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           <span>Copy</span>
                         </>
                       )}
-                    </button>
+                    </MotionButton>
                   </div>
                 </div>
 
@@ -1481,7 +1396,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </span>
                   <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 tabular-nums font-bold text-sm text-purple-600 dark:text-purple-400">
                     <span>{bankDetails?.swiftCode || 'SHBKKRSE'}</span>
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => handleCopy(bankDetails?.swiftCode || 'SHBKKRSE', 'swift')}
                       className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0"
@@ -1497,7 +1412,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           <span>Copy</span>
                         </>
                       )}
-                    </button>
+                    </MotionButton>
                   </div>
                 </div>
 
@@ -1563,14 +1478,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </p>
             </div>
             {isAdmin && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowAddDocModal(true)}
                 className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Upload / Link Document
-              </button>
+              </MotionButton>
             )}
           </div>
 
@@ -1615,14 +1530,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     <Download className="w-4 h-4" />
                   </a>
                   {isAdmin && (
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => handleDeleteDoc(doc.id)}
                       className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors"
                       title="Delete Document"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </button>
+                    </MotionButton>
                   )}
                 </div>
               </div>
@@ -1645,7 +1560,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </p>
             </div>
             {isAdmin && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => {
                   setEditingIntake(null);
@@ -1655,7 +1570,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Intake Schedule
-              </button>
+              </MotionButton>
             )}
           </div>
 
@@ -1870,13 +1785,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 <BookOpen className="w-4 h-4 text-blue-600" />
                 {editingProgram ? 'Edit Academic / Language Program' : 'Add New Academic Program'}
               </h3>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowProgramModal(false)}
                 className="p-1 text-slate-400 hover:text-slate-700 rounded"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form
@@ -2046,19 +1961,19 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setShowProgramModal(false)}
                   className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
                   className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
                 >
                   {editingProgram ? 'Update Program' : 'Create Program'}
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,
@@ -2078,13 +1993,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 <Percent className="w-4 h-4 text-blue-600" />
                 Configure University Refund Policy & Regulations
               </h3>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowEditRefundModal(false)}
                 className="p-1 text-slate-400 hover:text-slate-700 rounded"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form
@@ -2192,19 +2107,19 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setShowEditRefundModal(false)}
                   className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
                   className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
                 >
                   Save Refund Policy
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,
@@ -2224,13 +2139,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 <CreditCard className="w-4 h-4 text-emerald-600" />
                 Configure Institutional Banking & Wire Instructions
               </h3>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowEditBankModal(false)}
                 className="p-1 text-slate-400 hover:text-slate-700 rounded"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form
@@ -2357,19 +2272,19 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setShowEditBankModal(false)}
                   className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
                   className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
                 >
                   Save Banking Details
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,
@@ -2389,13 +2304,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 <Calendar className="w-4 h-4 text-blue-600" />
                 {editingIntake ? 'Edit Admission Intake Schedule' : 'Configure New University Admission Intake'}
               </h3>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowIntakeModal(false)}
                 className="p-1 text-slate-400 hover:text-slate-700 rounded"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form
@@ -2572,19 +2487,19 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setShowIntakeModal(false)}
                   className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
                   className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
                 >
                   {editingIntake ? 'Save Changes' : 'Create Intake'}
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,
@@ -2604,13 +2519,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 <FileText className="w-4 h-4 text-blue-600" />
                 Attach University Circular / Admission Guide
               </h3>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setShowAddDocModal(false)}
                 className="p-1 text-slate-400 hover:text-slate-700 rounded"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form
@@ -2697,19 +2612,19 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setShowAddDocModal(false)}
                   className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
                   className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
                 >
                   Attach Document
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,

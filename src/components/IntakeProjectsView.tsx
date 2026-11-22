@@ -10,7 +10,7 @@ import { Spinner } from '@astryxdesign/core/Spinner';
 import { IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createProject } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { ModalTransition, StaggerContainer, StaggerItem } from './animations';
+import { ModalTransition, StaggerContainer, StaggerItem, MotionButton } from './animations';
 
 interface IntakeProjectsViewProps {
   projects: IntakeProject[];
@@ -90,14 +90,13 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
         </div>
 
         {isAdmin && (
-          <button
-            type="button"
+          <MotionButton
             onClick={() => setShowCreateModal(true)}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded transition-colors shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             New Intake Campaign
-          </button>
+          </MotionButton>
         )}
       </div>
 
@@ -193,13 +192,13 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                 <Building2 className="w-4 h-4 text-[#1E40AF]" />
                 Initialize New University Intake Project
               </h3>
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => setShowCreateModal(false)}
                 className="p-1 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
+                aria-label="Close modal"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form onSubmit={handleCreateSubmit} className="space-y-3.5 text-xs">
@@ -298,9 +297,8 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                     .map((t) => {
                       const isSelected = selectedConsultants.includes(t.id);
                       return (
-                        <button
+                        <MotionButton
                           key={t.id}
-                          type="button"
                           onClick={() => {
                             if (isSelected) {
                               setSelectedConsultants(selectedConsultants.filter((id) => id !== t.id));
@@ -315,7 +313,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                           }`}
                         >
                           {t.name}
-                        </button>
+                        </MotionButton>
                       );
                     })}
                 </div>
@@ -335,21 +333,20 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-                <button
-                  type="button"
+                <MotionButton
                   onClick={() => setShowCreateModal(false)}
                   className="px-3.5 py-1.5 text-xs text-[#0F172A] dark:text-slate-400 hover:bg-[#EFF6FF]/40 rounded"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
                   disabled={isSubmitting}
                   className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded disabled:opacity-50 transition-colors"
                 >
                   {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
                   {isSubmitting ? 'Creating...' : 'Initialize Project'}
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,

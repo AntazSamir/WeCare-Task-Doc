@@ -15,6 +15,8 @@ import {
   getDaysDifference,
   getLocalTodayIso,
 } from '../utils/dateUtils';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
+import { MotionButton } from './animations';
 const PriorityIndicator: React.FC<{ priority: TaskPriority }> = ({ priority }) => {
   const dotColor =
     priority === 'High'
@@ -118,50 +120,34 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
 
         {/* Minimal Text Filter Tabs & View All */}
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1 text-[11px]">
-            <button
-              type="button"
-              onClick={() => setFilter('all')}
-              className={`px-2 py-0.5 rounded-md transition-colors ${
-                filter === 'all'
-                  ? 'text-[#1E3A8A] dark:text-slate-100 font-semibold bg-[#EFF6FF] dark:bg-slate-800'
-                  : 'text-[#0F172A]/65 hover:text-[#1E3A8A] dark:hover:text-slate-300'
-              }`}
-            >
-              All
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter('7days')}
-              className={`px-2 py-0.5 rounded-md transition-colors ${
-                filter === '7days'
-                  ? 'text-[#1E3A8A] dark:text-slate-100 font-semibold bg-[#EFF6FF] dark:bg-slate-800'
-                  : 'text-[#0F172A]/65 hover:text-[#1E3A8A] dark:hover:text-slate-300'
-              }`}
-            >
-              Next 7d
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter('high')}
-              className={`px-2 py-0.5 rounded-md transition-colors ${
-                filter === 'high'
-                  ? 'text-[#1E3A8A] dark:text-slate-100 font-semibold bg-[#EFF6FF] dark:bg-slate-800'
-                  : 'text-[#0F172A]/65 hover:text-[#1E3A8A] dark:hover:text-slate-300'
-              }`}
-            >
-              High
-            </button>
+          <div className="hidden sm:block">
+            <RoundedSlidingTabs
+              variant="segmented"
+              value={filter}
+              stretch={0}
+              blur={10}
+              label="Deadline filter"
+              onValueChange={(id) => setFilter(id as FilterOption)}
+              className="gap-1 p-0.5 bg-transparent dark:bg-transparent border-transparent text-[11px]"
+              indicatorClassName="rounded-md bg-[#EFF6FF] dark:bg-slate-800 shadow-none"
+              buttonClassName="px-2 h-[24px] rounded-md text-[11px]"
+              activeButtonClassName="text-[#1E3A8A] dark:text-slate-100 font-semibold"
+              inactiveButtonClassName="text-[#0F172A]/65 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-300"
+              tabs={[
+                { id: 'all', label: 'All' },
+                { id: '7days', label: 'Next 7d' },
+                { id: 'high', label: 'High' },
+              ]}
+            />
           </div>
 
-          <button
-            type="button"
+          <MotionButton
             onClick={onViewAll}
             className="inline-flex items-center gap-1 text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 hover:text-[#1E3A8A] dark:hover:text-blue-300 transition-colors whitespace-nowrap shrink-0 group"
           >
             <span>View All</span>
             <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-          </button>
+          </MotionButton>
         </div>
       </div>
 
@@ -177,13 +163,12 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
                 ? 'No upcoming high-priority deadlines'
                 : 'No upcoming deadlines on your radar'}
             </p>
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onCreateTaskWithDate(todayIso)}
               className="text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
             >
               + Schedule a new deadline
-            </button>
+            </MotionButton>
           </div>
         ) : (
           displayedTasks.map((task) => {
@@ -201,15 +186,14 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
               >
                 <div className="flex items-start gap-3">
                   {/* Minimal Circular Checkbox */}
-                  <button
-                    type="button"
+                  <MotionButton
                     onClick={() => onRequestComplete(task)}
                     title="Click to complete task"
                     className="mt-0.5 w-4 h-4 rounded-full border border-[#E2E8F0] dark:border-slate-600 hover:border-[#16A34A] hover:bg-[#16A34A]/10 dark:hover:bg-emerald-950/40 bg-[#FFFFFF] dark:bg-slate-900 flex items-center justify-center transition-colors shrink-0 group/check focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#1E40AF]"
                     aria-label={`Complete task ${task.title}`}
                   >
                     <Check className="w-2.5 h-2.5 text-transparent group-hover/check:text-[#16A34A] dark:group-hover/check:text-emerald-400 transition-colors stroke-[2.5]" />
-                  </button>
+                  </MotionButton>
 
                   {/* Main Content Area */}
                   <div className="min-w-0 flex-1">
@@ -283,25 +267,23 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
 
                   {/* Quick Actions (Reveal on Hover) */}
                   <div className="flex items-center gap-0.5 shrink-0 pt-0.5 opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                    <button
-                      type="button"
+                    <MotionButton
                       onClick={() => onQuickReschedule(task, 1)}
                       title="Postpone +1 Day"
                       className="p-1.5 text-[#0F172A]/50 hover:text-[#1E40AF] dark:hover:text-blue-400 hover:bg-[#EFF6FF]/70 dark:hover:bg-slate-800 rounded-md transition-colors"
                       aria-label="Postpone 1 day"
                     >
                       <CalendarPlus className="w-3.5 h-3.5 text-[#1E40AF]" />
-                    </button>
+                    </MotionButton>
 
-                    <button
-                      type="button"
+                    <MotionButton
                       onClick={() => onEdit(task)}
                       title="Edit task"
                       className="p-1.5 text-[#0F172A]/50 hover:text-[#D97706] dark:hover:text-amber-400 hover:bg-[#D97706]/10 dark:hover:bg-slate-800 rounded-md transition-colors"
                       aria-label="Edit task"
                     >
                       <Edit3 className="w-3.5 h-3.5 text-[#D97706]" />
-                    </button>
+                    </MotionButton>
                   </div>
                 </div>
               </div>
@@ -312,20 +294,18 @@ export const UpcomingDeadlinesWidget: React.FC<UpcomingDeadlinesWidgetProps> = (
 
       {/* Widget Footer */}
       <div className="px-5 py-2.5 bg-[#F8FAFC] dark:bg-slate-900/60 border-t border-[#E2E8F0] dark:border-slate-800/80 flex items-center justify-between text-xs">
-        <button
-          type="button"
+        <MotionButton
           onClick={() => onCreateTaskWithDate(todayIso)}
           className="text-[11px] font-medium text-[#0F172A]/70 hover:text-[#1E3A8A] dark:hover:text-slate-200 transition-colors"
         >
           + Schedule a deadline
-        </button>
-        <button
-          type="button"
+        </MotionButton>
+        <MotionButton
           onClick={onViewAll}
           className="text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
         >
           Open Schedule →
-        </button>
+        </MotionButton>
       </div>
     </div>
   );

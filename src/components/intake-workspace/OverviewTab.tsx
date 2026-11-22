@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { INTAKE_WORKFLOW_STAGES, IntakeWorkspaceData } from '../../types/pms';
+import { MotionButton } from '../animations';
 
 interface OverviewTabProps {
   workspace: IntakeWorkspaceData;
@@ -185,13 +186,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ workspace, onSwitchTab
                 <FileCheck2 className="w-4 h-4 text-[#1E40AF] dark:text-blue-400" />
                 Cohort Stage Distribution & Readiness
               </h3>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => onSwitchTab('workflow')}
                 className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
               >
                 Open Workflow Board →
-              </button>
+              </MotionButton>
             </div>
             <div className="p-4">
               {applications.length === 0 ? (
@@ -223,13 +224,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ workspace, onSwitchTab
                         <AlertTriangle className="w-3.5 h-3.5" />
                         <span className="tabular-nums">{missingDocsTotal}</span> missing or incorrect document item(s) flagged
                       </span>
-                      <button
+                      <MotionButton
                         type="button"
                         onClick={() => onSwitchTab('documents')}
                         className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
                       >
                         Review Documents →
-                      </button>
+                      </MotionButton>
                     </div>
                   )}
                 </div>

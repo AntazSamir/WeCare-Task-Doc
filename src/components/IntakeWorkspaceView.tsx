@@ -40,7 +40,8 @@ import {
   MorphSelectContent,
   MorphSelectItem,
 } from './ui/MorphSelect';
-import { ModalTransition, TabTransition } from './animations';
+import { ModalTransition, TabTransition, MotionButton } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 import { OverviewTab } from './intake-workspace/OverviewTab';
 import { StudentsTab } from './intake-workspace/StudentsTab';
 import { WorkflowTab } from './intake-workspace/WorkflowTab';
@@ -467,14 +468,14 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
   if (loadError || !workspace) {
     return (
       <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-8 space-y-4">
-        <button
+        <MotionButton
           type="button"
           onClick={onBack}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to Intake Campaigns
-        </button>
+        </MotionButton>
         <div className="flex items-start gap-2.5 text-xs text-[#DC2626] dark:text-red-400">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <div>
@@ -482,13 +483,13 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
             <div className="mt-0.5">{loadError || 'Campaign data could not be loaded.'}</div>
           </div>
         </div>
-        <button
+        <MotionButton
           type="button"
           onClick={() => loadWorkspace(false)}
-          className="h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg"
+          className="h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors"
         >
           Retry
-        </button>
+        </MotionButton>
       </div>
     );
   }
@@ -513,14 +514,14 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1.5 min-w-[260px]">
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <button
+              <MotionButton
                 type="button"
                 onClick={onBack}
                 className="inline-flex items-center gap-1 text-[#1E40AF] dark:text-blue-400 hover:underline font-medium"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Intake Campaigns
-              </button>
+              </MotionButton>
               <span className="text-slate-300 dark:text-slate-700">/</span>
               <span className="tabular-nums font-bold text-[#0F172A] dark:text-slate-200">
                 {project.id}
@@ -564,78 +565,79 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
 
           {/* Separate, explicit operational actions */}
           <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <button
+            <MotionButton
               type="button"
               onClick={() => loadWorkspace(true)}
               title="Refresh workspace data"
               className="inline-flex items-center justify-center w-9 h-9 text-[#64748B] hover:text-[#1E40AF] border border-[#E2E8F0] dark:border-slate-700 rounded-lg transition-colors"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-            </button>
+            </MotionButton>
 
             {isAdmin && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={openEditModal}
                 className="inline-flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-[#0F172A] dark:text-slate-200 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 hover:border-[#1E40AF] rounded-lg transition-colors whitespace-nowrap"
               >
                 <Edit3 className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400" />
                 Edit Campaign
-              </button>
+              </MotionButton>
             )}
 
-            <button
+            <MotionButton
               type="button"
               onClick={() => onOpenNewStudentModal(project)}
               className="inline-flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-[#0F172A] dark:text-slate-200 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 hover:border-[#1E40AF] rounded-lg transition-colors whitespace-nowrap"
             >
               <UserPlus className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400" />
               Register Student
-            </button>
+            </MotionButton>
 
-            <button
+            <MotionButton
               type="button"
               onClick={() => onCreateIntakeTask(project.id)}
               className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
               Create Task
-            </button>
+            </MotionButton>
           </div>
         </div>
 
         {/* Workspace Navigation Tabs */}
-        <nav
-          aria-label="Intake workspace sections"
-          className="flex items-center gap-1 border-t border-[#E2E8F0] dark:border-slate-800 pt-3 overflow-x-auto"
-        >
-          {tabs.map((tab) => {
-            const active = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
-                  active
-                    ? 'bg-[#1E40AF] text-white font-semibold'
-                    : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-100 hover:bg-[#F8FAFC] dark:hover:bg-slate-800'
-                }`}
-              >
-                <span>{tab.label}</span>
-                {typeof tab.count === 'number' && (
-                  <span
-                    className={`tabular-nums text-[11px] ${
-                      active ? 'text-blue-100' : 'text-[#64748B] dark:text-slate-500'
-                    }`}
-                  >
-                    ({tab.count})
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </nav>
+        <div className="border-t border-[#E2E8F0] dark:border-slate-800 pt-3">
+          <RoundedSlidingTabs
+            variant="cards"
+            value={activeTab}
+            stretch={0}
+            blur={10}
+            label="Intake workspace sections"
+            onValueChange={(id) => setActiveTab(id as WorkspaceTabId)}
+            className="gap-1 pb-0 pt-0"
+            indicatorClassName="rounded-lg bg-[#1E40AF] shadow-xs"
+            buttonClassName="px-3 h-[30px] rounded-lg text-xs font-medium"
+            activeButtonClassName="text-white font-semibold"
+            inactiveButtonClassName="border-transparent bg-transparent text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-100 hover:bg-[#F8FAFC] dark:hover:bg-slate-800"
+            tabs={tabs.map((tab) => {
+              const active = activeTab === tab.id;
+              return {
+                id: tab.id,
+                label: tab.label,
+                trailing:
+                  typeof tab.count === 'number' ? (
+                    <span
+                      className={`tabular-nums text-[11px] ${
+                        active ? 'text-blue-100' : 'text-[#64748B] dark:text-slate-500'
+                      }`}
+                    >
+                      ({tab.count})
+                    </span>
+                  ) : undefined,
+              };
+            })}
+          />
+        </div>
       </header>
 
       {/* Active Section Content */}
@@ -709,13 +711,13 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
             Edit Intake Campaign Settings
           </h3>
-          <button
+          <MotionButton
             type="button"
             onClick={() => setIsEditOpen(false)}
             className="p-1 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSaveCampaign} className="space-y-3.5 text-xs">
@@ -824,7 +826,7 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
                 .map((m) => {
                   const selected = editConsultants.includes(m.id);
                   return (
-                    <button
+                    <MotionButton
                       key={m.id}
                       type="button"
                       onClick={() =>
@@ -841,7 +843,7 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
                       }`}
                     >
                       {m.name}
-                    </button>
+                    </MotionButton>
                   );
                 })}
             </div>
@@ -860,21 +862,21 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
+            <MotionButton
               type="button"
               onClick={() => setIsEditOpen(false)}
               className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSubmitting}
               className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg disabled:opacity-50"
             >
               {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               Save Changes
-            </button>
+            </MotionButton>
           </div>
         </form>
       </ModalTransition>
@@ -889,13 +891,13 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
             Assign Existing Student to Intake
           </h3>
-          <button
+          <MotionButton
             type="button"
             onClick={() => setIsAssignOpen(false)}
             className="p-1 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleAssignStudent} className="space-y-3.5 text-xs">
@@ -979,21 +981,21 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
+            <MotionButton
               type="button"
               onClick={() => setIsAssignOpen(false)}
               className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSubmitting || !assignStudentId}
               className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg disabled:opacity-50"
             >
               {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               Assign to Intake
-            </button>
+            </MotionButton>
           </div>
         </form>
       </ModalTransition>
@@ -1015,13 +1017,13 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
               </p>
             )}
           </div>
-          <button
+          <MotionButton
             type="button"
             onClick={() => setWorkflowTarget(null)}
             className="p-1 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSaveWorkflow} className="space-y-3.5 text-xs">
@@ -1153,21 +1155,21 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
+            <MotionButton
               type="button"
               onClick={() => setWorkflowTarget(null)}
               className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSubmitting}
               className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg disabled:opacity-50"
             >
               {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               Record Stage Action
-            </button>
+            </MotionButton>
           </div>
         </form>
       </ModalTransition>
@@ -1189,13 +1191,13 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
               </p>
             )}
           </div>
-          <button
+          <MotionButton
             type="button"
             onClick={() => setDocTarget(null)}
             className="p-1 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSaveDocument} className="space-y-3.5 text-xs">
@@ -1270,21 +1272,21 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
+            <MotionButton
               type="button"
               onClick={() => setDocTarget(null)}
               className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSubmitting}
               className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg disabled:opacity-50"
             >
               {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               Save Document Status
-            </button>
+            </MotionButton>
           </div>
         </form>
       </ModalTransition>
@@ -1306,13 +1308,13 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
               </p>
             )}
           </div>
-          <button
+          <MotionButton
             type="button"
             onClick={() => setReassignTarget(null)}
             className="p-1 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSaveReassign} className="space-y-3.5 text-xs">
@@ -1372,21 +1374,21 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
+            <MotionButton
               type="button"
               onClick={() => setReassignTarget(null)}
               className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSubmitting}
               className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg disabled:opacity-50"
             >
               {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               Update Assignment
-            </button>
+            </MotionButton>
           </div>
         </form>
       </ModalTransition>
@@ -1401,13 +1403,13 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
             Log Intake Activity or University Response
           </h3>
-          <button
+          <MotionButton
             type="button"
             onClick={() => setIsActivityOpen(false)}
             className="p-1 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSaveActivity} className="space-y-3.5 text-xs">
@@ -1448,21 +1450,21 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
+            <MotionButton
               type="button"
               onClick={() => setIsActivityOpen(false)}
               className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSubmitting}
               className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg disabled:opacity-50"
             >
               {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               Record Entry
-            </button>
+            </MotionButton>
           </div>
         </form>
       </ModalTransition>
@@ -1486,14 +1488,14 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           </div>
         )}
         <div className="flex items-center justify-end gap-2 pt-2">
-          <button
+          <MotionButton
             type="button"
             onClick={() => setRemoveTarget(null)}
             className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
           >
             Cancel
-          </button>
-          <button
+          </MotionButton>
+          <MotionButton
             type="button"
             onClick={handleConfirmRemoveStudent}
             disabled={isSubmitting}
@@ -1501,7 +1503,7 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           >
             {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
             Detach Student
-          </button>
+          </MotionButton>
         </div>
       </ModalTransition>
 
@@ -1518,20 +1520,20 @@ export const IntakeWorkspaceView: React.FC<IntakeWorkspaceViewProps> = ({
           Permanently remove <strong className="text-[#0F172A] dark:text-slate-100">{deleteTaskTarget?.title}</strong> from this intake and synchronize Google Sheets?
         </p>
         <div className="flex items-center justify-end gap-2 pt-2">
-          <button
+          <MotionButton
             type="button"
             onClick={() => setDeleteTaskTarget(null)}
             className="h-9 px-3.5 text-xs text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
           >
             Cancel
-          </button>
-          <button
+          </MotionButton>
+          <MotionButton
             type="button"
             onClick={handleConfirmDeleteTask}
             className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold text-white bg-[#DC2626] hover:bg-red-700 rounded-lg"
           >
             Delete Task
-          </button>
+          </MotionButton>
         </div>
       </ModalTransition>
     </div>

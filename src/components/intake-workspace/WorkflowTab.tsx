@@ -12,6 +12,7 @@ import {
   IntakeApplicationRecord,
   IntakeWorkflowStage,
 } from '../../types/pms';
+import { MotionButton } from '../animations';
 
 interface WorkflowTabProps {
   applications: IntakeApplicationRecord[];
@@ -50,13 +51,13 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
             11-Stage Intake Application Pipeline
           </h3>
           {stageFilter !== 'All' && (
-            <button
+            <MotionButton
               type="button"
               onClick={() => setStageFilter('All')}
               className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
             >
               Show all stages ({applications.length})
-            </button>
+            </MotionButton>
           )}
         </div>
 
@@ -64,7 +65,7 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
           {stageCounts.map(({ index, stage, count }) => {
             const isSelected = stageFilter === stage;
             return (
-              <button
+              <MotionButton
                 key={stage}
                 type="button"
                 onClick={() => setStageFilter(isSelected ? 'All' : stage)}
@@ -85,7 +86,7 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                 <div className="mt-1 text-[11px] font-semibold text-[#0F172A] dark:text-slate-100 line-clamp-2 leading-tight">
                   {stage}
                 </div>
-              </button>
+              </MotionButton>
             );
           })}
         </div>
@@ -135,14 +136,14 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                         </div>
                       </div>
 
-                      <button
+                      <MotionButton
                         type="button"
                         onClick={() => onRecordStage(app, nextStage || app.workflowStage)}
                         className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap"
                       >
                         <GitBranch className="w-3.5 h-3.5" />
                         Record Action
-                      </button>
+                      </MotionButton>
                     </div>
                   </div>
 
@@ -194,14 +195,14 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                       )}
                     </div>
 
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => setExpandedHistoryId(isExpanded ? null : app.intakeAppId)}
                       className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F172A] dark:text-slate-300 hover:text-[#1E40AF]"
                     >
                       {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                       Stage History ({app.stageHistory.length})
-                    </button>
+                    </MotionButton>
                   </div>
 
                   {/* Stage History Drawer */}

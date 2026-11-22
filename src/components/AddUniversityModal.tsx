@@ -28,7 +28,8 @@ import {
   createProgram,
   createIntake,
 } from '../services/pmsService';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 import {
   MorphSelect,
   MorphSelectTrigger,
@@ -498,78 +499,74 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
 
           <div className="flex items-center gap-2">
             {/* View Mode Toggle: Tabbed vs All */}
-            <div className="flex items-center rounded-lg border border-slate-200 dark:border-slate-700 p-0.5 bg-slate-50 dark:bg-slate-950 text-[11px]">
-              <button
-                type="button"
-                onClick={() => setViewMode('tabbed')}
-                className={`px-2 py-1 rounded font-medium transition-colors ${
-                  viewMode === 'tabbed'
-                    ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                }`}
-              >
-                Tabbed
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('all')}
-                className={`px-2 py-1 rounded font-medium transition-colors ${
-                  viewMode === 'all'
-                    ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                }`}
-              >
-                All Sections
-              </button>
-            </div>
+            <RoundedSlidingTabs
+              variant="segmented"
+              value={viewMode}
+              stretch={0}
+              blur={10}
+              label="Form view mode"
+              onValueChange={(id) => setViewMode(id as 'tabbed' | 'all')}
+              className="rounded-lg border-slate-200 dark:border-slate-700 p-0.5 bg-slate-50 dark:bg-slate-950 text-[11px]"
+              indicatorClassName="rounded bg-white dark:bg-slate-800 shadow-xs"
+              buttonClassName="px-2 h-[24px] rounded text-[11px] font-medium"
+              activeButtonClassName="text-[#0F172A] dark:text-slate-100"
+              inactiveButtonClassName="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              tabs={[
+                { id: 'tabbed', label: 'Tabbed' },
+                { id: 'all', label: 'All Sections' },
+              ]}
+            />
 
-            <button
+            <MotionButton
               type="button"
               onClick={onClose}
               className="p-1.5 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-100 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-4 h-4" />
-            </button>
+            </MotionButton>
           </div>
         </div>
 
         {/* Tab Bar (Visible in Tabbed Mode) */}
         {viewMode === 'tabbed' && (
-          <div className="px-6 py-2 border-b border-[#E2E8F0] dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 overflow-x-auto flex items-center gap-1.5 scrollbar-thin shrink-0">
-            {SECTIONS.map((sec, idx) => {
-              const isCurrent = activeSection === sec.id;
-              const hasErr =
-                (sec.id === 'basic' && (errors.nameEn || errors.city || errors.websiteUrl)) ||
-                (sec.id === 'requirements' && errors.bankBalanceUsd) ||
-                (sec.id === 'intake' && (errors.appDeadline || errors.quota));
+          <div className="px-6 py-2 border-b border-[#E2E8F0] dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 shrink-0">
+            <RoundedSlidingTabs
+              variant="cards"
+              value={activeSection}
+              stretch={0}
+              blur={10}
+              label="University dossier sections"
+              onValueChange={(id) => setActiveSection(id as DossierSectionId)}
+              className="gap-1.5 pb-0 pt-0 scrollbar-thin"
+              indicatorClassName="rounded-lg bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-900 shadow-xs"
+              buttonClassName="px-3 h-[30px] rounded-lg text-xs font-semibold"
+              activeButtonClassName="text-[#1E40AF] dark:text-blue-400"
+              inactiveButtonClassName="bg-transparent dark:bg-transparent border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+              tabs={SECTIONS.map((sec, idx) => {
+                const isCurrent = activeSection === sec.id;
+                const hasErr =
+                  (sec.id === 'basic' && (errors.nameEn || errors.city || errors.websiteUrl)) ||
+                  (sec.id === 'requirements' && errors.bankBalanceUsd) ||
+                  (sec.id === 'intake' && (errors.appDeadline || errors.quota));
 
-              return (
-                <button
-                  key={sec.id}
-                  type="button"
-                  onClick={() => setActiveSection(sec.id)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors border ${
-                    isCurrent
-                      ? 'bg-white dark:bg-slate-800 text-[#1E40AF] dark:text-blue-400 border-blue-200 dark:border-blue-900 shadow-xs'
-                      : hasErr
-                      ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50'
-                      : 'bg-transparent text-slate-600 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                  }`}
-                >
-                  <span className={isCurrent ? 'text-[#1E40AF] dark:text-blue-400' : 'text-slate-400'}>
-                    {sec.icon}
-                  </span>
-                  <span>{sec.label}</span>
-                  {hasErr ? (
+                return {
+                  id: sec.id,
+                  label: sec.label,
+                  icon: (
+                    <span className={isCurrent ? 'text-[#1E40AF] dark:text-blue-400' : hasErr ? 'text-red-500' : 'text-slate-400'}>
+                      {sec.icon}
+                    </span>
+                  ),
+                  trailing: hasErr ? (
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                   ) : (
                     <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
                       {idx + 1}
                     </span>
-                  )}
-                </button>
-              );
-            })}
+                  ),
+                };
+              })}
+            />
           </div>
         )}
 
@@ -685,7 +682,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                   <div>
                     <label className={LABEL_CLS}>NIIED / Ministry of Education (MOE) Accreditation</label>
                     <div className="flex items-center gap-2 mt-1">
-                      <button
+                      <MotionButton
                         type="button"
                         onClick={() => setAccredited(true)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
@@ -696,8 +693,8 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         MOE Accredited (Fast-track Visa)
-                      </button>
-                      <button
+                      </MotionButton>
+                      <MotionButton
                         type="button"
                         onClick={() => setAccredited(false)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
@@ -707,7 +704,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                         }`}
                       >
                         Non-Certified (Standard Visa Screening)
-                      </button>
+                      </MotionButton>
                     </div>
                   </div>
                 </div>
@@ -1430,7 +1427,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             <div className="flex items-center gap-2">
               {viewMode === 'tabbed' && (
                 <>
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => {
                       if (currentSectionIndex > 0) {
@@ -1442,10 +1439,10 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                     Previous
-                  </button>
+                  </MotionButton>
 
                   {currentSectionIndex < SECTIONS.length - 1 && (
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => {
                         setActiveSection(SECTIONS[currentSectionIndex + 1].id);
@@ -1454,22 +1451,22 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     >
                       Next: {SECTIONS[currentSectionIndex + 1].label}
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    </MotionButton>
                   )}
                 </>
               )}
             </div>
 
             <div className="flex items-center gap-2">
-              <button
+              <MotionButton
                 type="button"
                 onClick={onClose}
                 disabled={isSaving}
                 className="h-8 px-4 text-xs font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-[#0F172A] dark:text-slate-200 border border-[#E2E8F0] dark:border-slate-700 transition-colors disabled:opacity-50"
               >
                 Cancel
-              </button>
-              <button
+              </MotionButton>
+              <MotionButton
                 type="submit"
                 disabled={isSaving}
                 className="h-8 px-5 text-xs font-semibold rounded-lg bg-[#1E40AF] text-white hover:bg-[#1E3A8A] transition-colors disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center gap-1.5 shadow-xs"
@@ -1484,7 +1481,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                 ) : (
                   'Add Partner Institution'
                 )}
-              </button>
+              </MotionButton>
             </div>
           </div>
         </form>

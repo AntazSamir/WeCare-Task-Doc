@@ -3,6 +3,7 @@ import { CalendarPlus } from 'lucide-react';
 import { MixChart, type MixPoint, type MixRange, type MixSeries } from '@/components/mix-chart';
 import { Task } from '../types/task';
 import { addDaysToIsoDate, getLocalTodayIso } from '../utils/dateUtils';
+import { MotionButton } from './ui/MotionButton';
 
 interface WeeklyCompletionTrendProps {
   tasks: Task[];
@@ -189,7 +190,7 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
           </span>
           <div className="flex items-center gap-1.5 flex-wrap">
             {quickDays.map((d) => (
-              <button
+              <MotionButton
                 key={d.dateIso}
                 type="button"
                 onClick={() => onOpenDayTasks(d.dateIso)}
@@ -201,7 +202,7 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
                 title={`Create task for ${d.dateIso}`}
               >
                 {d.isToday ? `${d.dayLabel} (Today)` : d.dayLabel}
-              </button>
+              </MotionButton>
             ))}
           </div>
         </div>

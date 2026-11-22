@@ -15,7 +15,7 @@ import {
 import { Spinner } from '@astryxdesign/core/Spinner';
 import { Task, TaskCategory, TaskPriority } from '../types/task';
 import { getLocalTodayIso } from '../utils/dateUtils';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 const renderCategoryIcon = (category: TaskCategory) => {
   switch (category) {
@@ -161,14 +161,13 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               Automatically synchronized with local SQLite and connected Google Spreadsheet
             </p>
           </div>
-          <button
-            type="button"
+          <MotionButton
             onClick={onClose}
             className="p-1.5 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded transition-colors"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -228,9 +227,8 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               </span>
               <div className="flex flex-wrap gap-1 p-1 rounded-md bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700">
                 {CATEGORIES.map((cat) => (
-                  <button
+                  <MotionButton
                     key={cat}
-                    type="button"
                     onClick={() => setCategory(cat)}
                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                       category === cat
@@ -240,7 +238,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
                   >
                     {renderCategoryIcon(cat)}
                     <span>{cat}</span>
-                  </button>
+                  </MotionButton>
                 ))}
               </div>
             </div>
@@ -251,9 +249,8 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               </span>
               <div className="grid grid-cols-3 gap-1 p-1 rounded-md bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700">
                 {PRIORITIES.map((prio) => (
-                  <button
+                  <MotionButton
                     key={prio}
-                    type="button"
                     onClick={() => setPriority(prio)}
                     className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                       priority === prio
@@ -267,7 +264,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
                   >
                     {renderPriorityIndicator(prio)}
                     <span>{prio}</span>
-                  </button>
+                  </MotionButton>
                 ))}
               </div>
             </div>
@@ -355,14 +352,13 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
           {/* Submit Footer */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
-              type="button"
+            <MotionButton
               onClick={onClose}
               className="px-4 py-2 text-xs font-medium text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF] dark:hover:bg-slate-700 transition-colors whitespace-nowrap shrink-0"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSaving}
               className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors whitespace-nowrap shrink-0 ${
@@ -371,7 +367,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             >
               {isSaving && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               {isSaving ? 'Saving & Syncing...' : editingTask ? 'Save & Sync Changes' : 'Create & Sync Task'}
-            </button>
+            </MotionButton>
           </div>
         </form>
     </ModalTransition>,

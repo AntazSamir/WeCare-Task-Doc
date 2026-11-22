@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, UserCheck, ChevronDown, Check } from 'lucide-react';
 import { UserProfile } from '../types/pms';
-import { DropdownTransition } from './animations';
+import { DropdownTransition, MotionButton } from './animations';
 import { AnimatePresence } from 'motion/react';
 
 interface RoleSwitcherBarProps {
@@ -22,7 +22,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
 
   return (
     <div className="relative">
-      <button
+      <MotionButton
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="listbox"
@@ -50,7 +50,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
             isOpen ? 'rotate-180' : ''
           }`}
         />
-      </button>
+      </MotionButton>
 
       <AnimatePresence>
         {isOpen && (
@@ -70,9 +70,10 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                 const teamLabel = user.team === 'Counseling Team' ? 'Counseling' : 'Admission';
 
                 return (
-                  <button
+                  <MotionButton
                     key={user.id}
                     type="button"
+                    whileHover={{ scale: 1.01 }}
                     onClick={() => {
                       onSwitchUser(user);
                       setIsOpen(false);
@@ -110,7 +111,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                     {isSelected && (
                       <Check className="h-3 w-3 shrink-0 text-[#1E40AF] dark:text-blue-400" />
                     )}
-                  </button>
+                  </MotionButton>
                 );
               })}
             </DropdownTransition>

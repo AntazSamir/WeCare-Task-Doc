@@ -43,7 +43,8 @@ import {
   reassignPmsTask,
 } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { PageTransition, TabTransition, ModalTransition, StaggerContainer, StaggerItem } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
+import { PageTransition, TabTransition, ModalTransition, StaggerContainer, StaggerItem, MotionButton } from './animations';
 
 export type TaskViewType =
   | 'all'
@@ -423,24 +424,24 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
           <div className="flex items-center gap-2">
             {isAdmin && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={handleOpenAddEmployee}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#F8FAFC] dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 hover:bg-[#EFF6FF] hover:text-[#1E3A8A] dark:hover:bg-slate-700 border border-[#E2E8F0] dark:border-slate-700 transition-colors shadow-xs"
               >
                 <UserPlus className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#1E40AF]" />
                 Add Employee
-              </button>
+              </MotionButton>
             )}
 
-            <button
+            <MotionButton
               type="button"
               onClick={() => handleOpenAssignModal()}
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white shadow-xs transition-colors"
             >
               <Plus className="w-4 h-4" />
               Assign Task
-            </button>
+            </MotionButton>
           </div>
         </div>
 
@@ -505,7 +506,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
           {/* Team Switcher Tabs */}
           <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg">
             {(['All', 'Admission Team', 'Counseling Team'] as const).map((tTab) => (
-              <button
+              <MotionButton
                 key={tTab}
                 type="button"
                 onClick={() => setSelectedTeamTab(tTab)}
@@ -516,7 +517,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 }`}
               >
                 {tTab === 'All' ? `All Teams (${team.length})` : tTab === 'Admission Team' ? `Admission Team (${admissionMembers.length})` : `Counseling Team (${counselingMembers.length})`}
-              </button>
+              </MotionButton>
             ))}
           </div>
         </div>
@@ -595,23 +596,23 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
                       {isAdmin && (
                         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
+                          <MotionButton
                             type="button"
                             title="Edit Employee"
                             onClick={(e) => handleOpenEditEmployee(emp, e)}
                             className="p-1 text-[#0F172A]/45 hover:text-[#1E40AF] dark:text-slate-400 dark:hover:text-slate-200 rounded"
                           >
                             <Edit3 className="w-3 h-3" />
-                          </button>
+                          </MotionButton>
                           {!isEmpAdmin && (
-                            <button
+                            <MotionButton
                               type="button"
                               title="Delete Employee"
                               onClick={(e) => handleDeleteEmployee(emp, e)}
                               className="p-1 text-[#0F172A]/45 hover:text-[#DC2626] rounded"
                             >
                               <Trash2 className="w-3 h-3" />
-                            </button>
+                            </MotionButton>
                           )}
                         </div>
                       )}
@@ -628,8 +629,19 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
       {/* 3. 8 SEGMENTED TASK VIEWS NAVIGATION */}
       <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-4 shadow-sm space-y-4">
         {/* VIEW SELECTOR BUTTONS */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          {[
+        <RoundedSlidingTabs
+          variant="cards"
+          value={activeView}
+          stretch={0}
+          blur={10}
+          label="Task views"
+          onValueChange={(id) => setActiveView(id as TaskViewType)}
+          className="gap-1.5 pb-1 pt-0 scrollbar-none"
+          indicatorClassName="rounded-lg bg-[#1E3A8A] shadow-xs"
+          buttonClassName="px-3 h-[30px] rounded-lg text-xs font-semibold gap-2"
+          activeButtonClassName="text-white border-transparent bg-transparent"
+          inactiveButtonClassName="bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700/60 text-[#0F172A]/75 dark:text-slate-300 hover:bg-[#EFF6FF]/60 hover:text-[#1E3A8A] dark:hover:bg-slate-800"
+          tabs={[
             { id: 'all', label: 'All Tasks', count: viewCounts.all, icon: Layers },
             { id: 'admission-team', label: 'Admission Team', count: viewCounts.admission, icon: ShieldCheck },
             { id: 'counseling-team', label: 'Counseling Team', count: viewCounts.counseling, icon: UserCheck },
@@ -641,19 +653,17 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
           ].map((tab) => {
             const Icon = tab.icon;
             const isTabActive = activeView === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveView(tab.id as TaskViewType)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 border ${
-                  isTabActive
-                    ? 'bg-[#1E3A8A] text-white border-[#1E3A8A] shadow-xs'
-                    : 'bg-[#F8FAFC] dark:bg-slate-800/60 border-[#E2E8F0] dark:border-slate-700/60 text-[#0F172A]/75 dark:text-slate-300 hover:bg-[#EFF6FF]/60 hover:text-[#1E3A8A] dark:hover:bg-slate-800'
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 ${isTabActive ? 'text-[#1E40AF]' : 'text-[#1E40AF] dark:text-slate-400'}`} />
-                <span>{tab.label}</span>
+            return {
+              id: tab.id,
+              label: tab.label,
+              icon: (
+                <Icon
+                  className={`w-3.5 h-3.5 ${
+                    isTabActive ? 'text-white' : 'text-[#1E40AF] dark:text-slate-400'
+                  }`}
+                />
+              ),
+              trailing: (
                 <span
                   className={`px-1.5 py-0.2 rounded-full text-[10px] tabular-nums ${
                     tab.badgeColor && !isTabActive
@@ -665,10 +675,10 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 >
                   {tab.count}
                 </span>
-              </button>
-            );
+              ),
+            };
           })}
-        </div>
+        />
 
         {/* SEARCH & FILTERS BAR */}
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
@@ -682,13 +692,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/40 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF] focus:bg-[#FFFFFF] dark:focus:bg-slate-900 transition-all text-[#0F172A] dark:text-slate-100 placeholder:text-[#0F172A]/45"
             />
             {searchQuery && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setSearchQuery('')}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#0F172A]/45 hover:text-[#0F172A] dark:text-slate-400"
               >
                 <X className="w-3.5 h-3.5" />
-              </button>
+              </MotionButton>
             )}
           </div>
 
@@ -754,21 +764,21 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             </div>
             <div className="flex items-center justify-center gap-2">
               {searchQuery && (
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300"
+                  className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 transition-colors"
                 >
                   Clear Search
-                </button>
+                </MotionButton>
               )}
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => handleOpenAssignModal()}
-                className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white"
+                className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white transition-colors"
               >
                 + Assign New Task
-              </button>
+              </MotionButton>
             </div>
           </div>
         ) : (
@@ -793,7 +803,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3 min-w-0 flex-1">
                     {/* Completion Toggle Button */}
-                    <button
+                    <MotionButton
                       type="button"
                       onClick={() => {
                         if (isCompleted) {
@@ -810,7 +820,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       title={isCompleted ? 'Mark Pending' : 'Mark Completed'}
                     >
                       <Check className="w-3.5 h-3.5 stroke-[3]" />
-                    </button>
+                    </MotionButton>
 
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -938,24 +948,24 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     {/* Operational Quick Actions */}
                     <div className="flex items-center gap-1">
                       {isAdmin && (
-                        <button
+                        <MotionButton
                           type="button"
                           onClick={(e) => handleOpenReassign(task, e)}
-                          className="px-2 py-1 text-[11px] font-semibold rounded bg-[#F8FAFC] hover:bg-[#EFF6FF] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-700"
+                          className="px-2 py-1 text-[11px] font-semibold rounded bg-[#F8FAFC] hover:bg-[#EFF6FF] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-700 transition-colors"
                           title="Reassign to another employee or update priority"
                         >
                           Reassign
-                        </button>
+                        </MotionButton>
                       )}
 
-                      <button
+                      <MotionButton
                         type="button"
                         onClick={() => onDeleteTask(task)}
                         className="p-1 text-[#0F172A]/45 hover:text-[#DC2626] rounded transition-colors"
                         title="Delete Task"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      </MotionButton>
                     </div>
                   </div>
                 </div>
@@ -972,25 +982,25 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{displayedTasks.length}</span> tasks
             </span>
             <div className="flex items-center gap-1.5">
-              <button
+              <MotionButton
                 type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
               >
                 Previous
-              </button>
+              </MotionButton>
               <span className="px-2 font-medium text-[#0F172A] dark:text-slate-200 tabular-nums">
                 Page {currentPage} of {totalPages}
               </span>
-              <button
+              <MotionButton
                 type="button"
                 disabled={currentPage >= totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
               >
                 Next
-              </button>
+              </MotionButton>
             </div>
           </div>
         )}
@@ -1053,20 +1063,20 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => handleOpenAssignModal(selectedEmployee.id)}
                     className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white transition-colors"
                   >
                     + Assign Task
-                  </button>
-                  <button
+                  </MotionButton>
+                  <MotionButton
                     type="button"
                     onClick={() => setSelectedEmployee(null)}
                     className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-slate-200 rounded-lg"
                   >
                     <X className="w-5 h-5" />
-                  </button>
+                  </MotionButton>
                 </div>
               </div>
 
@@ -1108,7 +1118,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   { id: 'completed', label: 'Completed', count: employeeTasks.filter((t) => t.status === 'Completed').length },
                   { id: 'previous', label: 'Previous Completed', count: employeeTasks.filter((t) => (t.deadline < todayStr || t.taskDate < todayStr) && t.status === 'Completed').length },
                 ].map((tf) => (
-                  <button
+                  <MotionButton
                     key={tf.id}
                     type="button"
                     onClick={() => setEmployeeTaskFilter(tf.id as any)}
@@ -1119,7 +1129,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     }`}
                   >
                     {tf.label} ({tf.count})
-                  </button>
+                  </MotionButton>
                 ))}
               </div>
 
@@ -1202,13 +1212,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   Assign to an individual employee, multiple team members, or an entire department.
                 </p>
               </div>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setIsAssignModalOpen(false)}
                 className="p-1 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
               >
                 <X className="w-5 h-5" />
-              </button>
+              </MotionButton>
             </div>
 
             <form onSubmit={handleSaveTaskAssignment} className="p-5 overflow-y-auto space-y-4 text-xs">
@@ -1223,18 +1233,18 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     { id: 'multiple', label: 'Multiple Employees' },
                     { id: 'team', label: 'Entire Team' },
                   ].map((mode) => (
-                    <button
+                    <MotionButton
                       key={mode.id}
                       type="button"
                       onClick={() => setAssignMode(mode.id as any)}
-                      className={`py-2 px-2 text-center rounded-lg border font-semibold transition-all ${
+                      className={`py-2 px-2 text-center rounded-lg border font-semibold transition-colors ${
                         assignMode === mode.id
                           ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950/40 text-[#1E3A8A] dark:text-blue-300'
                           : 'border-[#E2E8F0] dark:border-slate-800 text-[#0F172A]/70 dark:text-slate-400 hover:bg-[#F8FAFC]'
                       }`}
                     >
                       {mode.label}
-                    </button>
+                    </MotionButton>
                   ))}
                 </div>
               </div>
@@ -1307,11 +1317,11 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {(['Admission Team', 'Counseling Team'] as const).map((tName) => (
-                      <button
+                      <MotionButton
                         key={tName}
                         type="button"
                         onClick={() => setSelectedAssigneeTeam(tName)}
-                        className={`p-3 rounded-lg border text-left font-semibold transition-all ${
+                        className={`p-3 rounded-lg border text-left font-semibold transition-colors ${
                           selectedAssigneeTeam === tName
                             ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950 text-[#1E3A8A] dark:text-blue-300 ring-1 ring-[#1E40AF]'
                             : 'border-[#E2E8F0] dark:border-slate-800 text-[#0F172A] hover:bg-[#F8FAFC]'
@@ -1323,7 +1333,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                             ? `Assigns to all ${admissionMembers.length} admission officers`
                             : `Assigns to all ${counselingMembers.length} counselors`}
                         </div>
-                      </button>
+                      </MotionButton>
                     ))}
                   </div>
                 </div>
@@ -1471,19 +1481,19 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setIsAssignModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-300 hover:bg-[#F8FAFC]"
+                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-300 hover:bg-[#F8FAFC] transition-colors"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold shadow-xs"
+                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold shadow-xs transition-colors"
                 >
                   Create & Dispatch Task
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,
@@ -1506,13 +1516,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   Reassign Task
                 </h3>
               </div>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setReassigningTask(null)}
                 className="text-[#0F172A]/45 hover:text-[#0F172A] dark:text-slate-400"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form onSubmit={handleSaveReassign} className="space-y-3 text-xs">
@@ -1582,19 +1592,19 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setReassigningTask(null)}
-                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC]"
+                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC] transition-colors"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold"
+                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold transition-colors"
                 >
                   Confirm Reassignment
-                </button>
+                </MotionButton>
               </div>
             </form>
             </>
@@ -1621,13 +1631,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   Configure role, departmental team, and operational title.
                 </p>
               </div>
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => setIsEmployeeModalOpen(false)}
                 className="text-[#0F172A]/45 hover:text-[#0F172A] dark:text-slate-400"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </MotionButton>
             </div>
 
             <form onSubmit={handleSaveEmployee} className="space-y-3.5 text-xs">
@@ -1748,34 +1758,34 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 <div className="flex items-center gap-2 pt-1">
                   <span className="text-[10px] text-[#0F172A]/55 dark:text-slate-400">Presets:</span>
                   {avatarPresets.map((url, idx) => (
-                    <button
+                    <MotionButton
                       key={idx}
                       type="button"
                       onClick={() => setEmployeeForm({ ...employeeForm, avatar: url })}
-                      className={`w-6 h-6 rounded-full overflow-hidden border-2 transition-transform hover:scale-110 ${
-                        employeeForm.avatar === url ? 'border-[#1E40AF] scale-110' : 'border-transparent'
+                      className={`w-6 h-6 rounded-full overflow-hidden border-2 transition-colors ${
+                        employeeForm.avatar === url ? 'border-[#1E40AF] ring-1 ring-[#1E40AF]' : 'border-transparent'
                       }`}
                     >
                       <img src={url} alt={`Preset ${idx}`} className="w-full h-full object-cover" />
-                    </button>
+                    </MotionButton>
                   ))}
                 </div>
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setIsEmployeeModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC]"
+                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC] transition-colors"
                 >
                   Cancel
-                </button>
-                <button
+                </MotionButton>
+                <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold"
+                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold transition-colors"
                 >
                   {editingEmployee ? 'Save Changes' : 'Add Employee'}
-                </button>
+                </MotionButton>
               </div>
             </form>
         </ModalTransition>,

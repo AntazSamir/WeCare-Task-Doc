@@ -28,7 +28,7 @@ import {
   getLocalTodayIso,
   isTaskOverdue,
 } from '../utils/dateUtils';
-import { CollapseTransition } from './animations';
+import { CollapseTransition, MotionButton } from './animations';
 
 interface TaskCardProps {
   task: Task;
@@ -193,25 +193,23 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
             </div>
           )}
           {isCompleted ? (
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onRestorePending(task)}
               title="Completed — Click to restore task to Pending"
               className="mt-0.5 w-[18px] h-[18px] rounded flex items-center justify-center bg-[#16A34A] text-white hover:bg-[#15803d] transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16A34A] shadow-xs"
               aria-label={`Restore ${task.title} to Pending`}
             >
               <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-            </button>
+            </MotionButton>
           ) : (
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onRequestComplete(task)}
               title="Click to confirm task completion"
               className="mt-0.5 w-[18px] h-[18px] rounded border border-[#E2E8F0] dark:border-slate-600 hover:border-[#1E40AF] dark:hover:border-blue-400 bg-white dark:bg-slate-800 flex items-center justify-center transition-colors shrink-0 group/check focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF]"
               aria-label={`Complete task ${task.title}`}
             >
               <Check className="w-3 h-3 text-transparent group-hover/check:text-[#1E40AF] dark:group-hover/check:text-blue-400 transition-colors" />
-            </button>
+            </MotionButton>
           )}
 
           <div className="min-w-0 flex-1">
@@ -331,71 +329,64 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
         {/* Right: Functional Action Controls */}
         <div className="flex items-center gap-1.5 shrink-0 flex-wrap self-end sm:self-auto">
           {!isCompleted ? (
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onRequestComplete(task)}
               className="inline-flex items-center gap-1 px-3 h-[28px] box-border text-xs font-medium text-[#1E40AF] bg-[#EFF6FF] hover:bg-[#dbeafe] rounded-md transition-colors duration-150 whitespace-nowrap shrink-0"
             >
               <Check className="w-3.5 h-3.5 text-[#1E40AF]" />
               Complete
-            </button>
+            </MotionButton>
           ) : (
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onRestorePending(task)}
               className="inline-flex items-center gap-1 px-3 h-[28px] box-border text-xs font-medium text-[#0F172A] bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors duration-150 whitespace-nowrap shrink-0"
             >
               <RotateCcw className="w-3 h-3 text-[#16A34A] dark:text-emerald-400" />
               Restore
-            </button>
+            </MotionButton>
           )}
 
           {!isCompleted && (
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onQuickReschedule(task, 1)}
               title="Reschedule +1 Day"
               className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-md transition-colors duration-150"
               aria-label="Reschedule +1 day"
             >
               <CalendarPlus className="w-4 h-4 text-[#1E40AF] dark:text-blue-400" />
-            </button>
+            </MotionButton>
           )}
 
-          <button
-            type="button"
+          <MotionButton
             onClick={() => onEdit(task)}
             title="Edit Task"
             className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-md transition-colors duration-150"
             aria-label="Edit task"
           >
             <Edit3 className="w-4 h-4 text-[#1E40AF] dark:text-blue-400" />
-          </button>
+          </MotionButton>
 
-          <button
-            type="button"
+          <MotionButton
             onClick={() => onDuplicate(task)}
             title="Duplicate Task"
             className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-md transition-colors duration-150"
             aria-label="Duplicate task"
           >
             <Copy className="w-4 h-4 text-[#1E40AF] dark:text-blue-400" />
-          </button>
+          </MotionButton>
 
-          <button
-            type="button"
+          <MotionButton
             onClick={() => onDelete(task)}
             title="Delete Task"
             className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#DC2626] hover:bg-[#FEE2E2] dark:hover:bg-red-950/40 rounded-md transition-colors duration-150"
             aria-label="Delete task"
           >
             <Trash2 className="w-4 h-4 text-[#DC2626] dark:text-red-400" />
-          </button>
+          </MotionButton>
 
           {onMoveTask && (
             <div className="flex items-center">
-              <button
-                type="button"
+              <MotionButton
                 onClick={() => onMoveTask(task, 'up')}
                 disabled={!canMoveUp}
                 title="Move Task Up"
@@ -407,9 +398,8 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
                 aria-label="Move task up"
               >
                 <ArrowUp className="w-3.5 h-3.5" />
-              </button>
-              <button
-                type="button"
+              </MotionButton>
+              <MotionButton
                 onClick={() => onMoveTask(task, 'down')}
                 disabled={!canMoveDown}
                 title="Move Task Down"
@@ -421,19 +411,18 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
                 aria-label="Move task down"
               >
                 <ArrowDown className="w-3.5 h-3.5" />
-              </button>
+              </MotionButton>
             </div>
           )}
 
-          <button
-            type="button"
+          <MotionButton
             onClick={() => setExpanded((prev) => !prev)}
             title={expanded ? 'Hide details' : 'Show notes & audit timestamps'}
             className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded transition-colors duration-150"
             aria-label="Toggle task notes"
           >
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+          </MotionButton>
         </div>
       </div>
     </div>

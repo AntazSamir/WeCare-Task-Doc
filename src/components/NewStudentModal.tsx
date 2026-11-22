@@ -5,7 +5,7 @@ import { Spinner } from '@astryxdesign/core/Spinner';
 import { DegreeLevel, IntakeProject, KoreanUniversity, UserProfile } from '../types/pms';
 import { createStudent } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 interface NewStudentModalProps {
   isOpen: boolean;
@@ -168,13 +168,13 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
               Initialize Korean university admission dossier and document verification checklist
             </p>
           </div>
-          <button
-            type="button"
+          <MotionButton
             onClick={onClose}
-            className="p-1.5 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded"
+            className="p-1.5 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded transition-colors"
+            aria-label="Close modal"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -386,21 +386,20 @@ export const NewStudentModal: React.FC<NewStudentModalProps> = ({
 
           {/* Submit Buttons */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
-              type="button"
+            <MotionButton
               onClick={onClose}
               className="px-4 py-2 text-xs font-medium text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded hover:bg-[#EFF6FF] transition-colors"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSubmitting}
               className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded transition-colors"
             >
               {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               {isSubmitting ? 'Registering...' : 'Register Candidate'}
-            </button>
+            </MotionButton>
           </div>
         </form>
     </ModalTransition>,

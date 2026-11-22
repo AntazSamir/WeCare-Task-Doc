@@ -19,6 +19,7 @@ import {
   MorphSelectContent,
   MorphSelectItem,
 } from '../ui/MorphSelect';
+import { MotionButton } from '../animations';
 
 interface ActivityTabProps {
   activities: AuditLogEntry[];
@@ -172,14 +173,14 @@ export const ActivityTab: React.FC<ActivityTabProps> = ({ activities, onOpenLogA
           </div>
         </div>
 
-        <button
+        <MotionButton
           type="button"
           onClick={onOpenLogActivity}
           className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
         >
           <MessageSquarePlus className="w-3.5 h-3.5" />
           Log Remark / University Response
-        </button>
+        </MotionButton>
       </div>
 
       {/* Chronological Timeline */}

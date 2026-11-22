@@ -19,6 +19,7 @@ import {
   MorphSelectContent,
   MorphSelectItem,
 } from '../ui/MorphSelect';
+import { MotionButton } from '../animations';
 
 interface TasksTabProps {
   tasks: PmsTask[];
@@ -294,14 +295,14 @@ export const TasksTab: React.FC<TasksTabProps> = ({
           </div>
         </div>
 
-        <button
+        <MotionButton
           type="button"
           onClick={onCreateIntakeTask}
           className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
           Create Intake Task
-        </button>
+        </MotionButton>
       </div>
 
       {/* Tasks Data Table */}
@@ -320,13 +321,13 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                 : 'Reset filters or search terms to view all intake tasks.'}
             </p>
             {tasks.length === 0 && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={onCreateIntakeTask}
-                className="h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg"
+                className="h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors"
               >
                 Create First Intake Task
-              </button>
+              </MotionButton>
             )}
           </div>
         ) : (
@@ -356,7 +357,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                       className="hover:bg-[#F8FAFC]/80 dark:hover:bg-slate-800/40 transition-colors"
                     >
                       <td className="py-3 px-4 align-top">
-                        <button
+                        <MotionButton
                           type="button"
                           onClick={() =>
                             isCompleted ? onRestoreTaskToPending(task) : onRequestCompleteTask(task)
@@ -369,7 +370,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                           ) : (
                             <Circle className="w-4 h-4" />
                           )}
-                        </button>
+                        </MotionButton>
                       </td>
 
                       <td className="py-3 px-4">
@@ -466,7 +467,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <div className="inline-flex items-center gap-1.5">
                           {isAdmin && (
-                            <button
+                            <MotionButton
                               type="button"
                               onClick={() => onOpenReassignModal(task)}
                               title="Reassign or adjust task priority/deadline"
@@ -474,16 +475,16 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                             >
                               <UserCog className="w-3 h-3" />
                               Reassign
-                            </button>
+                            </MotionButton>
                           )}
-                          <button
+                          <MotionButton
                             type="button"
                             onClick={() => onRequestDeleteTask(task)}
                             title="Delete task"
                             className="p-1 text-[#64748B] hover:text-[#DC2626] rounded transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          </MotionButton>
                         </div>
                       </td>
                     </tr>

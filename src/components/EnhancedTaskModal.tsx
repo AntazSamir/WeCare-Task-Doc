@@ -18,7 +18,7 @@ import { PmsTask, SubtaskItem, UserProfile, KoreanUniversity, IntakeProject, Stu
 import { TaskCategory, TaskPriority } from '../types/task';
 import { getLocalTodayIso } from '../utils/dateUtils';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 interface EnhancedTaskModalProps {
   isOpen: boolean;
@@ -195,13 +195,13 @@ export function EnhancedTaskModal({
               </p>
             </div>
           </div>
-          <button
-            type="button"
+          <MotionButton
             onClick={onClose}
             className="p-1.5 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded-md transition-colors"
+            aria-label="Close modal"
           >
             <X className="w-5 h-5" />
-          </button>
+          </MotionButton>
         </div>
 
         {/* Form Body */}
@@ -430,9 +430,9 @@ export function EnhancedTaskModal({
                     key={st.id}
                     className="flex items-center justify-between p-2 rounded-md bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700 text-xs"
                   >
-                    <button
-                      type="button"
+                    <MotionButton
                       onClick={() => handleToggleSubtask(st.id)}
+                      whileHover={{ scale: 1.01 }}
                       className="flex items-center gap-2 text-left flex-1"
                     >
                       {st.completed ? (
@@ -443,14 +443,14 @@ export function EnhancedTaskModal({
                       <span className={st.completed ? 'line-through text-[#0F172A]/45' : 'text-[#0F172A] dark:text-slate-200'}>
                         {st.title}
                       </span>
-                    </button>
-                    <button
-                      type="button"
+                    </MotionButton>
+                    <MotionButton
                       onClick={() => handleRemoveSubtask(st.id)}
-                      className="text-[#0F172A]/45 hover:text-[#DC2626] p-1"
+                      className="text-[#0F172A]/45 hover:text-[#DC2626] p-1 rounded"
+                      aria-label="Remove subtask"
                     >
                       <Trash2 className="w-3 h-3" />
-                    </button>
+                    </MotionButton>
                   </div>
                 ))}
               </div>
@@ -470,14 +470,13 @@ export function EnhancedTaskModal({
                 }}
                 className="flex-1 px-3 py-1.5 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
               />
-              <button
-                type="button"
+              <MotionButton
                 onClick={handleAddSubtask}
-                className="px-3 py-1.5 text-xs font-medium text-[#1E3A8A] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-900/30 rounded-md hover:bg-[#1E40AF]/25 flex items-center gap-1"
+                className="px-3 py-1.5 text-xs font-medium text-[#1E3A8A] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-900/30 rounded-md hover:bg-[#1E40AF]/25 flex items-center gap-1 transition-colors"
               >
                 <Plus className="w-3 h-3 text-[#1E40AF]" />
                 Add Subtask
-              </button>
+              </MotionButton>
             </div>
           </div>
 
@@ -498,19 +497,18 @@ export function EnhancedTaskModal({
 
           {/* Footer Actions */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
-              type="button"
+            <MotionButton
               onClick={onClose}
               className="px-4 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-md transition-colors"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               className="px-5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md shadow-xs transition-colors"
             >
               {editingTask ? 'Save Changes & Sync' : 'Assign & Notify'}
-            </button>
+            </MotionButton>
           </div>
         </form>
     </ModalTransition>

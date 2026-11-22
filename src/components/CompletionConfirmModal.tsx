@@ -4,7 +4,7 @@ import { X, CheckCircle2, FileSpreadsheet, Check } from 'lucide-react';
 import { Spinner } from '@astryxdesign/core/Spinner';
 import { Task } from '../types/task';
 import { formatReadableDate } from '../utils/dateUtils';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 interface CompletionConfirmModalProps {
   task: Task | null;
@@ -61,14 +61,13 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
               Confirm Task Completion
             </h2>
           </div>
-          <button
-            type="button"
+          <MotionButton
             onClick={onCancel}
             className="p-1 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded transition-colors"
             aria-label="Close confirmation dialog"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         {/* Body */}
@@ -127,15 +126,13 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-3 px-6 py-4 bg-[#F8FAFC] dark:bg-slate-900/90 border-t border-[#E2E8F0] dark:border-slate-800">
-          <button
-            type="button"
+          <MotionButton
             onClick={onCancel}
             className="px-4 py-2 text-xs font-medium text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF] dark:hover:bg-slate-700 transition-colors whitespace-nowrap shrink-0"
           >
             Cancel
-          </button>
-          <button
-            type="button"
+          </MotionButton>
+          <MotionButton
             disabled={isSubmitting}
             onClick={async () => {
               if (isSubmitting) return;
@@ -156,7 +153,7 @@ export const CompletionConfirmModal: React.FC<CompletionConfirmModalProps> = ({
               <Check className="w-4 h-4" />
             )}
             {isSubmitting ? 'Saving & Syncing...' : 'Confirm Completion'}
-          </button>
+          </MotionButton>
         </div>
     </ModalTransition>,
     document.body

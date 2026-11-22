@@ -20,6 +20,7 @@ import {
   MorphSelectContent,
   MorphSelectItem,
 } from '../ui/MorphSelect';
+import { MotionButton } from '../animations';
 
 interface DocumentsTabProps {
   admissionIntake: AdmissionIntake | null;
@@ -277,14 +278,14 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({
                           )}
                         </td>
                         <td className="py-2.5 px-4 text-right whitespace-nowrap">
-                          <button
+                          <MotionButton
                             type="button"
                             onClick={() => onEditDocument(app, doc)}
                             className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 border border-[#E2E8F0] dark:border-slate-700 hover:border-[#1E40AF] rounded transition-colors"
                           >
                             <Edit3 className="w-3 h-3" />
                             Update
-                          </button>
+                          </MotionButton>
                         </td>
                       </tr>
                     ))}

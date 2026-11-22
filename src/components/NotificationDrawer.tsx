@@ -14,7 +14,7 @@ import {
 import { InAppNotification } from '../types/pms';
 import { formatTimestamp } from '../utils/dateUtils';
 import { requestDesktopNotificationPermission } from '../services/pmsService';
-import { DrawerTransition } from './animations';
+import { DrawerTransition, MotionButton } from './animations';
 
 interface NotificationDrawerProps {
   notifications: InAppNotification[];
@@ -74,13 +74,14 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
               </p>
             </div>
           </div>
-          <button
+          <MotionButton
             type="button"
             onClick={onClose}
             className="p-1 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded transition-colors"
+            aria-label="Close notifications"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         {/* Browser Desktop Notification Status Bar */}
@@ -96,23 +97,23 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
             </span>
           </div>
           {browserPermission !== 'granted' && (
-            <button
+            <MotionButton
               type="button"
               onClick={handleEnableDesktopAlerts}
               className="text-[11px] font-semibold text-[#1E40AF] dark:text-blue-400 hover:underline"
             >
               Enable OS Notifications
-            </button>
+            </MotionButton>
           )}
           {unreadCount > 0 && (
-            <button
+            <MotionButton
               type="button"
               onClick={onMarkAllRead}
               className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F172A]/75 dark:text-slate-300 hover:text-[#1E40AF] dark:hover:text-blue-400"
             >
               <CheckCheck className="w-3 h-3" />
               Mark all read
-            </button>
+            </MotionButton>
           )}
         </div>
 

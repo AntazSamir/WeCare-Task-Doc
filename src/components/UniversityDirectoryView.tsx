@@ -22,7 +22,8 @@ import { createIntake } from '../services/pmsService';
 import { UniversityDetailsView } from './UniversityDetailsView';
 import { AddUniversityModal } from './AddUniversityModal';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { PageTransition, TabTransition, ToastTransition, ModalTransition } from './animations';
+import { PageTransition, TabTransition, ToastTransition, ModalTransition, MotionButton } from './animations';
+import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 import { AnimatePresence } from 'motion/react';
 
 const getUniversityAcronym = (name: string): string => {
@@ -213,7 +214,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
 
           {isAdmin && (
             <div className="flex items-center gap-2">
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => {
                   if (!selectedUniIdForIntake && universities[0]?.id) {
@@ -225,15 +226,15 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               >
                 <Calendar className="w-4 h-4 text-[#1E40AF]" />
                 Add Intake Term
-              </button>
-              <button
+              </MotionButton>
+              <MotionButton
                 type="button"
                 onClick={() => setShowAddUniModal(true)}
                 className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
               >
                 <Plus className="w-4 h-4" />
                 Add University
-              </button>
+              </MotionButton>
             </div>
           )}
         </div>
@@ -269,7 +270,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
             </div>
 
             {(searchQuery || cityFilter !== 'All') && (
-              <button
+              <MotionButton
                 type="button"
                 onClick={() => {
                   setSearchQuery('');
@@ -278,7 +279,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 className="text-xs font-medium text-[#1E40AF] hover:text-[#1E3A8A] dark:hover:text-slate-100 px-2 h-9 inline-flex items-center"
               >
                 Reset
-              </button>
+              </MotionButton>
             )}
           </div>
 
@@ -287,32 +288,20 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               Showing {filteredUniversities.length} of {universities.length}
             </span>
 
-            <div className="inline-flex items-center p-0.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700">
-              <button
-                type="button"
-                onClick={() => setViewLayout('grid')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  viewLayout === 'grid'
-                    ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E40AF] dark:text-slate-100 shadow-xs'
-                    : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
-                }`}
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                Cards
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewLayout('table')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  viewLayout === 'table'
-                    ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E40AF] dark:text-slate-100 shadow-xs'
-                    : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
-                }`}
-              >
-                <Table2 className="w-3.5 h-3.5" />
-                Table
-              </button>
-            </div>
+            <RoundedSlidingTabs
+              variant="segmented"
+              value={viewLayout}
+              stretch={0}
+              blur={10}
+              label="University directory layout"
+              onValueChange={(id) => setViewLayout(id as 'grid' | 'table')}
+              className="dark:bg-slate-800"
+              buttonClassName="h-[30px] px-3"
+              tabs={[
+                { id: 'grid', label: 'Cards', icon: <LayoutGrid className="w-3.5 h-3.5" /> },
+                { id: 'table', label: 'Table', icon: <Table2 className="w-3.5 h-3.5" /> },
+              ]}
+            />
           </div>
         </div>
       </div>
@@ -360,13 +349,13 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                           {acronym}
                         </div>
                         <div>
-                          <button
+                          <MotionButton
                             type="button"
                             onClick={() => setSelectedUniversityId(u.id)}
                             className="font-bold text-[#0F172A] dark:text-slate-100 hover:text-[#1E40AF] dark:hover:text-blue-400 text-left"
                           >
                             {u.nameEn}
-                          </button>
+                          </MotionButton>
                           <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5">
                             {u.nameKo} ·{' '}
                             <span className="tabular-nums">
@@ -426,14 +415,14 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
 
                     <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
                       <div className="inline-flex items-center gap-1.5">
-                        <button
+                        <MotionButton
                           type="button"
                           onClick={() => setSelectedUniversityId(u.id)}
                           className="inline-flex items-center gap-1 h-8 px-3 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                         >
                           <span>University Dossier &amp; Guidelines</span>
                           <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
+                        </MotionButton>
                         <a
                           href={u.websiteUrl}
                           target="_blank"
@@ -480,13 +469,13 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       </div>
 
                       <div className="min-w-0">
-                        <button
+                        <MotionButton
                           type="button"
                           onClick={() => setSelectedUniversityId(u.id)}
                           className="text-left text-[16px] font-semibold text-[#0F172A] dark:text-slate-100 hover:text-[#1E40AF] dark:hover:text-blue-400 leading-snug block"
                         >
                           {u.nameEn}
-                        </button>
+                        </MotionButton>
                         <div className="mt-0.5 text-xs text-[#64748B] dark:text-slate-400 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
                           <span>{u.nameKo}</span>
                           <span aria-hidden="true">·</span>
@@ -600,14 +589,14 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
 
                 {/* Action Footer (Preserves University Dossier & Guidelines Trigger) */}
                 <div className="pt-3 border-t border-[#E2E8F0] dark:border-slate-800 flex items-center gap-2">
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => setSelectedUniversityId(u.id)}
                     className="flex-1 inline-flex items-center justify-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2 group"
                   >
                     <span>University Dossier &amp; Guidelines</span>
                     <ChevronRight className="w-4 h-4 text-white/80 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
-                  </button>
+                  </MotionButton>
 
                   <a
                     href={u.websiteUrl}
@@ -670,13 +659,13 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   <Calendar className="w-4 h-4 text-[#1E40AF]" />
                   Configure University Admission Intake &amp; Deadline
                 </h3>
-                <button
+                <MotionButton
                   type="button"
                   onClick={() => setShowAddIntakeModal(false)}
                   className="p-1.5 text-[#64748B] hover:text-[#0F172A] rounded-lg"
                 >
                   <X className="w-4 h-4" />
-                </button>
+                </MotionButton>
               </div>
 
               <form onSubmit={handleAddIntakeSubmit} className="space-y-3 text-xs text-[#0F172A] dark:text-slate-200">
@@ -744,19 +733,19 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
-                  <button
+                  <MotionButton
                     type="button"
                     onClick={() => setShowAddIntakeModal(false)}
                     className="h-9 px-4 text-sm font-medium rounded-lg hover:bg-slate-50 text-[#0F172A] border border-[#E2E8F0] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                   >
                     Cancel
-                  </button>
-                  <button
+                  </MotionButton>
+                  <MotionButton
                     type="submit"
                     className="h-9 px-4 text-sm font-medium rounded-lg bg-[#1E40AF] text-white hover:bg-[#1E3A8A] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
                   >
                     Save Intake
-                  </button>
+                  </MotionButton>
                 </div>
               </form>
         </ModalTransition>,

@@ -12,7 +12,7 @@ import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentChecklistItem, StudentApplication, UserProfile, VisaStage } from '../types/pms';
 import { updateStudent, updateStudentStage } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 interface StudentDossierModalProps {
   student: StudentApplication | null;
@@ -137,21 +137,20 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
+            <MotionButton
               onClick={() => onCreateTaskForStudent(student)}
               className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
               <Plus className="w-4 h-4" />
               Assign Task
-            </button>
-            <button
-              type="button"
+            </MotionButton>
+            <MotionButton
               onClick={onClose}
               className="p-2 text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-slate-200 rounded-lg transition-colors"
+              aria-label="Close student dossier"
             >
               <X className="w-4 h-4" />
-            </button>
+            </MotionButton>
           </div>
         </div>
 
@@ -166,11 +165,10 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
               {VISA_STAGES.filter((s) => s.id !== 'Rejected').map((stage) => {
                 const isSelected = visaStage === stage.id;
                 return (
-                  <button
+                  <MotionButton
                     key={stage.id}
-                    type="button"
                     onClick={() => handleQuickAdvanceStage(stage.id)}
-                    className={`p-2.5 rounded-lg border text-left transition-all ${
+                    className={`p-2.5 rounded-lg border text-left transition-colors ${
                       isSelected
                         ? 'bg-[#EFF6FF] dark:bg-blue-950/60 border-[#1E40AF] dark:border-blue-500 text-[#1E40AF] dark:text-blue-100 ring-2 ring-[#1E40AF]/25'
                         : 'bg-[#FFFFFF] dark:bg-slate-950/40 border-[#E2E8F0] dark:border-slate-800 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC] hover:border-[#1E40AF]/40 dark:hover:bg-slate-800/40'
@@ -183,7 +181,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                     <div className={`text-[10px] mt-1 line-clamp-2 ${isSelected ? 'text-[#1E40AF]/80 dark:text-blue-200/80' : 'text-[#64748B] dark:text-slate-500'}`}>
                       {stage.desc}
                     </div>
-                  </button>
+                  </MotionButton>
                 );
               })}
             </div>
@@ -295,9 +293,8 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
                   <div className="flex items-center gap-1.5 shrink-0">
                     {(['Pending', 'Collected', 'Notarized', 'Apostilled', 'Verified'] as const).map((st) => (
-                      <button
+                      <MotionButton
                         key={st}
-                        type="button"
                         onClick={() => handleDocumentStatusToggle(doc.id, st)}
                         className={`px-2 py-1 text-[11px] rounded transition-colors ${
                           doc.status === st
@@ -312,7 +309,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                         }`}
                       >
                         {st}
-                      </button>
+                      </MotionButton>
                     ))}
                   </div>
                 </div>
@@ -336,21 +333,20 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
           {/* Footer Submit */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
-            <button
-              type="button"
+            <MotionButton
               onClick={onClose}
               className="h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-slate-300 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg hover:bg-slate-50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
               Cancel
-            </button>
-            <button
+            </MotionButton>
+            <MotionButton
               type="submit"
               disabled={isSaving}
               className="inline-flex items-center justify-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
             >
               {isSaving && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               {isSaving ? 'Saving...' : 'Save Dossier Updates'}
-            </button>
+            </MotionButton>
           </div>
         </form>
         </>

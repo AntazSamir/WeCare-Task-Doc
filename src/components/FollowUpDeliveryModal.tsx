@@ -12,7 +12,7 @@ import { Spinner } from '@astryxdesign/core/Spinner';
 import { DocumentFormat, DocumentHandover, UserProfile } from '../types/pms';
 import { submitHandoverFollowUpApi } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
-import { ModalTransition } from './animations';
+import { ModalTransition, MotionButton } from './animations';
 
 interface FollowUpDeliveryModalProps {
   handover: DocumentHandover | null;
@@ -139,13 +139,14 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
               </p>
             </div>
           </div>
-          <button
+          <MotionButton
             type="button"
             onClick={onClose}
-            className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md"
+            className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md transition-colors"
+            aria-label="Close modal"
           >
             <X className="w-4 h-4" />
-          </button>
+          </MotionButton>
         </div>
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-4">
@@ -363,14 +364,14 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
 
         {/* Footer */}
         <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-900/80 flex items-center justify-end gap-2">
-          <button
+          <MotionButton
             type="button"
             onClick={onClose}
-            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40"
+            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40 transition-colors"
           >
             Cancel
-          </button>
-          <button
+          </MotionButton>
+          <MotionButton
             type="button"
             disabled={!isCounselor || isSubmitting}
             onClick={handleSubmit}
@@ -382,7 +383,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
               <PackageCheck className="w-3.5 h-3.5" />
             )}
             {isSubmitting ? 'Submitting Batch...' : `Submit Batch #${nextBatchNum} Under ${handover.id}`}
-          </button>
+          </MotionButton>
         </div>
         </>
       )}

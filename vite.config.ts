@@ -7,10 +7,27 @@ export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
+      dedupe: ['react', 'react-dom', 'motion', 'motion/react'],
       alias: {
         '@': path.resolve(process.cwd(), 'src'),
         '@/lib': path.resolve(process.cwd(), 'src/lib'),
       },
+    },
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+        'motion/react',
+        'motion-brew/pill-tabs',
+        'motion-brew/search-modal',
+        '@astryxdesign/core/Spinner',
+        'lucide-react',
+        'recharts',
+        'clsx',
+        'tailwind-merge',
+      ],
     },
     build: {
       chunkSizeWarningLimit: 600,
