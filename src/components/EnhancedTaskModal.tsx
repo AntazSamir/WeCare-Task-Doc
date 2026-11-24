@@ -177,27 +177,27 @@ export function EnhancedTaskModal({
     <ModalTransition
       isOpen={isOpen}
       onClose={onClose}
-      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
-      cardClassName="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl overflow-visible"
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/70 backdrop-blur-xs"
+      cardClassName="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg shadow-2xl dark:shadow-none overflow-visible"
     >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/50 rounded-t-lg">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#161616] rounded-t-lg">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] dark:bg-blue-900/50 text-[#1E3A8A] dark:text-blue-400 flex items-center justify-center font-bold text-sm">
+            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] flex items-center justify-center font-bold text-sm">
               {editingTask ? '✏️' : '📋'}
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#0F172A] dark:text-slate-100">
+              <h2 className="text-base font-bold text-[#0F172A] dark:text-[#ECECEE]">
                 {editingTask ? 'Edit Task' : 'Create Consultancy Task'}
               </h2>
-              <p className="text-xs text-[#0F172A]/65 dark:text-slate-400">
+              <p className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2]">
                 Assign to team member and link to student dossier or intake project
               </p>
             </div>
           </div>
           <MotionButton
             onClick={onClose}
-            className="p-1.5 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded-md transition-colors"
+            className="p-1.5 text-[#0F172A]/50 dark:text-[#9A9AA2] hover:text-[#1E3A8A] dark:hover:text-[#ECECEE] rounded-md transition-colors"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -208,8 +208,8 @@ export function EnhancedTaskModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5">
-              Task Title <span className="text-[#DC2626]">*</span>
+            <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5">
+              Task Title <span className="text-[#DC2626] dark:text-[#EF5350]">*</span>
             </label>
             <input
               type="text"
@@ -217,13 +217,13 @@ export function EnhancedTaskModal({
               placeholder="e.g. Verify Apostille on Bachelor degree & transcripts"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md focus:outline-hidden focus:ring-2 focus:ring-[#1E40AF] text-[#0F172A] dark:text-slate-100"
+              className="w-full px-3.5 py-2 text-sm bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md focus:outline-hidden focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E]"
             />
           </div>
 
           {/* Description & Detailed Instructions */}
           <div>
-            <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5">
               Detailed Instructions & Requirements
             </label>
             <textarea
@@ -231,15 +231,15 @@ export function EnhancedTaskModal({
               placeholder="Provide exact verification checkpoints, embassy appointment guidelines, or DHL tracking details..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md focus:outline-hidden focus:ring-2 focus:ring-[#1E40AF] text-[#0F172A] dark:text-slate-100"
+              className="w-full px-3.5 py-2 text-sm bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md focus:outline-hidden focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E]"
             />
           </div>
 
           {/* Linking Row: Assigned To, Priority, Category */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5 flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Assign Responsibility
               </label>
               <MorphSelect
@@ -266,8 +266,8 @@ export function EnhancedTaskModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5 text-[#D97706]" />
+              <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5 flex items-center gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 text-[#D97706] dark:text-[#F0A030]" />
                 Priority
               </label>
               <MorphSelect value={priority} onValueChange={(v) => setPriority(v as any)}>
@@ -284,7 +284,7 @@ export function EnhancedTaskModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5">
                 Category
               </label>
               <MorphSelect value={category} onValueChange={(v) => setCategory(v as TaskCategory)}>
@@ -305,8 +305,8 @@ export function EnhancedTaskModal({
           {/* Dates Row: Task Date, Deadline, Scheduled Time */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Task Start Date
               </label>
               <input
@@ -314,13 +314,13 @@ export function EnhancedTaskModal({
                 required
                 value={taskDate}
                 onChange={(e) => setTaskDate(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#DC2626]" />
+              <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#DC2626] dark:text-[#EF5350]" />
                 Hard Deadline
               </label>
               <input
@@ -328,33 +328,33 @@ export function EnhancedTaskModal({
                 required
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5">
                 Target Time (Optional)
               </label>
               <input
                 type="time"
                 value={scheduledTime}
                 onChange={(e) => setScheduledTime(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
           </div>
 
           {/* Consultancy Links: Link to Student, Project, or University */}
-          <div className="p-4 bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-700 rounded-md space-y-3">
-            <div className="text-xs font-bold text-[#0F172A] dark:text-slate-100 flex items-center gap-1.5">
-              <FolderKanban className="w-4 h-4 text-[#1E40AF]" />
+          <div className="p-4 bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md space-y-3">
+            <div className="text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
+              <FolderKanban className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
               Link to South Korea Consultancy Entities (Optional)
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-[11px] font-medium text-[#0F172A]/75 dark:text-slate-400 mb-1 flex items-center gap-1">
-                  <GraduationCap className="w-3 h-3 text-[#16A34A]" />
+                <label className="block text-[11px] font-medium text-[#0F172A]/75 dark:text-[#9A9AA2] mb-1 flex items-center gap-1">
+                  <GraduationCap className="w-3 h-3 text-[#16A34A] dark:text-[#34C26B]" />
                   Candidate / Student
                 </label>
                 <MorphSelect value={studentId} onValueChange={(v) => setStudentId(v)}>
@@ -373,8 +373,8 @@ export function EnhancedTaskModal({
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-[#0F172A]/75 dark:text-slate-400 mb-1 flex items-center gap-1">
-                  <FolderKanban className="w-3 h-3 text-[#1E40AF]" />
+                <label className="block text-[11px] font-medium text-[#0F172A]/75 dark:text-[#9A9AA2] mb-1 flex items-center gap-1">
+                  <FolderKanban className="w-3 h-3 text-[#1E40AF] dark:text-[#4C8DF6]" />
                   Intake Project
                 </label>
                 <MorphSelect value={projectId} onValueChange={(v) => setProjectId(v)}>
@@ -393,8 +393,8 @@ export function EnhancedTaskModal({
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-[#0F172A]/75 dark:text-slate-400 mb-1 flex items-center gap-1">
-                  <Building2 className="w-3 h-3 text-[#D97706]" />
+                <label className="block text-[11px] font-medium text-[#0F172A]/75 dark:text-[#9A9AA2] mb-1 flex items-center gap-1">
+                  <Building2 className="w-3 h-3 text-[#D97706] dark:text-[#F0A030]" />
                   University
                 </label>
                 <MorphSelect value={universityId} onValueChange={(v) => setUniversityId(v)}>
@@ -417,8 +417,8 @@ export function EnhancedTaskModal({
           {/* Subtasks Checklist */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-[#0F172A] dark:text-slate-300 flex items-center gap-1.5">
-                <CheckSquare className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <label className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
+                <CheckSquare className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Subtasks / Verification Checkpoints ({subtasks.filter((s) => s.completed).length}/{subtasks.length})
               </label>
             </div>
@@ -428,7 +428,7 @@ export function EnhancedTaskModal({
                 {subtasks.map((st) => (
                   <div
                     key={st.id}
-                    className="flex items-center justify-between p-2 rounded-md bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700 text-xs"
+                    className="flex items-center justify-between p-2 rounded-md bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] text-xs"
                   >
                     <MotionButton
                       onClick={() => handleToggleSubtask(st.id)}
@@ -436,17 +436,17 @@ export function EnhancedTaskModal({
                       className="flex items-center gap-2 text-left flex-1"
                     >
                       {st.completed ? (
-                        <CheckSquare className="w-3.5 h-3.5 text-[#16A34A] shrink-0" />
+                        <CheckSquare className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
                       ) : (
-                        <Square className="w-3.5 h-3.5 text-[#0F172A]/40 shrink-0" />
+                        <Square className="w-3.5 h-3.5 text-[#0F172A]/40 dark:text-[#9A9AA2] shrink-0" />
                       )}
-                      <span className={st.completed ? 'line-through text-[#0F172A]/45' : 'text-[#0F172A] dark:text-slate-200'}>
+                      <span className={st.completed ? 'line-through text-[#0F172A]/45 dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}>
                         {st.title}
                       </span>
                     </MotionButton>
                     <MotionButton
                       onClick={() => handleRemoveSubtask(st.id)}
-                      className="text-[#0F172A]/45 hover:text-[#DC2626] p-1 rounded"
+                      className="text-[#0F172A]/45 dark:text-[#9A9AA2] hover:text-[#DC2626] dark:hover:text-[#EF5350] p-1 rounded"
                       aria-label="Remove subtask"
                     >
                       <Trash2 className="w-3 h-3" />
@@ -468,13 +468,13 @@ export function EnhancedTaskModal({
                     handleAddSubtask(e);
                   }
                 }}
-                className="flex-1 px-3 py-1.5 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                className="flex-1 px-3 py-1.5 text-xs bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
               <MotionButton
                 onClick={handleAddSubtask}
-                className="px-3 py-1.5 text-xs font-medium text-[#1E3A8A] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-900/30 rounded-md hover:bg-[#1E40AF]/25 flex items-center gap-1 transition-colors"
+                className="px-3 py-1.5 text-xs font-medium text-[#1E3A8A] dark:text-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] rounded-md hover:bg-[#1E40AF]/25 dark:hover:bg-[rgba(76,141,246,0.22)] flex items-center gap-1 transition-colors"
               >
-                <Plus className="w-3 h-3 text-[#1E40AF]" />
+                <Plus className="w-3 h-3 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Add Subtask
               </MotionButton>
             </div>
@@ -482,8 +482,8 @@ export function EnhancedTaskModal({
 
           {/* Internal Notes / Google Sheets Column K */}
           <div>
-            <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-[#1E40AF]" />
+            <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1.5 flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
               Operational Notes (Synced to Google Sheets Column K)
             </label>
             <input
@@ -491,21 +491,21 @@ export function EnhancedTaskModal({
               placeholder="Case remarks, contact attempts, or courier receipt number..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+              className="w-full px-3 py-2 text-xs bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
             />
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0] dark:border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
             <MotionButton
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-md transition-colors"
+              className="px-4 py-2 text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-md transition-colors"
             >
               Cancel
             </MotionButton>
             <MotionButton
               type="submit"
-              className="px-5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md shadow-xs transition-colors"
+              className="px-5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md shadow-xs dark:shadow-none transition-colors"
             >
               {editingTask ? 'Save Changes & Sync' : 'Assign & Notify'}
             </MotionButton>

@@ -10,6 +10,7 @@ import {
   Search,
   Clock,
   Send,
+  X,
 } from 'lucide-react';
 import { AuditLogEntry } from '../../types/pms';
 import {
@@ -102,21 +103,21 @@ function getActionLabel(action: string): string {
 
 function renderActionIcon(category: Exclude<ActivityCategory, 'All'>, action: string) {
   if (action.includes('SUBMIT_APPLICATION')) {
-    return <Send className="w-4 h-4 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
+    return <Send className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0" />;
   }
   switch (category) {
     case 'Assignments':
-      return <UserPlus className="w-4 h-4 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
+      return <UserPlus className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0" />;
     case 'Documents':
-      return <FileCheck2 className="w-4 h-4 text-[#16A34A] dark:text-emerald-400 shrink-0" />;
+      return <FileCheck2 className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B] shrink-0" />;
     case 'Workflow':
-      return <GitBranch className="w-4 h-4 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
+      return <GitBranch className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0" />;
     case 'Tasks':
-      return <ClipboardCheck className="w-4 h-4 text-[#D97706] dark:text-amber-400 shrink-0" />;
+      return <ClipboardCheck className="w-4 h-4 text-[#D97706] dark:text-[#F0A030] shrink-0" />;
     case 'Deadlines':
-      return <Calendar className="w-4 h-4 text-[#DC2626] dark:text-red-400 shrink-0" />;
+      return <Calendar className="w-4 h-4 text-[#DC2626] dark:text-[#EF5350] shrink-0" />;
     default:
-      return <MessageSquarePlus className="w-4 h-4 text-[#0F172A] dark:text-slate-300 shrink-0" />;
+      return <MessageSquarePlus className="w-4 h-4 text-[#0F172A] dark:text-[#ECECEE] shrink-0" />;
   }
 }
 
@@ -142,17 +143,27 @@ export const ActivityTab: React.FC<ActivityTabProps> = ({ activities, onOpenLogA
   return (
     <div className="space-y-4">
       {/* Toolbar */}
-      <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[260px]">
           <div className="relative flex-1 min-w-[200px] max-w-xs">
-            <Search className="w-3.5 h-3.5 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search actor, remark, university update..."
-              className="w-full h-9 pl-8 pr-3 text-xs rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
+              className="w-full h-9 pl-8 pr-8 text-xs rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#64748B] dark:placeholder:text-[#66666E] focus:bg-[#FFFFFF] dark:focus:bg-[#252528] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] transition-colors"
             />
+            {search && (
+              <MotionButton
+                type="button"
+                onClick={() => setSearch('')}
+                aria-label="Clear activity search"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded"
+              >
+                <X className="w-3.5 h-3.5" />
+              </MotionButton>
+            )}
           </div>
 
           <div className="w-52">
@@ -176,7 +187,7 @@ export const ActivityTab: React.FC<ActivityTabProps> = ({ activities, onOpenLogA
         <MotionButton
           type="button"
           onClick={onOpenLogActivity}
-          className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
+          className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors whitespace-nowrap shrink-0"
         >
           <MessageSquarePlus className="w-3.5 h-3.5" />
           Log Remark / University Response
@@ -184,51 +195,51 @@ export const ActivityTab: React.FC<ActivityTabProps> = ({ activities, onOpenLogA
       </div>
 
       {/* Chronological Timeline */}
-      <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg overflow-hidden">
         {filtered.length === 0 ? (
           <div className="p-10 text-center space-y-2">
-            <Activity className="w-8 h-8 text-[#64748B] mx-auto opacity-60" />
-            <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
+            <Activity className="w-8 h-8 text-[#64748B] dark:text-[#66666E] mx-auto opacity-60" />
+            <div className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
               {activities.length === 0
                 ? 'No intake activity recorded yet'
                 : 'No activity entries match the active filters'}
             </div>
-            <p className="text-xs text-[#64748B] dark:text-slate-400">
+            <p className="text-xs text-[#64748B] dark:text-[#9A9AA2]">
               Student assignments, document status updates, task changes, submissions, and team remarks appear here chronologically.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+          <div className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
             {filtered.map((entry) => {
               const cat = classifyAction(entry.action);
               const ts = entry.timestamp ? entry.timestamp.replace('T', ' ').slice(0, 16) : '';
               return (
                 <div
                   key={entry.id}
-                  className="p-4 flex items-start justify-between gap-4 hover:bg-[#F8FAFC]/60 dark:hover:bg-slate-800/30 transition-colors"
+                  className="p-4 flex items-start justify-between gap-4 hover:bg-[#F8FAFC]/60 dark:hover:bg-[#252528] transition-colors"
                 >
                   <div className="flex items-start gap-3 min-w-0">
                     <div className="mt-0.5">{renderActionIcon(cat, entry.action)}</div>
                     <div className="min-w-0 space-y-1">
                       <div className="flex flex-wrap items-center gap-2 text-xs">
-                        <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                        <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                           {getActionLabel(entry.action)}
                         </span>
-                        <span className="text-slate-300 dark:text-slate-700">·</span>
-                        <span className="font-medium text-[#1E40AF] dark:text-blue-400">
+                        <span className="text-slate-300 dark:text-[#3A3A3F]">·</span>
+                        <span className="font-medium text-[#1E40AF] dark:text-[#4C8DF6]">
                           {entry.actorName}
                         </span>
-                        <span className="text-[11px] text-[#64748B] dark:text-slate-400">
+                        <span className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">
                           ({entry.actorRole === 'Admission_Manager' ? 'Admission Manager' : 'Consultant'})
                         </span>
                       </div>
-                      <p className="text-xs text-[#0F172A]/85 dark:text-slate-300 leading-relaxed">
+                      <p className="text-xs text-[#0F172A]/85 dark:text-[#ECECEE] leading-relaxed">
                         {entry.details}
                       </p>
                     </div>
                   </div>
 
-                  <div className="text-[11px] text-[#64748B] dark:text-slate-400 tabular-nums shrink-0 flex items-center gap-1">
+                  <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2] tabular-nums shrink-0 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {ts}
                   </div>

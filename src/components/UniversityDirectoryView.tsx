@@ -76,6 +76,8 @@ interface UniversityDirectoryViewProps {
   universities: KoreanUniversity[];
   currentUser: UserProfile;
   onRefresh: () => void;
+  selectedUniversityId?: string | null;
+  onSelectUniversity?: (id: string | null) => void;
   onApplyStudentForProgram?: (
     universityId: string,
     program: UniversityProgram,
@@ -87,9 +89,19 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
   universities,
   currentUser,
   onRefresh,
+  selectedUniversityId: controlledUniversityId,
+  onSelectUniversity,
   onApplyStudentForProgram,
 }) => {
-  const [selectedUniversityId, setSelectedUniversityId] = useState<string | null>(null);
+  const [internalUniversityId, setInternalUniversityId] = useState<string | null>(null);
+  const selectedUniversityId =
+    controlledUniversityId !== undefined ? controlledUniversityId : internalUniversityId;
+  const setSelectedUniversityId = (id: string | null) => {
+    if (controlledUniversityId === undefined) {
+      setInternalUniversityId(id);
+    }
+    onSelectUniversity?.(id);
+  };
   const [showAddUniModal, setShowAddUniModal] = useState(false);
   const [showAddIntakeModal, setShowAddIntakeModal] = useState(false);
   const [selectedUniIdForIntake, setSelectedUniIdForIntake] = useState(universities[0]?.id || '');
@@ -196,17 +208,17 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
   return (
     <PageTransition viewKey="uni-directory-list" className="space-y-6">
       {/* Header & Operational Summary */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] space-y-4">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] dark:bg-blue-950/60 border border-[#E2E8F0] dark:border-blue-800 flex items-center justify-center text-[#1E40AF] dark:text-blue-400 shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-center text-[#1E40AF] dark:text-[#ECECEE] shrink-0">
               <GraduationCap className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-[24px] font-semibold text-[#0F172A] dark:text-slate-100 leading-tight">
+              <h1 className="text-[24px] font-semibold text-[#0F172A] dark:text-[#ECECEE] leading-tight">
                 South Korean Partner Universities
               </h1>
-              <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1">
+              <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] mt-1">
                 {summaryMetrics.totalUniversities} partner institutions · {summaryMetrics.openIntakes} open admission intakes · Select any institution for full guidelines, tuition, refund rules &amp; wire details
               </p>
             </div>
@@ -222,7 +234,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   }
                   setShowAddIntakeModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-[#E2E8F0] dark:border-slate-700 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+                className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-[#ECECEE] bg-white dark:bg-[#252528] hover:bg-slate-50 dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#3A3A3F] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
               >
                 <Calendar className="w-4 h-4 text-[#1E40AF]" />
                 Add Intake Term
@@ -230,7 +242,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               <MotionButton
                 type="button"
                 onClick={() => setShowAddUniModal(true)}
-                className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+                className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors duration-150 shadow-xs dark:shadow-none focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
               >
                 <Plus className="w-4 h-4" />
                 Add University
@@ -240,17 +252,27 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
         </div>
 
         {/* Clean Toolbar: Search, Region Filter & View Switcher */}
-        <div className="pt-4 border-t border-[#E2E8F0] dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="pt-4 border-t border-[#E2E8F0] dark:border-[#2E2E32] flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[260px]">
             <div className="relative flex-1 max-w-sm min-w-[200px]">
-              <Search className="w-3.5 h-3.5 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search university, Hangul name, city, TOPIK, or IELTS..."
-                className="w-full pl-8 pr-3 h-9 text-xs rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 placeholder:text-[#64748B] focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1E40AF] focus:outline-none transition-colors"
+                className="w-full pl-8 pr-8 h-9 text-xs rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#64748B] dark:placeholder:text-[#66666E] focus:bg-[#FFFFFF] dark:focus:bg-[#252528] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none transition-colors"
               />
+              {searchQuery && (
+                <MotionButton
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  aria-label="Clear university search"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </MotionButton>
+              )}
             </div>
 
             <div className="w-48">
@@ -276,7 +298,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   setSearchQuery('');
                   setCityFilter('All');
                 }}
-                className="text-xs font-medium text-[#1E40AF] hover:text-[#1E3A8A] dark:hover:text-slate-100 px-2 h-9 inline-flex items-center"
+                className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:text-[#1E3A8A] dark:hover:text-[#6BA1F8] px-2 h-9 inline-flex items-center"
               >
                 Reset
               </MotionButton>
@@ -284,7 +306,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[#64748B] dark:text-slate-400 tabular-nums hidden sm:inline">
+            <span className="text-xs text-[#64748B] dark:text-[#9A9AA2] tabular-nums hidden sm:inline">
               Showing {filteredUniversities.length} of {universities.length}
             </span>
 
@@ -295,7 +317,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
               blur={10}
               label="University directory layout"
               onValueChange={(id) => setViewLayout(id as 'grid' | 'table')}
-              className="dark:bg-slate-800"
+              className="dark:bg-[#252528]"
               buttonClassName="h-[30px] px-3"
               tabs={[
                 { id: 'grid', label: 'Cards', icon: <LayoutGrid className="w-3.5 h-3.5" /> },
@@ -308,11 +330,11 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
 
       {/* Empty State */}
       {filteredUniversities.length === 0 ? (
-        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] p-10 text-center space-y-2 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-          <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
+        <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] p-10 text-center space-y-2 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none">
+          <div className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
             No matching Korean universities
           </div>
-          <p className="text-xs text-[#64748B] dark:text-slate-400">
+          <p className="text-xs text-[#64748B] dark:text-[#9A9AA2]">
             Adjust your search term or city filter to view partner institutions.
           </p>
         </div>
@@ -320,9 +342,17 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
         <TabTransition viewKey={viewLayout}>
           {viewLayout === 'table' ? (
         /* Comparison Table View */
-        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-[12px] overflow-x-auto shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[#F8FAFC] dark:bg-slate-800/60 text-[11px] font-semibold text-[#0F172A] dark:text-slate-400 border-b border-[#E2E8F0] dark:border-slate-800">
+        <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] overflow-x-auto shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none">
+          <table className="w-full min-w-[1040px] table-fixed text-left text-xs">
+            <colgroup>
+              <col style={{ width: '24%' }} />
+              <col style={{ width: '13%' }} />
+              <col style={{ width: '19%' }} />
+              <col style={{ width: '11%' }} />
+              <col style={{ width: '13%' }} />
+              <col style={{ width: '20%' }} />
+            </colgroup>
+            <thead className="bg-[#F8FAFC] dark:bg-[#161616] text-[11px] font-semibold text-[#0F172A] dark:text-[#9A9AA2] border-b border-[#E2E8F0] dark:border-[#2E2E32]">
               <tr>
                 <th className="px-4 py-3">Institution</th>
                 <th className="px-4 py-3">Location &amp; Tier</th>
@@ -332,7 +362,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+            <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
               {filteredUniversities.map((u) => {
                 const intakes = (u as any).intakes || [];
                 const programs = (u as any).programs || [];
@@ -341,22 +371,23 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 return (
                   <tr
                     key={u.id}
-                    className="hover:bg-[#F8FAFC] dark:hover:bg-slate-800/30 transition-colors"
+                    className="hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors"
                   >
                     <td className="px-4 py-3.5 align-top">
-                      <div className="flex items-start gap-2.5">
-                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 flex items-center justify-center text-[11px] font-bold tabular-nums text-[#1E40AF] dark:text-blue-400 shrink-0">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#3A3A3F] flex items-center justify-center text-[11px] font-bold tabular-nums text-[#1E40AF] dark:text-[#ECECEE] shrink-0">
                           {acronym}
                         </div>
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <MotionButton
                             type="button"
                             onClick={() => setSelectedUniversityId(u.id)}
-                            className="font-bold text-[#0F172A] dark:text-slate-100 hover:text-[#1E40AF] dark:hover:text-blue-400 text-left"
+                            title={u.nameEn}
+                            className="font-bold text-[#0F172A] dark:text-[#ECECEE] hover:text-[#1E40AF] dark:hover:text-[#4C8DF6] text-left truncate block max-w-full"
                           >
                             {u.nameEn}
                           </MotionButton>
-                          <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5">
+                          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2] mt-0.5 truncate">
                             {u.nameKo} ·{' '}
                             <span className="tabular-nums">
                               {programs.length > 0 ? `${programs.length} tracks` : '5 tracks'}
@@ -367,44 +398,44 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                     </td>
 
                     <td className="px-4 py-3.5 align-top">
-                      <div className="font-medium text-[#0F172A] dark:text-slate-200 flex items-center gap-1">
+                      <div className="font-medium text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-[#1E40AF] shrink-0" />
                         <span>{u.city}</span>
                       </div>
                       {u.ranking && (
-                        <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5 tabular-nums">
+                        <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2] mt-0.5 tabular-nums">
                           {u.ranking.replace(/World|Rank/gi, '').trim()}
                         </div>
                       )}
                     </td>
 
                     <td className="px-4 py-3.5 align-top max-w-xs space-y-0.5">
-                      <div className="text-[#0F172A] dark:text-slate-200">
-                        <span className="text-[#64748B] dark:text-slate-400 font-semibold">TOPIK:</span>{' '}
+                      <div className="text-[#0F172A] dark:text-[#ECECEE]">
+                        <span className="text-[#64748B] dark:text-[#9A9AA2] font-semibold">TOPIK:</span>{' '}
                         {u.topikRequirement || 'TOPIK Level 3+'}
                       </div>
-                      <div className="text-[#0F172A] dark:text-slate-300">
-                        <span className="text-[#64748B] dark:text-slate-400 font-semibold">English:</span>{' '}
+                      <div className="text-[#0F172A] dark:text-[#ECECEE]">
+                        <span className="text-[#64748B] dark:text-[#9A9AA2] font-semibold">English:</span>{' '}
                         {u.ieltsRequirement || 'IELTS 6.0+'}
                       </div>
                     </td>
 
-                    <td className="px-4 py-3.5 align-top font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
+                    <td className="px-4 py-3.5 align-top font-bold tabular-nums text-[#0F172A] dark:text-[#ECECEE]">
                       ${u.bankBalanceUsd?.toLocaleString()} USD
                     </td>
 
                     <td className="px-4 py-3.5 align-top">
                       {intakes.length === 0 ? (
-                        <span className="text-[#64748B] italic">No intakes registered</span>
+                        <span className="text-[#64748B] dark:text-[#66666E] italic">No intakes registered</span>
                       ) : (
                         <div className="space-y-1">
                           {intakes.slice(0, 2).map((it: any) => (
                             <div key={it.id} className="text-[11px] tabular-nums">
-                              <span className="font-semibold text-[#0F172A] dark:text-slate-200">
+                              <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                                 {it.term}
                               </span>{' '}
-                              <span className="text-[#64748B]">·</span>{' '}
-                              <span className="text-[#64748B] dark:text-slate-400">
+                              <span className="text-[#64748B] dark:text-[#66666E]">·</span>{' '}
+                              <span className="text-[#64748B] dark:text-[#9A9AA2]">
                                 Due {formatIntakeDeadline(it.applicationDeadline)}
                               </span>
                             </div>
@@ -418,7 +449,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                         <MotionButton
                           type="button"
                           onClick={() => setSelectedUniversityId(u.id)}
-                          className="inline-flex items-center gap-1 h-8 px-3 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+                          className="inline-flex items-center gap-1 h-8 px-3 text-xs font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
                         >
                           <span>University Dossier &amp; Guidelines</span>
                           <ChevronRight className="w-3.5 h-3.5" />
@@ -428,7 +459,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                           target="_blank"
                           rel="noreferrer"
                           title="Visit University Portal"
-                          className="p-1.5 text-[#64748B] hover:text-[#1E40AF] dark:text-slate-400 dark:hover:text-slate-100 border border-[#E2E8F0] dark:border-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+                          className="p-1.5 text-[#64748B] hover:text-[#1E40AF] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] border border-[#E2E8F0] dark:border-[#3A3A3F] rounded-lg hover:bg-slate-50 dark:hover:bg-[#252528] transition-colors"
                           aria-label={`Visit official website of ${u.nameEn}`}
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -453,13 +484,13 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
             return (
               <article
                 key={u.id}
-                className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]/40 dark:hover:border-slate-700 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] flex flex-col justify-between gap-6 transition-all"
+                className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF]/40 dark:hover:border-[#3A3A3F] rounded-[12px] p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none flex flex-col justify-between gap-6 transition-all"
               >
                 <div className="space-y-4">
                   {/* Top Identity Row */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] dark:bg-slate-800 text-[#1E40AF] dark:text-blue-400 flex flex-col items-center justify-center shrink-0 border border-[#E2E8F0] dark:border-slate-700">
+                      <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] dark:bg-[#252528] text-[#1E40AF] dark:text-[#ECECEE] flex flex-col items-center justify-center shrink-0 border border-[#E2E8F0] dark:border-[#3A3A3F]">
                         <span className="text-[12px] font-bold leading-none tabular-nums">
                           {acronym}
                         </span>
@@ -472,11 +503,11 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                         <MotionButton
                           type="button"
                           onClick={() => setSelectedUniversityId(u.id)}
-                          className="text-left text-[16px] font-semibold text-[#0F172A] dark:text-slate-100 hover:text-[#1E40AF] dark:hover:text-blue-400 leading-snug block"
+                          className="text-left text-[16px] font-semibold text-[#0F172A] dark:text-[#ECECEE] hover:text-[#1E40AF] dark:hover:text-[#4C8DF6] leading-snug block"
                         >
                           {u.nameEn}
                         </MotionButton>
-                        <div className="mt-0.5 text-xs text-[#64748B] dark:text-slate-400 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                        <div className="mt-0.5 text-xs text-[#64748B] dark:text-[#9A9AA2] flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
                           <span>{u.nameKo}</span>
                           <span aria-hidden="true">·</span>
                           <span className="inline-flex items-center gap-0.5">
@@ -490,7 +521,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                     {isVerified && (
                       <span
                         title="Verified university criteria"
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#16A34A] dark:text-emerald-400 shrink-0"
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#16A34A] dark:text-[#34C26B] shrink-0"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>Verified</span>
@@ -499,22 +530,22 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   </div>
 
                   {/* Ranking & Solvency Hairline Strip */}
-                  <div className="grid grid-cols-2 gap-3 py-2.5 border-y border-[#E2E8F0] dark:border-slate-800 text-xs">
+                  <div className="grid grid-cols-2 gap-3 py-2.5 border-y border-[#E2E8F0] dark:border-[#2E2E32] text-xs">
                     <div>
-                      <div className="text-[10px] font-semibold uppercase tracking-wide text-[#64748B] dark:text-slate-400">
+                      <div className="text-[10px] font-semibold uppercase tracking-wide text-[#64748B] dark:text-[#9A9AA2]">
                         Bank Solvency
                       </div>
-                      <div className="mt-0.5 font-bold tabular-nums text-[#0F172A] dark:text-slate-100 flex items-center gap-1.5">
+                      <div className="mt-0.5 font-bold tabular-nums text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
                         <Landmark className="w-3.5 h-3.5 text-[#1E40AF] shrink-0" />
                         <span>${u.bankBalanceUsd?.toLocaleString()} USD</span>
                       </div>
                     </div>
 
                     <div>
-                      <div className="text-[10px] font-semibold uppercase tracking-wide text-[#64748B] dark:text-slate-400">
+                      <div className="text-[10px] font-semibold uppercase tracking-wide text-[#64748B] dark:text-[#9A9AA2]">
                         Tracks &amp; Tier
                       </div>
-                      <div className="mt-0.5 font-medium text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5 truncate">
+                      <div className="mt-0.5 font-medium text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5 truncate">
                         <GraduationCap className="w-3.5 h-3.5 text-[#1E40AF] shrink-0" />
                         <span className="truncate tabular-nums">
                           {programs.length > 0 ? `${programs.length} Tracks` : '5 Tracks'}
@@ -527,21 +558,21 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   {/* Language & Admission Requirements (Unboxed Key-Value Lines) */}
                   <div className="space-y-1.5 text-xs">
                     <div className="flex items-start gap-2">
-                      <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 w-16 shrink-0 flex items-center gap-1 pt-0.5">
+                      <span className="text-[11px] font-semibold text-[#64748B] dark:text-[#9A9AA2] w-16 shrink-0 flex items-center gap-1 pt-0.5">
                         <BookOpen className="w-3 h-3 text-[#1E40AF] shrink-0" />
                         TOPIK
                       </span>
-                      <span className="text-[#0F172A] dark:text-slate-200 leading-snug flex-1">
+                      <span className="text-[#0F172A] dark:text-[#ECECEE] leading-snug flex-1">
                         {u.topikRequirement || 'TOPIK Level 3 minimum'}
                       </span>
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 w-16 shrink-0 flex items-center gap-1 pt-0.5">
+                      <span className="text-[11px] font-semibold text-[#64748B] dark:text-[#9A9AA2] w-16 shrink-0 flex items-center gap-1 pt-0.5">
                         <GraduationCap className="w-3 h-3 text-[#1E40AF] shrink-0" />
                         English
                       </span>
-                      <span className="text-[#0F172A] dark:text-slate-200 leading-snug flex-1">
+                      <span className="text-[#0F172A] dark:text-[#ECECEE] leading-snug flex-1">
                         {u.ieltsRequirement || 'IELTS 6.0 minimum'}
                       </span>
                     </div>
@@ -550,33 +581,33 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                   {/* Intakes & Application Deadlines */}
                   <div className="space-y-1.5 pt-1">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-semibold uppercase tracking-wide text-[#64748B] dark:text-slate-400 text-[10px]">
+                      <span className="font-semibold uppercase tracking-wide text-[#64748B] dark:text-[#9A9AA2] text-[10px]">
                         Configured Intakes
                       </span>
-                      <span className="inline-flex items-center gap-1.5 font-semibold text-[#16A34A] dark:text-emerald-400 text-[11px]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] shrink-0" />
+                      <span className="inline-flex items-center gap-1.5 font-semibold text-[#16A34A] dark:text-[#34C26B] text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] dark:bg-[#34C26B] shrink-0" />
                         Open
                       </span>
                     </div>
 
                     {intakes.length === 0 ? (
-                      <div className="text-xs text-[#64748B] italic py-0.5">
+                      <div className="text-xs text-[#64748B] dark:text-[#66666E] italic py-0.5">
                         No intakes registered
                       </div>
                     ) : (
-                      <div className="divide-y divide-[#E2E8F0] dark:divide-slate-800 border-t border-[#E2E8F0] dark:border-slate-800">
+                      <div className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32] border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                         {intakes.slice(0, 2).map((it: any) => (
                           <div
                             key={it.id}
                             className="py-1.5 flex items-center justify-between gap-2 text-xs"
                           >
-                            <span className="font-semibold text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5">
+                            <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
                               <Calendar className="w-3.5 h-3.5 text-[#1E40AF] shrink-0" />
                               {it.term}
                             </span>
-                            <span className="tabular-nums text-[11px] text-[#64748B] dark:text-slate-400">
+                            <span className="tabular-nums text-[11px] text-[#64748B] dark:text-[#9A9AA2]">
                               Due{' '}
-                              <span className="font-semibold text-[#0F172A] dark:text-slate-200">
+                              <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                                 {formatIntakeDeadline(it.applicationDeadline)}
                               </span>
                             </span>
@@ -588,11 +619,11 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                 </div>
 
                 {/* Action Footer (Preserves University Dossier & Guidelines Trigger) */}
-                <div className="pt-3 border-t border-[#E2E8F0] dark:border-slate-800 flex items-center gap-2">
+                <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32] flex items-center gap-2">
                   <MotionButton
                     type="button"
                     onClick={() => setSelectedUniversityId(u.id)}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2 group"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2 group"
                   >
                     <span>University Dossier &amp; Guidelines</span>
                     <ChevronRight className="w-4 h-4 text-white/80 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
@@ -603,7 +634,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                     target="_blank"
                     rel="noreferrer"
                     title="Visit University Portal"
-                    className="h-9 w-9 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-[#E2E8F0] dark:border-slate-800"
+                    className="h-9 w-9 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] hover:bg-slate-50 dark:hover:bg-[#252528] rounded-lg transition-colors border border-[#E2E8F0] dark:border-[#2E2E32]"
                     aria-label={`Visit official website of ${u.nameEn}`}
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -634,7 +665,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
       {createPortal(
         <AnimatePresence>
           {addUniSuccessMsg && (
-            <ToastTransition className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl">
+            <ToastTransition className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 dark:bg-[#1C1C1E] dark:border dark:border-[#34C26B] text-white dark:text-[#34C26B] text-xs font-semibold shadow-xl dark:shadow-none">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               {addUniSuccessMsg}
             </ToastTransition>
@@ -647,28 +678,27 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
       {false && null /* dead anchor */}
 
       {/* Add Intake Term Modal */}
-      {createPortal(
-        <ModalTransition
-          isOpen={showAddIntakeModal}
-          onClose={() => setShowAddIntakeModal(false)}
-          backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
-          cardClassName="w-full max-w-md rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl p-6 space-y-4"
-        >
-              <div className="flex items-center justify-between border-b pb-3 border-[#E2E8F0] dark:border-slate-800">
-                <h3 className="text-[16px] font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
+      <ModalTransition
+        isOpen={showAddIntakeModal}
+        onClose={() => setShowAddIntakeModal(false)}
+        backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/40 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="w-full max-w-md rounded-[12px] bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4"
+      >
+              <div className="flex items-center justify-between border-b pb-3 border-[#E2E8F0] dark:border-[#2E2E32]">
+                <h3 className="text-[16px] font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[#1E40AF]" />
                   Configure University Admission Intake &amp; Deadline
                 </h3>
                 <MotionButton
                   type="button"
                   onClick={() => setShowAddIntakeModal(false)}
-                  className="p-1.5 text-[#64748B] hover:text-[#0F172A] rounded-lg"
+                  className="p-1.5 text-[#64748B] hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded-lg"
                 >
                   <X className="w-4 h-4" />
                 </MotionButton>
               </div>
 
-              <form onSubmit={handleAddIntakeSubmit} className="space-y-3 text-xs text-[#0F172A] dark:text-slate-200">
+              <form onSubmit={handleAddIntakeSubmit} className="space-y-3 text-xs text-[#0F172A] dark:text-[#ECECEE]">
                 <div>
                   <label className="block font-medium mb-1">University *</label>
                   <MorphSelect value={selectedUniIdForIntake} onValueChange={(v) => setSelectedUniIdForIntake(v)}>
@@ -705,7 +735,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       type="number"
                       value={quota}
                       onChange={(e) => setQuota(Number(e.target.value))}
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none tabular-nums"
+                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none tabular-nums"
                     />
                   </div>
                 </div>
@@ -717,7 +747,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       type="date"
                       value={appStart}
                       onChange={(e) => setAppStart(e.target.value)}
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none tabular-nums"
+                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none tabular-nums"
                     />
                   </div>
                   <div>
@@ -727,30 +757,28 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
                       required
                       value={appDeadline}
                       onChange={(e) => setAppDeadline(e.target.value)}
-                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 focus:border-[#1E40AF] focus:outline-none tabular-nums"
+                      className="w-full rounded-lg border px-3 py-1.5 border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none tabular-nums"
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
+                <div className="flex justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                   <MotionButton
                     type="button"
                     onClick={() => setShowAddIntakeModal(false)}
-                    className="h-9 px-4 text-sm font-medium rounded-lg hover:bg-slate-50 text-[#0F172A] border border-[#E2E8F0] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+                    className="h-9 px-4 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] border border-[#E2E8F0] dark:border-[#3A3A3F] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
                   >
                     Cancel
                   </MotionButton>
                   <MotionButton
                     type="submit"
-                    className="h-9 px-4 text-sm font-medium rounded-lg bg-[#1E40AF] text-white hover:bg-[#1E3A8A] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+                    className="h-9 px-4 text-sm font-medium rounded-lg bg-[#1E40AF] text-white hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
                   >
                     Save Intake
                   </MotionButton>
                 </div>
               </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
     </PageTransition>
   );
 };

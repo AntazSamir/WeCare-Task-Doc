@@ -100,7 +100,11 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { playCompletionChime, playNotificationChime } from './utils/soundUtils';
 import { PageTransition, TabTransition, ToastTransition, MotionButton } from './components/animations';
 import { SidebarTabBar } from '@/components/tab-bar';
-import { SearchModal, type SearchModalItem, type SearchModalAction } from 'motion-brew/search-modal';
+import {
+  GlobalSearchBar,
+  type GlobalSearchItem,
+  type GlobalSearchAction,
+} from './components/GlobalSearchBar';
 import { AnimatePresence } from 'motion/react';
 
 // Lazy-loaded Views (Code Splitting)
@@ -318,6 +322,7 @@ export function App() {
   const [taskContextStudentId, setTaskContextStudentId] = useState<string | undefined>(undefined);
   const [taskContextProjectId, setTaskContextProjectId] = useState<string | undefined>(undefined);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedUniversityId, setSelectedUniversityId] = useState<string | null>(null);
   const [workspaceRefreshNonce, setWorkspaceRefreshNonce] = useState(0);
   const [prefillStudentProjectId, setPrefillStudentProjectId] = useState<string | undefined>(undefined);
   const [prefillStudentUniversityId, setPrefillStudentUniversityId] = useState<string | undefined>(undefined);
@@ -1644,28 +1649,28 @@ export function App() {
           id: 'dashboard',
           label: 'Executive Pipeline',
           icon: LayoutDashboard,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'students',
           label: 'Student Dossiers',
           icon: Users as any,
           count: students.length,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'projects',
           label: 'Intake Projects',
           icon: FolderKanban as any,
           count: projects.length,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'universities',
           label: 'Korean Universities',
           icon: Building2 as any,
           count: universities.length,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'document-handover',
@@ -1676,7 +1681,7 @@ export function App() {
               ? (handoverStats?.actionNeededRequestsAssignedToMe || 0) +
                 (handoverStats?.myNeedsFollowUp || 0)
               : handoverStats?.myPendingVerifications ?? handoverStats?.pendingReceipts ?? 0,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
       ],
     },
@@ -1688,34 +1693,34 @@ export function App() {
           label: 'All Tasks Directory',
           icon: ListTodo,
           count: stats.total,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'my-day',
           label: 'My Day',
           icon: Sun,
           count: stats.todayCount,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'upcoming',
           label: 'Upcoming Deadlines',
           icon: CalendarClock,
           count: stats.upcomingCount,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'calendar',
           label: 'Calendar Schedule',
           icon: CalendarIcon,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
         {
           id: 'completed',
           label: 'Completed Archive',
           icon: CheckCircle2,
           count: stats.completedCount,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
       ],
     },
@@ -1726,14 +1731,14 @@ export function App() {
           id: 'sheets-connection',
           label: 'Google Sheets',
           icon: FileSpreadsheet,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
           isLiveSync: true,
         },
         {
           id: 'settings',
           label: 'Settings',
           icon: SettingsIcon,
-          accentColor: 'text-[#1E40AF] dark:text-blue-400',
+          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
         },
       ],
     },
@@ -1744,42 +1749,93 @@ export function App() {
   const currentNavTitle =
     allNavItems.find((item) => item.id === activeNav)?.label || 'Dashboard';
 
-  const searchItems = useMemo<SearchModalItem[]>(() => {
-    const taskItems: SearchModalItem[] = tasks.map((t) => ({
-      id: `task:${t.id}`,
-      title: t.title,
-      group: 'Tasks',
-      meta: `${t.category} · ${t.deadline || t.taskDate} · ${t.status}`,
-      tint:
-        t.status === 'Completed'
-          ? '#e7efe4'
-          : t.priority === 'Urgent' || t.priority === 'High'
-          ? '#f1e6e6'
-          : '#e3e9f2',
-    }));
+  const searchItems = useMemo<GlobalSearchItem[]>(() => {
+    const taskItems: GlobalSearchItem[] = tasks.map((t) => {
+      const pt = t as PmsTask;
+      return {
+        id: `task:${t.id}`,
+        title: t.title,
+        group: 'Tasks',
+        meta: `${t.category} · ${t.deadline || t.taskDate} · ${t.status}`,
+        keywords: [
+          t.category,
+          t.priority,
+          t.status,
+          t.deadline,
+          t.taskDate,
+          t.notes,
+          pt.assignedToName,
+          pt.studentName,
+          pt.universityName,
+        ]
+          .filter(Boolean)
+          .join(' '),
+        badgeText: t.status === 'Completed' ? 'Done' : t.priority,
+        badgeTone:
+          t.status === 'Completed'
+            ? 'green'
+            : t.priority === 'Urgent'
+            ? 'red'
+            : t.priority === 'High'
+            ? 'amber'
+            : 'blue',
+      };
+    });
 
-    const studentItems: SearchModalItem[] = students.map((s) => ({
+    const studentItems: GlobalSearchItem[] = students.map((s) => ({
       id: `student:${s.id}`,
       title: s.fullName,
       group: 'Students',
-      meta: `${s.appliedUniversityName || 'Korean University'} · ${s.visaStage}`,
-      tint: '#e3e9f2',
+      meta: `${s.appliedUniversityName || 'Korean University'} · ${s.visaStage.replace(/_/g, ' ')}`,
+      keywords: [
+        s.passportNumber,
+        s.contactEmail,
+        s.contactPhone,
+        s.major,
+        s.degreeLevel,
+        s.intakeTerm,
+        s.visaType,
+        s.visaStage,
+        s.visaStage.replace(/_/g, ' '),
+        s.appliedUniversityName,
+        s.assignedConsultantName,
+        s.courierTrackingNumber,
+      ]
+        .filter(Boolean)
+        .join(' '),
+      badgeText: s.visaType,
+      badgeTone: s.visaStage === 'Visa_Issued' ? 'green' : 'blue',
     }));
 
-    const uniItems: SearchModalItem[] = universities.map((u) => ({
+    const uniItems: GlobalSearchItem[] = universities.map((u) => ({
       id: `uni:${u.id}`,
       title: u.nameEn,
       group: 'Universities',
-      meta: u.city || u.nameKo || 'Partner University',
-      tint: '#ece6f3',
+      meta: `${u.city || 'South Korea'}${u.nameKo ? ` · ${u.nameKo}` : ''}`,
+      keywords: [
+        u.nameKo,
+        u.city,
+        u.ranking,
+        u.topikRequirement,
+        u.ieltsRequirement,
+        ...(u.programs || []).map((p) => `${p.name} ${p.degreeLevel}`),
+      ]
+        .filter(Boolean)
+        .join(' '),
+      badgeText: u.verificationStatus === 'Verified' ? 'Verified' : 'Partner',
+      badgeTone: u.verificationStatus === 'Verified' ? 'green' : 'neutral',
     }));
 
-    const projectItems: SearchModalItem[] = projects.map((p) => ({
+    const projectItems: GlobalSearchItem[] = projects.map((p) => ({
       id: `project:${p.id}`,
       title: p.name,
       group: 'Projects',
-      meta: `${p.intakeTerm} · ${p.status}`,
-      tint: '#f3ebe0',
+      meta: `${p.universityName} · ${p.intakeTerm} · ${p.studentCount || 0}/${p.targetQuota}`,
+      keywords: [p.id, p.universityName, p.intakeTerm, p.status, p.deadline]
+        .filter(Boolean)
+        .join(' '),
+      badgeText: p.status,
+      badgeTone: p.status === 'Active' ? 'green' : 'neutral',
     }));
 
     return [...taskItems, ...studentItems, ...uniItems, ...projectItems];
@@ -1794,12 +1850,12 @@ export function App() {
     return ids.slice(0, 4);
   }, [tasks, students, universities]);
 
-  const searchActions = useMemo<SearchModalAction[]>(
+  const searchActions = useMemo<GlobalSearchAction[]>(
     () => [
-      { id: 'nav:dashboard', label: 'Executive Pipeline', icon: 'chart', key: '1' },
-      { id: 'nav:all-tasks', label: 'All Tasks Directory', icon: 'grid', key: '2' },
-      { id: 'nav:universities', label: 'Korean Universities', icon: 'compass', key: '3' },
-      { id: 'nav:team-tasks', label: 'Team Workload', icon: 'trend', key: '4' },
+      { id: 'nav:dashboard', label: 'Executive Pipeline', icon: 'chart', shortcutKey: '1' },
+      { id: 'nav:all-tasks', label: 'All Tasks Directory', icon: 'grid', shortcutKey: '2' },
+      { id: 'nav:universities', label: 'Korean Universities', icon: 'compass', shortcutKey: '3' },
+      { id: 'nav:team-tasks', label: 'Team Workload', icon: 'trend', shortcutKey: '4' },
     ],
     []
   );
@@ -1812,33 +1868,12 @@ export function App() {
     return Array.from(new Set(list)).slice(0, 4);
   }, [universities, students]);
 
-  const closeInlineSearch = useCallback(() => {
-    const combobox = document.querySelector<HTMLInputElement>(
-      '[role="combobox"][aria-label="Search"]'
-    );
-    combobox?.blur();
-    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-  }, []);
-
-  useEffect(() => {
-    const onShortcut = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        const combobox = document.querySelector<HTMLInputElement>(
-          '[role="combobox"][aria-label="Search"]'
-        );
-        combobox?.focus();
-      }
-    };
-    window.addEventListener('keydown', onShortcut);
-    return () => window.removeEventListener('keydown', onShortcut);
-  }, []);
-
-  const handleSearchModalSelect = useCallback(
-    (entry: SearchModalItem | SearchModalAction) => {
-      closeInlineSearch();
+  const handleGlobalSearchSelect = useCallback(
+    (entry: GlobalSearchItem | GlobalSearchAction) => {
       if ('label' in entry) {
         const navTarget = entry.id.replace('nav:', '') as NavigationTab;
+        if (navTarget === 'universities') setSelectedUniversityId(null);
+        if (navTarget === 'projects') setSelectedProjectId(null);
         setActiveNav(navTarget);
         return;
       }
@@ -1863,6 +1898,8 @@ export function App() {
         return;
       }
       if (entry.id.startsWith('uni:')) {
+        const uniId = entry.id.slice(4);
+        setSelectedUniversityId(uniId);
         setActiveNav('universities');
         return;
       }
@@ -1872,14 +1909,14 @@ export function App() {
         setActiveNav('projects');
       }
     },
-    [tasks, students, closeInlineSearch]
+    [tasks, students]
   );
 
   return (
-    <div className="min-h-screen flex bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100">
+    <div className="min-h-screen flex bg-[#F8FAFC] dark:bg-[#121212] text-[#0F172A] dark:text-[#ECECEE]">
       {/* LEFT SIDEBAR NAVIGATION (Collapsible: 224px expanded / 56px collapsed) */}
       <aside
-        className={`shrink-0 bg-white dark:bg-slate-900 border-r border-[#E2E8F0] dark:border-slate-800 flex flex-col h-screen sticky top-0 select-none transition-all z-30 ${
+        className={`shrink-0 bg-white dark:bg-[#161616] border-r border-[#E2E8F0] dark:border-[#2E2E32] flex flex-col h-screen sticky top-0 select-none transition-all z-30 ${
           isSidebarCollapsed ? 'w-14' : 'w-56'
         }`}
         style={{
@@ -1888,7 +1925,7 @@ export function App() {
         }}
       >
         {/* Brand Header */}
-        <div className="h-14 shrink-0 px-3 flex items-center border-b border-[#E2E8F0] dark:border-slate-800">
+        <div className="h-14 shrink-0 px-3 flex items-center border-b border-[#E2E8F0] dark:border-[#2E2E32]">
           {!isSidebarCollapsed ? (
             <div className="flex items-center gap-2 min-w-0">
               <img
@@ -1897,10 +1934,10 @@ export function App() {
                 className="w-8 h-8 object-contain shrink-0 select-none"
               />
               <div className="min-w-0">
-                <div className="font-bold text-[13.5px] tracking-tight text-[#0F172A] dark:text-slate-100 leading-tight truncate">
+                <div className="font-bold text-[13.5px] tracking-tight text-[#0F172A] dark:text-[#ECECEE] leading-tight truncate">
                   WeCare Task
                 </div>
-                <div className="text-[10px] text-[#64748B] dark:text-slate-400 mt-0.5 truncate">
+                <div className="text-[10px] text-[#64748B] dark:text-[#9A9AA2] mt-0.5 truncate">
                   Korea Visa &amp; Tasks
                 </div>
               </div>
@@ -1940,6 +1977,7 @@ export function App() {
             onChange={(id) => {
               setActiveNav(id as NavigationTab);
               setSelectedProjectId(null);
+              setSelectedUniversityId(null);
             }}
             collapsed={isSidebarCollapsed}
           />
@@ -1947,22 +1985,22 @@ export function App() {
 
         {/* Dedicated Sticky Footer Container inside Sidebar */}
         {!isSidebarCollapsed ? (
-          <div className="shrink-0 p-2.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 space-y-1.5">
+          <div className="shrink-0 p-2.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#161616] space-y-1.5">
             {/* Google Sheets Live Sync: Compact Row */}
             <div
-              className="flex items-center justify-between px-2 py-1 rounded-md bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 group"
+              className="flex items-center justify-between px-2 py-1 rounded-md bg-[#F8FAFC] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] group"
               title={`${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}`}
             >
               <div className="flex items-center gap-1.5 min-w-0">
-                <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-emerald-400 shrink-0" />
-                <span className="flex items-center gap-1.5 text-[11px] text-[#0F172A] dark:text-slate-200 min-w-0">
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
+                <span className="flex items-center gap-1.5 text-[11px] text-[#0F172A] dark:text-[#ECECEE] min-w-0">
                   <span
                     className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                       isOffline || connection.syncStatus === 'Sync Failed'
-                        ? 'bg-[#DC2626]'
+                        ? 'bg-[#DC2626] dark:bg-[#EF5350]'
                         : connection.syncStatus === 'Syncing'
-                        ? 'bg-[#D97706]'
-                        : 'bg-[#16A34A]'
+                        ? 'bg-[#D97706] dark:bg-[#F0A030]'
+                        : 'bg-[#16A34A] dark:bg-[#34C26B]'
                     }`}
                   />
                   <span className="truncate">{isOffline ? 'Sync Failed' : connection.syncStatus}</span>
@@ -1972,7 +2010,7 @@ export function App() {
                 type="button"
                 onClick={handleManualSyncNow}
                 title="Sync now with Google Sheets"
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10.5px] font-medium text-[#1E40AF] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 rounded transition-colors shrink-0"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10.5px] font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[rgba(76,141,246,0.14)] rounded transition-colors shrink-0"
               >
                 {connection.syncStatus === 'Syncing' ? (
                   <Spinner size="sm" shade="inherit" aria-hidden="true" />
@@ -1988,36 +2026,36 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Collapse sidebar (Ctrl+B)"
-              className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-medium text-[#64748B] dark:text-slate-400 hover:text-[#1E40AF] dark:hover:text-slate-100 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/80 rounded-md transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-slate-700/60"
+              className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-medium text-[#64748B] dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] rounded-md transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-[#3A3A3F]"
               aria-label="Collapse sidebar"
             >
               <span className="flex items-center gap-1.5">
-                <PanelLeftClose className="w-3.5 h-3.5 text-[#64748B] group-hover:text-[#1E40AF] dark:group-hover:text-slate-200 transition-colors" />
+                <PanelLeftClose className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2] group-hover:text-[#1E40AF] dark:group-hover:text-[#ECECEE] transition-colors" />
                 <span>Collapse Sidebar</span>
               </span>
-              <kbd className="hidden sm:inline-block px-1 py-0.5 text-[9.5px] text-[#64748B] dark:text-slate-500 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded">
+              <kbd className="hidden sm:inline-block px-1 py-0.5 text-[9.5px] text-[#64748B] dark:text-[#9A9AA2] bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded">
                 Ctrl+B
               </kbd>
             </MotionButton>
           </div>
         ) : (
-          <div className="shrink-0 p-2 border-t border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-center gap-1.5 shadow-xs">
+          <div className="shrink-0 p-2 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#161616] flex flex-col items-center gap-1.5 shadow-xs dark:shadow-none">
             {/* Collapsed Google Sheets Icon Button */}
             <MotionButton
               type="button"
               onClick={handleManualSyncNow}
               title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to sync now`}
-              className="w-8 h-8 rounded-md flex items-center justify-center relative bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#16A34A]/50 transition-colors group"
+              className="w-8 h-8 rounded-md flex items-center justify-center relative bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#16A34A]/50 dark:hover:border-[#34C26B]/60 transition-colors group"
               aria-label="Google Sheets synchronization status"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-emerald-400 group-hover:scale-105 transition-transform" />
+              <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B] group-hover:scale-105 transition-transform" />
               <span
-                className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-slate-900 ${
+                className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-[#161616] ${
                   isOffline || connection.syncStatus === 'Sync Failed'
-                    ? 'bg-[#DC2626]'
+                    ? 'bg-[#DC2626] dark:bg-[#EF5350]'
                     : connection.syncStatus === 'Syncing'
-                    ? 'bg-[#D97706]'
-                    : 'bg-[#16A34A]'
+                    ? 'bg-[#D97706] dark:bg-[#F0A030]'
+                    : 'bg-[#16A34A] dark:bg-[#34C26B]'
                 }`}
               />
             </MotionButton>
@@ -2027,7 +2065,7 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Expand sidebar (Ctrl+B)"
-              className="w-8 h-8 rounded-md bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 flex items-center justify-center transition-colors group border border-[#E2E8F0] dark:border-slate-700/60"
+              className="w-8 h-8 rounded-md bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] flex items-center justify-center transition-colors group border border-[#E2E8F0] dark:border-[#2E2E32]"
               aria-label="Expand sidebar"
             >
               <PanelLeftOpen className="w-3.5 h-3.5 transition-transform group-hover:scale-105" />
@@ -2039,17 +2077,16 @@ export function App() {
       {/* MAIN WORKSPACE CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* TOP HEADER BAR */}
-        <header className="sticky top-0 z-30 h-14 px-3 sm:px-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 shadow-xs">
+        <header className="sticky top-0 z-30 h-14 px-3 sm:px-3.5 bg-white/95 dark:bg-[#161616] backdrop-blur-xs border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between gap-3 shrink-0 shadow-xs dark:shadow-none">
           {/* Global Inline Animated Search Bar */}
-          <SearchModal
+          <GlobalSearchBar
             items={searchItems}
             groups={['Tasks', 'Students', 'Universities', 'Projects']}
-            recent={recentSearchIds}
+            recentIds={recentSearchIds}
             actions={searchActions}
             examples={searchExamples}
             placeholder="Search tasks, students, universities..."
-            onSelect={handleSearchModalSelect}
-            className="w-full flex-1 max-w-[460px] lg:max-w-[520px] z-40 [&>div:first-child]:h-10 [&>div:first-child]:rounded-xl [&>div:first-child]:border [&>div:first-child]:border-[#E2E8F0] dark:[&>div:first-child]:border-slate-700/80 [&>div:first-child]:bg-white [&>div:first-child]:!shadow-xs [&>div:first-child]:pl-3.5 [&>div:first-child]:pr-2 [&>div:first-child>div>input]:text-sm [&>div:first-child>div>span]:text-sm"
+            onSelect={handleGlobalSearchSelect}
           />
 
           {/* Right: Role Switcher, Offline Toggle, Notification Center, Theme Toggle, Primary Action */}
@@ -2075,16 +2112,16 @@ export function App() {
                   ? 'Offline Mode Active — Click to reconnect & flush queue to Google Sheets'
                   : 'Online & Connected — Click to test Offline SQLite Queue'
               }
-              className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-[#0F172A] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors whitespace-nowrap shrink-0"
             >
               {isOffline ? (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
-                  <span className="text-[#DC2626] dark:text-red-400">Offline (<span className="tabular-nums">{syncQueue.length}</span> queued)</span>
+                  <span className="w-2 h-2 rounded-full bg-[#DC2626] dark:bg-[#EF5350] shrink-0" />
+                  <span className="text-[#DC2626] dark:text-[#EF5350]">Offline (<span className="tabular-nums">{syncQueue.length}</span> queued)</span>
                 </>
               ) : (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-[#16A34A] shrink-0" />
+                  <span className="w-2 h-2 rounded-full bg-[#16A34A] dark:bg-[#34C26B] shrink-0" />
                   <span>{connection.syncStatus}</span>
                 </>
               )}
@@ -2094,13 +2131,13 @@ export function App() {
             <MotionButton
               type="button"
               onClick={() => setIsNotificationDrawerOpen(true)}
-              className="relative p-2 text-[#0F172A] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-slate-800"
+              className="relative p-2 text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-[#2E2E32]"
               title="Open Real-time Notifications & Operational Alerts"
               aria-label="Notifications and Reminders"
             >
               <Bell className="w-4 h-4" />
               {pmsNotifications.filter((n) => !n.read).length > 0 && (
-                <span className="absolute -top-1 -right-1 px-1 min-w-[16px] h-4 rounded-full bg-[#1E40AF] text-white text-[10px] font-semibold flex items-center justify-center tabular-nums">
+                <span className="absolute -top-1 -right-1 px-1 min-w-[16px] h-4 rounded-full bg-[#1E40AF] dark:bg-[#4C8DF6] text-white text-[10px] font-semibold flex items-center justify-center tabular-nums">
                   {pmsNotifications.filter((n) => !n.read).length}
                 </span>
               )}
@@ -2128,14 +2165,14 @@ export function App() {
                   }
                 } catch {}
               }}
-              className="p-2 text-[#0F172A] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-slate-800"
+              className="p-2 text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-[#2E2E32]"
               title={`Theme: ${settings.theme === 'system' ? 'System' : settings.theme === 'dark' ? 'Dark' : 'Light'} (Click to cycle)`}
               aria-label="Toggle color theme"
             >
               {settings.theme === 'dark' ? (
-                <Moon className="w-4 h-4 text-blue-400" />
+                <Moon className="w-4 h-4 text-[#4C8DF6]" />
               ) : settings.theme === 'system' ? (
-                <Monitor className="w-4 h-4 text-[#1E40AF] dark:text-blue-400" />
+                <Monitor className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
               ) : (
                 <Sun className="w-4 h-4 text-[#D97706]" />
               )}
@@ -2149,7 +2186,7 @@ export function App() {
                 setTaskContextProjectId(undefined);
                 setIsEnhancedTaskModalOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 px-4 h-9 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg shadow-xs transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+              className="inline-flex items-center gap-1.5 px-4 h-9 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg shadow-xs dark:shadow-none transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
             >
               <Plus className="w-4 h-4" />
               {currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
@@ -2182,18 +2219,18 @@ export function App() {
               />
 
               {/* Welcome Banner & Daily Progress */}
-              <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-4 sm:p-5">
+              <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-4 sm:p-5">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <div className="text-xs font-medium text-slate-500 dark:text-[#9A9AA2]">
                       {formatFullHeaderDate()}
                     </div>
-                    <h1 className="text-2xl font-display font-bold text-[#0F172A] dark:text-slate-100 tracking-tight">
+                    <h1 className="text-2xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE] tracking-tight">
                       Daily Task Command Center
                     </h1>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                    <p className="text-xs text-slate-600 dark:text-[#9A9AA2]">
                       Connected to Google Sheets:{' '}
-                      <span className="tabular-nums text-[#1E3A8A] dark:text-slate-200">
+                      <span className="tabular-nums text-[#1E3A8A] dark:text-[#ECECEE]">
                         {connection.selectedSpreadsheetTitle} / {connection.selectedWorksheet}
                       </span>{' '}
                       · Last Synced: <span className="tabular-nums">{formatTimestamp(connection.lastSyncedAt)}</span>
@@ -2202,14 +2239,14 @@ export function App() {
 
                   {/* List vs Calendar Switcher */}
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg">
+                    <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg">
                       <MotionButton
                         type="button"
                         onClick={() => setDashboardViewMode('list')}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                           dashboardViewMode === 'list'
-                            ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-[#0F172A]'
+                            ? 'bg-[#FFFFFF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] shadow-xs dark:shadow-none'
+                            : 'text-slate-600 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE]'
                         }`}
                       >
                         <LayoutList className="w-3.5 h-3.5" />
@@ -2220,8 +2257,8 @@ export function App() {
                         onClick={() => setDashboardViewMode('calendar')}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                           dashboardViewMode === 'calendar'
-                            ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-[#0F172A]'
+                            ? 'bg-[#FFFFFF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] shadow-xs dark:shadow-none'
+                            : 'text-slate-600 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE]'
                         }`}
                       >
                         <CalendarIcon className="w-3.5 h-3.5" />
@@ -2232,19 +2269,19 @@ export function App() {
                 </div>
 
                 {/* Daily Progress Bar */}
-                <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+                <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="font-semibold text-[#0F172A] dark:text-slate-300">
+                    <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                       Daily Completion Progress ({stats.todayCompletedCount} of {stats.todayCount}{' '}
                       today&apos;s tasks completed)
                     </span>
-                    <span className="tabular-nums font-bold text-sm text-[#1E40AF] dark:text-blue-400">
+                    <span className={`tabular-nums font-bold text-sm ${stats.dailyCompletionPct === 0 ? 'text-[#1E40AF] dark:text-[#66666E]' : 'text-[#1E40AF] dark:text-[#4C8DF6]'}`}>
                       {stats.dailyCompletionPct}%
                     </span>
                   </div>
-                  <div className="w-full h-2.5 bg-[#EFF6FF]/60 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-2.5 bg-[#EFF6FF]/60 dark:bg-[#252528] rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-[#1E40AF] dark:bg-blue-500 transition-transform origin-left"
+                      className="h-full bg-[#1E40AF] dark:bg-[#4C8DF6] transition-transform origin-left"
                       style={{
                         transform: `scaleX(${Math.min(1, Math.max(0, stats.dailyCompletionPct / 100))})`,
                         transitionDuration: 'var(--anim-dur-normal)',
@@ -2255,67 +2292,67 @@ export function App() {
                 </div>
 
                 {/* 7-Metric Task Summary Strip */}
-                <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
-                  <div className="p-3 rounded-md bg-[#D97706]/8 dark:bg-amber-500/10 border border-[#D97706]/25 transition-all hover:border-[#D97706]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#D97706] dark:text-amber-400 font-medium">
+                <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32] grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+                  <div className="p-3 rounded-md bg-[#D97706]/8 dark:bg-[#1C1C1E] border border-[#D97706]/25 dark:border-[#2E2E32] transition-all hover:border-[#D97706]/50 dark:hover:border-[#3A3A3F]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#D97706] dark:text-[#9A9AA2] font-medium">
                       <Sun className="w-3.5 h-3.5 shrink-0" />
                       <span>Today</span>
                     </div>
-                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
+                    <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.todayCount === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
                       {stats.todayCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] transition-all hover:border-[#1E40AF]">
-                    <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-blue-300 font-medium">
+                  <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] transition-all hover:border-[#1E40AF] dark:hover:border-[#3A3A3F]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-[#9A9AA2] font-medium">
                       <CalendarClock className="w-3.5 h-3.5 shrink-0" />
                       <span>Upcoming</span>
                     </div>
-                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#1E3A8A] dark:text-blue-300">
+                    <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.upcomingCount === 0 ? 'text-[#1E3A8A] dark:text-[#66666E]' : 'text-[#1E3A8A] dark:text-[#ECECEE]'}`}>
                       {stats.upcomingCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#16A34A]/8 dark:bg-emerald-500/10 border border-[#16A34A]/25 transition-all hover:border-[#16A34A]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#16A34A] dark:text-emerald-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#16A34A]/8 dark:bg-[#1C1C1E] border border-[#16A34A]/25 dark:border-[#2E2E32] transition-all hover:border-[#16A34A]/50 dark:hover:border-[#3A3A3F]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#16A34A] dark:text-[#34C26B] font-medium">
                       <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                       <span>Completed</span>
                     </div>
-                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#16A34A] dark:text-emerald-400">
+                    <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.completedCount === 0 ? 'text-[#16A34A] dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
                       {stats.completedCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#EFF6FF]/50 dark:bg-sky-500/10 border border-[#1E40AF]/25 transition-all hover:border-[#1E40AF]/60">
-                    <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-sky-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#EFF6FF]/50 dark:bg-[#1C1C1E] border border-[#1E40AF]/25 dark:border-[#2E2E32] transition-all hover:border-[#1E40AF]/60 dark:hover:border-[#3A3A3F]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-[#F0A030] font-medium">
                       <Clock className="w-3.5 h-3.5 shrink-0" />
                       <span>Pending</span>
                     </div>
-                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-200">
+                    <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.pendingCount === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#F0A030]'}`}>
                       {stats.pendingCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#DC2626]/8 dark:bg-red-500/10 border border-[#DC2626]/25 transition-all hover:border-[#DC2626]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#DC2626] dark:text-red-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#DC2626]/8 dark:bg-[#1C1C1E] border border-[#DC2626]/25 dark:border-[#2E2E32] transition-all hover:border-[#DC2626]/50 dark:hover:border-[#3A3A3F]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#DC2626] dark:text-[#EF5350] font-medium">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                       <span>Overdue</span>
                     </div>
-                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#DC2626] dark:text-red-400">
+                    <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.overdueCount === 0 ? 'text-[#DC2626] dark:text-[#66666E]' : 'text-[#DC2626] dark:text-[#EF5350]'}`}>
                       {stats.overdueCount}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] transition-all hover:border-[#1E40AF]">
-                    <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-indigo-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] transition-all hover:border-[#1E40AF] dark:hover:border-[#3A3A3F]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-[#9A9AA2] font-medium">
                       <Layers className="w-3.5 h-3.5 shrink-0" />
                       <span>Total</span>
                     </div>
-                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
+                    <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.total === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
                       {stats.total}
                     </div>
                   </div>
-                  <div className="p-3 rounded-md bg-[#EFF6FF]/60 dark:bg-blue-950/30 border border-[#1E40AF]/30 transition-all hover:border-[#1E40AF]/50">
-                    <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-sky-400 font-medium">
+                  <div className="p-3 rounded-md bg-[#EFF6FF]/60 dark:bg-[#1C1C1E] border border-[#1E40AF]/30 dark:border-[#2E2E32] transition-all hover:border-[#1E40AF]/50 dark:hover:border-[#3A3A3F]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-[#9A9AA2] font-medium">
                       <Percent className="w-3.5 h-3.5 shrink-0" />
                       <span>Rate</span>
                     </div>
-                    <div className="mt-1.5 text-xl tabular-nums font-bold tabular-nums text-[#1E40AF] dark:text-sky-400">
+                    <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.dailyCompletionPct === 0 ? 'text-[#1E40AF] dark:text-[#66666E]' : 'text-[#1E40AF] dark:text-[#ECECEE]'}`}>
                       {stats.dailyCompletionPct}%
                     </div>
                   </div>
@@ -2325,7 +2362,7 @@ export function App() {
               {/* Quick Inline Task Creation Bar */}
               <form
                 onSubmit={handleQuickAddSubmit}
-                className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-4 flex flex-wrap items-center gap-3"
+                className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-4 flex flex-wrap items-center gap-3"
               >
                 <div className="flex-1 min-w-[240px]">
                   <input
@@ -2333,7 +2370,7 @@ export function App() {
                     value={quickTitle}
                     onChange={(e) => setQuickTitle(e.target.value)}
                     placeholder="Quick add a task for today (press Enter to save & sync to Google Sheets)..."
-                    className="w-full px-3.5 py-2 text-sm rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 placeholder:text-slate-400 focus:bg-[#FFFFFF] dark:focus:bg-slate-900 focus:border-[#1E40AF] focus:outline-none"
+                    className="w-full px-3.5 py-2 text-sm rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#9A9AA2] focus:bg-[#FFFFFF] dark:focus:bg-[#252528] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                   />
                 </div>
 
@@ -2376,12 +2413,12 @@ export function App() {
                   value={quickDate}
                   onChange={(e) => setQuickDate(e.target.value)}
                   aria-label="Quick task scheduled date"
-                  className="px-3 py-1.5 text-xs tabular-nums rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-200"
+                  className="px-3 py-1.5 text-xs tabular-nums rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE]"
                 />
 
                 <MotionButton
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
+                  className="px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors whitespace-nowrap shrink-0"
                 >
                   Quick Add
                 </MotionButton>
@@ -2433,11 +2470,11 @@ export function App() {
                     <section className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <h2 className="text-base font-semibold text-[#0F172A] dark:text-slate-100">
+                          <h2 className="text-base font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                             Today&apos;s Tasks ({stats.todayTasks.length})
                           </h2>
                           {stats.todayTasks.length > 1 && (
-                            <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500 font-normal">
+                            <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-[#9A9AA2] font-normal">
                               <GripVertical className="w-3 h-3" />
                               Drag to reorder
                             </span>
@@ -2446,18 +2483,18 @@ export function App() {
                         <MotionButton
                           type="button"
                           onClick={() => setActiveNav('my-day')}
-                          className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
+                          className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
                         >
                           Focus My Day →
                         </MotionButton>
                       </div>
 
                       {stats.todayTasks.length === 0 ? (
-                        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-8 text-center space-y-2">
-                          <p className="text-sm font-medium text-[#0F172A] dark:text-slate-300">
+                        <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-8 text-center space-y-2">
+                          <p className="text-sm font-medium text-[#0F172A] dark:text-[#ECECEE]">
                             No tasks scheduled for today yet.
                           </p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                             Use the Quick Add bar above or click New Task to plan your day.
                           </p>
                         </div>
@@ -2506,24 +2543,24 @@ export function App() {
                     />
 
                     {/* Live Google Sheets Connection Summary Card */}
-                    <section className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-5 space-y-3">
+                    <section className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-5 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-emerald-400" />
-                          <h3 className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
+                          <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B]" />
+                          <h3 className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                             Connected Google Sheet
                           </h3>
                         </div>
                         <MotionButton
                           type="button"
                           onClick={() => setActiveNav('sheets-connection')}
-                          className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
+                          className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
                         >
                           Open Sheet Grid →
                         </MotionButton>
                       </div>
 
-                      <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1 tabular-nums">
+                      <div className="text-xs text-slate-600 dark:text-[#9A9AA2] space-y-1 tabular-nums">
                         <div>File: {connection.selectedSpreadsheetTitle}</div>
                         <div>Worksheet: {connection.selectedWorksheet}!A1:L{tasks.length + 1}</div>
                         <div>Account: {connection.accountEmail}</div>
@@ -2602,6 +2639,8 @@ export function App() {
               universities={universities}
               currentUser={currentUser}
               onRefresh={refreshPmsData}
+              selectedUniversityId={selectedUniversityId}
+              onSelectUniversity={setSelectedUniversityId}
               onApplyStudentForProgram={(uniId, prog, term) => {
                 setPrefillStudentUniversityId(uniId);
                 setPrefillStudentProgramId(prog.id);
@@ -2625,12 +2664,12 @@ export function App() {
           {/* VIEW 2: MY DAY */}
           {activeNav === 'my-day' && (
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-6">
                 <div>
-                  <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
+                  <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
                     My Day — {formatFullHeaderDate()}
                   </h1>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-1">
                     {stats.todayCompletedCount} completed · {stats.todayPendingCount} remaining for
                     today ({stats.dailyCompletionPct}% complete)
                   </p>
@@ -2642,7 +2681,7 @@ export function App() {
                     setModalInitialDate(todayIso);
                     setIsTaskModalOpen(true);
                   }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Schedule Task for Today
@@ -2693,16 +2732,16 @@ export function App() {
             return (
               <div className="space-y-6">
                 {/* Header Banner */}
-                <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6">
+                <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-6">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2.5">
-                        <CalendarClock className="w-5 h-5 text-[#1E40AF] dark:text-blue-400" />
-                        <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
+                        <CalendarClock className="w-5 h-5 text-[#1E40AF] dark:text-[#4C8DF6]" />
+                        <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
                           Upcoming Schedule & Deadlines
                         </h1>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-1">
                         Timeline of future commitments and deliverables, synchronized with Google Sheets
                       </p>
                     </div>
@@ -2714,7 +2753,7 @@ export function App() {
                         setModalInitialDate(tomorrowIso);
                         setIsTaskModalOpen(true);
                       }}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors whitespace-nowrap shrink-0"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       Schedule Upcoming Task
@@ -2722,28 +2761,28 @@ export function App() {
                   </div>
 
                   {/* Horizon Summary Strip */}
-                  <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-[#2E2E32] grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Total Upcoming</div>
-                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
+                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Total Upcoming</div>
+                      <div className={`mt-1 text-xl tabular-nums font-bold ${stats.upcomingTasks.length === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
                         {stats.upcomingTasks.length}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Due Tomorrow</div>
-                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#D97706] dark:text-amber-400">
+                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Due Tomorrow</div>
+                      <div className={`mt-1 text-xl tabular-nums font-bold ${tomorrowTasks.length === 0 ? 'text-[#D97706] dark:text-[#66666E]' : 'text-[#D97706] dark:text-[#F0A030]'}`}>
                         {tomorrowTasks.length}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Due This Week (2–7d)</div>
-                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#1E40AF] dark:text-blue-400">
+                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Due This Week (2–7d)</div>
+                      <div className={`mt-1 text-xl tabular-nums font-bold ${thisWeekTasks.length === 0 ? 'text-[#1E40AF] dark:text-[#66666E]' : 'text-[#1E40AF] dark:text-[#ECECEE]'}`}>
                         {thisWeekTasks.length}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Later Milestones (8d+)</div>
-                      <div className="mt-1 text-xl tabular-nums font-bold tabular-nums text-[#1E3A8A] dark:text-slate-300">
+                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Later Milestones (8d+)</div>
+                      <div className={`mt-1 text-xl tabular-nums font-bold ${laterTasks.length === 0 ? 'text-[#1E3A8A] dark:text-[#66666E]' : 'text-[#1E3A8A] dark:text-[#ECECEE]'}`}>
                         {laterTasks.length}
                       </div>
                     </div>
@@ -2751,11 +2790,11 @@ export function App() {
                 </div>
 
                 {stats.upcomingTasks.length === 0 ? (
-                  <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-12 text-center space-y-3">
-                    <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
+                  <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-12 text-center space-y-3">
+                    <p className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                       No upcoming tasks scheduled yet
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                    <p className="text-xs text-slate-500 dark:text-[#9A9AA2] max-w-sm mx-auto">
                       Schedule your future tasks and deadlines to stay organized and keep Google Sheets in sync.
                     </p>
                     <div className="pt-2">
@@ -2766,7 +2805,7 @@ export function App() {
                           setModalInitialDate(tomorrowIso);
                           setIsTaskModalOpen(true);
                         }}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Create Your First Upcoming Task
@@ -2778,10 +2817,10 @@ export function App() {
                     {/* Horizon 1: Tomorrow */}
                     {tomorrowTasks.length > 0 && (
                       <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-slate-800">
-                          <h2 className="text-sm font-semibold text-[#D97706] dark:text-amber-400 flex items-center gap-2">
+                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
+                          <h2 className="text-sm font-semibold text-[#D97706] dark:text-[#F0A030] flex items-center gap-2">
                             <span>Tomorrow</span>
-                            <span className="tabular-nums text-xs tabular-nums text-slate-500">
+                            <span className="tabular-nums text-xs text-slate-500 dark:text-[#9A9AA2]">
                               ({tomorrowTasks.length}) · {formatReadableDate(tomorrowIso, todayIso)}
                             </span>
                           </h2>
@@ -2809,10 +2848,10 @@ export function App() {
                     {/* Horizon 2: This Week (2-7 Days) */}
                     {thisWeekTasks.length > 0 && (
                       <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-slate-800">
-                          <h2 className="text-sm font-semibold text-[#1E40AF] dark:text-blue-400 flex items-center gap-2">
+                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
+                          <h2 className="text-sm font-semibold text-[#1E40AF] dark:text-[#ECECEE] flex items-center gap-2">
                             <span>This Week (Next 2–7 Days)</span>
-                            <span className="tabular-nums text-xs tabular-nums text-slate-500">
+                            <span className="tabular-nums text-xs text-slate-500 dark:text-[#9A9AA2]">
                               ({thisWeekTasks.length})
                             </span>
                           </h2>
@@ -2840,10 +2879,10 @@ export function App() {
                     {/* Horizon 3: Later (8+ Days) */}
                     {laterTasks.length > 0 && (
                       <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-slate-800">
-                          <h2 className="text-sm font-semibold text-[#0F172A] dark:text-slate-300 flex items-center gap-2">
+                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
+                          <h2 className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
                             <span>Later Milestones</span>
-                            <span className="tabular-nums text-xs tabular-nums text-slate-500">
+                            <span className="tabular-nums text-xs text-slate-500 dark:text-[#9A9AA2]">
                               ({laterTasks.length})
                             </span>
                           </h2>
@@ -2928,12 +2967,12 @@ export function App() {
 
             return (
               <div className="space-y-6">
-                <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-6 flex flex-wrap items-center justify-between gap-4">
+                <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-6 flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100">
+                    <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
                       Completed Tasks Archive ({stats.completedTasks.length})
                     </h1>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-1">
                       Every completed task below has a verified completion timestamp synced to Column
                       J in Google Sheets. Click Restore if you marked a task completed by accident.
                     </p>
@@ -2959,28 +2998,28 @@ export function App() {
                 </div>
 
                 {totalPages > 1 && (
-                  <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-xs text-[#64748B] dark:text-slate-400">
+                  <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl text-xs text-[#64748B] dark:text-[#9A9AA2]">
                     <span>
-                      Showing <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{(completedPage - 1) * COMPLETED_PAGE_SIZE + 1}</span>–<span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{Math.min(completedPage * COMPLETED_PAGE_SIZE, stats.completedTasks.length)}</span> of{' '}
-                      <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{stats.completedTasks.length}</span> tasks
+                      Showing <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] tabular-nums">{(completedPage - 1) * COMPLETED_PAGE_SIZE + 1}</span>–<span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] tabular-nums">{Math.min(completedPage * COMPLETED_PAGE_SIZE, stats.completedTasks.length)}</span> of{' '}
+                      <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] tabular-nums">{stats.completedTasks.length}</span> tasks
                     </span>
                     <div className="flex items-center gap-1.5">
                       <MotionButton
                         type="button"
                         disabled={completedPage === 1}
                         onClick={() => setCompletedPage((p) => Math.max(1, p - 1))}
-                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] dark:hover:bg-[#2E2E32] transition-colors font-medium"
                       >
                         Previous
                       </MotionButton>
-                      <span className="px-2 font-medium text-[#0F172A] dark:text-slate-200 tabular-nums">
+                      <span className="px-2 font-medium text-[#0F172A] dark:text-[#ECECEE] tabular-nums">
                         Page {completedPage} of {totalPages}
                       </span>
                       <MotionButton
                         type="button"
                         disabled={completedPage >= totalPages}
                         onClick={() => setCompletedPage((p) => Math.min(totalPages, p + 1))}
-                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] dark:hover:bg-[#2E2E32] transition-colors font-medium"
                       >
                         Next
                       </MotionButton>
@@ -3186,27 +3225,27 @@ export function App() {
             key={activeToast.id}
             role="status"
             aria-live="polite"
-            className={`fixed bottom-5 right-5 z-50 max-w-sm rounded-lg text-white px-4 py-3 shadow-xl flex items-start gap-3 ${
+            className={`fixed bottom-5 right-5 z-50 max-w-sm rounded-lg text-white px-4 py-3 shadow-xl dark:shadow-none flex items-start gap-3 ${
               activeToast.type === 'overdue'
-                ? 'bg-[#DC2626] border border-red-700'
+                ? 'bg-[#DC2626] dark:bg-[#1C1C1E] border border-red-700 dark:border-[#EF5350]'
                 : activeToast.type === 'warning'
-                ? 'bg-[#D97706] border border-amber-700'
-                : 'bg-[#1E3A8A] dark:bg-slate-800 border border-[#1E40AF]/40 dark:border-slate-700'
+                ? 'bg-[#D97706] dark:bg-[#1C1C1E] border border-amber-700 dark:border-[#F0A030]'
+                : 'bg-[#1E3A8A] dark:bg-[#1C1C1E] border border-[#1E40AF]/40 dark:border-[#3A3A3F]'
             }`}
           >
             {activeToast.type === 'overdue' || activeToast.type === 'warning' ? (
-              <AlertTriangle className="w-4 h-4 text-white shrink-0 mt-0.5" />
+              <AlertTriangle className={`w-4 h-4 shrink-0 mt-0.5 ${activeToast.type === 'overdue' ? 'text-white dark:text-[#EF5350]' : 'text-white dark:text-[#F0A030]'}`} />
             ) : (
-              <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
+              <Check className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B] shrink-0 mt-0.5" />
             )}
             <div className="text-xs space-y-0.5 min-w-0">
-              <div className="font-semibold">{activeToast.title}</div>
-              <div className="text-[#EFF6FF] truncate">{activeToast.message}</div>
+              <div className="font-semibold dark:text-[#ECECEE]">{activeToast.title}</div>
+              <div className="text-[#EFF6FF] dark:text-[#9A9AA2] truncate">{activeToast.message}</div>
             </div>
             <MotionButton
               type="button"
               onClick={() => setActiveToast(null)}
-              className="text-[#EFF6FF]/80 hover:text-white ml-auto"
+              className="text-[#EFF6FF]/80 dark:text-[#9A9AA2] hover:text-white dark:hover:text-[#ECECEE] ml-auto"
               aria-label="Dismiss notification"
             >
               <X className="w-3.5 h-3.5" />

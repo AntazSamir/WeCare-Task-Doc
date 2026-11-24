@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { useDebounce } from '../utils/useDebounce';
 import {
   Users,
@@ -402,22 +401,22 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   return (
     <PageTransition viewKey="team-tasks" className="space-y-3">
       {/* 1. EXECUTIVE TEAM DASHBOARD HEADER */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-sm space-y-3">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl p-4 sm:p-5 shadow-sm dark:shadow-none space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-blue-950/50 text-[#1E3A8A] dark:text-blue-300 border border-[#1E40AF]/40 dark:border-blue-800/60">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#1E40AF]" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] border border-[#1E40AF]/40 dark:border-[#4C8DF6]/30">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Team-Based Task Operations
               </span>
-              <span className="text-xs text-[#0F172A]/60 dark:text-slate-400 tabular-nums">
+              <span className="text-xs text-[#0F172A]/60 dark:text-[#9A9AA2] tabular-nums">
                 Admission: {admissionMembers.length} • Counseling: {counselingMembers.length}
               </span>
             </div>
-            <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-slate-100 mt-1">
+            <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE] mt-1">
               Task Operations & Team Workload Command
             </h1>
-            <p className="text-xs text-[#0F172A]/65 dark:text-slate-400">
+            <p className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2]">
               Coordinated Korean university admission pipeline, student visa filings, and advisory tasks.
             </p>
           </div>
@@ -427,9 +426,9 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               <MotionButton
                 type="button"
                 onClick={handleOpenAddEmployee}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#F8FAFC] dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 hover:bg-[#EFF6FF] hover:text-[#1E3A8A] dark:hover:bg-slate-700 border border-[#E2E8F0] dark:border-slate-700 transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#EFF6FF] hover:text-[#1E3A8A] dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#2E2E32] transition-colors shadow-xs dark:shadow-none"
               >
-                <UserPlus className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#1E40AF]" />
+                <UserPlus className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#ECECEE]" />
                 Add Employee
               </MotionButton>
             )}
@@ -437,7 +436,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             <MotionButton
               type="button"
               onClick={() => handleOpenAssignModal()}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white shadow-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white shadow-xs dark:shadow-none transition-colors"
             >
               <Plus className="w-4 h-4" />
               Assign Task
@@ -447,64 +446,64 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
         {/* METRICS KPI CARDS */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
-          <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800">
-            <div className="flex items-center justify-between text-xs text-[#0F172A]/65 dark:text-slate-400 mb-1">
+          <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32]">
+            <div className="flex items-center justify-between text-xs text-[#0F172A]/65 dark:text-[#9A9AA2] mb-1">
               <span>Total Active Tasks</span>
-              <Layers className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <Layers className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#ECECEE]" />
             </div>
-            <div className="text-2xl font-bold font-display text-[#0F172A] dark:text-slate-100">{totalTasks}</div>
-            <div className="text-[11px] text-[#0F172A]/55 dark:text-slate-400 mt-0.5">Across both dedicated teams</div>
+            <div className={`text-2xl font-bold font-display ${totalTasks === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>{totalTasks}</div>
+            <div className="text-[11px] text-[#0F172A]/55 dark:text-[#9A9AA2] mt-0.5">Across both dedicated teams</div>
           </div>
 
-          <div className="p-3.5 rounded-lg bg-[#16A34A]/10 dark:bg-emerald-950/20 border border-[#16A34A]/30 dark:border-emerald-900/30">
-            <div className="flex items-center justify-between text-xs text-[#16A34A] dark:text-emerald-400 mb-1">
+          <div className="p-3.5 rounded-lg bg-[#16A34A]/10 dark:bg-[rgba(52,194,107,0.14)] border border-[#16A34A]/30 dark:border-[#34C26B]/30">
+            <div className="flex items-center justify-between text-xs text-[#16A34A] dark:text-[#34C26B] mb-1">
               <span>Completed</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B]" />
             </div>
-            <div className="text-2xl font-bold font-display text-[#16A34A] dark:text-emerald-300">
+            <div className={`text-2xl font-bold font-display ${completedTasks === 0 ? 'text-[#16A34A] dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
               {completedTasks}
-              <span className="text-xs font-normal text-[#16A34A] dark:text-emerald-400 ml-1.5 font-sans">
+              <span className={`text-xs font-normal ml-1.5 font-sans ${completedTasks === 0 ? 'text-[#16A34A] dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
                 ({completionRate}%)
               </span>
             </div>
-            <div className="text-[11px] text-[#16A34A]/80 mt-0.5">Verified completions</div>
+            <div className="text-[11px] text-[#16A34A]/80 dark:text-[#9A9AA2] mt-0.5">Verified completions</div>
           </div>
 
-          <div className="p-3.5 rounded-lg bg-[#EFF6FF]/60 dark:bg-blue-950/20 border border-[#1E40AF]/40 dark:border-blue-900/30">
-            <div className="flex items-center justify-between text-xs text-[#1E3A8A] dark:text-blue-400 mb-1">
+          <div className="p-3.5 rounded-lg bg-[#EFF6FF]/60 dark:bg-[#252528] border border-[#1E40AF]/40 dark:border-[#2E2E32]">
+            <div className="flex items-center justify-between text-xs text-[#1E3A8A] dark:text-[#9A9AA2] mb-1">
               <span>Pending Action</span>
-              <Clock className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <Clock className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#ECECEE]" />
             </div>
-            <div className="text-2xl font-bold font-display text-[#1E3A8A] dark:text-blue-300">{pendingTasks}</div>
-            <div className="text-[11px] text-[#1E40AF]/85 mt-0.5">In active progression</div>
+            <div className={`text-2xl font-bold font-display ${pendingTasks === 0 ? 'text-[#1E3A8A] dark:text-[#66666E]' : 'text-[#1E3A8A] dark:text-[#ECECEE]'}`}>{pendingTasks}</div>
+            <div className="text-[11px] text-[#1E40AF]/85 dark:text-[#9A9AA2] mt-0.5">In active progression</div>
           </div>
 
-          <div className="p-3.5 rounded-lg bg-[#DC2626]/10 dark:bg-rose-950/20 border border-[#DC2626]/30 dark:border-rose-900/30">
-            <div className="flex items-center justify-between text-xs text-[#DC2626] dark:text-rose-400 mb-1">
+          <div className="p-3.5 rounded-lg bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/30 dark:border-[#EF5350]/30">
+            <div className="flex items-center justify-between text-xs text-[#DC2626] dark:text-[#EF5350] mb-1">
               <span>Overdue Deadlines</span>
-              <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" />
+              <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626] dark:text-[#EF5350]" />
             </div>
-            <div className="text-2xl font-bold font-display text-[#DC2626] dark:text-rose-300">{overdueTasks}</div>
-            <div className="text-[11px] text-[#DC2626]/80 mt-0.5">Requires immediate attention</div>
+            <div className={`text-2xl font-bold font-display ${overdueTasks === 0 ? 'text-[#DC2626] dark:text-[#66666E]' : 'text-[#DC2626] dark:text-[#EF5350]'}`}>{overdueTasks}</div>
+            <div className="text-[11px] text-[#DC2626]/80 dark:text-[#9A9AA2] mt-0.5">Requires immediate attention</div>
           </div>
         </div>
       </div>
 
       {/* 2. TEAM OVERVIEW & EMPLOYEE WORKLOAD DIRECTORY */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl p-5 shadow-sm dark:shadow-none space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-base font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#1E40AF] dark:text-[#1E40AF]" />
+            <h2 className="text-base font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
+              <Users className="w-4 h-4 text-[#1E40AF] dark:text-[#ECECEE]" />
               Teams & Employee Workload Directory
             </h2>
-            <p className="text-xs text-[#0F172A]/65 dark:text-slate-400">
+            <p className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2]">
               Click any team tab to focus, or select any employee to view their full workload profile and task history.
             </p>
           </div>
 
           {/* Team Switcher Tabs */}
-          <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg">
+          <div className="flex items-center gap-1 p-1 bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg">
             {(['All', 'Admission Team', 'Counseling Team'] as const).map((tTab) => (
               <MotionButton
                 key={tTab}
@@ -512,8 +511,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 onClick={() => setSelectedTeamTab(tTab)}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap ${
                   selectedTeamTab === tTab
-                    ? 'bg-[#1E3A8A] dark:bg-slate-900 text-white dark:text-blue-300 shadow-xs'
-                    : 'text-[#0F172A]/70 dark:text-slate-400 hover:text-[#0F172A]'
+                    ? 'bg-[#1E3A8A] dark:bg-[rgba(76,141,246,0.14)] text-white dark:text-[#4C8DF6] shadow-xs dark:shadow-none'
+                    : 'text-[#0F172A]/70 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE]'
                 }`}
               >
                 {tTab === 'All' ? `All Teams (${team.length})` : tTab === 'Admission Team' ? `Admission Team (${admissionMembers.length})` : `Counseling Team (${counselingMembers.length})`}
@@ -544,8 +543,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     onClick={() => setSelectedEmployee(emp)}
                     className={`relative p-3.5 rounded-lg border transition-all cursor-pointer group text-left h-full ${
                       isSelected
-                        ? 'border-[#1E40AF] bg-[#EFF6FF]/40 dark:bg-blue-950/20 ring-1 ring-[#1E40AF]'
-                        : 'border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF] dark:hover:border-blue-800 bg-[#FFFFFF] dark:bg-slate-900 shadow-2xs hover:shadow-sm'
+                        ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF]/40 dark:bg-[rgba(76,141,246,0.14)] ring-1 ring-[#1E40AF] dark:ring-[#4C8DF6]'
+                        : 'border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF] dark:hover:border-[#3A3A3F] bg-[#FFFFFF] dark:bg-[#1C1C1E] shadow-2xs hover:shadow-sm dark:shadow-none'
                     }`}
                   >
                   <div className="flex items-start justify-between gap-2">
@@ -553,13 +552,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       <img
                         src={emp.avatar}
                         alt={emp.name}
-                        className="w-9 h-9 rounded-full object-cover shrink-0 border border-[#E2E8F0] dark:border-slate-700"
+                        className="w-9 h-9 rounded-full object-cover shrink-0 border border-[#E2E8F0] dark:border-[#2E2E32]"
                       />
                       <div className="min-w-0">
-                        <div className="font-semibold text-xs text-[#0F172A] dark:text-slate-100 truncate group-hover:text-[#1E40AF] dark:group-hover:text-[#1E40AF] transition-colors">
+                        <div className="font-semibold text-xs text-[#0F172A] dark:text-[#ECECEE] truncate group-hover:text-[#1E40AF] dark:group-hover:text-[#4C8DF6] transition-colors">
                           {emp.name}
                         </div>
-                        <div className="text-[11px] text-[#0F172A]/60 dark:text-slate-400 truncate">
+                        <div className="text-[11px] text-[#0F172A]/60 dark:text-[#9A9AA2] truncate">
                           {emp.title}
                         </div>
                       </div>
@@ -568,8 +567,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     <span
                       className={`px-1.5 py-0.5 rounded text-[10px] font-semibold shrink-0 ${
                         emp.team === 'Admission Team'
-                          ? 'bg-[#EFF6FF] dark:bg-blue-950/60 text-[#1E3A8A] dark:text-blue-300 border border-[#1E40AF]/40'
-                          : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#1E40AF] dark:text-blue-300 border border-[#E2E8F0] dark:border-slate-700'
+                          ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] border border-[#1E40AF]/40 dark:border-[#4C8DF6]/30'
+                          : 'bg-[#F8FAFC] dark:bg-[#252528] text-[#1E40AF] dark:text-[#9A9AA2] border border-[#E2E8F0] dark:border-[#2E2E32]'
                       }`}
                     >
                       {emp.team === 'Admission Team' ? 'Admission' : 'Counseling'}
@@ -577,20 +576,20 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   </div>
 
                   {/* Workload badges */}
-                  <div className="flex items-center justify-between text-[11px] pt-3 mt-2 border-t border-[#E2E8F0] dark:border-slate-800/80">
+                  <div className="flex items-center justify-between text-[11px] pt-3 mt-2 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                     <div className="flex items-center gap-2">
-                      <span className="text-[#0F172A]/75 dark:text-slate-400 font-medium">
+                      <span className={`font-medium ${empPending === 0 ? 'text-[#0F172A]/75 dark:text-[#66666E]' : 'text-[#0F172A]/75 dark:text-[#9A9AA2]'}`}>
                         {empPending} Pending
                       </span>
                       {empOverdue > 0 && (
-                        <span className="px-1.5 py-0.2 rounded bg-[#DC2626]/15 dark:bg-rose-950 text-[#DC2626] dark:text-rose-300 font-bold text-[10px]">
+                        <span className="px-1.5 py-0.2 rounded bg-[#DC2626]/15 dark:bg-[rgba(239,83,80,0.14)] text-[#DC2626] dark:text-[#EF5350] font-bold text-[10px]">
                           {empOverdue} late
                         </span>
                       )}
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#16A34A] dark:text-emerald-400 font-medium text-[10px]">
+                      <span className={`font-medium text-[10px] ${empCompleted === 0 ? 'text-[#16A34A] dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
                         ✓ {empCompleted}
                       </span>
 
@@ -600,7 +599,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                             type="button"
                             title="Edit Employee"
                             onClick={(e) => handleOpenEditEmployee(emp, e)}
-                            className="p-1 text-[#0F172A]/45 hover:text-[#1E40AF] dark:text-slate-400 dark:hover:text-slate-200 rounded"
+                            className="p-1 text-[#0F172A]/45 hover:text-[#1E40AF] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded"
                           >
                             <Edit3 className="w-3 h-3" />
                           </MotionButton>
@@ -609,7 +608,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                               type="button"
                               title="Delete Employee"
                               onClick={(e) => handleDeleteEmployee(emp, e)}
-                              className="p-1 text-[#0F172A]/45 hover:text-[#DC2626] rounded"
+                              className="p-1 text-[#0F172A]/45 dark:text-[#9A9AA2] hover:text-[#DC2626] dark:hover:text-[#EF5350] rounded"
                             >
                               <Trash2 className="w-3 h-3" />
                             </MotionButton>
@@ -627,7 +626,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
       </div>
 
       {/* 3. 8 SEGMENTED TASK VIEWS NAVIGATION */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-4 shadow-sm space-y-4">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl p-4 shadow-sm dark:shadow-none space-y-4">
         {/* VIEW SELECTOR BUTTONS */}
         <RoundedSlidingTabs
           variant="cards"
@@ -637,10 +636,10 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
           label="Task views"
           onValueChange={(id) => setActiveView(id as TaskViewType)}
           className="gap-1.5 pb-1 pt-0 scrollbar-none"
-          indicatorClassName="rounded-lg bg-[#1E3A8A] shadow-xs"
+          indicatorClassName="rounded-lg bg-[#1E3A8A] dark:bg-[rgba(76,141,246,0.14)] shadow-xs dark:shadow-none"
           buttonClassName="px-3 h-[30px] rounded-lg text-xs font-semibold gap-2"
-          activeButtonClassName="text-white border-transparent bg-transparent"
-          inactiveButtonClassName="bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700/60 text-[#0F172A]/75 dark:text-slate-300 hover:bg-[#EFF6FF]/60 hover:text-[#1E3A8A] dark:hover:bg-slate-800"
+          activeButtonClassName="text-white dark:text-[#4C8DF6] border-transparent bg-transparent"
+          inactiveButtonClassName="bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/75 dark:text-[#9A9AA2] hover:bg-[#EFF6FF]/60 hover:text-[#1E3A8A] dark:hover:bg-[#2E2E32] dark:hover:text-[#ECECEE]"
           tabs={[
             { id: 'all', label: 'All Tasks', count: viewCounts.all, icon: Layers },
             { id: 'admission-team', label: 'Admission Team', count: viewCounts.admission, icon: ShieldCheck },
@@ -649,7 +648,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             { id: 'current', label: 'Current Tasks', count: viewCounts.current, icon: Clock },
             { id: 'previous', label: 'Previous Tasks', count: viewCounts.previous, icon: Calendar },
             { id: 'completed', label: 'Completed Tasks', count: viewCounts.completed, icon: CheckCircle2 },
-            { id: 'overdue', label: 'Overdue Tasks', count: viewCounts.overdue, icon: AlertCircle, badgeColor: 'bg-[#DC2626] text-white' },
+            { id: 'overdue', label: 'Overdue Tasks', count: viewCounts.overdue, icon: AlertCircle, badgeColor: 'bg-[#DC2626] dark:bg-[#EF5350] text-white' },
           ].map((tab) => {
             const Icon = tab.icon;
             const isTabActive = activeView === tab.id;
@@ -659,7 +658,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               icon: (
                 <Icon
                   className={`w-3.5 h-3.5 ${
-                    isTabActive ? 'text-white' : 'text-[#1E40AF] dark:text-slate-400'
+                    isTabActive ? 'text-white dark:text-[#4C8DF6]' : 'text-[#1E40AF] dark:text-[#9A9AA2]'
                   }`}
                 />
               ),
@@ -669,8 +668,10 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     tab.badgeColor && !isTabActive
                       ? tab.badgeColor
                       : isTabActive
-                      ? 'bg-white/20 text-white'
-                      : 'bg-[#EFF6FF] dark:bg-slate-700 text-[#1E3A8A] dark:text-slate-300'
+                      ? 'bg-white/20 text-white dark:bg-[#4C8DF6]/20 dark:text-[#4C8DF6]'
+                      : tab.count === 0
+                      ? 'bg-[#EFF6FF] dark:bg-[#1C1C1E] text-[#1E3A8A] dark:text-[#66666E]'
+                      : 'bg-[#EFF6FF] dark:bg-[#1C1C1E] text-[#1E3A8A] dark:text-[#9A9AA2]'
                   }`}
                 >
                   {tab.count}
@@ -681,21 +682,22 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
         />
 
         {/* SEARCH & FILTERS BAR */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
           <div className="flex-1 min-w-[240px] relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#0F172A]/45 dark:text-slate-400" />
+            <Search className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tasks by title, assignee, student, or university..."
-              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/40 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF] focus:bg-[#FFFFFF] dark:focus:bg-slate-900 transition-all text-[#0F172A] dark:text-slate-100 placeholder:text-[#0F172A]/45"
+              className="w-full h-9 pl-8 pr-8 text-xs rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#64748B] dark:placeholder:text-[#9A9AA2] focus:bg-[#FFFFFF] dark:focus:bg-[#252528] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none transition-colors"
             />
             {searchQuery && (
               <MotionButton
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#0F172A]/45 hover:text-[#0F172A] dark:text-slate-400"
+                aria-label="Clear task search"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded"
               >
                 <X className="w-3.5 h-3.5" />
               </MotionButton>
@@ -705,7 +707,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
           <div className="flex items-center gap-2">
             {/* Category Filter */}
             <div className="flex items-center gap-1 text-xs">
-              <span className="text-[#0F172A]/60 dark:text-slate-400 hidden sm:inline">Category:</span>
+              <span className="text-[#0F172A]/60 dark:text-[#9A9AA2] hidden sm:inline">Category:</span>
               <div className="w-36">
                 <MorphSelect value={selectedCategory} onValueChange={(v) => setSelectedCategory(v)}>
                   <MorphSelectTrigger>
@@ -725,7 +727,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
             {/* Priority Filter */}
             <div className="flex items-center gap-1 text-xs">
-              <span className="text-[#0F172A]/60 dark:text-slate-400 hidden sm:inline">Priority:</span>
+              <span className="text-[#0F172A]/60 dark:text-[#9A9AA2] hidden sm:inline">Priority:</span>
               <div className="w-36">
                 <MorphSelect value={selectedPriority} onValueChange={(v) => setSelectedPriority(v)}>
                   <MorphSelectTrigger>
@@ -748,15 +750,15 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
       {/* 4. TASK LIST ACCORDING TO VIEW */}
       <TabTransition viewKey={activeView} className="space-y-3">
         {displayedTasks.length === 0 ? (
-          <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl p-10 text-center space-y-3 shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-[#EFF6FF] dark:bg-slate-800 flex items-center justify-center mx-auto text-[#1E40AF]">
+          <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl p-10 text-center space-y-3 shadow-sm dark:shadow-none">
+            <div className="w-12 h-12 rounded-full bg-[#EFF6FF] dark:bg-[#252528] flex items-center justify-center mx-auto text-[#1E40AF] dark:text-[#ECECEE]">
               <CheckSquare className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
+              <p className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                 No tasks found in this view
               </p>
-              <p className="text-xs text-[#0F172A]/60 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-[#0F172A]/60 dark:text-[#9A9AA2] mt-0.5">
                 {searchQuery
                   ? `No matches for "${searchQuery}". Try clearing search filters.`
                   : 'Assign tasks to team members or select another view tab.'}
@@ -767,7 +769,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 <MotionButton
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:bg-[#252528] dark:hover:bg-[#2E2E32] dark:border-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] transition-colors"
                 >
                   Clear Search
                 </MotionButton>
@@ -775,7 +777,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               <MotionButton
                 type="button"
                 onClick={() => handleOpenAssignModal()}
-                className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white transition-colors"
+                className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white transition-colors"
               >
                 + Assign New Task
               </MotionButton>
@@ -790,14 +792,14 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             return (
               <div
                 key={task.id}
-                className={`group bg-[#FFFFFF] dark:bg-slate-900 border rounded-xl p-4 transition-all shadow-2xs hover:shadow-sm ${
+                className={`group bg-[#FFFFFF] dark:bg-[#1C1C1E] border rounded-xl p-4 transition-all shadow-2xs hover:shadow-sm dark:shadow-none ${
                   isCompleted
-                    ? 'border-[#E2E8F0] dark:border-slate-800 opacity-80'
+                    ? 'border-[#E2E8F0] dark:border-[#2E2E32] opacity-80'
                     : isOverdue
-                    ? 'border-[#DC2626]/50 dark:border-rose-900/60 bg-[#DC2626]/5 dark:bg-rose-950/10'
+                    ? 'border-[#DC2626]/50 dark:border-[#EF5350]/40 bg-[#DC2626]/5 dark:bg-[rgba(239,83,80,0.14)]'
                     : isDueToday
-                    ? 'border-[#1E40AF] dark:border-blue-900/60 bg-[#EFF6FF]/25 dark:bg-blue-950/20'
-                    : 'border-[#E2E8F0] dark:border-slate-800'
+                    ? 'border-[#1E40AF] dark:border-[#4C8DF6]/50 bg-[#EFF6FF]/25 dark:bg-[#1C1C1E]'
+                    : 'border-[#E2E8F0] dark:border-[#2E2E32]'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -814,8 +816,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       }}
                       className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 border transition-colors ${
                         isCompleted
-                          ? 'bg-[#16A34A] border-[#16A34A] text-white'
-                          : 'border-[#E2E8F0] dark:border-slate-600 hover:border-[#1E40AF] text-transparent'
+                          ? 'bg-[#16A34A] dark:bg-[#34C26B] border-[#16A34A] dark:border-[#34C26B] text-white dark:text-[#121212]'
+                          : 'border-[#E2E8F0] dark:border-[#3A3A3F] hover:border-[#1E40AF] dark:hover:border-[#4C8DF6] text-transparent'
                       }`}
                       title={isCompleted ? 'Mark Pending' : 'Mark Completed'}
                     >
@@ -828,45 +830,45 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                         <span
                           className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
                             task.priority === 'Urgent'
-                              ? 'bg-[#DC2626]/15 text-[#DC2626] dark:bg-rose-950 dark:text-rose-300'
+                              ? 'bg-[#DC2626]/15 text-[#DC2626] dark:bg-[rgba(239,83,80,0.14)] dark:text-[#EF5350]'
                               : task.priority === 'High'
-                              ? 'bg-[#D97706]/15 text-[#D97706] dark:bg-amber-950 dark:text-amber-300'
+                              ? 'bg-[#D97706]/15 text-[#D97706] dark:bg-[rgba(240,160,48,0.14)] dark:text-[#F0A030]'
                               : task.priority === 'Medium'
-                              ? 'bg-[#EFF6FF] text-[#1E40AF] dark:bg-blue-950 dark:text-blue-300'
-                              : 'bg-[#F8FAFC] text-[#0F172A]/75 dark:bg-slate-800 dark:text-slate-300'
+                              ? 'bg-[#EFF6FF] text-[#1E40AF] dark:bg-[rgba(76,141,246,0.14)] dark:text-[#4C8DF6]'
+                              : 'bg-[#F8FAFC] text-[#0F172A]/75 dark:bg-[#252528] dark:text-[#9A9AA2]'
                           }`}
                         >
                           {task.priority}
                         </span>
 
-                        <span className="px-1.5 py-0.2 rounded text-[10px] bg-[#F8FAFC] dark:bg-slate-800 text-[#0F172A]/70 dark:text-slate-400 border border-[#E2E8F0] dark:border-slate-700 font-medium">
+                        <span className="px-1.5 py-0.2 rounded text-[10px] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A]/70 dark:text-[#9A9AA2] border border-[#E2E8F0] dark:border-[#2E2E32] font-medium">
                           {task.category}
                         </span>
 
                         <span
                           className={`px-1.5 py-0.2 rounded text-[10px] font-semibold ${
                             task.team === 'Counseling Team'
-                              ? 'bg-[#F8FAFC] dark:bg-slate-800 text-[#1E3A8A] dark:text-blue-300 border border-[#E2E8F0] dark:border-slate-700'
-                              : 'bg-[#EFF6FF] dark:bg-blue-950/50 text-[#1E3A8A] dark:text-blue-300 border border-[#1E40AF]/40'
+                              ? 'bg-[#F8FAFC] dark:bg-[#252528] text-[#1E3A8A] dark:text-[#9A9AA2] border border-[#E2E8F0] dark:border-[#2E2E32]'
+                              : 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] border border-[#1E40AF]/40 dark:border-[#4C8DF6]/30'
                           }`}
                         >
                           {task.team || 'Admission Team'}
                         </span>
 
                         {isOverdue && (
-                          <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#DC2626] text-white">
+                          <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#DC2626] dark:bg-[#EF5350] text-white">
                             Overdue ({task.deadline})
                           </span>
                         )}
 
                         {isDueToday && (
-                          <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#1E40AF] text-white">
+                          <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#1E40AF] dark:bg-[#4C8DF6] text-white">
                             Due Today
                           </span>
                         )}
 
                         {isCompleted && (
-                          <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#16A34A]/15 dark:bg-emerald-950 text-[#16A34A] dark:text-emerald-300">
+                          <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#16A34A]/15 dark:bg-[rgba(52,194,107,0.14)] text-[#16A34A] dark:text-[#34C26B]">
                             Completed
                           </span>
                         )}
@@ -875,34 +877,34 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       <h3
                         className={`text-sm font-semibold ${
                           isCompleted
-                            ? 'line-through text-[#0F172A]/45 dark:text-slate-500'
-                            : 'text-[#0F172A] dark:text-slate-100'
+                            ? 'line-through text-[#0F172A]/45 dark:text-[#66666E]'
+                            : 'text-[#0F172A] dark:text-[#ECECEE]'
                         }`}
                       >
                         {task.title}
                       </h3>
 
                       {task.description && (
-                        <p className="text-xs text-[#0F172A]/70 dark:text-slate-400 line-clamp-2">
+                        <p className="text-xs text-[#0F172A]/70 dark:text-[#9A9AA2] line-clamp-2">
                           {task.description}
                         </p>
                       )}
 
                       {/* Attached entity badges */}
-                      <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#0F172A]/60 dark:text-slate-400">
+                      <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#0F172A]/60 dark:text-[#9A9AA2]">
                         {task.universityName && (
-                          <span className="flex items-center gap-1 text-[11px] text-[#0F172A]/75 dark:text-slate-400">
-                            <Building2 className="w-3 h-3 text-[#0F172A]/45 dark:text-slate-400" />
+                          <span className="flex items-center gap-1 text-[11px] text-[#0F172A]/75 dark:text-[#9A9AA2]">
+                            <Building2 className="w-3 h-3 text-[#0F172A]/45 dark:text-[#9A9AA2]" />
                             {task.universityName}
                           </span>
                         )}
                         {task.studentName && (
-                          <span className="flex items-center gap-1 text-[11px] text-[#1E40AF] dark:text-[#1E40AF] font-medium">
+                          <span className="flex items-center gap-1 text-[11px] text-[#1E40AF] dark:text-[#4C8DF6] font-medium">
                             <GraduationCap className="w-3 h-3" />
                             {task.studentName}
                           </span>
                         )}
-                        <span className="flex items-center gap-1 text-[11px] text-[#0F172A]/55 dark:text-slate-400">
+                        <span className="flex items-center gap-1 text-[11px] text-[#0F172A]/55 dark:text-[#9A9AA2]">
                           <Calendar className="w-3 h-3" />
                           Target: {task.taskDate} {task.deadline !== task.taskDate ? `(Deadline: ${task.deadline})` : ''}
                         </span>
@@ -910,8 +912,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
                       {/* Subtasks summary */}
                       {task.subtasks && task.subtasks.length > 0 && (
-                        <div className="flex items-center gap-2 pt-1 text-[11px] text-[#0F172A]/60 dark:text-slate-400">
-                          <CheckSquare className="w-3 h-3 text-[#0F172A]/45 dark:text-slate-400" />
+                        <div className="flex items-center gap-2 pt-1 text-[11px] text-[#0F172A]/60 dark:text-[#9A9AA2]">
+                          <CheckSquare className="w-3 h-3 text-[#0F172A]/45 dark:text-[#9A9AA2]" />
                           <span>
                             {task.subtasks.filter((s) => s.completed).length} of {task.subtasks.length} subtasks done
                           </span>
@@ -927,19 +929,19 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                         const targetUser = team.find((m) => m.id === task.assignedToId);
                         if (targetUser) setSelectedEmployee(targetUser);
                       }}
-                      className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700/60 cursor-pointer hover:bg-[#EFF6FF]/60 transition-colors"
+                      className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] cursor-pointer hover:bg-[#EFF6FF]/60 dark:hover:bg-[#2E2E32] transition-colors"
                       title="Click to view assignee profile"
                     >
                       <img
                         src={task.assigneeAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80'}
                         alt={task.assignedToName || 'Assignee'}
-                        className="w-5 h-5 rounded-full object-cover border border-[#E2E8F0] dark:border-slate-700"
+                        className="w-5 h-5 rounded-full object-cover border border-[#E2E8F0] dark:border-[#2E2E32]"
                       />
                       <div className="text-right">
-                        <div className="text-xs font-semibold text-[#0F172A] dark:text-slate-200 leading-tight">
+                        <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] leading-tight">
                           {task.assignedToName || 'Unassigned'}
                         </div>
-                        <div className="text-[10px] text-[#0F172A]/55 dark:text-slate-400 leading-tight">
+                        <div className="text-[10px] text-[#0F172A]/55 dark:text-[#9A9AA2] leading-tight">
                           {task.team || 'Admission Team'}
                         </div>
                       </div>
@@ -951,7 +953,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                         <MotionButton
                           type="button"
                           onClick={(e) => handleOpenReassign(task, e)}
-                          className="px-2 py-1 text-[11px] font-semibold rounded bg-[#F8FAFC] hover:bg-[#EFF6FF] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#0F172A] dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-700 transition-colors"
+                          className="px-2 py-1 text-[11px] font-semibold rounded bg-[#F8FAFC] hover:bg-[#EFF6FF] dark:bg-[#252528] dark:hover:bg-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] border border-[#E2E8F0] dark:border-[#2E2E32] transition-colors"
                           title="Reassign to another employee or update priority"
                         >
                           Reassign
@@ -961,7 +963,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       <MotionButton
                         type="button"
                         onClick={() => onDeleteTask(task)}
-                        className="p-1 text-[#0F172A]/45 hover:text-[#DC2626] rounded transition-colors"
+                        className="p-1 text-[#0F172A]/45 dark:text-[#9A9AA2] hover:text-[#DC2626] dark:hover:text-[#EF5350] rounded transition-colors"
                         title="Delete Task"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -976,28 +978,28 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
         {/* Client-side Pagination */}
         {totalPages > 1 && (
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl text-xs text-[#64748B] dark:text-slate-400">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl text-xs text-[#64748B] dark:text-[#9A9AA2]">
             <span>
-              Showing <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{(currentPage - 1) * PAGE_SIZE + 1}</span>–<span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{Math.min(currentPage * PAGE_SIZE, displayedTasks.length)}</span> of{' '}
-              <span className="font-semibold text-[#0F172A] dark:text-slate-200 tabular-nums">{displayedTasks.length}</span> tasks
+              Showing <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] tabular-nums">{(currentPage - 1) * PAGE_SIZE + 1}</span>–<span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] tabular-nums">{Math.min(currentPage * PAGE_SIZE, displayedTasks.length)}</span> of{' '}
+              <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] tabular-nums">{displayedTasks.length}</span> tasks
             </span>
             <div className="flex items-center gap-1.5">
               <MotionButton
                 type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+                className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] dark:hover:bg-[#2E2E32] transition-colors font-medium"
               >
                 Previous
               </MotionButton>
-              <span className="px-2 font-medium text-[#0F172A] dark:text-slate-200 tabular-nums">
+              <span className="px-2 font-medium text-[#0F172A] dark:text-[#ECECEE] tabular-nums">
                 Page {currentPage} of {totalPages}
               </span>
               <MotionButton
                 type="button"
                 disabled={currentPage >= totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] transition-colors font-medium"
+                className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F8FAFC] dark:hover:bg-[#2E2E32] transition-colors font-medium"
               >
                 Next
               </MotionButton>
@@ -1007,47 +1009,46 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
       </TabTransition>
 
       {/* 5. EMPLOYEE PROFILE & TASK HISTORY MODAL / SLIDEOUT */}
-      {createPortal(
-        <ModalTransition
-          isOpen={Boolean(selectedEmployee)}
-          onClose={() => setSelectedEmployee(null)}
-          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
-          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
-        >
+      <ModalTransition
+        isOpen={Boolean(selectedEmployee)}
+        onClose={() => setSelectedEmployee(null)}
+        backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl shadow-2xl dark:shadow-none w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
+      >
           {selectedEmployee && (
             <>
               {/* Header */}
-              <div className="p-5 border-b border-[#E2E8F0] dark:border-slate-800 flex items-start justify-between bg-[#F8FAFC] dark:bg-slate-800/40">
+              <div className="p-5 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-start justify-between bg-[#F8FAFC] dark:bg-[#252528]">
                 <div className="flex items-center gap-4">
                   <img
                     src={selectedEmployee.avatar}
                     alt={selectedEmployee.name}
-                    className="w-14 h-14 rounded-full object-cover border-2 border-[#FFFFFF] dark:border-slate-800 shadow-md"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-[#FFFFFF] dark:border-[#2E2E32] shadow-md dark:shadow-none"
                   />
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-lg font-display font-bold text-[#0F172A] dark:text-slate-100">
+                      <h2 className="text-lg font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
                         {selectedEmployee.name}
                       </h2>
                       <span
                         className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                           selectedEmployee.team === 'Admission Team'
-                            ? 'bg-[#EFF6FF] text-[#1E3A8A] dark:bg-blue-950 dark:text-blue-300'
-                            : 'bg-[#F8FAFC] text-[#1E40AF] border border-[#E2E8F0] dark:bg-slate-800 dark:text-blue-300 dark:border-slate-700'
+                            ? 'bg-[#EFF6FF] text-[#1E3A8A] dark:bg-[rgba(76,141,246,0.14)] dark:text-[#4C8DF6]'
+                            : 'bg-[#F8FAFC] text-[#1E40AF] border border-[#E2E8F0] dark:bg-[#1C1C1E] dark:text-[#9A9AA2] dark:border-[#2E2E32]'
                         }`}
                       >
                         {selectedEmployee.team || 'Admission Team'}
                       </span>
                       {selectedEmployee.role === 'Admission_Manager' && (
-                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#16A34A]/15 text-[#16A34A] dark:bg-emerald-950 dark:text-emerald-300">
+                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#16A34A]/15 text-[#16A34A] dark:bg-[rgba(52,194,107,0.14)] dark:text-[#34C26B]">
                           Admin
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#0F172A]/75 dark:text-slate-400 font-medium mt-0.5">
+                    <p className="text-xs text-[#0F172A]/75 dark:text-[#9A9AA2] font-medium mt-0.5">
                       {selectedEmployee.title}
                     </p>
-                    <div className="flex items-center gap-3 text-xs text-[#0F172A]/55 dark:text-slate-400 mt-1">
+                    <div className="flex items-center gap-3 text-xs text-[#0F172A]/55 dark:text-[#9A9AA2] mt-1">
                       <span className="flex items-center gap-1">
                         <Mail className="w-3 h-3" />
                         {selectedEmployee.email}
@@ -1066,14 +1067,14 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   <MotionButton
                     type="button"
                     onClick={() => handleOpenAssignModal(selectedEmployee.id)}
-                    className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white transition-colors"
+                    className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white transition-colors"
                   >
                     + Assign Task
                   </MotionButton>
                   <MotionButton
                     type="button"
                     onClick={() => setSelectedEmployee(null)}
-                    className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-slate-200 rounded-lg"
+                    className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded-lg"
                   >
                     <X className="w-5 h-5" />
                   </MotionButton>
@@ -1081,35 +1082,35 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
 
               {/* Profile Statistics Bar */}
-              <div className="grid grid-cols-4 p-4 border-b border-[#E2E8F0] dark:border-slate-800 text-center divide-x divide-[#E2E8F0] dark:divide-slate-800 text-xs">
+              <div className="grid grid-cols-4 p-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] text-center divide-x divide-[#E2E8F0] dark:divide-[#2E2E32] text-xs">
                 <div className="px-2">
-                  <div className="text-lg font-bold text-[#0F172A] dark:text-slate-100">
+                  <div className={`text-lg font-bold ${employeeTasks.length === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
                     {employeeTasks.length}
                   </div>
-                  <div className="text-[10px] text-[#0F172A]/55 dark:text-slate-400 uppercase font-semibold">Total Assigned</div>
+                  <div className="text-[10px] text-[#0F172A]/55 dark:text-[#9A9AA2] uppercase font-semibold">Total Assigned</div>
                 </div>
                 <div className="px-2">
-                  <div className="text-lg font-bold text-[#1E40AF] dark:text-[#1E40AF]">
+                  <div className={`text-lg font-bold ${employeeTasks.filter((t) => t.status === 'Pending').length === 0 ? 'text-[#1E40AF] dark:text-[#66666E]' : 'text-[#1E40AF] dark:text-[#ECECEE]'}`}>
                     {employeeTasks.filter((t) => t.status === 'Pending').length}
                   </div>
-                  <div className="text-[10px] text-[#1E40AF] uppercase font-semibold">Pending Action</div>
+                  <div className="text-[10px] text-[#1E40AF] dark:text-[#9A9AA2] uppercase font-semibold">Pending Action</div>
                 </div>
                 <div className="px-2">
-                  <div className="text-lg font-bold text-[#16A34A] dark:text-emerald-400">
+                  <div className={`text-lg font-bold ${employeeTasks.filter((t) => t.status === 'Completed').length === 0 ? 'text-[#16A34A] dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
                     {employeeTasks.filter((t) => t.status === 'Completed').length}
                   </div>
-                  <div className="text-[10px] text-[#16A34A] uppercase font-semibold">Completed</div>
+                  <div className="text-[10px] text-[#16A34A] dark:text-[#34C26B] uppercase font-semibold">Completed</div>
                 </div>
                 <div className="px-2">
-                  <div className="text-lg font-bold text-[#DC2626] dark:text-rose-400">
+                  <div className={`text-lg font-bold ${employeeTasks.filter((t) => t.status === 'Pending' && t.deadline < todayStr).length === 0 ? 'text-[#DC2626] dark:text-[#66666E]' : 'text-[#DC2626] dark:text-[#EF5350]'}`}>
                     {employeeTasks.filter((t) => t.status === 'Pending' && t.deadline < todayStr).length}
                   </div>
-                  <div className="text-[10px] text-[#DC2626] uppercase font-semibold">Overdue</div>
+                  <div className="text-[10px] text-[#DC2626] dark:text-[#EF5350] uppercase font-semibold">Overdue</div>
                 </div>
               </div>
 
               {/* Employee Task Filter Tabs */}
-              <div className="flex items-center gap-1.5 p-3 border-b border-[#E2E8F0] dark:border-slate-800 overflow-x-auto text-xs">
+              <div className="flex items-center gap-1.5 p-3 border-b border-[#E2E8F0] dark:border-[#2E2E32] overflow-x-auto text-xs">
                 {[
                   { id: 'all', label: 'All Tasks', count: employeeTasks.length },
                   { id: 'current', label: 'Current / Today', count: employeeTasks.filter((t) => t.status === 'Pending' && (t.taskDate === todayStr || t.deadline === todayStr)).length },
@@ -1124,19 +1125,19 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     onClick={() => setEmployeeTaskFilter(tf.id as any)}
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-colors ${
                       employeeTaskFilter === tf.id
-                        ? 'bg-[#1E3A8A] text-white dark:bg-slate-100 dark:text-slate-900'
-                        : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#0F172A]/70 dark:text-slate-400 hover:text-[#0F172A]'
+                        ? 'bg-[#1E3A8A] text-white dark:bg-[rgba(76,141,246,0.14)] dark:text-[#4C8DF6]'
+                        : 'bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A]/70 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE]'
                     }`}
                   >
-                    {tf.label} ({tf.count})
+                    {tf.label} (<span className={tf.count === 0 && employeeTaskFilter !== tf.id ? 'dark:text-[#66666E]' : ''}>{tf.count}</span>)
                   </MotionButton>
                 ))}
               </div>
 
               {/* Task list for this employee */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+              <div className="flex-1 overflow-y-auto scrollbar-stable p-4 space-y-2.5">
                 {filteredEmployeeTasks.length === 0 ? (
-                  <div className="py-12 text-center text-[#0F172A]/55 dark:text-slate-400 text-xs">
+                  <div className="py-12 text-center text-[#0F172A]/55 dark:text-[#9A9AA2] text-xs">
                     No tasks under this category for {selectedEmployee.name}.
                   </div>
                 ) : (
@@ -1148,23 +1149,23 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                         key={t.id}
                         className={`p-3 rounded-lg border text-left text-xs space-y-1 transition-all ${
                           isDone
-                            ? 'border-[#E2E8F0] dark:border-slate-800 opacity-75'
+                            ? 'border-[#E2E8F0] dark:border-[#2E2E32] opacity-75'
                             : isLate
-                            ? 'border-[#DC2626]/50 dark:border-rose-900/60 bg-[#DC2626]/5'
-                            : 'border-[#E2E8F0] dark:border-slate-800'
+                            ? 'border-[#DC2626]/50 dark:border-[#EF5350]/40 bg-[#DC2626]/5 dark:bg-[rgba(239,83,80,0.14)]'
+                            : 'border-[#E2E8F0] dark:border-[#2E2E32]'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-1.5 font-semibold text-[#0F172A] dark:text-slate-100">
-                            <span className={isDone ? 'line-through text-[#0F172A]/45' : ''}>{t.title}</span>
+                          <div className="flex items-center gap-1.5 font-semibold text-[#0F172A] dark:text-[#ECECEE]">
+                            <span className={isDone ? 'line-through text-[#0F172A]/45 dark:text-[#66666E]' : ''}>{t.title}</span>
                           </div>
                           <span
                             className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
                               isDone
-                                ? 'bg-[#16A34A]/15 text-[#16A34A]'
+                                ? 'bg-[#16A34A]/15 text-[#16A34A] dark:bg-[rgba(52,194,107,0.14)] dark:text-[#34C26B]'
                                 : isLate
-                                ? 'bg-[#DC2626]/15 text-[#DC2626]'
-                                : 'bg-[#EFF6FF] text-[#1E40AF]'
+                                ? 'bg-[#DC2626]/15 text-[#DC2626] dark:bg-[rgba(239,83,80,0.14)] dark:text-[#EF5350]'
+                                : 'bg-[#EFF6FF] text-[#1E40AF] dark:bg-[#252528] dark:text-[#9A9AA2]'
                             }`}
                           >
                             {isDone ? 'Completed' : isLate ? 'Overdue' : 'Pending'}
@@ -1172,13 +1173,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                         </div>
 
                         {t.description && (
-                          <p className="text-[11px] text-[#0F172A]/65 dark:text-slate-400 line-clamp-1">{t.description}</p>
+                          <p className="text-[11px] text-[#0F172A]/65 dark:text-[#9A9AA2] line-clamp-1">{t.description}</p>
                         )}
 
-                        <div className="flex items-center justify-between text-[10px] text-[#0F172A]/55 dark:text-slate-400 pt-1 border-t border-[#E2E8F0] dark:border-slate-800">
+                        <div className="flex items-center justify-between text-[10px] text-[#0F172A]/55 dark:text-[#9A9AA2] pt-1 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                           <span>Due: {t.deadline} • Priority: {t.priority}</span>
                           {t.completedAt && (
-                            <span className="text-[#16A34A] font-medium">
+                            <span className="text-[#16A34A] dark:text-[#34C26B] font-medium">
                               Done on: {t.completedAt.slice(0, 10)}
                             </span>
                           )}
@@ -1190,41 +1191,38 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
             </>
           )}
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
 
       {/* 6. ASSIGN TASK MODAL (Authorized for Managers / Team assignment) */}
-      {createPortal(
-        <ModalTransition
-          isOpen={isAssignModalOpen}
-          onClose={() => setIsAssignModalOpen(false)}
-          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
-          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden"
-        >
-            <div className="p-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between bg-[#F8FAFC] dark:bg-slate-900">
+      <ModalTransition
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
+        backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl shadow-2xl dark:shadow-none w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden"
+      >
+            <div className="p-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between bg-[#F8FAFC] dark:bg-[#252528]">
               <div>
-                <h2 className="text-base font-bold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
-                  <CheckSquare className="w-4 h-4 text-[#1E40AF]" />
+                <h2 className="text-base font-bold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
+                  <CheckSquare className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
                   Assign New Team Task
                 </h2>
-                <p className="text-xs text-[#0F172A]/65 dark:text-slate-400">
+                <p className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2]">
                   Assign to an individual employee, multiple team members, or an entire department.
                 </p>
               </div>
               <MotionButton
                 type="button"
                 onClick={() => setIsAssignModalOpen(false)}
-                className="p-1 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-slate-400 rounded-lg"
+                className="p-1 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded-lg"
               >
                 <X className="w-5 h-5" />
               </MotionButton>
             </div>
 
-            <form onSubmit={handleSaveTaskAssignment} className="p-5 overflow-y-auto space-y-4 text-xs">
+            <form onSubmit={handleSaveTaskAssignment} className="p-5 overflow-y-auto scrollbar-stable space-y-4 text-xs">
               {/* Assignment Scope Selector */}
               <div>
-                <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1.5">
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1.5">
                   Assignment Target
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -1239,8 +1237,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                       onClick={() => setAssignMode(mode.id as any)}
                       className={`py-2 px-2 text-center rounded-lg border font-semibold transition-colors ${
                         assignMode === mode.id
-                          ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950/40 text-[#1E3A8A] dark:text-blue-300'
-                          : 'border-[#E2E8F0] dark:border-slate-800 text-[#0F172A]/70 dark:text-slate-400 hover:bg-[#F8FAFC]'
+                          ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6]'
+                          : 'border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/70 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528]'
                       }`}
                     >
                       {mode.label}
@@ -1252,7 +1250,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               {/* Mode-specific Assignee Pickers */}
               {assignMode === 'single' && (
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Select Assignee
                   </label>
                   <MorphSelect value={selectedAssigneeId} onValueChange={(v) => setSelectedAssigneeId(v)}>
@@ -1277,16 +1275,16 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
               {assignMode === 'multiple' && (
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Select Employees ({selectedMultiAssigneeIds.length} selected)
                   </label>
-                  <div className="max-h-36 overflow-y-auto border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-2 space-y-1.5 bg-[#F8FAFC] dark:bg-slate-800/30">
+                  <div className="max-h-36 overflow-y-auto border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-2 space-y-1.5 bg-[#F8FAFC] dark:bg-[#252528]">
                     {team.map((m) => {
                       const isChecked = selectedMultiAssigneeIds.includes(m.id);
                       return (
                         <label
                           key={m.id}
-                          className="flex items-center gap-2 px-2 py-1 rounded hover:bg-[#EFF6FF]/60 dark:hover:bg-slate-800 cursor-pointer"
+                          className="flex items-center gap-2 px-2 py-1 rounded hover:bg-[#EFF6FF]/60 dark:hover:bg-[#2E2E32] cursor-pointer"
                         >
                           <input
                             type="checkbox"
@@ -1298,11 +1296,11 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                                 setSelectedMultiAssigneeIds(selectedMultiAssigneeIds.filter((id) => id !== m.id));
                               }
                             }}
-                            className="rounded text-[#1E40AF] focus:ring-[#1E40AF]"
+                            className="rounded text-[#1E40AF] dark:text-[#4C8DF6] focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6]"
                           />
                           <img src={m.avatar} alt={m.name} className="w-4 h-4 rounded-full object-cover" />
-                          <span className="font-medium text-[#0F172A] dark:text-slate-200">{m.name}</span>
-                          <span className="text-[10px] text-[#0F172A]/55">({m.team})</span>
+                          <span className="font-medium text-[#0F172A] dark:text-[#ECECEE]">{m.name}</span>
+                          <span className="text-[10px] text-[#0F172A]/55 dark:text-[#9A9AA2]">({m.team})</span>
                         </label>
                       );
                     })}
@@ -1312,7 +1310,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
               {assignMode === 'team' && (
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Select Target Team
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -1323,12 +1321,12 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                         onClick={() => setSelectedAssigneeTeam(tName)}
                         className={`p-3 rounded-lg border text-left font-semibold transition-colors ${
                           selectedAssigneeTeam === tName
-                            ? 'border-[#1E40AF] bg-[#EFF6FF] dark:bg-blue-950 text-[#1E3A8A] dark:text-blue-300 ring-1 ring-[#1E40AF]'
-                            : 'border-[#E2E8F0] dark:border-slate-800 text-[#0F172A] hover:bg-[#F8FAFC]'
+                            ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] ring-1 ring-[#1E40AF] dark:ring-[#4C8DF6]'
+                            : 'border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528]'
                         }`}
                       >
                         <div>{tName}</div>
-                        <div className="text-[10px] font-normal text-[#0F172A]/65 mt-0.5">
+                        <div className="text-[10px] font-normal text-[#0F172A]/65 dark:text-[#9A9AA2] mt-0.5">
                           {tName === 'Admission Team'
                             ? `Assigns to all ${admissionMembers.length} admission officers`
                             : `Assigns to all ${counselingMembers.length} counselors`}
@@ -1341,7 +1339,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
               {/* Task Details */}
               <div>
-                <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                   Task Title *
                 </label>
                 <input
@@ -1350,12 +1348,12 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   value={taskForm.title}
                   onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
                   placeholder="e.g. Verify Apostille on high school certificate for SNU intake"
-                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF]"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:ring-1 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                 />
               </div>
 
               <div>
-                <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                   Description / Operational Instructions
                 </label>
                 <textarea
@@ -1363,13 +1361,13 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   value={taskForm.description}
                   onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
                   placeholder="Detailed guidelines, requirements, or portal reference links..."
-                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF]"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:ring-1 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                 />
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Scheduled Date *
                   </label>
                   <input
@@ -1377,11 +1375,11 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     required
                     value={taskForm.taskDate}
                     onChange={(e) => setTaskForm({ ...taskForm, taskDate: e.target.value })}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Deadline *
                   </label>
                   <input
@@ -1389,11 +1387,11 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     required
                     value={taskForm.deadline}
                     onChange={(e) => setTaskForm({ ...taskForm, deadline: e.target.value })}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Priority
                   </label>
                   <MorphSelect
@@ -1412,7 +1410,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   </MorphSelect>
                 </div>
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Category
                   </label>
                   <MorphSelect
@@ -1436,7 +1434,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               {/* Optional University / Student Link */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Link University (Optional)
                   </label>
                   <MorphSelect
@@ -1458,7 +1456,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Link Student Dossier (Optional)
                   </label>
                   <MorphSelect
@@ -1480,46 +1478,43 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setIsAssignModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-300 hover:bg-[#F8FAFC] transition-colors"
+                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/75 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold shadow-xs transition-colors"
+                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white font-semibold shadow-xs dark:shadow-none transition-colors"
                 >
                   Create & Dispatch Task
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
 
       {/* 7. REASSIGN TASK MODAL */}
-      {createPortal(
-        <ModalTransition
-          isOpen={Boolean(reassigningTask)}
-          onClose={() => setReassigningTask(null)}
-          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
-          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-md p-5 space-y-4"
-        >
+      <ModalTransition
+        isOpen={Boolean(reassigningTask)}
+        onClose={() => setReassigningTask(null)}
+        backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl shadow-2xl dark:shadow-none w-full max-w-md p-5 space-y-4"
+      >
           {reassigningTask && (
             <>
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[#2E2E32] pb-3">
               <div>
-                <h3 className="font-bold text-sm text-[#0F172A] dark:text-slate-100">
+                <h3 className="font-bold text-sm text-[#0F172A] dark:text-[#ECECEE]">
                   Reassign Task
                 </h3>
               </div>
               <MotionButton
                 type="button"
                 onClick={() => setReassigningTask(null)}
-                className="text-[#0F172A]/45 hover:text-[#0F172A] dark:text-slate-400"
+                className="text-[#0F172A]/45 hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE]"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -1527,16 +1522,16 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
             <form onSubmit={handleSaveReassign} className="space-y-3 text-xs">
               <div>
-                <label className="block text-[#0F172A]/75 dark:text-slate-400 mb-1 font-semibold">
+                <label className="block text-[#0F172A]/75 dark:text-[#9A9AA2] mb-1 font-semibold">
                   Task
                 </label>
-                <div className="p-2.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-700 font-medium text-[#0F172A] dark:text-slate-200">
+                <div className="p-2.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] font-medium text-[#0F172A] dark:text-[#ECECEE]">
                   {reassigningTask.title}
                 </div>
               </div>
 
               <div>
-                <label className="block text-[#0F172A]/75 dark:text-slate-400 mb-1 font-semibold">
+                <label className="block text-[#0F172A]/75 dark:text-[#9A9AA2] mb-1 font-semibold">
                   New Assignee
                 </label>
                 <MorphSelect value={reassignTargetId} onValueChange={(v) => setReassignTargetId(v)}>
@@ -1560,18 +1555,18 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[#0F172A]/75 dark:text-slate-400 mb-1 font-semibold">
+                  <label className="block text-[#0F172A]/75 dark:text-[#9A9AA2] mb-1 font-semibold">
                     New Deadline
                   </label>
                   <input
                     type="date"
                     value={reassignDeadline}
                     onChange={(e) => setReassignDeadline(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#0F172A]/75 dark:text-slate-400 mb-1 font-semibold">
+                  <label className="block text-[#0F172A]/75 dark:text-[#9A9AA2] mb-1 font-semibold">
                     Priority
                   </label>
                   <MorphSelect
@@ -1591,17 +1586,17 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setReassigningTask(null)}
-                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC] transition-colors"
+                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/75 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold transition-colors"
+                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white font-semibold transition-colors"
                 >
                   Confirm Reassignment
                 </MotionButton>
@@ -1609,32 +1604,29 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             </form>
             </>
           )}
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
 
       {/* 8. ADD/EDIT EMPLOYEE MODAL (ADMIN ONLY) */}
-      {createPortal(
-        <ModalTransition
-          isOpen={isEmployeeModalOpen}
-          onClose={() => setIsEmployeeModalOpen(false)}
-          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-900/60 backdrop-blur-xs"
-          cardClassName="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-xl shadow-2xl w-full max-w-lg p-5 space-y-4"
-        >
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3">
+      <ModalTransition
+        isOpen={isEmployeeModalOpen}
+        onClose={() => setIsEmployeeModalOpen(false)}
+        backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl shadow-2xl dark:shadow-none w-full max-w-lg p-5 space-y-4"
+      >
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[#2E2E32] pb-3">
               <div>
-                <h3 className="font-bold text-base text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
-                  <UserPlus className="w-4 h-4 text-[#1E40AF]" />
+                <h3 className="font-bold text-base text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
+                  <UserPlus className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
                   {editingEmployee ? 'Edit Employee Profile' : 'Add New Employee'}
                 </h3>
-                <p className="text-xs text-[#0F172A]/65 dark:text-slate-400">
+                <p className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2]">
                   Configure role, departmental team, and operational title.
                 </p>
               </div>
               <MotionButton
                 type="button"
                 onClick={() => setIsEmployeeModalOpen(false)}
-                className="text-[#0F172A]/45 hover:text-[#0F172A] dark:text-slate-400"
+                className="text-[#0F172A]/45 hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE]"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -1643,7 +1635,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             <form onSubmit={handleSaveEmployee} className="space-y-3.5 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Full Name *
                   </label>
                   <input
@@ -1652,12 +1644,12 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     value={employeeForm.name}
                     onChange={(e) => setEmployeeForm({ ...employeeForm, name: e.target.value })}
                     placeholder="e.g. Min-Ji Park"
-                    className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF]"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:ring-1 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Email Address *
                   </label>
                   <input
@@ -1666,14 +1658,14 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     value={employeeForm.email}
                     onChange={(e) => setEmployeeForm({ ...employeeForm, email: e.target.value })}
                     placeholder="e.g. minji.park@wecare-consulting.kr"
-                    className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF]"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:ring-1 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Assigned Team *
                   </label>
                   <MorphSelect
@@ -1691,7 +1683,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Operational Role *
                   </label>
                   <MorphSelect
@@ -1710,7 +1702,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                   Position / Job Title *
                 </label>
                 <input
@@ -1719,12 +1711,12 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   value={employeeForm.title}
                   onChange={(e) => setEmployeeForm({ ...employeeForm, title: e.target.value })}
                   placeholder="e.g. Senior Admission Officer & Evaluation Lead"
-                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF]"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:ring-1 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                 />
               </div>
 
               <div>
-                <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                   Phone Number
                 </label>
                 <input
@@ -1732,38 +1724,38 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   value={employeeForm.phone}
                   onChange={(e) => setEmployeeForm({ ...employeeForm, phone: e.target.value })}
                   placeholder="+82-10-XXXX-XXXX"
-                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#1E40AF] focus:border-[#1E40AF]"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:ring-1 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                 />
               </div>
 
               <div>
-                <label className="block text-[#0F172A] dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                   Avatar Photo Preset or Custom URL
                 </label>
                 <div className="flex items-center gap-2 mb-2">
                   <img
                     src={employeeForm.avatar || avatarPresets[0]}
                     alt="Preview"
-                    className="w-8 h-8 rounded-full object-cover border border-[#E2E8F0] dark:border-slate-700"
+                    className="w-8 h-8 rounded-full object-cover border border-[#E2E8F0] dark:border-[#2E2E32]"
                   />
                   <input
                     type="url"
                     value={employeeForm.avatar}
                     onChange={(e) => setEmployeeForm({ ...employeeForm, avatar: e.target.value })}
                     placeholder="https://images.unsplash.com/..."
-                    className="flex-1 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 text-xs focus:outline-none focus:border-[#1E40AF]"
+                    className="flex-1 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] text-xs focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
                 {/* Presets */}
                 <div className="flex items-center gap-2 pt-1">
-                  <span className="text-[10px] text-[#0F172A]/55 dark:text-slate-400">Presets:</span>
+                  <span className="text-[10px] text-[#0F172A]/55 dark:text-[#9A9AA2]">Presets:</span>
                   {avatarPresets.map((url, idx) => (
                     <MotionButton
                       key={idx}
                       type="button"
                       onClick={() => setEmployeeForm({ ...employeeForm, avatar: url })}
                       className={`w-6 h-6 rounded-full overflow-hidden border-2 transition-colors ${
-                        employeeForm.avatar === url ? 'border-[#1E40AF] ring-1 ring-[#1E40AF]' : 'border-transparent'
+                        employeeForm.avatar === url ? 'border-[#1E40AF] dark:border-[#4C8DF6] ring-1 ring-[#1E40AF] dark:ring-[#4C8DF6]' : 'border-transparent'
                       }`}
                     >
                       <img src={url} alt={`Preset ${idx}`} className="w-full h-full object-cover" />
@@ -1772,25 +1764,23 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setIsEmployeeModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC] transition-colors"
+                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/75 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] text-white font-semibold transition-colors"
+                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white font-semibold transition-colors"
                 >
                   {editingEmployee ? 'Save Changes' : 'Add Employee'}
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
     </PageTransition>
   );
 };

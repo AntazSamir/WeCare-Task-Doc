@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
 import {
   Building2,
   Calendar,
@@ -78,13 +77,13 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-md p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-4">
         <div>
-          <h2 className="text-base font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-[#1E40AF] dark:text-[#1E40AF]" />
+          <h2 className="text-base font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-[#1E40AF] dark:text-[#ECECEE]" />
             University Admission Intake Campaigns
           </h2>
-          <p className="text-xs text-[#0F172A]/65 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2] mt-0.5">
             Organizing student cohorts, application quota fill rates, and consultant assignments across South Korean partner institutions
           </p>
         </div>
@@ -92,7 +91,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
         {isAdmin && (
           <MotionButton
             onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded transition-colors shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded transition-colors shadow-xs dark:shadow-none"
           >
             <Plus className="w-3.5 h-3.5" />
             New Intake Campaign
@@ -108,28 +107,28 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
             <StaggerItem key={p.id}>
               <div
                 onClick={() => onSelectProject(p)}
-                className="p-5 rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xs hover:border-[#1E40AF] dark:hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between space-y-4 h-full"
+                className="p-5 rounded-md bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-xs dark:shadow-none hover:border-[#1E40AF] dark:hover:border-[#4C8DF6] transition-all cursor-pointer flex flex-col justify-between space-y-4 h-full"
               >
               <div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="tabular-nums text-[10px] text-[#1E40AF] dark:text-[#1E40AF] font-bold">
+                  <span className="tabular-nums text-[10px] text-[#1E40AF] dark:text-[#4C8DF6] font-bold">
                     {p.id}
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                       p.status === 'Active'
-                        ? 'bg-[#16A34A]/10 dark:bg-emerald-950/60 text-[#16A34A] dark:text-emerald-400'
-                        : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#0F172A]/70 dark:text-slate-300'
+                        ? 'bg-[#16A34A]/10 dark:bg-[rgba(52,194,107,0.14)] text-[#16A34A] dark:text-[#34C26B]'
+                        : 'bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A]/70 dark:text-[#9A9AA2]'
                     }`}
                   >
                     {p.status}
                   </span>
                 </div>
 
-                <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100 mt-1 line-clamp-2">
+                <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#ECECEE] mt-1 line-clamp-2">
                   {p.name}
                 </h3>
-                <div className="text-xs text-[#0F172A]/65 dark:text-slate-400 mt-0.5 font-medium">
+                <div className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2] mt-0.5 font-medium">
                   {p.universityName} · {p.intakeTerm}
                 </div>
               </div>
@@ -137,24 +136,24 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
               {/* Progress & Quota Fill Bar */}
               <div className="space-y-1.5 text-xs">
                 <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-[#0F172A]/65 dark:text-slate-400">Intake Candidate Quota</span>
-                  <span className="tabular-nums font-bold text-[#0F172A] dark:text-slate-200">
+                  <span className="text-[#0F172A]/65 dark:text-[#9A9AA2]">Intake Candidate Quota</span>
+                  <span className={`tabular-nums font-bold ${(p.studentCount || 0) === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
                     {p.studentCount} / {p.targetQuota} ({quotaFill}%)
                   </span>
                 </div>
-                <div className="w-full bg-[#EFF6FF] dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-[#EFF6FF] dark:bg-[#252528] h-2 rounded-full overflow-hidden">
                   <div
-                    className="bg-[#1E40AF] h-full rounded-full transition-all"
+                    className="bg-[#1E40AF] dark:bg-[#4C8DF6] h-full rounded-full transition-all"
                     style={{ width: `${Math.min(quotaFill, 100)}%` }}
                   />
                 </div>
               </div>
 
               {/* Footer: Deadline & Assigned Consultants */}
-              <div className="pt-3 border-t border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between text-xs">
-                <div className="tabular-nums text-[11px] text-[#0F172A]/65 dark:text-slate-400 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-[#1E40AF]" />
-                  Due: <span className="text-[#DC2626] dark:text-red-400 font-semibold">{p.deadline}</span>
+              <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between text-xs">
+                <div className="tabular-nums text-[11px] text-[#0F172A]/65 dark:text-[#9A9AA2] flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#ECECEE]" />
+                  Due: <span className="text-[#DC2626] dark:text-[#EF5350] font-semibold">{p.deadline}</span>
                 </div>
 
                 <div className="flex -space-x-1.5">
@@ -167,7 +166,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                         src={member.avatar}
                         alt={member.name}
                         title={member.name}
-                        className="w-5 h-5 rounded-full object-cover border border-white dark:border-slate-900 ring-1 ring-[#E2E8F0]"
+                        className="w-5 h-5 rounded-full object-cover border border-white dark:border-[#1C1C1E] ring-1 ring-[#E2E8F0] dark:ring-[#2E2E32]"
                       />
                     );
                   })}
@@ -180,21 +179,20 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
       </StaggerContainer>
 
       {/* Modal: Create Intake Campaign (Admin Only) */}
-      {createPortal(
-        <ModalTransition
-          isOpen={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
-          cardClassName="w-full max-w-lg rounded-md bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl p-6 space-y-4"
-        >
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-800 pb-3">
-              <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-[#1E40AF]" />
+      <ModalTransition
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="w-full max-w-lg rounded-md bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4"
+      >
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[#2E2E32] pb-3">
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Initialize New University Intake Project
               </h3>
               <MotionButton
                 onClick={() => setShowCreateModal(false)}
-                className="p-1 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded"
+                className="p-1 text-[#0F172A]/50 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] rounded"
                 aria-label="Close modal"
               >
                 <X className="w-4 h-4" />
@@ -203,13 +201,13 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
 
             <form onSubmit={handleCreateSubmit} className="space-y-3.5 text-xs">
               {error && (
-                <div className="p-2 rounded bg-[#DC2626]/10 text-[#DC2626] dark:bg-red-950/40 dark:text-red-400 font-medium border border-[#DC2626]/30">
+                <div className="p-2 rounded bg-[#DC2626]/10 text-[#DC2626] dark:bg-[rgba(239,83,80,0.14)] dark:text-[#EF5350] font-medium border border-[#DC2626]/30 dark:border-[#EF5350]/30">
                   {error}
                 </div>
               )}
 
               <div>
-                <label className="block font-medium text-[#0F172A] dark:text-slate-300 mb-1">
+                <label className="block font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1">
                   Campaign Title *
                 </label>
                 <input
@@ -218,13 +216,13 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Korea University Global Business Spring 2027"
-                  className="w-full rounded border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                  className="w-full rounded border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3 py-1.5 text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-medium text-[#0F172A] dark:text-slate-300 mb-1">
+                  <label className="block font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1">
                     Korean University *
                   </label>
                   <MorphSelect value={universityId} onValueChange={(v) => setUniversityId(v)}>
@@ -242,7 +240,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-medium text-[#0F172A] dark:text-slate-300 mb-1">
+                  <label className="block font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1">
                     Intake Term
                   </label>
                   <MorphSelect value={intakeTerm} onValueChange={(v) => setIntakeTerm(v)}>
@@ -260,7 +258,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-medium text-[#0F172A] dark:text-slate-300 mb-1">
+                  <label className="block font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1">
                     Portal Application Deadline *
                   </label>
                   <input
@@ -268,12 +266,12 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                     required
                     value={deadline}
                     onChange={(e) => setDeadline(e.target.value)}
-                    className="w-full rounded border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                    className="w-full rounded border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3 py-1.5 tabular-nums text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-[#0F172A] dark:text-slate-300 mb-1">
+                  <label className="block font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1">
                     Target Student Quota
                   </label>
                   <input
@@ -282,16 +280,16 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                     max="200"
                     value={targetQuota}
                     onChange={(e) => setTargetQuota(e.target.value)}
-                    className="w-full rounded border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                    className="w-full rounded border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3 py-1.5 tabular-nums text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-medium text-[#0F172A] dark:text-slate-300 mb-1">
+                <label className="block font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1">
                   Assign Consultant Team
                 </label>
-                <div className="flex flex-wrap gap-2 p-2 rounded bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800">
+                <div className="flex flex-wrap gap-2 p-2 rounded bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32]">
                   {team
                     .filter((t) => t.role === 'Consultant')
                     .map((t) => {
@@ -308,8 +306,8 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                           }}
                           className={`px-2.5 py-1 rounded text-xs transition-colors ${
                             isSelected
-                              ? 'bg-[#1E40AF] text-white font-semibold'
-                              : 'bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A]/75 dark:text-slate-400 border border-[#E2E8F0] dark:border-slate-700'
+                              ? 'bg-[#1E40AF] dark:bg-[#4C8DF6] text-white font-semibold'
+                              : 'bg-[#FFFFFF] dark:bg-[#1C1C1E] text-[#0F172A]/75 dark:text-[#9A9AA2] border border-[#E2E8F0] dark:border-[#2E2E32]'
                           }`}
                         >
                           {t.name}
@@ -320,7 +318,7 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
               </div>
 
               <div>
-                <label className="block font-medium text-[#0F172A] dark:text-slate-300 mb-1">
+                <label className="block font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1">
                   Campaign Notes & Instructions
                 </label>
                 <textarea
@@ -328,30 +326,28 @@ export const IntakeProjectsView: React.FC<IntakeProjectsViewProps> = ({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Required apostille cutoffs, specific scholarship quota..."
-                  className="w-full rounded border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                  className="w-full rounded border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3 py-1.5 text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                 <MotionButton
                   onClick={() => setShowCreateModal(false)}
-                  className="px-3.5 py-1.5 text-xs text-[#0F172A] dark:text-slate-400 hover:bg-[#EFF6FF]/40 rounded"
+                  className="px-3.5 py-1.5 text-xs text-[#0F172A] dark:text-[#9A9AA2] hover:bg-[#EFF6FF]/40 dark:hover:bg-[#252528] rounded"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded disabled:opacity-50 transition-colors"
                 >
                   {isSubmitting && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
                   {isSubmitting ? 'Creating...' : 'Initialize Project'}
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
     </div>
   );
 };

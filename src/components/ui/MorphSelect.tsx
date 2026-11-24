@@ -1,19 +1,19 @@
 // WeCare PMS — Morph Select Component
-// Adapted from beui.dev/components/motion/select for this project's design tokens
+// Inline shared-element (layoutId) morphing dropdown with spring physics
 
 import { Check, ChevronDown } from 'lucide-react';
 import {
-  AnimatePresence,
+  LayoutGroup,
   motion,
   type Transition,
   useReducedMotion,
-  type Variants,
 } from 'motion/react';
 import {
   Children,
   createContext,
   isValidElement,
   type ReactNode,
+  type RefObject,
   useCallback,
   useContext,
   useEffect,
@@ -23,8 +23,6 @@ import {
   useRef,
   useState,
 } from 'react';
-
-import { animationDurations } from '../../animations/tokens';
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(' ');
@@ -39,21 +37,15 @@ function extractText(node: ReactNode): string {
   return Children.toArray(node).map(extractText).join('');
 }
 
-// Shared-layout morph transition driven by centralized tokens
-const MORPH: Transition = { type: 'spring', duration: animationDurations.slower, bounce: 0.22 };
+const MORPH_SPRING: Transition = {
+  type: 'spring',
+  stiffness: 450,
+  damping: 32,
+  mass: 0.8,
+};
 
-// Trigger and panel header share this row so the morph stays seamless.
 const ROW =
   'h-9 flex w-full items-center justify-between gap-2 px-3 text-xs leading-none box-border';
-
-const LIST: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.012, delayChildren: 0.015 } },
-};
-const ITEM: Variants = {
-  hidden: { opacity: 0, y: -4 },
-  show: { opacity: 1, y: 0 },
-};
 
 interface MorphContextValue {
   value: string | undefined;
@@ -66,10 +58,13 @@ interface MorphContextValue {
   placeholder: string;
   setPlaceholder: (p: string) => void;
   reduce: boolean;
-  layoutId: string;
+  morphId: string;
   triggerId: string;
   listId: string;
   disabled: boolean;
+  wrapperRef: RefObject<HTMLDivElement | null>;
+  triggerRef: RefObject<HTMLButtonElement | null>;
+  panelRef: RefObject<HTMLDivElement | null>;
 }
 
 const MorphContext = createContext<MorphContextValue | null>(null);
@@ -99,7 +94,9 @@ export function MorphSelect({
 }: MorphSelectProps) {
   const reduce = useReducedMotion() ?? false;
   const baseId = useId();
-  const rootRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
   const [internal, setInternal] = useState(defaultValue);
   const [labels, setLabels] = useState<
@@ -115,14 +112,21 @@ export function MorphSelect({
       if (!controlled) setInternal(next);
       onValueChange?.(next);
       setOpen(false);
+      requestAnimationFrame(() => triggerRef.current?.focus());
     },
     [controlled, onValueChange],
   );
 
   const register = useCallback((v: string, label: string) => {
     setLabels((m) => {
+      const existing = m.get(v);
+      if (existing && existing.label === label) {
+        const next = new Map(m);
+        next.set(v, { label, count: existing.count + 1 });
+        return next;
+      }
       const next = new Map(m);
-      next.set(v, { label, count: (m.get(v)?.count ?? 0) + 1 });
+      next.set(v, { label, count: (existing?.count ?? 0) + 1 });
       return next;
     });
   }, []);
@@ -140,16 +144,24 @@ export function MorphSelect({
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
-    const onPointer = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node))
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
         setOpen(false);
+        requestAnimationFrame(() => triggerRef.current?.focus());
+      }
     };
-    window.addEventListener('keydown', onKey);
-    window.addEventListener('pointerdown', onPointer);
+    const onPointer = (e: PointerEvent) => {
+      const target = e.target as Node;
+      if (wrapperRef.current?.contains(target)) return;
+      if (panelRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+    window.addEventListener('keydown', onKey, true);
+    window.addEventListener('pointerdown', onPointer, true);
     return () => {
-      window.removeEventListener('keydown', onKey);
-      window.removeEventListener('pointerdown', onPointer);
+      window.removeEventListener('keydown', onKey, true);
+      window.removeEventListener('pointerdown', onPointer, true);
     };
   }, [open]);
 
@@ -165,20 +177,32 @@ export function MorphSelect({
       placeholder,
       setPlaceholder,
       reduce,
-      layoutId: `${baseId}-surface`,
+      morphId: `${baseId}-morph-surface`,
       triggerId: `${baseId}-trigger`,
       listId: `${baseId}-list`,
       disabled,
+      wrapperRef,
+      triggerRef,
+      panelRef,
     }),
     [current, open, select, register, unregister, labels, placeholder, reduce, baseId, disabled],
   );
 
   return (
-    <MorphContext.Provider value={ctx}>
-      <div ref={rootRef} className={cn('relative w-full h-9 box-border', open && 'z-50', className)}>
-        {children}
-      </div>
-    </MorphContext.Provider>
+    <LayoutGroup id={baseId}>
+      <MorphContext.Provider value={ctx}>
+        <div
+          ref={wrapperRef}
+          className={cn(
+            'relative w-full h-9 box-border min-w-0',
+            open && 'z-40',
+            className,
+          )}
+        >
+          {children}
+        </div>
+      </MorphContext.Provider>
+    </LayoutGroup>
   );
 }
 
@@ -197,7 +221,7 @@ export function MorphSelectValue({ placeholder, className }: MorphSelectValuePro
     <span
       className={cn(
         'min-w-0 truncate block text-left',
-        label ? 'text-[#0F172A] dark:text-slate-100' : 'text-[#64748B] dark:text-slate-500',
+        label ? 'text-[#0F172A] dark:text-[#ECECEE]' : 'text-[#64748B] dark:text-[#9A9AA2]',
         className,
       )}
     >
@@ -213,41 +237,43 @@ export interface MorphSelectTriggerProps {
 
 export function MorphSelectTrigger({ className, children }: MorphSelectTriggerProps) {
   const ctx = useMorphContext('MorphSelectTrigger');
+
+  if (ctx.open) {
+    return null;
+  }
+
   return (
-    <AnimatePresence initial={false}>
-      {!ctx.open ? (
-        <motion.button
-          key="trigger"
-          layoutId={ctx.layoutId}
-          type="button"
-          id={ctx.triggerId}
-          disabled={ctx.disabled}
-          aria-haspopup="listbox"
-          aria-expanded={ctx.open}
-          aria-controls={ctx.listId}
-          onClick={() => ctx.setOpen(true)}
-          transition={ctx.reduce ? { duration: 0 } : MORPH}
-          style={{ borderRadius: 8 }}
-          className={cn(
-            ROW,
-            'rounded-lg border border-[#E2E8F0] dark:border-slate-700',
-            'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100',
-            'outline-none transition-colors duration-150 cursor-pointer',
-            'hover:border-[#1E40AF] dark:hover:border-blue-500',
-            'focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-2',
-            'disabled:pointer-events-none disabled:opacity-50',
-            className,
-          )}
-        >
-          <motion.span layout="position" className="min-w-0 truncate text-left flex-1 block">
-            {children}
-          </motion.span>
-          <motion.span layout="position" className="text-[#64748B] dark:text-slate-400 shrink-0 ml-1">
-            <ChevronDown className="h-3.5 w-3.5" />
-          </motion.span>
-        </motion.button>
-      ) : null}
-    </AnimatePresence>
+    <motion.button
+      ref={ctx.triggerRef}
+      layoutId={ctx.morphId}
+      transition={ctx.reduce ? { duration: 0 } : MORPH_SPRING}
+      style={{ borderRadius: 8 }}
+      type="button"
+      id={ctx.triggerId}
+      disabled={ctx.disabled}
+      aria-haspopup="listbox"
+      aria-expanded={false}
+      aria-controls={ctx.listId}
+      onClick={() => ctx.setOpen(true)}
+      className={cn(
+        ROW,
+        'rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32]',
+        'bg-white dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE]',
+        'outline-none transition-colors duration-150 cursor-pointer',
+        'hover:border-[#1E40AF] dark:hover:border-[#4C8DF6]',
+        'focus-visible:ring-2 focus-visible:ring-[#1E40AF] dark:focus-visible:ring-[#4C8DF6] focus-visible:ring-offset-2',
+        'disabled:pointer-events-none disabled:opacity-50',
+        className,
+      )}
+    >
+      <motion.span
+        layout="position"
+        className="min-w-0 truncate text-left flex-1 block"
+      >
+        {children}
+      </motion.span>
+      <ChevronDown className="h-3.5 w-3.5 text-[#64748B] dark:text-[#9A9AA2] shrink-0 ml-1 transition-transform duration-150" />
+    </motion.button>
   );
 }
 
@@ -258,71 +284,111 @@ export interface MorphSelectContentProps {
 
 export function MorphSelectContent({ className, children }: MorphSelectContentProps) {
   const ctx = useMorphContext('MorphSelectContent');
-  const label = ctx.labelFor(ctx.value);
+  const [placement, setPlacement] = useState<'bottom' | 'top'>('bottom');
+  const [maxListHeight, setMaxListHeight] = useState<number>(224);
+
+  useLayoutEffect(() => {
+    if (!ctx.open) return;
+    const wrapper = ctx.wrapperRef.current;
+    if (!wrapper) return;
+
+    const rect = wrapper.getBoundingClientRect();
+    const viewportH = window.innerHeight;
+    const margin = 12;
+    const headerHeight = 36;
+    const spaceBelow = viewportH - rect.top - headerHeight - margin;
+    const spaceAbove = rect.bottom - headerHeight - margin;
+
+    const flipTop = spaceBelow < 160 && spaceAbove > spaceBelow;
+    const available = Math.max(108, Math.min(224, flipTop ? spaceAbove : spaceBelow));
+
+    setPlacement(flipTop ? 'top' : 'bottom');
+    setMaxListHeight(available);
+  }, [ctx.open, ctx.wrapperRef]);
+
+  if (!ctx.open) {
+    return (
+      <ul className="hidden" aria-hidden="true">
+        {children}
+      </ul>
+    );
+  }
+
+  const activeLabel = ctx.labelFor(ctx.value);
+
+  const headerRow = (
+    <button
+      type="button"
+      onClick={() => {
+        ctx.setOpen(false);
+        requestAnimationFrame(() => ctx.triggerRef.current?.focus());
+      }}
+      className={cn(
+        ROW,
+        'text-left outline-none cursor-pointer transition-colors',
+        'bg-white dark:bg-[#252528] hover:bg-[#F8FAFC] dark:hover:bg-[#2E2E32]',
+        placement === 'bottom'
+          ? 'border-b border-[#E2E8F0] dark:border-[#2E2E32]'
+          : 'border-t border-[#E2E8F0] dark:border-[#2E2E32]',
+      )}
+    >
+      <motion.span
+        layout="position"
+        className={cn(
+          'min-w-0 truncate text-left flex-1 block font-medium',
+          activeLabel
+            ? 'text-[#0F172A] dark:text-[#ECECEE]'
+            : 'text-[#64748B] dark:text-[#9A9AA2]',
+        )}
+      >
+        {activeLabel ?? ctx.placeholder}
+      </motion.span>
+      <ChevronDown className="h-3.5 w-3.5 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0 ml-1 rotate-180 transition-transform duration-150" />
+    </button>
+  );
+
+  const optionsList = (
+    <motion.ul
+      id={ctx.listId}
+      role="listbox"
+      aria-labelledby={ctx.triggerId}
+      initial={ctx.reduce ? { opacity: 1 } : { opacity: 0, y: placement === 'bottom' ? -4 : 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={ctx.reduce ? { duration: 0 } : { duration: 0.14, ease: [0.16, 1, 0.3, 1], delay: 0.02 }}
+      style={{ maxHeight: maxListHeight }}
+      className="p-1 overflow-y-auto overscroll-contain space-y-0.5"
+    >
+      {children}
+    </motion.ul>
+  );
+
   return (
-    <>
-      {/* always-mounted hidden copy — keeps item registrations alive while closed */}
-      <div className="hidden">{children}</div>
-
-      <AnimatePresence initial={false}>
-        {ctx.open ? (
-          <motion.div
-            key="panel"
-            layoutId={ctx.layoutId}
-            id={ctx.listId}
-            role="listbox"
-            aria-labelledby={ctx.triggerId}
-            transition={ctx.reduce ? { duration: 0 } : MORPH}
-            style={{ borderRadius: 8 }}
-            className={cn(
-              'absolute inset-x-0 top-0 z-50 overflow-hidden rounded-lg',
-              'border border-[#E2E8F0] dark:border-slate-700',
-              'bg-white dark:bg-slate-800',
-              'shadow-xl',
-              className,
-            )}
-          >
-            {/* header mirrors the trigger — click collapses back */}
-            <motion.button
-              type="button"
-              layout="position"
-              aria-expanded
-              onClick={() => ctx.setOpen(false)}
-              className={cn(ROW, 'outline-none hover:bg-[#F8FAFC] dark:hover:bg-slate-700/50 transition-colors cursor-pointer')}
-            >
-              <span
-                className={cn(
-                  'min-w-0 truncate text-left flex-1 block',
-                  label
-                    ? 'text-[#0F172A] dark:text-slate-100'
-                    : 'text-[#64748B] dark:text-slate-500',
-                )}
-              >
-                {label ?? ctx.placeholder}
-              </span>
-              <motion.span
-                animate={{ rotate: 180 }}
-                transition={ctx.reduce ? { duration: 0 } : MORPH}
-                className="text-[#64748B] dark:text-slate-400 shrink-0 ml-1"
-              >
-                <ChevronDown className="h-3.5 w-3.5" />
-              </motion.span>
-            </motion.button>
-
-            <div className="h-px bg-[#E2E8F0] dark:bg-slate-700" />
-
-            <motion.ul
-              initial="hidden"
-              animate="show"
-              variants={ctx.reduce ? undefined : LIST}
-              className="p-1 max-h-52 overflow-y-auto space-y-0.5"
-            >
-              {children}
-            </motion.ul>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </>
+    <motion.div
+      ref={ctx.panelRef}
+      layoutId={ctx.morphId}
+      transition={ctx.reduce ? { duration: 0 } : MORPH_SPRING}
+      style={{ borderRadius: 8 }}
+      className={cn(
+        'absolute left-0 right-0 z-[70] overflow-hidden rounded-lg',
+        placement === 'bottom' ? 'top-0' : 'bottom-0',
+        'border border-[#1E40AF]/40 dark:border-[#3A3A3F]',
+        'bg-white dark:bg-[#1C1C1E]',
+        'shadow-xl ring-2 ring-[#1E40AF]/10 dark:shadow-none dark:ring-0',
+        className,
+      )}
+    >
+      {placement === 'bottom' ? (
+        <>
+          {headerRow}
+          {optionsList}
+        </>
+      ) : (
+        <>
+          {optionsList}
+          {headerRow}
+        </>
+      )}
+    </motion.div>
   );
 }
 
@@ -350,7 +416,7 @@ export function MorphSelectItem({
   }, [ctx.register, ctx.unregister, value, label]);
 
   return (
-    <motion.li variants={ctx.reduce ? undefined : ITEM}>
+    <li>
       <button
         type="button"
         role="option"
@@ -358,18 +424,18 @@ export function MorphSelectItem({
         disabled={disabled}
         onClick={() => ctx.select(value)}
         className={cn(
-          'flex w-full items-center justify-between gap-2 rounded px-2 py-1 text-left text-xs outline-none transition-colors cursor-pointer',
+          'flex w-full items-center justify-between gap-2 rounded px-2.5 py-1.5 text-left text-xs outline-none transition-colors cursor-pointer',
           selected
-            ? 'bg-[#EFF6FF] dark:bg-blue-900/40 text-[#1E40AF] dark:text-blue-300 font-medium'
-            : 'text-[#64748B] dark:text-slate-400 hover:bg-[#F8FAFC] dark:hover:bg-slate-700/60 hover:text-[#0F172A] dark:hover:text-slate-100',
+            ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E40AF] dark:text-[#4C8DF6] font-medium'
+            : 'text-[#64748B] dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] hover:text-[#0F172A] dark:hover:text-[#ECECEE]',
           'disabled:pointer-events-none disabled:opacity-50',
           className,
         )}
       >
         <span className="truncate">{children}</span>
-        {selected ? <Check className="h-3 w-3 shrink-0 text-[#1E40AF] dark:text-blue-400" /> : null}
+        {selected ? <Check className="h-3.5 w-3.5 shrink-0 text-[#1E40AF] dark:text-[#4C8DF6]" /> : null}
       </button>
-    </motion.li>
+    </li>
   );
 }
 

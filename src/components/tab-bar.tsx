@@ -1669,7 +1669,7 @@ export const TabBar = React.forwardRef<HTMLElement, TabBarProps>(
                     ease: GLIDE,
                     delay: still ? 0 : 0.06,
                   }}
-                  className="relative z-10 whitespace-nowrap text-[14px] font-medium text-[#242423] dark:text-zinc-100"
+                  className="relative z-10 whitespace-nowrap text-[14px] font-medium text-[#242423] dark:text-[#ECECEE]"
                 >
                   {t.label}
                 </motion.span>
@@ -1857,13 +1857,13 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
             <div key={section.title} className="space-y-0.5">
               {!collapsed ? (
                 <div className="px-2 pt-0.5 pb-0.5">
-                  <span className="text-[10px] font-semibold tracking-[0.06em] uppercase text-[#64748B] dark:text-slate-400">
+                  <span className="text-[10px] font-semibold tracking-[0.06em] uppercase text-[#64748B] dark:text-[#9A9AA2]">
                     {section.title}
                   </span>
                 </div>
               ) : (
                 idx > 0 && (
-                  <div className="my-1.5 mx-1.5 border-t border-[#E2E8F0] dark:border-slate-800" />
+                  <div className="my-1.5 mx-1.5 border-t border-[#E2E8F0] dark:border-[#2E2E32]" />
                 )
               )}
 
@@ -1895,13 +1895,13 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                         x: { ...SPRING, delay: still ? 0 : Math.min(itemIndex * 0.02, 0.24) },
                       }}
                       className={cn(
-                        "group relative flex cursor-pointer select-none items-center rounded-md outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#1E40AF]/40",
+                        "group relative flex cursor-pointer select-none items-center rounded-md outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#1E40AF]/40 dark:focus-visible:ring-[#4C8DF6]/50",
                         collapsed
                           ? "h-8 w-8 justify-center"
                           : "w-full justify-between px-2.5 py-1.5 text-xs font-medium whitespace-nowrap shrink-0",
                         on
-                          ? "text-[#1E40AF] dark:text-blue-400"
-                          : "text-[#0F172A] dark:text-slate-300 hover:text-[#1E40AF] dark:hover:text-blue-400",
+                          ? "text-[#1E40AF] dark:text-[#4C8DF6]"
+                          : "text-[#0F172A] dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#ECECEE]",
                       )}
                     >
                       {/* Gliding active background capsule */}
@@ -1909,7 +1909,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                         <motion.span
                           layoutId={`${uid}-sidebar-pill`}
                           transition={still ? { duration: 0 } : SPRING}
-                          className="pointer-events-none absolute inset-0 z-0 rounded-md bg-[#EFF6FF] dark:bg-blue-950/60 border border-[#1E40AF]/15 dark:border-blue-500/25 shadow-[0_1px_2px_rgba(30,64,175,0.06)]"
+                          className="pointer-events-none absolute inset-0 z-0 rounded-md bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border border-[#1E40AF]/15 dark:border-[rgba(76,141,246,0.28)] shadow-[0_1px_2px_rgba(30,64,175,0.06)] dark:shadow-none"
                         />
                       )}
 
@@ -1918,7 +1918,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                         <motion.span
                           layoutId={`${uid}-sidebar-accent`}
                           transition={still ? { duration: 0 } : SPRING}
-                          className="pointer-events-none absolute left-0 top-1.5 bottom-1.5 z-20 w-[2.5px] rounded-r bg-[#1E40AF] dark:bg-blue-400"
+                          className="pointer-events-none absolute left-0 top-1.5 bottom-1.5 z-20 w-[2.5px] rounded-r bg-[#1E40AF] dark:bg-[#4C8DF6]"
                         />
                       )}
 
@@ -1926,7 +1926,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                       {!on && (
                         <span
                           aria-hidden
-                          className="pointer-events-none absolute inset-0 z-0 rounded-md bg-[#F1F5F9]/80 dark:bg-slate-800/70 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                          className="pointer-events-none absolute inset-0 z-0 rounded-md bg-[#F1F5F9]/80 dark:bg-[#252528] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                         />
                       )}
 
@@ -1942,7 +1942,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                                   animate={{ scale: 2, opacity: 0 }}
                                   exit={{ opacity: 0 }}
                                   transition={{ duration: 0.55, ease: GLIDE }}
-                                  className="pointer-events-none absolute size-5 rounded-full bg-[#1E40AF]/20 dark:bg-blue-400/25"
+                                  className="pointer-events-none absolute size-5 rounded-full bg-[#1E40AF]/20 dark:bg-[rgba(76,141,246,0.22)]"
                                 />
                               )}
                             </AnimatePresence>
@@ -1957,8 +1957,8 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                                 className={cn(
                                   "w-3.5 h-3.5 shrink-0 transition-colors duration-200",
                                   on
-                                    ? "text-[#1E40AF] dark:text-blue-300"
-                                    : "text-[#64748B] group-hover:text-[#1E40AF] dark:text-slate-400 dark:group-hover:text-blue-400",
+                                    ? "text-[#1E40AF] dark:text-[#4C8DF6]"
+                                    : "text-[#64748B] group-hover:text-[#1E40AF] dark:text-[#9A9AA2] dark:group-hover:text-[#ECECEE]",
                                 )}
                               />
                             </motion.span>
@@ -1967,12 +1967,12 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                           {item.isLiveSync ? (
                             <span
                               className={cn(
-                                "absolute top-1.5 right-1.5 z-20 w-1.5 h-1.5 rounded-full ring-2 ring-white dark:ring-slate-900",
-                                item.syncStatusColor ?? "bg-[#16A34A]",
+                                "absolute top-1.5 right-1.5 z-20 w-1.5 h-1.5 rounded-full ring-2 ring-white dark:ring-[#161616]",
+                                item.syncStatusColor ?? "bg-[#16A34A] dark:bg-[#34C26B]",
                               )}
                             />
                           ) : typeof item.count === "number" && item.count > 0 ? (
-                            <span className="absolute top-1 right-1 z-20 w-1.5 h-1.5 rounded-full bg-[#1E40AF] ring-2 ring-white dark:ring-slate-900" />
+                            <span className="absolute top-1 right-1 z-20 w-1.5 h-1.5 rounded-full bg-[#1E40AF] dark:bg-[#4C8DF6] ring-2 ring-white dark:ring-[#161616]" />
                           ) : null}
                         </>
                       ) : (
@@ -1988,7 +1988,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                                     animate={{ scale: 2, opacity: 0 }}
                                     exit={{ opacity: 0 }}
                                     transition={{ duration: 0.55, ease: GLIDE }}
-                                    className="pointer-events-none absolute size-5 rounded-full bg-[#1E40AF]/20 dark:bg-blue-400/25"
+                                    className="pointer-events-none absolute size-5 rounded-full bg-[#1E40AF]/20 dark:bg-[rgba(76,141,246,0.22)]"
                                   />
                                 )}
                               </AnimatePresence>
@@ -2003,8 +2003,8 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                                   className={cn(
                                     "w-3.5 h-3.5 shrink-0 transition-colors duration-200",
                                     on
-                                      ? "text-[#1E40AF] dark:text-blue-300"
-                                      : "text-[#64748B] group-hover:text-[#1E40AF] dark:text-slate-400 dark:group-hover:text-blue-400",
+                                      ? "text-[#1E40AF] dark:text-[#4C8DF6]"
+                                      : "text-[#64748B] group-hover:text-[#1E40AF] dark:text-[#9A9AA2] dark:group-hover:text-[#ECECEE]",
                                   )}
                                 />
                               </motion.span>
@@ -2013,8 +2013,8 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                               className={cn(
                                 "truncate transition-colors duration-200",
                                 on
-                                  ? "font-semibold text-[#1E40AF] dark:text-blue-300"
-                                  : "text-[#0F172A] dark:text-slate-300 group-hover:text-[#1E40AF] dark:group-hover:text-blue-400",
+                                  ? "font-semibold text-[#1E40AF] dark:text-[#4C8DF6]"
+                                  : "text-[#0F172A] dark:text-[#9A9AA2] group-hover:text-[#1E40AF] dark:group-hover:text-[#ECECEE]",
                               )}
                               animate={{ x: on && !still ? 2 : 0 }}
                               transition={SPRING}
@@ -2028,7 +2028,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                               <span
                                 className={cn(
                                   "w-1.5 h-1.5 rounded-full",
-                                  item.syncStatusColor ?? "bg-[#16A34A]",
+                                  item.syncStatusColor ?? "bg-[#16A34A] dark:bg-[#34C26B]",
                                 )}
                                 title={item.syncTitle}
                               />
@@ -2044,8 +2044,10 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                                   className={cn(
                                     "tabular-nums text-[10px] px-1.5 py-0.5 leading-none rounded-full font-medium transition-colors duration-200",
                                     on
-                                      ? "bg-[#1E40AF]/12 text-[#1E40AF] dark:bg-blue-500/20 dark:text-blue-300"
-                                      : "text-[#64748B] bg-[#F1F5F9] dark:bg-slate-800 dark:text-slate-400",
+                                      ? "bg-[#1E40AF]/12 text-[#1E40AF] dark:bg-[rgba(76,141,246,0.18)] dark:text-[#4C8DF6]"
+                                      : item.count === 0
+                                      ? "text-[#64748B] bg-[#F1F5F9] dark:bg-[#252528] dark:text-[#66666E]"
+                                      : "text-[#64748B] bg-[#F1F5F9] dark:bg-[#252528] dark:text-[#9A9AA2]",
                                   )}
                                 >
                                   {item.count}

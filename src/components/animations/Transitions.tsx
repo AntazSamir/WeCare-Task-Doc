@@ -1,4 +1,4 @@
-import React, { createContext, useContext, forwardRef } from 'react';
+import React, { createContext, useContext, forwardRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   motion,
@@ -92,20 +92,14 @@ export const TabTransition = forwardRef<HTMLDivElement, TabTransitionProps>(
       <motion.div
         key={viewKey}
         ref={ref}
-        initial={{
-          opacity: 0,
-          y: shouldReduceMotion ? 0 : animationDistances.micro,
-        }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{
-          opacity: 0,
-          y: shouldReduceMotion ? 0 : -animationDistances.micro,
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{
           duration: shouldReduceMotion ? 0.001 : duration,
           ease: animationEasings.standard,
         }}
-        style={{ willChange: 'opacity, transform', ...style }}
+        style={{ willChange: 'opacity', ...style }}
         className={className}
         {...rest}
       >
@@ -163,6 +157,36 @@ export const FadeTransition = forwardRef<HTMLDivElement, FadeTransitionProps>(
 );
 FadeTransition.displayName = 'FadeTransition';
 
+// Ref-counted body scroll lock with scrollbar-width compensation to prevent background jumps
+let activeScrollLocks = 0;
+let savedBodyOverflow = '';
+let savedBodyPaddingRight = '';
+
+function useBodyScrollLock(locked: boolean) {
+  useEffect(() => {
+    if (!locked || typeof document === 'undefined') return;
+    if (activeScrollLocks === 0) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      savedBodyOverflow = document.body.style.overflow;
+      savedBodyPaddingRight = document.body.style.paddingRight;
+      if (scrollbarWidth > 0) {
+        const computedPadding = parseFloat(window.getComputedStyle(document.body).paddingRight) || 0;
+        document.body.style.paddingRight = `${computedPadding + scrollbarWidth}px`;
+      }
+      document.body.style.overflow = 'hidden';
+    }
+    activeScrollLocks += 1;
+
+    return () => {
+      activeScrollLocks = Math.max(0, activeScrollLocks - 1);
+      if (activeScrollLocks === 0) {
+        document.body.style.overflow = savedBodyOverflow;
+        document.body.style.paddingRight = savedBodyPaddingRight;
+      }
+    };
+  }, [locked]);
+}
+
 // ─── 4. ModalTransition ─────────────────────────────────────────────────────
 export interface ModalTransitionProps {
   isOpen: boolean;
@@ -178,16 +202,22 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
   isOpen,
   onClose,
   children,
-  backdropClassName = 'fixed inset-0 bg-[#1E3A8A]/40 dark:bg-slate-950/70 backdrop-blur-xs',
-  cardClassName = 'w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl',
-  containerClassName = 'fixed inset-0 z-50 flex justify-center p-4 overflow-y-auto',
+  backdropClassName = 'fixed inset-0 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs',
+  cardClassName = 'w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-2xl dark:shadow-none',
+  containerClassName = 'fixed inset-0 z-50 flex justify-center p-4 overflow-y-auto scrollbar-stable',
 }) => {
   const shouldReduceMotion = useReducedMotion();
+  useBodyScrollLock(isOpen);
 
   const content = (
     <AnimatePresence>
       {isOpen && (
-        <div className={containerClassName}>
+        <div
+          className={containerClassName}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) onClose?.();
+          }}
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -207,13 +237,11 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
             initial={{
               opacity: 0,
               scale: shouldReduceMotion ? 1 : animationScales.modalInitial,
-              y: shouldReduceMotion ? 0 : 8,
             }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
             exit={{
               opacity: 0,
               scale: shouldReduceMotion ? 1 : animationScales.modalInitial,
-              y: shouldReduceMotion ? 0 : 6,
             }}
             transition={{
               duration: shouldReduceMotion ? 0.001 : animationDurations.normal,
@@ -249,10 +277,11 @@ export const DrawerTransition: React.FC<DrawerTransitionProps> = ({
   onClose,
   children,
   side = 'right',
-  backdropClassName = 'fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs',
-  panelClassName = 'fixed right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-slate-900 border-l border-[#E2E8F0] dark:border-slate-800 shadow-2xl z-50 flex flex-col',
+  backdropClassName = 'fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs',
+  panelClassName = 'fixed right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-[#1C1C1E] border-l border-[#E2E8F0] dark:border-[#2E2E32] shadow-2xl dark:shadow-none z-50 flex flex-col',
 }) => {
   const shouldReduceMotion = useReducedMotion();
+  useBodyScrollLock(isOpen);
   const initialOffset = side === 'right' ? '100%' : '-100%';
 
   const content = (

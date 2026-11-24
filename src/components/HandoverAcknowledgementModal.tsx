@@ -155,39 +155,39 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
     <ModalTransition
       isOpen={isOpen && Boolean(handover)}
       onClose={onClose}
-      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
-      cardClassName="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh]"
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/70 backdrop-blur-xs"
+      cardClassName="w-full max-w-4xl bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg shadow-2xl dark:shadow-none flex flex-col max-h-[90vh]"
     >
       {handover && (
         <>
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-[#16A34A]/15 dark:bg-emerald-950 border border-[#16A34A]/35 dark:border-emerald-800 flex items-center justify-center text-[#16A34A] dark:text-emerald-400">
+            <div className="w-8 h-8 rounded-md bg-[#16A34A]/15 dark:bg-[rgba(52,194,107,0.14)] border border-[#16A34A]/35 dark:border-[#34C26B]/30 flex items-center justify-center text-[#16A34A] dark:text-[#34C26B]">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
+              <h2 className="text-sm font-bold text-[#0F172A] dark:text-[#ECECEE]">
                 Physical Document Inspection & Acknowledgement — {handover.id}
               </h2>
-              <p className="text-[11px] text-[#0F172A]/65 dark:text-slate-400">
-                Student: <span className="font-semibold text-[#0F172A] dark:text-slate-300">{handover.studentName}</span> ({handover.studentPassport}) · From: <span className="font-semibold text-[#0F172A] dark:text-slate-200">{handover.counselorName}</span>
+              <p className="text-[11px] text-[#0F172A]/65 dark:text-[#9A9AA2]">
+                Student: <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">{handover.studentName}</span> ({handover.studentPassport}) · From: <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">{handover.counselorName}</span>
               </p>
             </div>
           </div>
           <MotionButton
             type="button"
             onClick={onClose}
-            className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md transition-colors"
+            className="p-1.5 text-[#0F172A]/50 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] rounded-md transition-colors"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
           </MotionButton>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="flex-1 overflow-y-auto scrollbar-stable p-5 space-y-4">
           {!canVerify && (
-            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/40 border border-[#DC2626]/35 dark:border-rose-800 text-xs text-[#DC2626] dark:text-rose-300 flex items-center gap-2">
+            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/35 dark:border-[#EF5350]/30 text-xs text-[#DC2626] dark:text-[#EF5350] flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>
                 {isOwnCounselor
@@ -198,15 +198,15 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
           )}
 
           {errorMsg && (
-            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/40 border border-[#DC2626]/35 dark:border-rose-800 text-xs text-[#DC2626] dark:text-rose-300 flex items-center gap-2">
+            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/35 dark:border-[#EF5350]/30 text-xs text-[#DC2626] dark:text-[#EF5350] flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {handover.requestId && (
-            <div className="p-3 rounded-md bg-[#EFF6FF]/70 dark:bg-blue-950/35 border border-[#1E40AF]/40 dark:border-blue-800 text-xs text-[#1E3A8A] dark:text-blue-200 flex items-center gap-2">
-              <ClipboardList className="w-4 h-4 shrink-0 text-[#1E40AF] dark:text-[#1E40AF]" />
+            <div className="p-3 rounded-md bg-[#EFF6FF]/70 dark:bg-[rgba(76,141,246,0.14)] border border-[#1E40AF]/40 dark:border-[#4C8DF6]/30 text-xs text-[#1E3A8A] dark:text-[#ECECEE] flex items-center gap-2">
+              <ClipboardList className="w-4 h-4 shrink-0 text-[#1E40AF] dark:text-[#4C8DF6]" />
               <span>
                 Fulfills Admission Request <span className="tabular-nums font-bold">{handover.requestId}</span>
                 {handover.requestStatus ? ` (${handover.requestStatus})` : ''}. Accepting all documents Received marks the request Completed.
@@ -215,27 +215,27 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
           )}
 
           {/* Live Status Tally Bar */}
-          <div className="p-3 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div className="p-3 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-4 text-xs tabular-nums">
-              <span className="text-[#16A34A] dark:text-emerald-400 font-semibold">
+              <span className="text-[#16A34A] dark:text-[#34C26B] font-semibold">
                 Received: {statusCounts['Received'] || 0}
               </span>
-              <span className="text-[#D97706] dark:text-amber-400 font-semibold">
+              <span className="text-[#D97706] dark:text-[#F0A030] font-semibold">
                 Missing: {statusCounts['Missing'] || 0}
               </span>
-              <span className="text-[#DC2626] dark:text-rose-400 font-semibold">
+              <span className="text-[#DC2626] dark:text-[#EF5350] font-semibold">
                 Incorrect/Rejected: {(statusCounts['Incorrect'] || 0) + (statusCounts['Rejected'] || 0)}
               </span>
             </div>
-            <div className="text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+            <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">
               Resulting Handover Status:{' '}
               <span
                 className={`tabular-nums font-bold ${
                   derivedPreviewStatus === 'Accepted'
-                    ? 'text-[#16A34A] dark:text-emerald-400'
+                    ? 'text-[#16A34A] dark:text-[#34C26B]'
                     : derivedPreviewStatus === 'Partially Received'
-                    ? 'text-[#D97706] dark:text-amber-400'
-                    : 'text-[#DC2626] dark:text-rose-400'
+                    ? 'text-[#D97706] dark:text-[#F0A030]'
+                    : 'text-[#DC2626] dark:text-[#EF5350]'
                 }`}
               >
                 {derivedPreviewStatus}
@@ -257,28 +257,28 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                   key={item.id}
                   className={`p-3.5 rounded-lg border transition-colors ${
                     alreadyVerified
-                      ? 'bg-[#16A34A]/5 dark:bg-emerald-950/15 border-[#16A34A]/30 dark:border-emerald-900/50'
-                      : 'bg-[#FFFFFF] dark:bg-slate-900 border-[#E2E8F0] dark:border-slate-800'
+                      ? 'bg-[#16A34A]/5 dark:bg-[rgba(52,194,107,0.14)] border-[#16A34A]/30 dark:border-[#34C26B]/30'
+                      : 'bg-[#FFFFFF] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32]'
                   }`}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="space-y-1 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <FileText className="w-3.5 h-3.5 text-[#1E40AF] shrink-0" />
-                        <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100">
+                        <FileText className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0" />
+                        <span className="text-xs font-bold text-[#0F172A] dark:text-[#ECECEE]">
                           {item.documentName}
                         </span>
-                        <span className="text-[11px] tabular-nums text-[#0F172A]/60 dark:text-slate-400">
+                        <span className="text-[11px] tabular-nums text-[#0F172A]/60 dark:text-[#9A9AA2]">
                           [{item.format} · x{item.quantity} · {item.pageCount}p · Batch #{item.deliveryBatch}]
                         </span>
                       </div>
                       {item.conditionRemarks && (
-                        <div className="text-[11px] text-[#0F172A]/65 dark:text-slate-400 pl-5">
+                        <div className="text-[11px] text-[#0F172A]/65 dark:text-[#9A9AA2] pl-5">
                           Counselor note: {item.conditionRemarks}
                         </div>
                       )}
                       {alreadyVerified && (
-                        <div className="text-[11px] text-[#16A34A] dark:text-emerald-400 pl-5 font-medium">
+                        <div className="text-[11px] text-[#16A34A] dark:text-[#34C26B] pl-5 font-medium">
                           Previously verified by {item.verifiedByName || 'Admission Officer'} (Locked as Received)
                         </div>
                       )}
@@ -291,10 +291,10 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                             const active = currentDecision === st;
                             const activeCls =
                               st === 'Received'
-                                ? 'bg-[#16A34A] text-white border-[#16A34A]'
+                                ? 'bg-[#16A34A] dark:bg-[#34C26B] text-white border-[#16A34A] dark:border-[#34C26B]'
                                 : st === 'Missing'
-                                ? 'bg-[#D97706] text-white border-[#D97706]'
-                                : 'bg-[#DC2626] text-white border-[#DC2626]';
+                                ? 'bg-[#D97706] dark:bg-[#F0A030] text-white border-[#D97706] dark:border-[#F0A030]'
+                                : 'bg-[#DC2626] dark:bg-[#EF5350] text-white border-[#DC2626] dark:border-[#EF5350]';
                             return (
                               <MotionButton
                                 key={st}
@@ -304,7 +304,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                                 className={`px-2.5 py-1 text-[11px] font-semibold rounded-md border transition-colors ${
                                   active
                                     ? activeCls
-                                    : 'bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-300 border-[#E2E8F0] dark:border-slate-700 hover:bg-[#F8FAFC]'
+                                    : 'bg-[#FFFFFF] dark:bg-[#1C1C1E] text-[#0F172A] dark:text-[#ECECEE] border-[#E2E8F0] dark:border-[#2E2E32] hover:bg-[#F8FAFC] dark:hover:bg-[#2E2E32]'
                                 }`}
                               >
                                 {st}
@@ -323,7 +323,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                         value={currentNotes}
                         onChange={(e) => handleSetItemNotes(item.id, e.target.value)}
                         placeholder={`Specify exact issue for "${item.documentName}" (e.g. missing notarized page 2, expired date)...`}
-                        className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                        className="w-full px-2.5 py-1.5 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#1C1C1E] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                       />
                     </div>
                   )}
@@ -335,7 +335,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
           {/* Dispute Reason & General Inspection Notes */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+              <label className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                 Verification Remarks
               </label>
               <textarea
@@ -343,31 +343,31 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                 value={acknowledgementNotes}
                 onChange={(e) => setAcknowledgementNotes(e.target.value)}
                 placeholder="Confirm physical folder condition, missing count, or desk shelf location..."
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#0F172A] dark:text-slate-300">
-                Dispute / Incorrect Reason {hasIncorrectOrRejected && <span className="text-[#DC2626]">*</span>}
+              <label className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">
+                Dispute / Incorrect Reason {hasIncorrectOrRejected && <span className="text-[#DC2626] dark:text-[#EF5350]">*</span>}
               </label>
               <textarea
                 rows={2}
                 value={disputeReason}
                 onChange={(e) => setDisputeReason(e.target.value)}
                 placeholder="Required if rejecting or reporting incorrect/damaged documents..."
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-900/80 flex flex-wrap items-center justify-between gap-2">
+        <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#161616] flex flex-wrap items-center justify-between gap-2">
           <MotionButton
             type="button"
             onClick={onClose}
-            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40 transition-colors"
+            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md hover:bg-[#EFF6FF]/40 dark:hover:bg-[#2E2E32] transition-colors"
           >
             Cancel
           </MotionButton>
@@ -378,7 +378,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                 type="button"
                 disabled={!canVerify || isSubmitting}
                 onClick={() => handleSubmit('Dispute')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#DC2626] hover:bg-[#B93535] disabled:opacity-50 rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#DC2626] hover:bg-[#B93535] dark:bg-[#EF5350] dark:hover:bg-[#EF5350]/90 disabled:opacity-50 rounded-md transition-colors"
               >
                 {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <XCircle className="w-3.5 h-3.5" />}
                 Report Dispute / Incorrect
@@ -390,7 +390,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                 type="button"
                 disabled={!canVerify || isSubmitting}
                 onClick={() => handleSubmit('Partial')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#D97706] hover:bg-[#CF8B28] disabled:opacity-50 rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#D97706] hover:bg-[#CF8B28] dark:bg-[#F0A030] dark:hover:bg-[#F0A030]/90 disabled:opacity-50 rounded-md transition-colors"
               >
                 {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <AlertTriangle className="w-3.5 h-3.5" />}
                 Confirm Partial Receipt
@@ -402,7 +402,7 @@ export const HandoverAcknowledgementModal: React.FC<HandoverAcknowledgementModal
                 type="button"
                 disabled={!canVerify || isSubmitting}
                 onClick={() => handleSubmit('Accept')}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] disabled:opacity-50 rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] dark:bg-[#34C26B] dark:hover:bg-[#34C26B]/90 disabled:opacity-50 rounded-md transition-colors"
               >
                 {isSubmitting ? <Spinner size="sm" shade="inherit" aria-hidden="true" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                 Accept All Received

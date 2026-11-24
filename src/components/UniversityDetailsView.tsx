@@ -178,15 +178,15 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
   if (error || !uni) {
     return (
-      <div className="p-8 text-center bg-white dark:bg-slate-900 border border-red-200 dark:border-red-900/50 rounded-lg space-y-4">
-        <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
-        <div className="text-sm font-semibold text-red-600 dark:text-red-400">
+      <div className="p-8 text-center bg-white dark:bg-[#1C1C1E] border border-red-200 dark:border-[#EF5350]/40 rounded-lg space-y-4">
+        <AlertCircle className="w-8 h-8 text-red-500 dark:text-[#EF5350] mx-auto" />
+        <div className="text-sm font-semibold text-red-600 dark:text-[#EF5350]">
           {error || 'University profile not found'}
         </div>
         <MotionButton
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-[#ECECEE] bg-slate-100 dark:bg-[#252528] dark:border dark:border-[#2E2E32] rounded-lg hover:bg-slate-200 dark:hover:bg-[#2E2E32] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Directory
@@ -218,9 +218,9 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <MotionButton
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors shadow-xs group"
+          className="inline-flex items-center gap-2 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-[#ECECEE] bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] rounded-md hover:bg-slate-50 dark:hover:bg-[#252528] transition-colors shadow-xs dark:shadow-none group"
         >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5 text-slate-600 dark:text-slate-300" />
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5 text-slate-600 dark:text-[#ECECEE]" />
           <span>Back to Universities</span>
         </MotionButton>
 
@@ -231,9 +231,9 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               onClick={handleReverify}
               disabled={isVerifying}
               title="Confirm that university admission criteria, fees, and bank coordinates are currently validated"
-              className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-[#ECECEE] bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] rounded-md hover:bg-slate-50 dark:hover:bg-[#252528] transition-colors shadow-xs dark:shadow-none"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-[#34C26B]" />
               <span>{isVerifying ? 'Re-verifying...' : 'Re-verify Criteria'}</span>
             </MotionButton>
           )}
@@ -242,7 +242,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             <MotionButton
               type="button"
               onClick={() => setShowEditUniModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-medium text-slate-600 dark:text-[#ECECEE] bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] rounded-md hover:bg-slate-50 dark:hover:bg-[#252528] transition-colors shadow-xs dark:shadow-none"
             >
               <Edit2 className="w-3.5 h-3.5" />
               <span>Edit Info</span>
@@ -251,12 +251,12 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         </div>
       </div>
 
-      <div className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-[0_2px_14px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_14px_rgba(0,0,0,0.3)]">
+      <div className="relative overflow-hidden bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-4 sm:p-5 shadow-[0_2px_14px_rgba(0,0,0,0.03)] dark:shadow-none">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
 
           <div className="flex items-center gap-4 shrink-0">
             {uni.id === 'UNI-SNU' ? (
-              <div className="h-20 w-52 sm:w-56 rounded-xl border border-blue-100 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+              <div className="h-20 w-52 sm:w-56 rounded-xl border border-blue-100 dark:border-[#2E2E32] bg-white dark:bg-[#252528] p-2 shadow-xs dark:shadow-none flex items-center justify-center shrink-0 overflow-hidden">
                 <img
                   src="/assets/snu_logo_badge.png"
                   alt="Seoul National University"
@@ -268,7 +268,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 />
               </div>
             ) : (
-              <div className="h-20 w-20 rounded-lg bg-blue-600 text-white flex flex-col items-center justify-center shadow-xs shrink-0">
+              <div className="h-20 w-20 rounded-lg bg-blue-600 dark:bg-[#252528] dark:border dark:border-[#2E2E32] text-white dark:text-[#ECECEE] flex flex-col items-center justify-center shadow-xs dark:shadow-none shrink-0">
                 <Building2 className="w-8 h-8 text-white mb-0.5" />
                 <span className="text-[11px] tabular-nums font-bold tracking-wider">
                   {uni.id.replace('UNI-', '')}
@@ -278,43 +278,43 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-[#ECECEE]">
                   {uni.nameEn} {uni.id === 'UNI-SNU' ? '(SNU)' : ''}
                 </h1>
 
-                <span className="inline-flex items-center justify-center text-blue-500 dark:text-blue-400" title="Verified Korean Institution">
-                  <svg className="w-5 h-5 fill-blue-500 text-white" viewBox="0 0 24 24">
+                <span className="inline-flex items-center justify-center text-blue-500 dark:text-[#4C8DF6]" title="Verified Korean Institution">
+                  <svg className="w-5 h-5 fill-blue-500 dark:fill-[#4C8DF6] text-white" viewBox="0 0 24 24">
                     <path fillRule="evenodd" d="M8.6 2.25A2.25 2.25 0 0 0 6.64 3.7l-.42 1.48a2.25 2.25 0 0 1-1.54 1.54l-1.48.42a2.25 2.25 0 0 0-1.45 1.96v.1a2.25 2.25 0 0 0 .7 1.68l1.09 1.09c.47.46.7 1.1.63 1.74l-.16 1.53a2.25 2.25 0 0 0 1.25 2.25l1.37.69c.58.29.98.84 1.08 1.48l.24 1.52a2.25 2.25 0 0 0 2 1.89h.2a2.25 2.25 0 0 0 1.8-1l.9-1.26a2.25 2.25 0 0 1 1.6-.82h1.55a2.25 2.25 0 0 0 2.2-1.78l.35-1.5a2.25 2.25 0 0 1 1.22-1.5l1.4-.64a2.25 2.25 0 0 0 1.28-2.22l-.12-1.54a2.25 2.25 0 0 1 .65-1.73l1.1-1.09a2.25 2.25 0 0 0 .7-1.68v-.1a2.25 2.25 0 0 0-1.45-1.96l-1.48-.42a2.25 2.25 0 0 1-1.54-1.54l-.42-1.48a2.25 2.25 0 0 0-1.96-1.45h-.1a2.25 2.25 0 0 0-1.68.7L13.1 3.5a2.25 2.25 0 0 1-1.74.63l-1.53-.16a2.25 2.25 0 0 0-2.25 1.25l-.69 1.37c-.29.58-.84.98-1.48 1.08l-1.52.24a2.25 2.25 0 0 0-1.89 2v.2a2.25 2.25 0 0 0 1 1.8l1.26.9c.5.35.8.92.82 1.6v1.55a2.25 2.25 0 0 0 1.78 2.2l1.5.35c.6.14 1.13.56 1.5 1.22l.64 1.4a2.25 2.25 0 0 0 2.22 1.28l1.54-.12c.64-.05 1.27.18 1.73.65l1.09 1.1a2.25 2.25 0 0 0 1.68.7h.1a2.25 2.25 0 0 0 1.96-1.45l.42-1.48a2.25 2.25 0 0 1 1.54-1.54l1.48-.42a2.25 2.25 0 0 0 1.45-1.96v-.1a2.25 2.25 0 0 0-.7-1.68l-1.09-1.09a2.25 2.25 0 0 1-.63-1.74l.16-1.53a2.25 2.25 0 0 0-1.25-2.25l-1.37-.69a2.25 2.25 0 0 1-1.08-1.48l-.24-1.52a2.25 2.25 0 0 0-2-1.89h-.2a2.25 2.25 0 0 0-1.8 1l-.9 1.26a2.25 2.25 0 0 1-1.6.82h-1.55a2.25 2.25 0 0 0-2.2 1.78l-.35 1.5a2.25 2.25 0 0 1-1.22 1.5l-1.4.64a2.25 2.25 0 0 0-1.28 2.22l.12 1.54c.05.64-.18 1.27-.65 1.73l-1.1 1.09a2.25 2.25 0 0 0-.7 1.68v.1c0 .88.52 1.65 1.3 1.96l1.48.42a2.25 2.25 0 0 1 1.54 1.54l.42 1.48a2.25 2.25 0 0 0 1.96 1.45h.1a2.25 2.25 0 0 0 1.68-.7l1.09-1.09a2.25 2.25 0 0 1 1.74-.63l1.53.16a2.25 2.25 0 0 0 2.25-1.25l.69-1.37c.29-.58.84-.98 1.48-1.08l1.52-.24a2.25 2.25 0 0 0 1.89-2v-.2a2.25 2.25 0 0 0-1-1.8l-1.26-.9a2.25 2.25 0 0 1-.82-1.6v-1.55a2.25 2.25 0 0 0-1.78-2.2l-1.5-.35a2.25 2.25 0 0 1-1.5-1.22l-.64-1.4a2.25 2.25 0 0 0-2.22-1.28l-1.54.12a2.25 2.25 0 0 1-1.73-.65l-1.09-1.1a2.25 2.25 0 0 0-1.68-.7h-.1z" clipRule="evenodd" />
                     <path fill="#ffffff" d="m10.2 15.5-3.2-3.2 1.4-1.4 1.8 1.8 4.8-4.8 1.4 1.4-6.2 6.2z" />
                   </svg>
                 </span>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 dark:text-[#9A9AA2]">
                 <span className="flex items-center gap-1 font-medium">
-                  <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-[#4C8DF6]" />
                   {uni.city}, South Korea
                 </span>
-                <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">·</span>
+                <span aria-hidden="true" className="text-slate-300 dark:text-[#2E2E32]">·</span>
                 <a
                   href={uni.websiteUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  className="flex items-center gap-1 text-blue-600 dark:text-[#4C8DF6] hover:underline font-medium"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>{uni.websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                 </a>
-                <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">·</span>
-                <span className="flex items-center gap-1 font-semibold text-slate-800 dark:text-slate-200">
-                  <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <span aria-hidden="true" className="text-slate-300 dark:text-[#2E2E32]">·</span>
+                <span className="flex items-center gap-1 font-semibold text-slate-800 dark:text-[#ECECEE]">
+                  <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 dark:text-[#F0A030] dark:fill-[#F0A030]" />
                   {uni.ranking}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="hidden lg:block relative w-96 xl:w-[460px] h-24 rounded-lg overflow-hidden border border-slate-200/80 dark:border-slate-800 shrink-0">
+          <div className="hidden lg:block relative w-96 xl:w-[460px] h-24 rounded-lg overflow-hidden border border-slate-200/80 dark:border-[#2E2E32] shrink-0">
             <img
               src="/assets/campus_snu_clean.jpg"
               alt={`${uni.nameEn} Campus`}
@@ -384,20 +384,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-              <div className="lg:col-span-3 xl:col-span-3 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-3 xl:col-span-3 bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-5 shadow-xs dark:shadow-none flex flex-col justify-between">
                 <div>
 
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200 mb-3">
-                    <Calendar className="w-4 h-4 text-blue-600" />
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-[#ECECEE] mb-3">
+                    <Calendar className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                     <span>Current Intake</span>
                   </div>
 
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-[#ECECEE] tracking-tight">
                       {primaryIntake.term}
                     </h2>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 rounded-full">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-0.5 text-xs font-semibold text-emerald-700 dark:text-[#34C26B] bg-emerald-50 dark:bg-[rgba(52,194,107,0.14)] border border-emerald-200/60 dark:border-[#34C26B]/30 rounded-full">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-[#34C26B]"></span>
                       <span>{primaryIntake.status || 'Open'}</span>
                     </span>
                   </div>
@@ -405,78 +405,78 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <div className="space-y-2.5 text-xs">
 
                     <div className="flex items-center justify-between py-0.5">
-                      <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <span className="flex items-center gap-2 text-slate-600 dark:text-[#9A9AA2]">
                         <Calendar className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         <span>Application Open</span>
                       </span>
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-slate-900 dark:text-[#ECECEE]">
                         {formatDateClean(primaryIntake.applicationStart) || 'Oct 1, 2026'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between py-0.5">
-                      <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <span className="flex items-center gap-2 text-slate-600 dark:text-[#9A9AA2]">
                         <Calendar className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         <span>Application Deadline</span>
                       </span>
-                      <span className="font-bold text-red-500 dark:text-red-400">
+                      <span className="font-bold text-red-500 dark:text-[#EF5350]">
                         {formatDateClean(primaryIntake.applicationDeadline) || 'Nov 30, 2026'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between py-0.5">
-                      <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <span className="flex items-center gap-2 text-slate-600 dark:text-[#9A9AA2]">
                         <FileText className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         <span>Document Deadline</span>
                       </span>
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-slate-900 dark:text-[#ECECEE]">
                         {primaryIntake.documentDeadline || 'Dec 5, 2026'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between py-0.5">
-                      <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <span className="flex items-center gap-2 text-slate-600 dark:text-[#9A9AA2]">
                         <Clock className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         <span>Result Announcement</span>
                       </span>
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-slate-900 dark:text-[#ECECEE]">
                         {primaryIntake.resultAnnouncementDate || 'Jan 15, 2027'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between py-0.5">
-                      <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <span className="flex items-center gap-2 text-slate-600 dark:text-[#9A9AA2]">
                         <DollarSign className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         <span>Tuition Payment</span>
                       </span>
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-slate-900 dark:text-[#ECECEE]">
                         {primaryIntake.tuitionPaymentDeadline || 'Feb 1, 2027'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between py-0.5">
-                      <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <span className="flex items-center gap-2 text-slate-600 dark:text-[#9A9AA2]">
                         <ShieldCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         <span>Visa Submission</span>
                       </span>
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-slate-900 dark:text-[#ECECEE]">
                         {primaryIntake.visaSubmissionDeadline || 'Feb 15, 2027'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between py-0.5">
-                      <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <span className="flex items-center gap-2 text-slate-600 dark:text-[#9A9AA2]">
                         <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         <span>Classes Start</span>
                       </span>
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-slate-900 dark:text-[#ECECEE]">
                         {primaryIntake.classesStartDate || 'Mar 1, 2027'}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 text-center">
+                <div className="pt-4 mt-3 border-t border-slate-100 dark:border-[#2E2E32] text-center">
                   <MotionButton
                     type="button"
                     onClick={() => {
@@ -485,7 +485,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         setShowIntakeModal(true);
                       }
                     }}
-                    className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                    className="text-xs font-semibold text-blue-600 dark:text-[#4C8DF6] hover:underline inline-flex items-center gap-1"
                   >
                     <span>View All Intakes</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -493,18 +493,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="lg:col-span-5 xl:col-span-5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-5 xl:col-span-5 bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-5 shadow-xs dark:shadow-none flex flex-col justify-between">
                 <div>
 
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                      <GraduationCap className="w-4 h-4 text-blue-600" />
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-[#ECECEE]">
+                      <GraduationCap className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                       <span className="font-bold text-sm">Available Programs</span>
                     </div>
                     <MotionButton
                       type="button"
                       onClick={() => setActiveTab('programs')}
-                      className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                      className="text-xs font-semibold text-blue-600 dark:text-[#4C8DF6] hover:underline inline-flex items-center gap-1"
                     >
                       <span>View All Programs</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -521,17 +521,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           setActiveTab('programs');
                         }
                       }}
-                      className="p-3 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 hover:border-sky-300 dark:hover:border-sky-700 transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
+                      className="p-3 rounded-xl bg-sky-50/70 dark:bg-[#252528] border border-sky-100 dark:border-[#2E2E32] hover:border-sky-300 dark:hover:border-[#3A3A3F] transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
                     >
                       <div>
-                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-sky-500 rounded tabular-nums uppercase mb-1.5">
+                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-sky-500 dark:bg-[rgba(76,141,246,0.14)] dark:text-[#4C8DF6] rounded tabular-nums uppercase mb-1.5">
                           KLP
                         </span>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug">
+                        <div className="text-xs font-bold text-slate-800 dark:text-[#ECECEE] group-hover:text-blue-600 dark:group-hover:text-[#4C8DF6] transition-colors leading-snug">
                           Korean Language Program
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2">
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-2">
                         <span className="flex items-center gap-1">
                           <Users className="w-3 h-3 text-slate-400" />
                           <span>1 Year</span>
@@ -548,17 +548,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           setActiveTab('programs');
                         }
                       }}
-                      className="p-3 rounded-xl bg-purple-50/70 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/40 hover:border-purple-300 dark:hover:border-purple-700 transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
+                      className="p-3 rounded-xl bg-purple-50/70 dark:bg-[#252528] border border-purple-100 dark:border-[#2E2E32] hover:border-purple-300 dark:hover:border-[#3A3A3F] transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
                     >
                       <div>
-                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-purple-500 rounded tabular-nums uppercase mb-1.5">
+                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-purple-500 dark:bg-[rgba(76,141,246,0.14)] dark:text-[#4C8DF6] rounded tabular-nums uppercase mb-1.5">
                           KSU
                         </span>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 transition-colors leading-snug">
+                        <div className="text-xs font-bold text-slate-800 dark:text-[#ECECEE] group-hover:text-purple-600 dark:group-hover:text-[#4C8DF6] transition-colors leading-snug">
                           Korean Studies Program
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2">
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-2">
                         <span className="flex items-center gap-1">
                           <Users className="w-3 h-3 text-slate-400" />
                           <span>4 Years</span>
@@ -575,17 +575,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           setActiveTab('programs');
                         }
                       }}
-                      className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
+                      className="p-3 rounded-xl bg-emerald-50/70 dark:bg-[#252528] border border-emerald-100 dark:border-[#2E2E32] hover:border-emerald-300 dark:hover:border-[#3A3A3F] transition-all cursor-pointer flex flex-col justify-between min-h-[96px] group"
                     >
                       <div>
-                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-emerald-500 rounded tabular-nums uppercase mb-1.5">
+                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold text-white bg-emerald-500 dark:bg-[rgba(76,141,246,0.14)] dark:text-[#4C8DF6] rounded tabular-nums uppercase mb-1.5">
                           EAP
                         </span>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 transition-colors leading-snug">
+                        <div className="text-xs font-bold text-slate-800 dark:text-[#ECECEE] group-hover:text-emerald-600 dark:group-hover:text-[#4C8DF6] transition-colors leading-snug">
                           English Academic Program
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2">
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-2">
                         <span className="flex items-center gap-1">
                           <Users className="w-3 h-3 text-slate-400" />
                           <span>1 Year</span>
@@ -599,17 +599,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                     <div
                       onClick={() => setActiveTab('programs')}
-                      className="p-3 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/40 hover:border-amber-300 transition-all cursor-pointer flex items-center justify-between group"
+                      className="p-3 rounded-xl bg-amber-50/60 dark:bg-[#252528] border border-amber-100 dark:border-[#2E2E32] hover:border-amber-300 dark:hover:border-[#3A3A3F] transition-all cursor-pointer flex items-center justify-between group"
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                        <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-[#1C1C1E] dark:border dark:border-[#2E2E32] text-amber-600 dark:text-[#ECECEE] flex items-center justify-center shrink-0">
                           <GraduationCap className="w-4 h-4 text-amber-600" />
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                          <div className="text-xs font-bold text-slate-800 dark:text-[#ECECEE]">
                             Undergraduate Programs
                           </div>
-                          <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
+                          <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">
                             <Users className="w-3 h-3 text-slate-400" />
                             <span>4 Years</span>
                           </div>
@@ -620,17 +620,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                     <div
                       onClick={() => setActiveTab('programs')}
-                      className="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 hover:border-blue-300 transition-all cursor-pointer flex items-center justify-between group"
+                      className="p-3 rounded-xl bg-blue-50/60 dark:bg-[#252528] border border-blue-100 dark:border-[#2E2E32] hover:border-blue-300 dark:hover:border-[#3A3A3F] transition-all cursor-pointer flex items-center justify-between group"
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                        <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-[#1C1C1E] dark:border dark:border-[#2E2E32] text-blue-600 dark:text-[#ECECEE] flex items-center justify-center shrink-0">
                           <GraduationCap className="w-4 h-4 text-blue-600" />
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                          <div className="text-xs font-bold text-slate-800 dark:text-[#ECECEE]">
                             Graduate Programs (Master's / PhD)
                           </div>
-                          <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
+                          <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">
                             <Users className="w-3 h-3 text-slate-400" />
                             <span>2–4 Years</span>
                           </div>
@@ -649,7 +649,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         setEditingProgram(null);
                         setShowProgramModal(true);
                       }}
-                      className="text-xs text-slate-400 hover:text-blue-600 inline-flex items-center gap-1"
+                      className="text-xs text-slate-400 dark:text-[#9A9AA2] hover:text-blue-600 dark:hover:text-[#4C8DF6] inline-flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" />
                       <span>Configure Programs</span>
@@ -659,16 +659,16 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               {/* CARD 3: Refund Policy (approx 3.5 cols) */}
-              <div className="lg:col-span-4 xl:col-span-4 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-4 xl:col-span-4 bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-5 shadow-xs dark:shadow-none flex flex-col justify-between">
                 <div>
                   {/* Header */}
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-slate-100">
-                      <ShieldCheck className="w-4 h-4 text-blue-600" />
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-[#ECECEE]">
+                      <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                       <span>Refund Policy</span>
                     </div>
-                    <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-[#34C26B]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-[#34C26B]"></span>
                       <span>Updated: Jan 2027</span>
                     </div>
                   </div>
@@ -676,20 +676,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   {/* Bullet points */}
                   <div className="space-y-3 text-xs">
                     <div className="flex items-start gap-2.5">
-                      <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5"></span>
+                      <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-[#4C8DF6] shrink-0 mt-1.5"></span>
                       <div>
-                        <span className="font-bold text-slate-800 dark:text-slate-200">Application Fee: </span>
-                        <span className="text-slate-600 dark:text-slate-400">
+                        <span className="font-bold text-slate-800 dark:text-[#ECECEE]">Application Fee: </span>
+                        <span className="text-slate-600 dark:text-[#9A9AA2]">
                           {refundPolicy?.appFeeRefundable ? 'Refundable under conditions' : 'Non-refundable'}
                         </span>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-2.5">
-                      <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5"></span>
+                      <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-[#4C8DF6] shrink-0 mt-1.5"></span>
                       <div>
-                        <span className="font-bold text-slate-800 dark:text-slate-200">Tuition Refund: </span>
-                        <span className="text-slate-600 dark:text-slate-400">
+                        <span className="font-bold text-slate-800 dark:text-[#ECECEE]">Tuition Refund: </span>
+                        <span className="text-slate-600 dark:text-[#9A9AA2]">
                           {refundPolicy?.tuitionRefundPolicy?.includes('70%')
                             ? '70% before semester, 50% after'
                             : '70% before semester, 50% after'}
@@ -698,10 +698,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     </div>
 
                     <div className="flex items-start gap-2.5">
-                      <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5"></span>
+                      <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-[#4C8DF6] shrink-0 mt-1.5"></span>
                       <div>
-                        <span className="font-bold text-slate-800 dark:text-slate-200">Refund Deadline: </span>
-                        <span className="text-slate-600 dark:text-slate-400">
+                        <span className="font-bold text-slate-800 dark:text-[#ECECEE]">Refund Deadline: </span>
+                        <span className="text-slate-600 dark:text-[#9A9AA2]">
                           {refundPolicy?.deadlinesDescription?.includes('Before classes start')
                             ? 'Before classes start'
                             : 'Before classes start'}
@@ -712,11 +712,11 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 {/* Footer View Policy Details Link Button matching reference */}
-                <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 text-center">
+                <div className="pt-4 mt-3 border-t border-slate-100 dark:border-[#2E2E32] text-center">
                   <MotionButton
                     type="button"
                     onClick={() => setActiveTab('refund')}
-                    className="w-full py-2 px-3 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-slate-50 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200/60 dark:border-slate-700/60 rounded-xl transition-colors inline-flex items-center justify-center gap-1"
+                    className="w-full py-2 px-3 text-xs font-semibold text-blue-600 dark:text-[#4C8DF6] bg-slate-50 dark:bg-[#252528] hover:bg-blue-50 dark:hover:bg-[rgba(76,141,246,0.14)] border border-slate-200/60 dark:border-[#2E2E32] dark:hover:border-[#4C8DF6]/40 rounded-xl transition-colors inline-flex items-center justify-center gap-1"
                   >
                     <span>View Policy Details</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -728,17 +728,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             {/* Bottom Row: 3 Columns Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
               {/* CARD 4: Bank Details (approx 3.5 cols) */}
-              <div className="lg:col-span-3 xl:col-span-3 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-3 xl:col-span-3 bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-5 shadow-xs dark:shadow-none flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-slate-100">
-                      <Building2 className="w-4 h-4 text-blue-600" />
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-[#ECECEE]">
+                      <Building2 className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                       <span>Bank Details</span>
                     </div>
                     <MotionButton
                       type="button"
                       onClick={() => setActiveTab('bank')}
-                      className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                      className="text-xs font-semibold text-blue-600 dark:text-[#4C8DF6] hover:underline inline-flex items-center gap-1"
                     >
                       <span>View All</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -747,7 +747,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                   {/* Bank Name with KB symbol icon */}
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 rounded-md bg-amber-100 dark:bg-amber-950 flex items-center justify-center shrink-0 overflow-hidden">
+                    <div className="w-6 h-6 rounded-md bg-amber-100 dark:bg-[#252528] dark:border dark:border-[#2E2E32] flex items-center justify-center shrink-0 overflow-hidden">
                       <img
                         src="/assets/kb_symbol.png"
                         alt="Kookmin Bank"
@@ -757,7 +757,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         }}
                       />
                     </div>
-                    <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                    <span className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                       {bankDetails?.bankName || 'Kookmin Bank'}
                     </span>
                   </div>
@@ -765,22 +765,22 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   {/* Account Information Rows */}
                   <div className="space-y-1.5 text-xs">
                     <div>
-                      <span className="text-slate-500 dark:text-slate-400">Account Holder: </span>
-                      <span className="font-semibold text-slate-800 dark:text-slate-200">
+                      <span className="text-slate-500 dark:text-[#9A9AA2]">Account Holder: </span>
+                      <span className="font-semibold text-slate-800 dark:text-[#ECECEE]">
                         {bankDetails?.accountHolder || 'Seoul National University'}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-slate-500 dark:text-slate-400">Account No: </span>
-                      <span className="tabular-nums font-bold text-slate-900 dark:text-slate-100">
+                      <span className="text-slate-500 dark:text-[#9A9AA2]">Account No: </span>
+                      <span className="tabular-nums font-bold text-slate-900 dark:text-[#ECECEE]">
                         {bankDetails?.accountNumber || '123-456-7890'}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-slate-500 dark:text-slate-400">SWIFT: </span>
-                      <span className="tabular-nums font-bold text-slate-900 dark:text-slate-100">
+                      <span className="text-slate-500 dark:text-[#9A9AA2]">SWIFT: </span>
+                      <span className="tabular-nums font-bold text-slate-900 dark:text-[#ECECEE]">
                         {bankDetails?.swiftCode || 'CZNBKRSE'}
                       </span>
                     </div>
@@ -788,19 +788,19 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 {/* 1-click Copy Details button matching mockup */}
-                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-[#2E2E32] flex justify-end">
                   <MotionButton
                     type="button"
                     onClick={() => {
                       const text = `Bank: ${bankDetails?.bankName || 'Kookmin Bank'}\nHolder: ${bankDetails?.accountHolder || 'Seoul National University'}\nAccount: ${bankDetails?.accountNumber || '123-456-7890'}\nSWIFT: ${bankDetails?.swiftCode || 'CZNBKRSE'}`;
                       handleCopy(text, 'all_bank');
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-900/60 rounded-lg transition-colors shadow-2xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 dark:text-[#4C8DF6] hover:bg-blue-50 dark:hover:bg-[rgba(76,141,246,0.14)] border border-blue-200 dark:border-[#4C8DF6]/40 rounded-lg transition-colors shadow-2xs dark:shadow-none"
                   >
                     {copiedField === 'all_bank' ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-emerald-500" />
-                        <span className="text-emerald-600">Copied</span>
+                        <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-[#34C26B]" />
+                        <span className="text-emerald-600 dark:text-[#34C26B]">Copied</span>
                       </>
                     ) : (
                       <>
@@ -813,17 +813,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               </div>
 
               {/* CARD 5: Important Dates (approx 5.5 cols) */}
-              <div className="lg:col-span-5 xl:col-span-5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-5 xl:col-span-5 bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-5 shadow-xs dark:shadow-none flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-slate-100">
-                      <Clock className="w-4 h-4 text-blue-600" />
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-[#ECECEE]">
+                      <Clock className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                       <span>Important Dates</span>
                     </div>
                     <MotionButton
                       type="button"
                       onClick={() => setActiveTab('dates')}
-                      className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                      className="text-xs font-semibold text-blue-600 dark:text-[#4C8DF6] hover:underline inline-flex items-center gap-1"
                     >
                       <span>View Calendar</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -834,61 +834,61 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <div className="space-y-3.5 text-xs">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-[#4C8DF6] shrink-0"></span>
+                        <span className="font-semibold text-slate-800 dark:text-[#ECECEE]">
                           {primaryIntake.term} Application Period
                         </span>
                       </div>
-                      <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+                      <span className="font-bold text-slate-900 dark:text-[#ECECEE] tabular-nums">
                         Oct 1 – Nov 30, 2026
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-[#4C8DF6] shrink-0"></span>
+                        <span className="font-semibold text-slate-800 dark:text-[#ECECEE]">
                           Admission Results
                         </span>
                       </div>
-                      <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+                      <span className="font-bold text-slate-900 dark:text-[#ECECEE] tabular-nums">
                         {primaryIntake.resultAnnouncementDate || 'Jan 15, 2027'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-[#4C8DF6] shrink-0"></span>
+                        <span className="font-semibold text-slate-800 dark:text-[#ECECEE]">
                           Semester Starts
                         </span>
                       </div>
-                      <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+                      <span className="font-bold text-slate-900 dark:text-[#ECECEE] tabular-nums">
                         {primaryIntake.classesStartDate || 'Mar 1, 2027'}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 text-right">
-                  <span className="text-[11px] text-slate-400">
+                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-[#2E2E32] text-right">
+                  <span className="text-[11px] text-slate-400 dark:text-[#9A9AA2]">
                     Visa filing window: Jan 16 ~ Feb 15, 2027
                   </span>
                 </div>
               </div>
 
               {/* CARD 6: Documents (approx 3.5 cols) */}
-              <div className="lg:col-span-4 xl:col-span-4 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-4 xl:col-span-4 bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-5 shadow-xs dark:shadow-none flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-slate-100">
-                      <FileText className="w-4 h-4 text-blue-600" />
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-[#ECECEE]">
+                      <FileText className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                       <span>Documents</span>
                     </div>
                     <MotionButton
                       type="button"
                       onClick={() => setActiveTab('documents')}
-                      className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                      className="text-xs font-semibold text-blue-600 dark:text-[#4C8DF6] hover:underline inline-flex items-center gap-1"
                     >
                       <span>View All</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -900,20 +900,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     {/* Item 1: Admission Guide */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white tabular-nums text-[9px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded bg-red-500 dark:bg-[rgba(239,83,80,0.14)] text-white dark:text-[#EF5350] tabular-nums text-[9px] font-bold">
                           PDF
                         </span>
-                        <span className="font-medium text-slate-800 dark:text-slate-200">
+                        <span className="font-medium text-slate-800 dark:text-[#ECECEE]">
                           Admission Guide (PDF)
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-slate-400 tabular-nums">2.5 MB</span>
+                        <span className="text-[11px] text-slate-400 dark:text-[#9A9AA2] tabular-nums">2.5 MB</span>
                         <a
                           href={documents[0]?.fileUrl || 'https://en.snu.ac.kr/admission'}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-blue-600 hover:text-blue-700 p-1"
+                          className="text-blue-600 dark:text-[#4C8DF6] hover:text-blue-700 dark:hover:text-[#6BA1F8] p-1"
                           title="Download PDF"
                         >
                           <Download className="w-3.5 h-3.5" />
@@ -924,20 +924,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     {/* Item 2: Application Form */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white tabular-nums text-[9px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded bg-red-500 dark:bg-[rgba(239,83,80,0.14)] text-white dark:text-[#EF5350] tabular-nums text-[9px] font-bold">
                           PDF
                         </span>
-                        <span className="font-medium text-slate-800 dark:text-slate-200">
+                        <span className="font-medium text-slate-800 dark:text-[#ECECEE]">
                           Application Form (PDF)
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-slate-400 tabular-nums">1.8 MB</span>
+                        <span className="text-[11px] text-slate-400 dark:text-[#9A9AA2] tabular-nums">1.8 MB</span>
                         <a
                           href={documents[1]?.fileUrl || 'https://en.snu.ac.kr/form'}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-blue-600 hover:text-blue-700 p-1"
+                          className="text-blue-600 dark:text-[#4C8DF6] hover:text-blue-700 dark:hover:text-[#6BA1F8] p-1"
                           title="Download PDF"
                         >
                           <Download className="w-3.5 h-3.5" />
@@ -948,20 +948,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     {/* Item 3: University Brochure */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-1.5 py-0.5 rounded bg-red-500 text-white tabular-nums text-[9px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded bg-red-500 dark:bg-[rgba(239,83,80,0.14)] text-white dark:text-[#EF5350] tabular-nums text-[9px] font-bold">
                           PDF
                         </span>
-                        <span className="font-medium text-slate-800 dark:text-slate-200">
+                        <span className="font-medium text-slate-800 dark:text-[#ECECEE]">
                           University Brochure (PDF)
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-slate-400 tabular-nums">3.2 MB</span>
+                        <span className="text-[11px] text-slate-400 dark:text-[#9A9AA2] tabular-nums">3.2 MB</span>
                         <a
                           href={documents[2]?.fileUrl || 'https://en.snu.ac.kr/brochure'}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-blue-600 hover:text-blue-700 p-1"
+                          className="text-blue-600 dark:text-[#4C8DF6] hover:text-blue-700 dark:hover:text-[#6BA1F8] p-1"
                           title="Download PDF"
                         >
                           <Download className="w-3.5 h-3.5" />
@@ -971,12 +971,12 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-[#2E2E32] flex justify-end">
                   {isAdmin && (
                     <MotionButton
                       type="button"
                       onClick={() => setShowAddDocModal(true)}
-                      className="text-xs text-slate-400 hover:text-blue-600 inline-flex items-center gap-1"
+                      className="text-xs text-slate-400 dark:text-[#9A9AA2] hover:text-blue-600 dark:hover:text-[#4C8DF6] inline-flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" />
                       <span>Upload Document</span>
@@ -994,10 +994,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                 {activeTab === 'tuition' ? 'Tuition Fees & Cost Schedules' : 'Academic & Language Training Programs'}
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                 Detailed breakdowns of Korean Language Programs (KLP), Undergraduate Degrees, Graduate Programs, and English Pathways
               </p>
             </div>
@@ -1011,10 +1011,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 blur={10}
                 label="Program category filter"
                 onValueChange={setProgramFilter}
-                className="h-[28px] p-0.5 bg-slate-100 dark:bg-slate-800 border-transparent dark:border-slate-700"
+                className="h-[28px] p-0.5 bg-slate-100 dark:bg-[#252528] border-transparent dark:border-[#2E2E32]"
                 buttonClassName="px-2.5 h-[22px] text-xs rounded-md"
-                activeButtonClassName="text-slate-900 dark:text-slate-100 font-medium"
-                inactiveButtonClassName="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                activeButtonClassName="text-slate-900 dark:text-[#ECECEE] font-medium"
+                inactiveButtonClassName="text-slate-600 dark:text-[#9A9AA2] hover:text-slate-900 dark:hover:text-[#ECECEE]"
                 tabs={['All', 'KLP', 'Undergraduate', 'Graduate', 'Pathway'].map((cat) => ({
                   id: cat,
                   label: cat,
@@ -1028,7 +1028,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     setEditingProgram(null);
                     setShowProgramModal(true);
                   }}
-                  className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors shadow-xs dark:shadow-none"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Add Program
@@ -1041,20 +1041,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             {filteredPrograms.map((prog) => (
               <div
                 key={prog.id}
-                className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-blue-400/50 transition-colors"
+                className="bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] rounded-xl p-5 shadow-xs dark:shadow-none flex flex-col justify-between space-y-4 hover:border-blue-400/50 dark:hover:border-[#3A3A3F] transition-colors"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="tabular-nums text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded">
+                        <span className="tabular-nums text-[11px] font-bold text-blue-600 dark:text-[#4C8DF6] bg-blue-50 dark:bg-[rgba(76,141,246,0.14)] px-2 py-0.5 rounded">
                           {prog.code}
                         </span>
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                           {prog.name}
                         </h3>
                       </div>
-                      <div className="text-xs text-slate-500 font-medium mt-1">
+                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2] font-medium mt-1">
                         {prog.degreeLevel} · {prog.duration}
                       </div>
                     </div>
@@ -1067,7 +1067,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                             setEditingProgram(prog);
                             setShowProgramModal(true);
                           }}
-                          className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded"
+                          className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
                           title="Edit Program"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -1075,7 +1075,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         <MotionButton
                           type="button"
                           onClick={() => handleDeleteProgram(prog.id)}
-                          className="p-1 text-slate-400 hover:text-red-600 rounded"
+                          className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-red-600 dark:hover:text-[#EF5350] rounded"
                           title="Delete Program"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1085,31 +1085,31 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
 
                   {/* Financial & Tuition Cards */}
-                  <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+                  <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block">
+                      <span className="text-[10px] font-bold text-slate-400 dark:text-[#9A9AA2] uppercase tabular-nums block">
                         Tuition Fee (Per Term / Semester)
                       </span>
-                      <div className="tabular-nums font-bold text-slate-900 dark:text-slate-100 text-sm mt-0.5">
+                      <div className="tabular-nums font-bold text-slate-900 dark:text-[#ECECEE] text-sm mt-0.5">
                         {prog.tuitionFeeKrw === 0
                           ? '100% Scholarship / Free'
                           : `₩${prog.tuitionFeeKrw?.toLocaleString()} KRW`}
                       </div>
                       {prog.tuitionFeeUsd && prog.tuitionFeeUsd > 0 ? (
-                        <div className="text-[11px] text-slate-500 tabular-nums">
+                        <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] tabular-nums">
                           (approx ${prog.tuitionFeeUsd?.toLocaleString()} USD)
                         </div>
                       ) : null}
                     </div>
 
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block">
+                      <span className="text-[10px] font-bold text-slate-400 dark:text-[#9A9AA2] uppercase tabular-nums block">
                         Application Evaluation Fee
                       </span>
-                      <div className="tabular-nums font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                      <div className={`tabular-nums font-semibold mt-0.5 ${prog.applicationFeeKrw === 0 ? 'text-slate-800 dark:text-[#66666E]' : 'text-slate-800 dark:text-[#ECECEE]'}`}>
                         ₩{prog.applicationFeeKrw?.toLocaleString()} KRW
                       </div>
-                      <div className="text-[11px] text-slate-500">
+                      <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2]">
                         Language: <span className="font-semibold">{prog.languageOfInstruction}</span>
                       </div>
                     </div>
@@ -1117,10 +1117,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
                   {/* Academic Requirements */}
                   <div className="space-y-1 text-xs">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 tabular-nums block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-[#9A9AA2] tabular-nums block">
                       Eligibility & Document Requirements:
                     </span>
-                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/50 dark:bg-slate-800/20 p-2.5 rounded border border-slate-100 dark:border-slate-800">
+                    <p className="text-slate-600 dark:text-[#9A9AA2] leading-relaxed bg-slate-50/50 dark:bg-[#252528] p-2.5 rounded border border-slate-100 dark:border-[#2E2E32]">
                       {prog.requirements}
                     </p>
                   </div>
@@ -1128,13 +1128,13 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   {/* Offered Intake Terms */}
                   {prog.intakeTerms && prog.intakeTerms.length > 0 && (
                     <div className="flex items-center gap-1.5 flex-wrap text-[11px]">
-                      <span className="tabular-nums text-slate-400 font-semibold text-[10px] uppercase">
+                      <span className="tabular-nums text-slate-400 dark:text-[#9A9AA2] font-semibold text-[10px] uppercase">
                         Available Terms:
                       </span>
                       {prog.intakeTerms.map((t, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 tabular-nums"
+                          className="px-2 py-0.5 rounded bg-slate-100 dark:bg-[#252528] text-slate-700 dark:text-[#ECECEE] tabular-nums"
                         >
                           {t}
                         </span>
@@ -1144,8 +1144,8 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 {/* Direct Action Linkage */}
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400 tabular-nums">
+                <div className="pt-3 border-t border-slate-100 dark:border-[#2E2E32] flex items-center justify-between">
+                  <span className="text-[11px] text-slate-400 dark:text-[#9A9AA2] tabular-nums">
                     Visa: {prog.degreeLevel.includes('D-4') ? 'D-4-1 (General Trainee)' : 'D-2 (Student Visa)'}
                   </span>
                   <MotionButton
@@ -1155,7 +1155,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                         onApplyStudentForProgram(universityId, prog, prog.intakeTerms?.[0]);
                       }
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors shadow-xs dark:shadow-none"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Apply Candidate
@@ -1172,10 +1172,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                 Official Tuition & Application Fee Refund Regulations
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                 Governed by Korean Ministry of Education University Tuition Operation Rules and institutional agreements
               </p>
             </div>
@@ -1183,7 +1183,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <MotionButton
                 type="button"
                 onClick={() => setShowEditRefundModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-[#ECECEE] bg-slate-100 dark:bg-[#252528] hover:bg-slate-200 dark:hover:bg-[#2E2E32] rounded-md transition-colors"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 Edit Refund Terms
@@ -1195,43 +1195,43 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             {/* Left 2 cols: Detailed Policies */}
             <div className="lg:col-span-2 space-y-4">
               {/* Visa Denial Guarantee Callout */}
-              <div className="p-4 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/80 space-y-2">
-                <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="p-4 rounded-lg bg-emerald-50/80 dark:bg-[rgba(52,194,107,0.14)] border border-emerald-200/80 dark:border-[#34C26B]/30 space-y-2">
+                <div className="flex items-center gap-2 text-emerald-800 dark:text-[#34C26B] font-bold text-sm">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-[#34C26B]" />
                   Korean Embassy Visa Rejection Refund Guarantee
                 </div>
-                <p className="text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
+                <p className="text-xs text-emerald-900 dark:text-[#ECECEE] leading-relaxed">
                   {refundPolicy?.visaRejectionRefund ||
                     '100% full tuition refund (minus nominal wire transfer banking charge) is officially guaranteed upon presentation of the Korean Embassy / Consulate Visa Denial notice.'}
                 </p>
-                <div className="text-[11px] text-emerald-700 dark:text-emerald-400 tabular-nums">
+                <div className="text-[11px] text-emerald-700 dark:text-[#34C26B] tabular-nums">
                   Documentation requirement: Original official Visa Refusal Notice issued by the Ministry of Justice / HiKorea.
                 </div>
               </div>
 
               {/* Tuition Refund Schedule */}
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+              <div className="p-5 rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] shadow-xs dark:shadow-none space-y-3">
                 <div className="flex items-center gap-2">
-                  <Percent className="w-4 h-4 text-blue-600" />
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <Percent className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                     Standard Semester Tuition Withdrawal Schedule
                   </h3>
                 </div>
-                <div className="text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed bg-slate-50/60 dark:bg-slate-800/40 p-3.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                <div className="text-xs text-slate-600 dark:text-[#9A9AA2] whitespace-pre-line leading-relaxed bg-slate-50/60 dark:bg-[#252528] p-3.5 rounded-lg border border-slate-100 dark:border-[#2E2E32]">
                   {refundPolicy?.tuitionRefundPolicy ||
                     '• Prior to semester start: 100% tuition refund.\n• Within 30 days after class start: 5/6 refund.\n• 31 to 60 days after class start: 2/3 refund.\n• 61 to 90 days after class start: 1/2 refund.\n• Beyond 90 days: Non-refundable.'}
                 </div>
               </div>
 
               {/* Deadlines & Submission Protocol */}
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+              <div className="p-5 rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] shadow-xs dark:shadow-none space-y-3">
                 <div className="flex items-center gap-2">
-                  <CalendarDays className="w-4 h-4 text-purple-600" />
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <CalendarDays className="w-4 h-4 text-purple-600 dark:text-[#ECECEE]" />
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                     Written Refund Notice & Deadlines
                   </h3>
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-[#9A9AA2] leading-relaxed">
                   {refundPolicy?.deadlinesDescription ||
                     'Written withdrawal request with student signature, original receipt, and applicant bank passbook copy must be submitted to the university Office of International Affairs before the stated deadline.'}
                 </p>
@@ -1240,47 +1240,47 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
             {/* Right 1 col: Application fee & Processing summary */}
             <div className="space-y-4">
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-                <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider tabular-nums">
+              <div className="p-5 rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] shadow-xs dark:shadow-none space-y-3">
+                <div className="text-xs font-bold text-slate-900 dark:text-[#ECECEE] uppercase tracking-wider tabular-nums">
                   Application Fee Refund
                 </div>
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-xs font-semibold px-2 py-0.5 rounded ${
                       refundPolicy?.appFeeRefundable
-                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                        : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
+                        ? 'bg-emerald-50 text-emerald-700 dark:bg-[rgba(52,194,107,0.14)] dark:text-[#34C26B]'
+                        : 'bg-red-50 text-red-700 dark:bg-[rgba(239,83,80,0.14)] dark:text-[#EF5350]'
                     }`}
                   >
                     {refundPolicy?.appFeeRefundable ? 'Refundable Under Conditions' : 'Strictly Non-Refundable'}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-[#9A9AA2] leading-relaxed">
                   {refundPolicy?.appFeeConditions ||
                     'Application screening fee is strictly non-refundable once online portal submission is finalized.'}
                 </p>
               </div>
 
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-                <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider tabular-nums">
+              <div className="p-5 rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] shadow-xs dark:shadow-none space-y-3">
+                <div className="text-xs font-bold text-slate-900 dark:text-[#ECECEE] uppercase tracking-wider tabular-nums">
                   Remittance Processing Time
                 </div>
-                <div className="text-sm font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+                <div className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] tabular-nums">
                   {refundPolicy?.refundProcessingTime || '14 to 21 business days'}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-[#9A9AA2] leading-relaxed">
                   Funds will be credited via international SWIFT wire back to the original remitter account. Remittance commission fees may be deducted by correspondent intermediary banks.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 text-xs space-y-2">
-                <div className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#252528] border border-slate-200/60 dark:border-[#2E2E32] text-xs space-y-2">
+                <div className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-[#ECECEE]">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 dark:text-[#34C26B]" />
                   Policy Verification Status
                 </div>
-                <div className="text-[11px] text-slate-500 space-y-1">
-                  <div>Status: <span className="font-semibold text-slate-700 dark:text-slate-300">{refundPolicy?.verificationStatus || 'Verified'}</span></div>
-                  <div>Verified By: <span className="font-semibold text-slate-700 dark:text-slate-300">{refundPolicy?.verifiedBy || 'Admissions Head'}</span></div>
+                <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] space-y-1">
+                  <div>Status: <span className="font-semibold text-slate-700 dark:text-[#ECECEE]">{refundPolicy?.verificationStatus || 'Verified'}</span></div>
+                  <div>Verified By: <span className="font-semibold text-slate-700 dark:text-[#ECECEE]">{refundPolicy?.verifiedBy || 'Admissions Head'}</span></div>
                   <div className="tabular-nums text-[10px]">
                     Last Checked: {new Date(refundPolicy?.lastVerifiedAt || Date.now()).toLocaleDateString()}
                   </div>
@@ -1296,10 +1296,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                 Institutional Bank Accounts & Wire Remittance Coordinates
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                 Verified South Korean university bank accounts for tuition fee deposits, virtual accounts, and international telegraphic transfer instructions
               </p>
             </div>
@@ -1307,7 +1307,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <MotionButton
                 type="button"
                 onClick={() => setShowEditBankModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-slate-700 dark:text-[#ECECEE] bg-slate-100 dark:bg-[#252528] hover:bg-slate-200 dark:hover:bg-[#2E2E32] rounded-md transition-colors"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 Edit Bank Details
@@ -1317,21 +1317,21 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {/* Primary Banking Coordinates Card */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] rounded-xl p-5 shadow-xs dark:shadow-none space-y-4">
+              <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-blue-600" />
+                  <Building2 className="w-5 h-5 text-blue-600 dark:text-[#4C8DF6]" />
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                       {bankDetails?.bankName || 'Shinhan Bank (신한은행)'}
                     </h3>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                       {bankDetails?.branchName || 'Main Campus Branch'}
                     </div>
                   </div>
                 </div>
 
-                <span className="tabular-nums text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                <span className="tabular-nums text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-[#252528] dark:text-[#ECECEE] dark:border dark:border-[#2E2E32]">
                   Currency: {bankDetails?.currency || 'KRW'}
                 </span>
               </div>
@@ -1339,20 +1339,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               {/* Data rows with 1-click Copy */}
               <div className="space-y-3 text-xs">
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block mb-0.5">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-[#9A9AA2] uppercase tabular-nums block mb-0.5">
                     Account Beneficiary Name (Account Holder)
                   </span>
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 font-semibold text-slate-800 dark:text-slate-200">
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32] font-semibold text-slate-800 dark:text-[#ECECEE]">
                     <span>{bankDetails?.accountHolder || uni.nameEn}</span>
                     <MotionButton
                       type="button"
                       onClick={() => handleCopy(bankDetails?.accountHolder || uni.nameEn, 'holder')}
-                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0"
+                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-[#4C8DF6] hover:underline shrink-0"
                     >
                       {copiedField === 'holder' ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
-                          <span className="text-emerald-600">Copied</span>
+                          <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-[#34C26B]" />
+                          <span className="text-emerald-600 dark:text-[#34C26B]">Copied</span>
                         </>
                       ) : (
                         <>
@@ -1365,20 +1365,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block mb-0.5">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-[#9A9AA2] uppercase tabular-nums block mb-0.5">
                     Account / Virtual Remittance Number
                   </span>
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 tabular-nums font-bold text-sm text-slate-900 dark:text-slate-100">
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32] tabular-nums font-bold text-sm text-slate-900 dark:text-[#ECECEE]">
                     <span>{bankDetails?.accountNumber || '140-002-881920 (Virtual)'}</span>
                     <MotionButton
                       type="button"
                       onClick={() => handleCopy(bankDetails?.accountNumber || '140-002-881920', 'acct')}
-                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0"
+                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-[#4C8DF6] hover:underline shrink-0"
                     >
                       {copiedField === 'acct' ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
-                          <span className="text-emerald-600">Copied</span>
+                          <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-[#34C26B]" />
+                          <span className="text-emerald-600 dark:text-[#34C26B]">Copied</span>
                         </>
                       ) : (
                         <>
@@ -1391,20 +1391,20 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tabular-nums block mb-0.5">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-[#9A9AA2] uppercase tabular-nums block mb-0.5">
                     Bank SWIFT / BIC Code
                   </span>
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 tabular-nums font-bold text-sm text-purple-600 dark:text-purple-400">
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32] tabular-nums font-bold text-sm text-purple-600 dark:text-[#ECECEE]">
                     <span>{bankDetails?.swiftCode || 'SHBKKRSE'}</span>
                     <MotionButton
                       type="button"
                       onClick={() => handleCopy(bankDetails?.swiftCode || 'SHBKKRSE', 'swift')}
-                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0"
+                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-[#4C8DF6] hover:underline shrink-0"
                     >
                       {copiedField === 'swift' ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
-                          <span className="text-emerald-600">Copied</span>
+                          <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-[#34C26B]" />
+                          <span className="text-emerald-600 dark:text-[#34C26B]">Copied</span>
                         </>
                       ) : (
                         <>
@@ -1416,11 +1416,11 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/50 flex items-center justify-between">
-                  <span className="text-slate-700 dark:text-slate-300 font-medium">
+                <div className="p-3 rounded-lg bg-blue-50/60 dark:bg-[#252528] border border-blue-100 dark:border-[#2E2E32] flex items-center justify-between">
+                  <span className="text-slate-700 dark:text-[#ECECEE] font-medium">
                     Virtual Account (Unique per candidate admission):
                   </span>
-                  <span className="font-semibold text-blue-700 dark:text-blue-300 tabular-nums">
+                  <span className="font-semibold text-blue-700 dark:text-[#34C26B] tabular-nums">
                     {bankDetails?.isVirtualAccountSupported !== false ? 'Supported & Mandatory' : 'Fixed Direct Account'}
                   </span>
                 </div>
@@ -1428,37 +1428,37 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             </div>
 
             {/* Remittance Instructions & Telegraphic Wire Rules */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4 flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] rounded-xl p-5 shadow-xs dark:shadow-none space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="flex items-center gap-2 border-b pb-3 border-slate-100 dark:border-slate-800">
-                  <CreditCard className="w-5 h-5 text-emerald-600" />
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                <div className="flex items-center gap-2 border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+                  <CreditCard className="w-5 h-5 text-emerald-600 dark:text-[#34C26B]" />
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                     International Wire Remittance Protocol
                   </h3>
                 </div>
 
-                <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line bg-slate-50/70 dark:bg-slate-800/40 p-4 rounded-lg border border-slate-100 dark:border-slate-800 font-sans">
+                <div className="text-xs text-slate-600 dark:text-[#9A9AA2] leading-relaxed whitespace-pre-line bg-slate-50/70 dark:bg-[#252528] p-4 rounded-lg border border-slate-100 dark:border-[#2E2E32] font-sans">
                   {bankDetails?.paymentInstructions ||
                     '1. Remit in Korean Won (KRW) or exact USD equivalent converted using bank telegraphic transfer selling rate.\n2. In the remittance memo remark, strictly write applicant ID and name.\n3. Wire fee mode MUST be set to "OUR" (all intermediary bank fees paid by remitter).\n4. Email remittance SWIFT MT103 confirmation receipt to admissions office within 24 hours.'}
                 </div>
 
-                <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 space-y-1">
+                <div className="p-3 rounded-lg bg-amber-50 dark:bg-[rgba(240,160,48,0.14)] border border-amber-200 dark:border-[#F0A030]/30 text-xs text-amber-900 dark:text-[#F0A030] space-y-1">
                   <div className="font-bold flex items-center gap-1.5">
-                    <AlertCircle className="w-4 h-4 text-amber-600" />
+                    <AlertCircle className="w-4 h-4 text-amber-600 dark:text-[#F0A030]" />
                     Important Notice for International Remitters:
                   </div>
-                  <p className="text-[11px] leading-relaxed">
+                  <p className="text-[11px] leading-relaxed dark:text-[#ECECEE]">
                     Failure to quote applicant passport number or admission registration code will cause automated matching delays at the Korean university treasury office, potentially delaying the issuance of the Certificate of Admission (CoA).
                   </p>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
+              <div className="pt-3 border-t border-slate-100 dark:border-[#2E2E32] flex items-center justify-between text-[11px] text-slate-500 dark:text-[#9A9AA2]">
                 <span className="flex items-center gap-1 tabular-nums">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 dark:text-[#34C26B]" />
                   Verified: {new Date(bankDetails?.lastVerifiedAt || Date.now()).toLocaleDateString()}
                 </span>
-                <span className="text-slate-400">By {bankDetails?.verifiedBy || 'Admissions Head'}</span>
+                <span className="text-slate-400 dark:text-[#9A9AA2]">By {bankDetails?.verifiedBy || 'Admissions Head'}</span>
               </div>
             </div>
           </div>
@@ -1470,10 +1470,10 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                 Official Admission Guidelines, Circulars & Circular Attachments
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                 Downloadable PDF guidelines, application circulars, fee remittance circulars, and consular apostille instructions
               </p>
             </div>
@@ -1481,7 +1481,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               <MotionButton
                 type="button"
                 onClick={() => setShowAddDocModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors shadow-xs dark:shadow-none"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Upload / Link Document
@@ -1493,18 +1493,18 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             {documents.map((doc) => (
               <div
                 key={doc.id}
-                className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-start justify-between gap-3 hover:border-blue-400/50 transition-colors"
+                className="p-4 rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] shadow-xs dark:shadow-none flex items-start justify-between gap-3 hover:border-blue-400/50 dark:hover:border-[#3A3A3F] transition-colors"
               >
                 <div className="flex items-start gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200/60 dark:border-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-xs shrink-0 tabular-nums">
+                  <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-[rgba(239,83,80,0.14)] border border-red-200/60 dark:border-[#EF5350]/30 text-red-600 dark:text-[#EF5350] flex items-center justify-center font-bold text-xs shrink-0 tabular-nums">
                     PDF
                   </div>
                   <div className="min-w-0 space-y-1">
-                    <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">
+                    <h3 className="text-xs font-bold text-slate-900 dark:text-[#ECECEE] leading-snug line-clamp-2">
                       {doc.title}
                     </h3>
-                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-                      <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-[#9A9AA2]">
+                      <span className="font-semibold text-blue-600 dark:text-[#4C8DF6]">
                         {doc.category}
                       </span>
                       <span aria-hidden="true">·</span>
@@ -1524,7 +1524,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     href={doc.fileUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    className="p-2 text-slate-600 dark:text-[#ECECEE] hover:text-blue-600 dark:hover:text-[#4C8DF6] hover:bg-slate-100 dark:hover:bg-[#252528] rounded-lg transition-colors"
                     title="Open / Download Document"
                   >
                     <Download className="w-4 h-4" />
@@ -1533,7 +1533,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     <MotionButton
                       type="button"
                       onClick={() => handleDeleteDoc(doc.id)}
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors"
+                      className="p-2 text-slate-400 dark:text-[#9A9AA2] hover:text-red-600 dark:hover:text-[#EF5350] hover:bg-red-50 dark:hover:bg-[rgba(239,83,80,0.14)] rounded-lg transition-colors"
                       title="Delete Document"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -1551,11 +1551,11 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Clock className="w-4 h-4 text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
+                <Clock className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                 Admission Intakes Calendar & Critical Deadlines
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                 Chronological application windows, document submission cutoffs, interview dates, and visa filing schedules
               </p>
             </div>
@@ -1566,7 +1566,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   setEditingIntake(null);
                   setShowIntakeModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 h-[28px] box-border text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors shadow-xs dark:shadow-none"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Intake Schedule
@@ -1578,73 +1578,73 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
             {intakes.map((it) => (
               <div
                 key={it.id}
-                className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-4"
+                className="p-5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] shadow-xs dark:shadow-none space-y-4"
               >
-                <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 dark:text-slate-100 text-base">
+                    <span className="font-bold text-slate-900 dark:text-[#ECECEE] text-base">
                       {it.term} Academic Intake
                     </span>
-                    <span className="tabular-nums text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+                    <span className="tabular-nums text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-[#252528] dark:text-[#9A9AA2] dark:border dark:border-[#2E2E32]">
                       AY {it.academicYear}
                     </span>
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-[rgba(52,194,107,0.14)] dark:text-[#34C26B]">
                     {it.status}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 dark:text-[#9A9AA2] font-bold block mb-1">
                       1. Application Open
                     </span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                    <span className="font-bold text-slate-800 dark:text-[#ECECEE]">
                       {it.applicationStart || 'Oct 1, 2026'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-red-50/50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/40">
-                    <span className="text-[10px] uppercase tabular-nums text-red-500 font-bold block mb-1">
+                  <div className="p-3 rounded-xl bg-red-50/50 dark:bg-[rgba(239,83,80,0.14)] border border-red-100 dark:border-[#EF5350]/30">
+                    <span className="text-[10px] uppercase tabular-nums text-red-500 dark:text-[#EF5350] font-bold block mb-1">
                       2. Portal Deadline
                     </span>
-                    <span className="font-bold text-red-600 dark:text-red-400">
+                    <span className="font-bold text-red-600 dark:text-[#EF5350]">
                       {it.applicationDeadline || 'Nov 30, 2026'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 dark:text-[#9A9AA2] font-bold block mb-1">
                       3. Document Deadline
                     </span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                    <span className="font-bold text-slate-800 dark:text-[#ECECEE]">
                       {it.documentDeadline || 'Dec 5, 2026'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 dark:text-[#9A9AA2] font-bold block mb-1">
                       4. Result Date
                     </span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                    <span className="font-bold text-slate-800 dark:text-[#ECECEE]">
                       {it.resultAnnouncementDate || 'Jan 15, 2027'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                    <span className="text-[10px] uppercase tabular-nums text-slate-400 font-bold block mb-1">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
+                    <span className="text-[10px] uppercase tabular-nums text-slate-400 dark:text-[#9A9AA2] font-bold block mb-1">
                       5. Visa Submission
                     </span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                    <span className="font-bold text-slate-800 dark:text-[#ECECEE]">
                       {it.visaSubmissionDeadline || 'Feb 15, 2027'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40">
-                    <span className="text-[10px] uppercase tabular-nums text-emerald-600 font-bold block mb-1">
+                  <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-[rgba(52,194,107,0.14)] border border-emerald-100 dark:border-[#34C26B]/30">
+                    <span className="text-[10px] uppercase tabular-nums text-emerald-600 dark:text-[#34C26B] font-bold block mb-1">
                       6. Classes Start
                     </span>
-                    <span className="font-bold text-emerald-700 dark:text-emerald-300">
+                    <span className="font-bold text-emerald-700 dark:text-[#34C26B]">
                       {it.classesStartDate || 'Mar 1, 2027'}
                     </span>
                   </div>
@@ -1660,30 +1660,39 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE]">
                 Active Student Applications for {uni.nameEn}
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                 Candidates currently assigned or applying to this university across all intakes
               </p>
             </div>
           </div>
 
           {applicants.length === 0 ? (
-            <div className="p-8 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-2">
-              <Users className="w-8 h-8 text-slate-400 mx-auto" />
-              <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <div className="p-8 text-center bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] rounded-xl space-y-2">
+              <Users className="w-8 h-8 text-slate-400 dark:text-[#66666E] mx-auto" />
+              <div className="text-sm font-semibold text-slate-700 dark:text-[#ECECEE]">
                 No candidate dossiers filed for this university yet
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-[#9A9AA2]">
                 Click "Apply Candidate" on any program to register a new student dossier.
               </p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs">
+            <div className="bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-[#2E2E32] rounded-xl overflow-hidden shadow-xs dark:shadow-none">
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 tabular-nums">
+                <table className="w-full min-w-[920px] table-fixed text-left text-xs">
+                  <colgroup>
+                    <col style={{ width: '16%' }} />
+                    <col style={{ width: '13%' }} />
+                    <col style={{ width: '21%' }} />
+                    <col style={{ width: '11%' }} />
+                    <col style={{ width: '15%' }} />
+                    <col style={{ width: '12%' }} />
+                    <col style={{ width: '12%' }} />
+                  </colgroup>
+                  <thead className="bg-slate-50 dark:bg-[#161616] border-b border-slate-200 dark:border-[#2E2E32] text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#9A9AA2] tabular-nums">
                     <tr>
                       <th className="px-4 py-3">Candidate Name</th>
                       <th className="px-4 py-3">Passport No</th>
@@ -1694,24 +1703,24 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       <th className="px-4 py-3">Consultant</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-100 dark:divide-[#2E2E32]">
                     {applicants.map((app) => (
-                      <tr key={app.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
-                        <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">
+                      <tr key={app.id} className="hover:bg-slate-50/60 dark:hover:bg-[#252528] transition-colors">
+                        <td className="px-4 py-3 font-medium text-slate-900 dark:text-[#ECECEE] truncate">
                           {app.fullName}
                         </td>
-                        <td className="px-4 py-3 tabular-nums font-semibold text-slate-700 dark:text-slate-300">
+                        <td className="px-4 py-3 tabular-nums font-semibold text-slate-700 dark:text-[#ECECEE] truncate">
                           {app.passportNumber}
                         </td>
                         <td className="px-4 py-3">
-                          <div className="font-semibold text-slate-800 dark:text-slate-200">{app.major}</div>
-                          <div className="text-[11px] text-slate-500">{app.degreeLevel}</div>
+                          <div className="font-semibold text-slate-800 dark:text-[#ECECEE] truncate">{app.major}</div>
+                          <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] truncate">{app.degreeLevel}</div>
                         </td>
-                        <td className="px-4 py-3 tabular-nums text-slate-600 dark:text-slate-400">
+                        <td className="px-4 py-3 tabular-nums text-slate-600 dark:text-[#9A9AA2] truncate">
                           {app.intakeTerm}
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="font-medium text-blue-600 dark:text-blue-400">
+                        <td className="px-4 py-3 truncate">
+                          <span className="font-medium text-blue-600 dark:text-[#4C8DF6]">
                             {app.visaStage?.replace(/_/g, ' ')}
                           </span>
                         </td>
@@ -1719,14 +1728,14 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                           <span
                             className={`font-semibold px-2 py-0.5 rounded text-[11px] ${
                               app.admissionResult === 'Accepted'
-                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                ? 'bg-emerald-50 text-emerald-700 dark:bg-[rgba(52,194,107,0.14)] dark:text-[#34C26B]'
+                                : 'bg-slate-100 text-slate-600 dark:bg-[#252528] dark:text-[#9A9AA2]'
                             }`}
                           >
                             {app.admissionResult}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-slate-600 dark:text-slate-400">
+                        <td className="px-4 py-3 text-slate-600 dark:text-[#9A9AA2] truncate">
                           {app.consultantName}
                         </td>
                       </tr>
@@ -1763,7 +1772,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
       {createPortal(
         <AnimatePresence>
           {editUniSuccessMsg && (
-            <ToastTransition className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-xl">
+            <ToastTransition className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 dark:bg-[#1C1C1E] dark:border dark:border-[#34C26B] text-white dark:text-[#34C26B] text-xs font-semibold shadow-xl dark:shadow-none">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               {editUniSuccessMsg}
             </ToastTransition>
@@ -1773,22 +1782,21 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
       )}
 
       {/* Edit Program Modal */}
-      {createPortal(
-        <ModalTransition
-          isOpen={showProgramModal}
-          onClose={() => setShowProgramModal(false)}
-          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
-          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto"
-        >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-blue-600" />
+      <ModalTransition
+        isOpen={showProgramModal}
+        onClose={() => setShowProgramModal(false)}
+        backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4 max-h-[90vh] overflow-y-auto scrollbar-stable"
+      >
+            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                 {editingProgram ? 'Edit Academic / Language Program' : 'Add New Academic Program'}
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowProgramModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -1839,7 +1847,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     defaultValue={editingProgram?.name || ''}
                     required
                     placeholder="e.g. Korean Language Regular Program (KLP)"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
                 <div>
@@ -1849,7 +1857,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     defaultValue={editingProgram?.code || 'KLP'}
                     required
                     placeholder="e.g. KLP, KSU, BS-CS"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -1881,7 +1889,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     defaultValue={editingProgram?.duration || '4 Years (8 Semesters)'}
                     required
                     placeholder="e.g. 4 Quarters (1 Year) or 4 Years"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
               </div>
@@ -1894,7 +1902,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="number"
                     defaultValue={editingProgram?.tuitionFeeKrw ?? 2500000}
                     required
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
                 <div>
@@ -1903,7 +1911,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="tuitionFeeUsd"
                     type="number"
                     defaultValue={editingProgram?.tuitionFeeUsd ?? 1900}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
                 <div>
@@ -1912,7 +1920,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="applicationFeeKrw"
                     type="number"
                     defaultValue={editingProgram?.applicationFeeKrw ?? 100000}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -1941,7 +1949,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="intakeTerms"
                     defaultValue={editingProgram?.intakeTerms?.join(', ') || 'Spring 2027, Fall 2027'}
                     placeholder="Spring 2027, Fall 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
               </div>
@@ -1956,47 +1964,44 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     editingProgram?.requirements ||
                     'High school diploma or degree equivalent, apostilled transcripts, TOPIK Level 3 or IELTS 6.0.'
                   }
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowProgramModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
+                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
                 >
                   {editingProgram ? 'Update Program' : 'Create Program'}
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
 
       {/* Edit Refund Policy Modal */}
-      {createPortal(
-        <ModalTransition
-          isOpen={showEditRefundModal}
-          onClose={() => setShowEditRefundModal(false)}
-          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
-          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto"
-        >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Percent className="w-4 h-4 text-blue-600" />
+      <ModalTransition
+        isOpen={showEditRefundModal}
+        onClose={() => setShowEditRefundModal(false)}
+        backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4 max-h-[90vh] overflow-y-auto scrollbar-stable"
+      >
+            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
+                <Percent className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                 Configure University Refund Policy & Regulations
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowEditRefundModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2024,28 +2029,28 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               }}
               className="space-y-3 text-xs"
             >
-              <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700 space-y-2">
+              <div className="p-3 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-200/60 dark:border-[#2E2E32] space-y-2">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     id="appFeeRefundable"
                     name="appFeeRefundable"
                     defaultChecked={refundPolicy?.appFeeRefundable || false}
-                    className="rounded border-slate-300 text-blue-600"
+                    className="rounded border-slate-300 dark:border-[#3A3A3F] text-blue-600 dark:text-[#4C8DF6]"
                   />
-                  <label htmlFor="appFeeRefundable" className="font-semibold text-slate-800 dark:text-slate-200">
+                  <label htmlFor="appFeeRefundable" className="font-semibold text-slate-800 dark:text-[#ECECEE]">
                     Application fee is refundable under specific conditions
                   </label>
                 </div>
                 <div>
-                  <label className="block text-slate-500 mb-1">Application Fee Conditions</label>
+                  <label className="block text-slate-500 dark:text-[#9A9AA2] mb-1">Application Fee Conditions</label>
                   <input
                     name="appFeeConditions"
                     defaultValue={
                       refundPolicy?.appFeeConditions ||
                       'Application fee is non-refundable once online portal submission is finalized.'
                     }
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
               </div>
@@ -2062,7 +2067,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     refundPolicy?.tuitionRefundPolicy ||
                     '• Prior to semester start: 100% refund.\n• Within 30 days after start: 5/6 refund.\n• 31 to 60 days after start: 2/3 refund.\n• 61 to 90 days after start: 1/2 refund.\n• Beyond 90 days: Non-refundable.'
                   }
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                 />
               </div>
 
@@ -2078,7 +2083,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     refundPolicy?.visaRejectionRefund ||
                     '100% tuition refund (minus nominal wire transfer banking charge) is granted upon submitting the official Korean Embassy / Consulate Visa Denial notice within 14 calendar days.'
                   }
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                 />
               </div>
 
@@ -2092,7 +2097,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                       refundPolicy?.deadlinesDescription ||
                       'Written withdrawal form required 7 days before semester commencement.'
                     }
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
                 <div>
@@ -2101,48 +2106,45 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="refundProcessingTime"
                     required
                     defaultValue={refundPolicy?.refundProcessingTime || '14 to 21 business days via international wire'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowEditRefundModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
+                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
                 >
                   Save Refund Policy
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
 
       {/* Edit Bank Details Modal */}
-      {createPortal(
-        <ModalTransition
-          isOpen={showEditBankModal}
-          onClose={() => setShowEditBankModal(false)}
-          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
-          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto"
-        >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-emerald-600" />
+      <ModalTransition
+        isOpen={showEditBankModal}
+        onClose={() => setShowEditBankModal(false)}
+        backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4 max-h-[90vh] overflow-y-auto scrollbar-stable"
+      >
+            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-emerald-600 dark:text-[#34C26B]" />
                 Configure Institutional Banking & Wire Instructions
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowEditBankModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2178,7 +2180,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   name="accountHolder"
                   required
                   defaultValue={bankDetails?.accountHolder || `${uni.nameEn} (Office of International Affairs)`}
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                 />
               </div>
 
@@ -2189,7 +2191,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="bankName"
                     required
                     defaultValue={bankDetails?.bankName || 'Shinhan Bank (신한은행)'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
                 <div>
@@ -2198,7 +2200,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="branchName"
                     required
                     defaultValue={bankDetails?.branchName || 'Main Campus Branch'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
               </div>
@@ -2210,7 +2212,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="accountNumber"
                     required
                     defaultValue={bankDetails?.accountNumber || '140-002-881920 (Virtual)'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
                 <div>
@@ -2219,7 +2221,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="swiftCode"
                     required
                     defaultValue={bankDetails?.swiftCode || 'SHBKKRSE'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -2247,9 +2249,9 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     id="isVirtualAccountSupported"
                     name="isVirtualAccountSupported"
                     defaultChecked={bankDetails?.isVirtualAccountSupported !== false}
-                    className="rounded border-slate-300 text-blue-600"
+                    className="rounded border-slate-300 dark:border-[#3A3A3F] text-blue-600 dark:text-[#4C8DF6]"
                   />
-                  <label htmlFor="isVirtualAccountSupported" className="font-semibold text-slate-700 dark:text-slate-300">
+                  <label htmlFor="isVirtualAccountSupported" className="font-semibold text-slate-700 dark:text-[#ECECEE]">
                     Virtual Account Supported
                   </label>
                 </div>
@@ -2267,47 +2269,44 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     bankDetails?.paymentInstructions ||
                     '1. Remit in KRW (or USD equivalent using bank TT selling rate).\n2. Write student ID and name in wire remark.\n3. Sender pays all transfer charges (OUR mode).\n4. Email SWIFT MT103 confirmation within 24h.'
                   }
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-sans"
+                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] font-sans"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowEditBankModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
+                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
                 >
                   Save Banking Details
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
 
       {/* Add / Edit Intake Modal */}
-      {createPortal(
-        <ModalTransition
-          isOpen={showIntakeModal}
-          onClose={() => setShowIntakeModal(false)}
-          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
-          cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4"
-        >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-blue-600" />
+      <ModalTransition
+        isOpen={showIntakeModal}
+        onClose={() => setShowIntakeModal(false)}
+        backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4"
+      >
+            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                 {editingIntake ? 'Edit Admission Intake Schedule' : 'Configure New University Admission Intake'}
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowIntakeModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2355,7 +2354,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="term"
                     defaultValue={editingIntake?.term || 'Spring 2027'}
                     required
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
                 <div>
@@ -2365,7 +2364,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="number"
                     defaultValue={editingIntake?.academicYear || 2027}
                     required
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -2378,7 +2377,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="date"
                     required
                     defaultValue={editingIntake?.applicationStart || '2026-10-01'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
                 <div>
@@ -2388,7 +2387,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="date"
                     required
                     defaultValue={editingIntake?.applicationDeadline || '2026-11-30'}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -2400,7 +2399,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="documentDeadline"
                     defaultValue={editingIntake?.documentDeadline || 'Dec 5, 2026'}
                     placeholder="e.g. Dec 5, 2026"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
                 <div>
@@ -2409,7 +2408,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="resultAnnouncementDate"
                     defaultValue={editingIntake?.resultAnnouncementDate || 'Jan 15, 2027'}
                     placeholder="e.g. Jan 15, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -2421,7 +2420,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="tuitionPaymentDeadline"
                     defaultValue={editingIntake?.tuitionPaymentDeadline || 'Feb 1, 2027'}
                     placeholder="e.g. Feb 1, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
                 <div>
@@ -2430,7 +2429,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="visaSubmissionDeadline"
                     defaultValue={editingIntake?.visaSubmissionDeadline || 'Feb 15, 2027'}
                     placeholder="e.g. Feb 15, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -2442,7 +2441,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="classesStartDate"
                     defaultValue={editingIntake?.classesStartDate || 'Mar 1, 2027'}
                     placeholder="e.g. Mar 1, 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
                 <div>
@@ -2451,7 +2450,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="quota"
                     type="number"
                     defaultValue={editingIntake?.quota || 35}
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
@@ -2481,48 +2480,45 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     name="interviewDates"
                     defaultValue={editingIntake?.interviewDates || '2026-12-10 ~ 2026-12-20'}
                     placeholder="e.g. 2026-12-10 ~ 2026-12-20"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowIntakeModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
+                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
                 >
                   {editingIntake ? 'Save Changes' : 'Create Intake'}
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
 
       {/* Add Document Modal */}
-      {createPortal(
-        <ModalTransition
-          isOpen={showAddDocModal}
-          onClose={() => setShowAddDocModal(false)}
-          backdropClassName="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs"
-          cardClassName="w-full max-w-md rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4"
-        >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-600" />
+      <ModalTransition
+        isOpen={showAddDocModal}
+        onClose={() => setShowAddDocModal(false)}
+        backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
+        cardClassName="w-full max-w-md rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4"
+      >
+            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
                 Attach University Circular / Admission Guide
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowAddDocModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2555,7 +2551,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   name="title"
                   required
                   placeholder="e.g. Official Spring 2027 Admissions Guide"
-                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                  className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                 />
               </div>
 
@@ -2585,7 +2581,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <input
                     name="intakeTerm"
                     defaultValue="Spring 2027"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
               </div>
@@ -2598,7 +2594,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     type="url"
                     required
                     defaultValue="https://en.snu.ac.kr/admission"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE]"
                   />
                 </div>
                 <div>
@@ -2606,30 +2602,28 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   <input
                     name="fileSize"
                     defaultValue="2.4 MB"
-                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 tabular-nums"
+                    className="w-full rounded border px-3 py-1.5 border-slate-300 dark:border-[#2E2E32] bg-white dark:bg-[#252528] dark:text-[#ECECEE] tabular-nums"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowAddDocModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 text-slate-600"
+                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
                 >
                   Attach Document
                 </MotionButton>
               </div>
             </form>
-        </ModalTransition>,
-        document.body
-      )}
+      </ModalTransition>
     </PageTransition>
   );
 };

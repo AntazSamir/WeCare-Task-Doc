@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import {
   Building2,
   X,
@@ -74,13 +73,13 @@ type DossierSectionId =
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const INPUT_CLS =
-  'w-full rounded-lg border px-3 py-1.5 text-xs border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none focus:ring-1 focus:ring-[#1E40AF]/30 transition-colors placeholder:text-slate-400';
+  'w-full rounded-lg border px-3 py-1.5 text-xs border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none focus:ring-1 focus:ring-[#1E40AF]/30 dark:focus:ring-[#4C8DF6]/30 transition-colors placeholder:text-slate-400 dark:placeholder:text-[#66666E]';
 const ERROR_INPUT_CLS =
-  'w-full rounded-lg border px-3 py-1.5 text-xs border-red-400 bg-red-50 dark:bg-red-950/20 text-[#0F172A] dark:text-slate-100 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-400/30 transition-colors';
-const LABEL_CLS = 'block text-xs font-medium text-[#0F172A] dark:text-slate-200 mb-1';
+  'w-full rounded-lg border px-3 py-1.5 text-xs border-red-400 dark:border-[#EF5350] bg-red-50 dark:bg-[rgba(239,83,80,0.14)] text-[#0F172A] dark:text-[#ECECEE] focus:border-red-500 dark:focus:border-[#EF5350] focus:outline-none focus:ring-1 focus:ring-red-400/30 dark:focus:ring-[#EF5350]/30 transition-colors';
+const LABEL_CLS = 'block text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1';
 const SECTION_HEADER_CLS =
-  'flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider mb-3 pb-2 border-b border-[#E2E8F0] dark:border-slate-800';
-const FIELD_ERR_CLS = 'text-[11px] text-red-500 mt-0.5 flex items-center gap-1';
+  'flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] uppercase tracking-wider mb-3 pb-2 border-b border-[#E2E8F0] dark:border-[#2E2E32]';
+const FIELD_ERR_CLS = 'text-[11px] text-red-500 dark:text-[#EF5350] mt-0.5 flex items-center gap-1';
 
 function FieldError({ msg }: { msg?: string }) {
   if (!msg) return null;
@@ -468,30 +467,30 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
 
   // ── Render ───────────────────────────────────────────────────────────────
 
-  return createPortal(
+  return (
     <ModalTransition
       isOpen={true}
       onClose={onClose}
-      backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/50 dark:bg-slate-950/70 backdrop-blur-xs"
-      cardClassName="w-full max-w-4xl rounded-[14px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh]"
+      backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/50 dark:bg-black/70 backdrop-blur-xs"
+      cardClassName="w-full max-w-4xl rounded-[14px] bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-2xl dark:shadow-none flex flex-col max-h-[92vh]"
     >
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#E2E8F0] dark:border-slate-800 shrink-0">
+        <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#E2E8F0] dark:border-[#2E2E32] shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-[#1E40AF] dark:text-blue-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-[rgba(76,141,246,0.14)] border border-blue-200 dark:border-[#4C8DF6]/30 flex items-center justify-center text-[#1E40AF] dark:text-[#4C8DF6]">
               <Building2 className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
                 {isEditMode
                   ? `Edit Partner Dossier — ${initialData?.nameEn}`
                   : 'Add Korean Higher Education Partner Institution'}
-                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-100/70 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
+                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-100/70 dark:bg-[rgba(76,141,246,0.14)] text-blue-700 dark:text-[#4C8DF6]">
                   Full Dossier
                 </span>
               </h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-[#9A9AA2]">
                 Configure institutional profile, language cutoffs, intake milestones, flagship program, banking coordinates &amp; refund policies.
               </p>
             </div>
@@ -506,11 +505,11 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
               blur={10}
               label="Form view mode"
               onValueChange={(id) => setViewMode(id as 'tabbed' | 'all')}
-              className="rounded-lg border-slate-200 dark:border-slate-700 p-0.5 bg-slate-50 dark:bg-slate-950 text-[11px]"
-              indicatorClassName="rounded bg-white dark:bg-slate-800 shadow-xs"
+              className="rounded-lg border-slate-200 dark:border-[#2E2E32] p-0.5 bg-slate-50 dark:bg-[#161616] text-[11px]"
+              indicatorClassName="rounded bg-white dark:bg-[#252528] shadow-xs dark:shadow-none"
               buttonClassName="px-2 h-[24px] rounded text-[11px] font-medium"
-              activeButtonClassName="text-[#0F172A] dark:text-slate-100"
-              inactiveButtonClassName="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              activeButtonClassName="text-[#0F172A] dark:text-[#ECECEE]"
+              inactiveButtonClassName="text-slate-500 dark:text-[#9A9AA2] hover:text-slate-800 dark:hover:text-[#ECECEE]"
               tabs={[
                 { id: 'tabbed', label: 'Tabbed' },
                 { id: 'all', label: 'All Sections' },
@@ -520,7 +519,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             <MotionButton
               type="button"
               onClick={onClose}
-              className="p-1.5 text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-100 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-1.5 text-[#64748B] dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] rounded-lg hover:bg-slate-100 dark:hover:bg-[#252528] transition-colors"
             >
               <X className="w-4 h-4" />
             </MotionButton>
@@ -529,7 +528,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
 
         {/* Tab Bar (Visible in Tabbed Mode) */}
         {viewMode === 'tabbed' && (
-          <div className="px-6 py-2 border-b border-[#E2E8F0] dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 shrink-0">
+          <div className="px-6 py-2 border-b border-[#E2E8F0] dark:border-[#2E2E32] bg-slate-50/70 dark:bg-[#161616] shrink-0">
             <RoundedSlidingTabs
               variant="cards"
               value={activeSection}
@@ -538,10 +537,10 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
               label="University dossier sections"
               onValueChange={(id) => setActiveSection(id as DossierSectionId)}
               className="gap-1.5 pb-0 pt-0 scrollbar-thin"
-              indicatorClassName="rounded-lg bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-900 shadow-xs"
+              indicatorClassName="rounded-lg bg-white dark:bg-[rgba(76,141,246,0.14)] border border-blue-200 dark:border-[#4C8DF6]/40 shadow-xs dark:shadow-none"
               buttonClassName="px-3 h-[30px] rounded-lg text-xs font-semibold"
-              activeButtonClassName="text-[#1E40AF] dark:text-blue-400"
-              inactiveButtonClassName="bg-transparent dark:bg-transparent border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+              activeButtonClassName="text-[#1E40AF] dark:text-[#4C8DF6]"
+              inactiveButtonClassName="bg-transparent dark:bg-transparent border-transparent text-slate-600 dark:text-[#9A9AA2] hover:bg-slate-100 dark:hover:bg-[#252528]"
               tabs={SECTIONS.map((sec, idx) => {
                 const isCurrent = activeSection === sec.id;
                 const hasErr =
@@ -553,14 +552,14 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                   id: sec.id,
                   label: sec.label,
                   icon: (
-                    <span className={isCurrent ? 'text-[#1E40AF] dark:text-blue-400' : hasErr ? 'text-red-500' : 'text-slate-400'}>
+                    <span className={isCurrent ? 'text-[#1E40AF] dark:text-[#4C8DF6]' : hasErr ? 'text-red-500 dark:text-[#EF5350]' : 'text-slate-400 dark:text-[#9A9AA2]'}>
                       {sec.icon}
                     </span>
                   ),
                   trailing: hasErr ? (
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 dark:bg-[#EF5350] animate-pulse" />
                   ) : (
-                    <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
+                    <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-slate-100 dark:bg-[#252528] text-slate-500 dark:text-[#9A9AA2]">
                       {idx + 1}
                     </span>
                   ),
@@ -572,11 +571,11 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
 
         <form onSubmit={handleSubmit} noValidate className="flex flex-col flex-1 overflow-hidden">
           {/* Scrollable Form Body */}
-          <div className="px-6 py-5 space-y-6 overflow-y-auto flex-1">
+          <div className="px-6 py-5 space-y-6 overflow-y-auto scrollbar-stable flex-1">
 
             {/* Global submission error */}
             {errors.nameEn && errors.nameEn.includes('failed') && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-xs text-red-600 dark:text-red-400">
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-[rgba(239,83,80,0.14)] border border-red-200 dark:border-[#EF5350]/30 text-xs text-red-600 dark:text-[#EF5350]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 {errors.nameEn}
               </div>
@@ -588,14 +587,14 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             {(viewMode === 'all' || activeSection === 'basic') && (
               <div className="space-y-4">
                 <div className={SECTION_HEADER_CLS}>
-                  <Building2 className="w-3.5 h-3.5 text-[#1E40AF]" />
+                  <Building2 className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                   <span>1. Institutional Profile &amp; Accreditation</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label className={LABEL_CLS}>
-                      University Name (English) <span className="text-red-500">*</span>
+                      University Name (English) <span className="text-red-500 dark:text-[#EF5350]">*</span>
                     </label>
                     <input
                       type="text"
@@ -624,7 +623,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label className={LABEL_CLS}>
-                      City / Metropolitan Region <span className="text-red-500">*</span>
+                      City / Metropolitan Region <span className="text-red-500 dark:text-[#EF5350]">*</span>
                     </label>
                     <MorphSelect
                       value={city}
@@ -636,7 +635,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       <MorphSelectTrigger
                         className={
                           errors.city
-                            ? 'border-red-400 bg-red-50 dark:bg-red-950/20'
+                            ? 'border-red-400 dark:border-[#EF5350] bg-red-50 dark:bg-[rgba(239,83,80,0.14)]'
                             : undefined
                         }
                       >
@@ -687,8 +686,8 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                         onClick={() => setAccredited(true)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                           accredited
-                            ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300'
-                            : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+                            ? 'bg-emerald-50 dark:bg-[rgba(52,194,107,0.14)] border-emerald-300 dark:border-[#34C26B]/40 text-emerald-700 dark:text-[#34C26B]'
+                            : 'border-slate-200 dark:border-[#2E2E32] text-slate-500 dark:text-[#9A9AA2] hover:bg-slate-50 dark:hover:bg-[#252528]'
                         }`}
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
@@ -699,8 +698,8 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                         onClick={() => setAccredited(false)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                           !accredited
-                            ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'
-                            : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+                            ? 'bg-amber-50 dark:bg-[rgba(240,160,48,0.14)] border-amber-300 dark:border-[#F0A030]/40 text-amber-700 dark:text-[#F0A030]'
+                            : 'border-slate-200 dark:border-[#2E2E32] text-slate-500 dark:text-[#9A9AA2] hover:bg-slate-50 dark:hover:bg-[#252528]'
                         }`}
                       >
                         Non-Certified (Standard Visa Screening)
@@ -728,7 +727,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             {(viewMode === 'all' || activeSection === 'requirements') && (
               <div className="space-y-4">
                 <div className={SECTION_HEADER_CLS}>
-                  <BookOpen className="w-3.5 h-3.5 text-[#1E40AF]" />
+                  <BookOpen className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                   <span>2. Language Proficiency &amp; Financial Solvency Requirements</span>
                 </div>
 
@@ -742,7 +741,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       placeholder="e.g. TOPIK Level 3 or higher (Level 4 for Business)"
                       className={INPUT_CLS}
                     />
-                    <p className="text-[11px] text-slate-400 mt-1">D-4 Language trainees exempt; D-2 Bachelors require Level 3+.</p>
+                    <p className="text-[11px] text-slate-400 dark:text-[#9A9AA2] mt-1">D-4 Language trainees exempt; D-2 Bachelors require Level 3+.</p>
                   </div>
                   <div>
                     <label className={LABEL_CLS}>English Track / IELTS / TOEFL Requirement</label>
@@ -753,17 +752,17 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       placeholder="e.g. IELTS 5.5 / TOEFL iBT 71 minimum or English native"
                       className={INPUT_CLS}
                     />
-                    <p className="text-[11px] text-slate-400 mt-1">Applicable to English-medium degree programs.</p>
+                    <p className="text-[11px] text-slate-400 dark:text-[#9A9AA2] mt-1">Applicable to English-medium degree programs.</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label className={LABEL_CLS}>
-                      Bank Solvency Certificate Guarantee (USD) <span className="text-red-500">*</span>
+                      Bank Solvency Certificate Guarantee (USD) <span className="text-red-500 dark:text-[#EF5350]">*</span>
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1.5 text-xs text-slate-400 font-semibold">$</span>
+                      <span className="absolute left-3 top-1.5 text-xs text-slate-400 dark:text-[#9A9AA2] font-semibold">$</span>
                       <input
                         type="number"
                         min="0"
@@ -780,12 +779,12 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       />
                     </div>
                     <FieldError msg={errors.bankBalanceUsd} />
-                    <p className="text-[11px] text-slate-400 mt-1">
+                    <p className="text-[11px] text-slate-400 dark:text-[#9A9AA2] mt-1">
                       Required bank balance certificate under student or parent name, frozen for 30 days.
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-900/40 text-[11px] text-slate-600 dark:text-slate-300 space-y-1">
-                    <span className="font-semibold text-[#1E40AF] dark:text-blue-400 flex items-center gap-1">
+                  <div className="p-3 rounded-lg bg-blue-50/60 dark:bg-[rgba(76,141,246,0.14)] border border-blue-200/60 dark:border-[#4C8DF6]/30 text-[11px] text-slate-600 dark:text-[#ECECEE] space-y-1">
+                    <span className="font-semibold text-[#1E40AF] dark:text-[#4C8DF6] flex items-center gap-1">
                       <Sparkles className="w-3.5 h-3.5" /> Korean Immigration MOJ Solvency Guidelines:
                     </span>
                     <p>• Seoul Capital Area: $20,000 USD equivalent</p>
@@ -801,18 +800,18 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             {/* ══════════════════════════════════════════════════════════════ */}
             {(viewMode === 'all' || activeSection === 'intake') && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-slate-800">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
-                    <Calendar className="w-3.5 h-3.5 text-[#1E40AF]" />
+                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] uppercase tracking-wider">
+                    <Calendar className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                     <span>3. Admission Intake Milestones &amp; Academic Deadlines</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-slate-500">Enable Initial Intake</span>
+                    <span className="text-[11px] text-slate-500 dark:text-[#9A9AA2]">Enable Initial Intake</span>
                     <input
                       type="checkbox"
                       checked={addIntake}
                       onChange={(e) => setAddIntake(e.target.checked)}
-                      className="w-4 h-4 rounded text-[#1E40AF] border-slate-300"
+                      className="w-4 h-4 rounded text-[#1E40AF] dark:text-[#4C8DF6] border-slate-300 dark:border-[#3A3A3F]"
                     />
                   </div>
                 </div>
@@ -955,7 +954,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     <div>
                       <label className={LABEL_CLS}>
                         Required Application Materials / Dossier Checklist{' '}
-                        <span className="text-slate-400 font-normal">(comma-separated)</span>
+                        <span className="text-slate-400 dark:text-[#9A9AA2] font-normal">(comma-separated)</span>
                       </label>
                       <textarea
                         rows={2}
@@ -967,7 +966,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic py-2">
+                  <p className="text-xs text-slate-400 dark:text-[#66666E] italic py-2">
                     Intake schedule will not be pre-created. You can add intake terms individually from the Dossier view.
                   </p>
                 )}
@@ -979,18 +978,18 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             {/* ══════════════════════════════════════════════════════════════ */}
             {(viewMode === 'all' || activeSection === 'program') && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-slate-800">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
-                    <GraduationCap className="w-3.5 h-3.5 text-[#1E40AF]" />
+                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] uppercase tracking-wider">
+                    <GraduationCap className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                     <span>4. Flagship Academic Program &amp; Tuition Structure</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-slate-500">Enable Initial Program</span>
+                    <span className="text-[11px] text-slate-500 dark:text-[#9A9AA2]">Enable Initial Program</span>
                     <input
                       type="checkbox"
                       checked={addProgram}
                       onChange={(e) => setAddProgram(e.target.checked)}
-                      className="w-4 h-4 rounded text-[#1E40AF] border-slate-300"
+                      className="w-4 h-4 rounded text-[#1E40AF] dark:text-[#4C8DF6] border-slate-300 dark:border-[#3A3A3F]"
                     />
                   </div>
                 </div>
@@ -1058,7 +1057,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                           placeholder="1730000"
                           className={INPUT_CLS + ' tabular-nums font-mono'}
                         />
-                        <p className="text-[10px] text-slate-400 mt-0.5">
+                        <p className="text-[10px] text-slate-400 dark:text-[#9A9AA2] mt-0.5">
                           ~${progTuitionKrw ? Math.round(Number(progTuitionKrw) / 1320).toLocaleString() : 0} USD
                         </p>
                       </div>
@@ -1099,7 +1098,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic py-2">
+                  <p className="text-xs text-slate-400 dark:text-[#66666E] italic py-2">
                     Flagship program skipped. Additional programs can be configured directly in the Programs tab.
                   </p>
                 )}
@@ -1111,18 +1110,18 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             {/* ══════════════════════════════════════════════════════════════ */}
             {(viewMode === 'all' || activeSection === 'bank') && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-slate-800">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
-                    <CreditCard className="w-3.5 h-3.5 text-[#1E40AF]" />
+                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] uppercase tracking-wider">
+                    <CreditCard className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                     <span>5. Institutional Bank Coordinates &amp; Wire Instructions</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-slate-500">Enable Banking Details</span>
+                    <span className="text-[11px] text-slate-500 dark:text-[#9A9AA2]">Enable Banking Details</span>
                     <input
                       type="checkbox"
                       checked={addBankDetails}
                       onChange={(e) => setAddBankDetails(e.target.checked)}
-                      className="w-4 h-4 rounded text-[#1E40AF] border-slate-300"
+                      className="w-4 h-4 rounded text-[#1E40AF] dark:text-[#4C8DF6] border-slate-300 dark:border-[#3A3A3F]"
                     />
                   </div>
                 </div>
@@ -1223,9 +1222,9 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                             id="modal-va-support"
                             checked={isVirtualAccountSupported}
                             onChange={(e) => setIsVirtualAccountSupported(e.target.checked)}
-                            className="w-4 h-4 rounded text-[#1E40AF] border-slate-300"
+                            className="w-4 h-4 rounded text-[#1E40AF] dark:text-[#4C8DF6] border-slate-300 dark:border-[#3A3A3F]"
                           />
-                          <label htmlFor="modal-va-support" className="text-xs text-slate-700 dark:text-slate-300 select-none">
+                          <label htmlFor="modal-va-support" className="text-xs text-slate-700 dark:text-[#ECECEE] select-none">
                             Individual unique virtual account assigned to each candidate invoice
                           </label>
                         </div>
@@ -1244,7 +1243,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic py-2">
+                  <p className="text-xs text-slate-400 dark:text-[#66666E] italic py-2">
                     Bank coordinates skipped. Institutional wire accounts can be added later from the Bank Details tab.
                   </p>
                 )}
@@ -1256,18 +1255,18 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             {/* ══════════════════════════════════════════════════════════════ */}
             {(viewMode === 'all' || activeSection === 'refund') && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-slate-800">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#1E40AF]" />
+                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] uppercase tracking-wider">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                     <span>6. Refund Policy &amp; Visa Rejection Guarantees</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-slate-500">Enable Refund Policy</span>
+                    <span className="text-[11px] text-slate-500 dark:text-[#9A9AA2]">Enable Refund Policy</span>
                     <input
                       type="checkbox"
                       checked={addRefundPolicy}
                       onChange={(e) => setAddRefundPolicy(e.target.checked)}
-                      className="w-4 h-4 rounded text-[#1E40AF] border-slate-300"
+                      className="w-4 h-4 rounded text-[#1E40AF] dark:text-[#4C8DF6] border-slate-300 dark:border-[#3A3A3F]"
                     />
                   </div>
                 </div>
@@ -1281,9 +1280,9 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                           id="modal-app-fee-refund"
                           checked={appFeeRefundable}
                           onChange={(e) => setAppFeeRefundable(e.target.checked)}
-                          className="w-4 h-4 text-[#1E40AF] rounded border-slate-300"
+                          className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6] rounded border-slate-300 dark:border-[#3A3A3F]"
                         />
-                        <label htmlFor="modal-app-fee-refund" className="text-xs text-slate-700 dark:text-slate-300 select-none">
+                        <label htmlFor="modal-app-fee-refund" className="text-xs text-slate-700 dark:text-[#ECECEE] select-none">
                           Application Fee Refundable
                         </label>
                       </div>
@@ -1345,7 +1344,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic py-2">
+                  <p className="text-xs text-slate-400 dark:text-[#66666E] italic py-2">
                     Default NIIED refund schedule will apply automatically.
                   </p>
                 )}
@@ -1358,7 +1357,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             {(viewMode === 'all' || activeSection === 'documents') && (
               <div className="space-y-4">
                 <div className={SECTION_HEADER_CLS}>
-                  <FileText className="w-3.5 h-3.5 text-[#1E40AF]" />
+                  <FileText className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                   <span>7. Initial Admission Guidelines &amp; Official Documentation</span>
                 </div>
 
@@ -1403,16 +1402,16 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       placeholder={websiteUrl.trim() || 'https://www.studyinkorea.go.kr'}
                       className={INPUT_CLS}
                     />
-                    <p className="text-[11px] text-slate-400 mt-1">
+                    <p className="text-[11px] text-slate-400 dark:text-[#9A9AA2] mt-1">
                       Link to the university's official admissions bulletin or NIIED Study in Korea repository.
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <div className="p-3 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-200 dark:border-[#2E2E32] text-xs text-slate-600 dark:text-[#9A9AA2] flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-[#34C26B] shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-semibold text-[#0F172A] dark:text-slate-100">Automatic Document Package Generation</span>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">Automatic Document Package Generation</span>
+                      <p className="text-[11px] text-slate-400 dark:text-[#9A9AA2] mt-0.5">
                         In addition to the primary guideline, standard Apostille checklists and immigration affidavit forms are automatically provisioned in the Documents tab for consultants and students.
                       </p>
                     </div>
@@ -1423,7 +1422,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-between gap-3 px-6 py-3.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 rounded-b-[14px] shrink-0">
+          <div className="flex items-center justify-between gap-3 px-6 py-3.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-slate-50/70 dark:bg-[#161616] rounded-b-[14px] shrink-0">
             <div className="flex items-center gap-2">
               {viewMode === 'tabbed' && (
                 <>
@@ -1435,7 +1434,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       }
                     }}
                     disabled={currentSectionIndex === 0}
-                    className="h-8 px-3 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1"
+                    className="h-8 px-3 text-xs font-medium rounded-lg border border-slate-200 dark:border-[#2E2E32] text-slate-700 dark:text-[#ECECEE] hover:bg-slate-100 dark:hover:bg-[#252528] transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                     Previous
@@ -1447,7 +1446,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                       onClick={() => {
                         setActiveSection(SECTIONS[currentSectionIndex + 1].id);
                       }}
-                      className="h-8 px-3 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors inline-flex items-center gap-1"
+                      className="h-8 px-3 text-xs font-medium rounded-lg border border-slate-200 dark:border-[#2E2E32] text-slate-700 dark:text-[#ECECEE] hover:bg-slate-100 dark:hover:bg-[#252528] transition-colors inline-flex items-center gap-1"
                     >
                       Next: {SECTIONS[currentSectionIndex + 1].label}
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -1462,14 +1461,14 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={isSaving}
-                className="h-8 px-4 text-xs font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-[#0F172A] dark:text-slate-200 border border-[#E2E8F0] dark:border-slate-700 transition-colors disabled:opacity-50"
+                className="h-8 px-4 text-xs font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] border border-[#E2E8F0] dark:border-[#2E2E32] transition-colors disabled:opacity-50"
               >
                 Cancel
               </MotionButton>
               <MotionButton
                 type="submit"
                 disabled={isSaving}
-                className="h-8 px-5 text-xs font-semibold rounded-lg bg-[#1E40AF] text-white hover:bg-[#1E3A8A] transition-colors disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center gap-1.5 shadow-xs"
+                className="h-8 px-5 text-xs font-semibold rounded-lg bg-[#1E40AF] text-white hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] transition-colors disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center gap-1.5 shadow-xs dark:shadow-none"
               >
                 {isSaving ? (
                   <>
@@ -1485,8 +1484,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
             </div>
           </div>
         </form>
-    </ModalTransition>,
-    document.body
+    </ModalTransition>
   );
 };
 

@@ -37,24 +37,24 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
   return (
     <div className="space-y-4">
       {/* Manual Governance Notice */}
-      <div className="bg-[#EFF6FF]/60 dark:bg-blue-950/30 border border-[#1E40AF]/20 dark:border-blue-800/50 rounded-lg px-4 py-3 flex items-start gap-2.5 text-xs">
-        <ShieldAlert className="w-4 h-4 text-[#1E40AF] dark:text-blue-400 shrink-0 mt-0.5" />
-        <div className="text-[#0F172A] dark:text-slate-200">
+      <div className="bg-[#EFF6FF]/60 dark:bg-[rgba(76,141,246,0.14)] border border-[#1E40AF]/20 dark:border-[#4C8DF6]/30 rounded-lg px-4 py-3 flex items-start gap-2.5 text-xs">
+        <ShieldAlert className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0 mt-0.5" />
+        <div className="text-[#0F172A] dark:text-[#ECECEE]">
           <span className="font-semibold">Explicit Authorized Stage Governance:</span> Applications are never automatically marked Submitted or Completed when checklists finish. An authorized officer must explicitly record university submission, additional document requests, admission decisions, tuition payments, and CoA issuance.
         </div>
       </div>
 
       {/* 11-Stage Pipeline Strip */}
-      <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3">
+      <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3">
         <div className="flex items-center justify-between mb-2.5">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-slate-200">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-[#ECECEE]">
             11-Stage Intake Application Pipeline
           </h3>
           {stageFilter !== 'All' && (
             <MotionButton
               type="button"
               onClick={() => setStageFilter('All')}
-              className="text-xs font-medium text-[#1E40AF] dark:text-blue-400 hover:underline"
+              className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
             >
               Show all stages ({applications.length})
             </MotionButton>
@@ -71,19 +71,19 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                 onClick={() => setStageFilter(isSelected ? 'All' : stage)}
                 className={`p-2.5 rounded-lg border text-left transition-colors ${
                   isSelected
-                    ? 'bg-[#EFF6FF] dark:bg-blue-950/60 border-[#1E40AF] dark:border-blue-500'
-                    : 'bg-[#F8FAFC] dark:bg-slate-950/50 border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]/40'
+                    ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF] dark:border-[#4C8DF6]'
+                    : 'bg-[#F8FAFC] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF]/40 dark:hover:border-[#3A3A3F]'
                 }`}
               >
-                <div className="flex items-center justify-between text-[10px] text-[#64748B] dark:text-slate-400 tabular-nums">
+                <div className="flex items-center justify-between text-[10px] text-[#64748B] dark:text-[#9A9AA2] tabular-nums">
                   <span>Stage {index}</span>
                   <span className={`font-bold text-xs ${
-                    count > 0 ? 'text-[#1E40AF] dark:text-blue-400' : 'text-[#64748B]'
+                    count > 0 ? 'text-[#1E40AF] dark:text-[#4C8DF6]' : 'text-[#64748B] dark:text-[#66666E]'
                   }`}>
                     {count}
                   </span>
                 </div>
-                <div className="mt-1 text-[11px] font-semibold text-[#0F172A] dark:text-slate-100 line-clamp-2 leading-tight">
+                <div className="mt-1 text-[11px] font-semibold text-[#0F172A] dark:text-[#ECECEE] line-clamp-2 leading-tight">
                   {stage}
                 </div>
               </MotionButton>
@@ -93,13 +93,13 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
       </div>
 
       {/* Per-Student Stage Progress & Dates Table */}
-      <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg overflow-hidden">
         {filtered.length === 0 ? (
-          <div className="p-8 text-center text-xs text-[#64748B] dark:text-slate-400">
+          <div className="p-8 text-center text-xs text-[#64748B] dark:text-[#9A9AA2]">
             No candidates currently in {stageFilter === 'All' ? 'this intake' : `"${stageFilter}"`}.
           </div>
         ) : (
-          <div className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+          <div className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
             {filtered.map((app) => {
               const stageIdx = INTAKE_WORKFLOW_STAGES.indexOf(app.workflowStage);
               const nextStage =
@@ -114,24 +114,24 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-[200px]">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
+                        <span className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                           {app.student.fullName}
                         </span>
-                        <span className="text-[11px] tabular-nums text-[#64748B] dark:text-slate-400">
+                        <span className="text-[11px] tabular-nums text-[#64748B] dark:text-[#9A9AA2]">
                           ({app.student.id})
                         </span>
                       </div>
-                      <div className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
+                      <div className="text-xs text-[#64748B] dark:text-[#9A9AA2] mt-0.5">
                         {app.student.programName || app.student.major} · Consultant: {app.student.assignedConsultantName}
                       </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
                       <div className="text-right">
-                        <div className="text-xs font-semibold text-[#1E40AF] dark:text-blue-400">
+                        <div className="text-xs font-semibold text-[#1E40AF] dark:text-[#4C8DF6]">
                           Stage {stageIdx + 1}/11: {app.workflowStage}
                         </div>
-                        <div className="text-[11px] text-[#64748B] dark:text-slate-400 tabular-nums">
+                        <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2] tabular-nums">
                           Status: {app.stageStatus} · Progress: {app.workflowProgress}%
                         </div>
                       </div>
@@ -139,7 +139,7 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                       <MotionButton
                         type="button"
                         onClick={() => onRecordStage(app, nextStage || app.workflowStage)}
-                        className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap"
+                        className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors whitespace-nowrap"
                       >
                         <GitBranch className="w-3.5 h-3.5" />
                         Record Action
@@ -157,10 +157,10 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                           <div
                             className={`h-1.5 rounded-full ${
                               done
-                                ? 'bg-[#16A34A]'
+                                ? 'bg-[#16A34A] dark:bg-[#34C26B]'
                                 : current
-                                ? 'bg-[#1E40AF]'
-                                : 'bg-slate-200 dark:bg-slate-800'
+                                ? 'bg-[#1E40AF] dark:bg-[#4C8DF6]'
+                                : 'bg-slate-200 dark:bg-[#252528]'
                             }`}
                           />
                         </div>
@@ -169,12 +169,12 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                   </div>
 
                   {/* Recorded Milestone Dates & Sign-off */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#64748B] dark:text-slate-400 pt-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#64748B] dark:text-[#9A9AA2] pt-1">
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 tabular-nums">
                       {dates.registeredDate && <span>Registered: {dates.registeredDate}</span>}
                       {dates.apostilleDate && <span>Apostille: {dates.apostilleDate}</span>}
                       {dates.submittedDate && (
-                        <span className="text-[#1E40AF] dark:text-blue-400 font-medium">
+                        <span className="text-[#1E40AF] dark:text-[#4C8DF6] font-medium">
                           Submitted: {dates.submittedDate}
                           {app.submittedBy ? ` (by ${app.submittedBy})` : ''}
                         </span>
@@ -182,14 +182,14 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                       {dates.resultDate && <span>Result: {dates.resultDate} ({app.student.admissionResult})</span>}
                       {dates.tuitionPaidDate && <span>Tuition Paid: {dates.tuitionPaidDate}</span>}
                       {dates.coaReceivedDate && (
-                        <span className="text-[#16A34A] dark:text-emerald-400 font-semibold inline-flex items-center gap-1">
+                        <span className="text-[#16A34A] dark:text-[#34C26B] font-semibold inline-flex items-center gap-1">
                           <CheckCircle2 className="w-3 h-3" />
                           CoA: {dates.coaReceivedDate}
                           {app.student.certificateOfAdmissionNo ? ` · #${app.student.certificateOfAdmissionNo}` : ''}
                         </span>
                       )}
                       {!dates.submittedDate && app.readiness.isSubmissionReady && (
-                        <span className="text-[#16A34A] dark:text-emerald-400 font-medium">
+                        <span className="text-[#16A34A] dark:text-[#34C26B] font-medium">
                           Documents 100% verified — awaiting officer submission sign-off
                         </span>
                       )}
@@ -198,7 +198,7 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
                     <MotionButton
                       type="button"
                       onClick={() => setExpandedHistoryId(isExpanded ? null : app.intakeAppId)}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F172A] dark:text-slate-300 hover:text-[#1E40AF]"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F172A] dark:text-[#ECECEE] hover:text-[#1E40AF] dark:hover:text-[#4C8DF6]"
                     >
                       {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                       Stage History ({app.stageHistory.length})
@@ -207,21 +207,21 @@ export const WorkflowTab: React.FC<WorkflowTabProps> = ({ applications, onRecord
 
                   {/* Stage History Drawer */}
                   {isExpanded && (
-                    <div className="mt-2 bg-[#F8FAFC] dark:bg-slate-950/60 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3 space-y-2">
+                    <div className="mt-2 bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3 space-y-2">
                       {app.stageHistory.length === 0 ? (
-                        <div className="text-[11px] text-[#64748B]">No stage transition records yet.</div>
+                        <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">No stage transition records yet.</div>
                       ) : (
                         app.stageHistory.map((h) => (
-                          <div key={h.id} className="flex items-start justify-between gap-3 text-xs border-b last:border-b-0 border-[#E2E8F0] dark:border-slate-800 pb-1.5 last:pb-0">
+                          <div key={h.id} className="flex items-start justify-between gap-3 text-xs border-b last:border-b-0 border-[#E2E8F0] dark:border-[#2E2E32] pb-1.5 last:pb-0">
                             <div>
-                              <span className="font-semibold text-[#0F172A] dark:text-slate-100">{h.stage}</span>
-                              <span className="mx-1.5 text-slate-300 dark:text-slate-700">·</span>
-                              <span className="text-[11px] text-[#64748B] dark:text-slate-400">{h.status}</span>
+                              <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">{h.stage}</span>
+                              <span className="mx-1.5 text-slate-300 dark:text-[#3A3A3F]">·</span>
+                              <span className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">{h.status}</span>
                               {h.notes && (
-                                <p className="text-[11px] text-[#0F172A]/75 dark:text-slate-300 mt-0.5">{h.notes}</p>
+                                <p className="text-[11px] text-[#0F172A]/75 dark:text-[#9A9AA2] mt-0.5">{h.notes}</p>
                               )}
                             </div>
-                            <div className="text-right text-[11px] text-[#64748B] dark:text-slate-400 shrink-0 tabular-nums">
+                            <div className="text-right text-[11px] text-[#64748B] dark:text-[#9A9AA2] shrink-0 tabular-nums">
                               <div className="flex items-center gap-1 justify-end">
                                 <Clock className="w-3 h-3" />
                                 {h.date}

@@ -116,25 +116,25 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
     <ModalTransition
       isOpen={isOpen && Boolean(handover)}
       onClose={onClose}
-      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
-      cardClassName="w-full max-w-3xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh]"
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/70 backdrop-blur-xs"
+      cardClassName="w-full max-w-3xl bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg shadow-2xl dark:shadow-none flex flex-col max-h-[90vh]"
     >
       {handover && (
         <>
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-[#D97706]/15 dark:bg-amber-950 border border-[#D97706]/40 dark:border-amber-800 flex items-center justify-center text-[#D97706] dark:text-amber-400">
+            <div className="w-8 h-8 rounded-md bg-[#D97706]/15 dark:bg-[rgba(240,160,48,0.14)] border border-[#D97706]/40 dark:border-[#F0A030]/30 flex items-center justify-center text-[#D97706] dark:text-[#F0A030]">
               <PackageCheck className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
+              <h2 className="text-sm font-bold text-[#0F172A] dark:text-[#ECECEE]">
                 Submit Missing / Corrected Documents — {handover.id} (Batch #{nextBatchNum})
               </h2>
-              <p className="text-[11px] text-[#0F172A]/65 dark:text-slate-400">
-                Student: <span className="font-semibold text-[#0F172A] dark:text-slate-300">{handover.studentName}</span> · To Receiver: <span className="font-semibold text-[#0F172A] dark:text-slate-200">{handover.receivingEmployeeName}</span>
+              <p className="text-[11px] text-[#0F172A]/65 dark:text-[#9A9AA2]">
+                Student: <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">{handover.studentName}</span> · To Receiver: <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">{handover.receivingEmployeeName}</span>
                 {handover.requestId ? (
-                  <span className="tabular-nums text-[#1E40AF] dark:text-[#1E40AF]"> · Request: {handover.requestId}</span>
+                  <span className="tabular-nums text-[#1E40AF] dark:text-[#4C8DF6]"> · Request: {handover.requestId}</span>
                 ) : null}
               </p>
             </div>
@@ -142,33 +142,33 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
           <MotionButton
             type="button"
             onClick={onClose}
-            className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md transition-colors"
+            className="p-1.5 text-[#0F172A]/50 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] rounded-md transition-colors"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
           </MotionButton>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto scrollbar-stable p-5 space-y-4">
           {!isCounselor && (
-            <div className="p-3 rounded-md bg-[#D97706]/10 dark:bg-amber-950/40 border border-[#D97706]/35 dark:border-amber-800 text-xs text-[#0F172A] dark:text-amber-200 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-[#D97706]" />
+            <div className="p-3 rounded-md bg-[#D97706]/10 dark:bg-[rgba(240,160,48,0.14)] border border-[#D97706]/35 dark:border-[#F0A030]/30 text-xs text-[#0F172A] dark:text-[#F0A030] flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#D97706] dark:text-[#F0A030]" />
               <span>Follow-up delivery submissions are restricted to Counseling Team members.</span>
             </div>
           )}
 
           {errorMsg && (
-            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/40 border border-[#DC2626]/35 dark:border-rose-800 text-xs text-[#DC2626] dark:text-rose-300 flex items-center gap-2">
+            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/35 dark:border-[#EF5350]/30 text-xs text-[#DC2626] dark:text-[#EF5350] flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {handover.disputeReason && (
-            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/25 border border-[#DC2626]/30 dark:border-rose-900/50 text-xs text-[#0F172A] dark:text-rose-200 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#DC2626]" />
+            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/30 dark:border-[#EF5350]/30 text-xs text-[#0F172A] dark:text-[#ECECEE] flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#DC2626] dark:text-[#EF5350]" />
               <div>
-                <div className="font-bold text-[#DC2626] dark:text-rose-300">Receiver Dispute / Issue Summary:</div>
+                <div className="font-bold text-[#DC2626] dark:text-[#EF5350]">Receiver Dispute / Issue Summary:</div>
                 <div className="mt-0.5">{handover.disputeReason}</div>
               </div>
             </div>
@@ -176,8 +176,8 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-slate-300">
-                <Calendar className="w-3.5 h-3.5 text-[#0F172A]/55" />
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">
+                <Calendar className="w-3.5 h-3.5 text-[#0F172A]/55 dark:text-[#9A9AA2]" />
                 Delivery Date
               </label>
               <input
@@ -185,12 +185,12 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                 value={deliveryDate}
                 onChange={(e) => setDeliveryDate(e.target.value)}
                 required
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
             <div className="space-y-1">
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-slate-300">
-                <Clock className="w-3.5 h-3.5 text-[#0F172A]/55" />
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">
+                <Clock className="w-3.5 h-3.5 text-[#0F172A]/55 dark:text-[#9A9AA2]" />
                 Delivery Time
               </label>
               <input
@@ -198,14 +198,14 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                 value={deliveryTime}
                 onChange={(e) => setDeliveryTime(e.target.value)}
                 required
-                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
           </div>
 
           {/* Outstanding Documents to Deliver */}
           <div className="space-y-2">
-            <div className="text-xs font-bold text-[#0F172A] dark:text-slate-200 uppercase tracking-wide">
+            <div className="text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] uppercase tracking-wide">
               Outstanding Documents Ready for Delivery ({outstandingItems.length})
             </div>
 
@@ -224,8 +224,8 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                     key={item.id}
                     className={`p-3 rounded-lg border ${
                       checked
-                        ? 'bg-[#EFF6FF]/40 dark:bg-blue-950/20 border-[#1E40AF]/50 dark:border-blue-800'
-                        : 'bg-[#FFFFFF] dark:bg-slate-900 border-[#E2E8F0] dark:border-slate-800 opacity-75'
+                        ? 'bg-[#EFF6FF]/40 dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF]/50 dark:border-[#4C8DF6]'
+                        : 'bg-[#FFFFFF] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] opacity-75'
                     }`}
                   >
                     <label className="flex items-start gap-2.5 cursor-pointer">
@@ -235,19 +235,19 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                         onChange={(e) =>
                           setSelectedIds((prev) => ({ ...prev, [item.id]: e.target.checked }))
                         }
-                        className="mt-1 rounded border-[#E2E8F0] text-[#1E40AF] focus:ring-[#1E40AF]"
+                        className="mt-1 rounded border-[#E2E8F0] dark:border-[#3A3A3F] text-[#1E40AF] dark:text-[#4C8DF6] focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6]"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100">
+                          <span className="text-xs font-bold text-[#0F172A] dark:text-[#ECECEE]">
                             {item.documentName}
                           </span>
-                          <span className="text-[11px] tabular-nums font-semibold text-[#DC2626] dark:text-rose-400">
+                          <span className="text-[11px] tabular-nums font-semibold text-[#DC2626] dark:text-[#EF5350]">
                             Previously: {item.status}
                           </span>
                         </div>
                         {item.verificationNotes && (
-                          <div className="text-[11px] text-[#0F172A]/70 dark:text-slate-400 mt-0.5">
+                          <div className="text-[11px] text-[#0F172A]/70 dark:text-[#9A9AA2] mt-0.5">
                             Receiver Note: "{item.verificationNotes}"
                           </div>
                         )}
@@ -257,7 +257,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                     {checked && (
                       <div className="mt-2.5 pl-6 grid grid-cols-1 sm:grid-cols-4 gap-2">
                         <div>
-                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">Format</label>
+                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-[#9A9AA2] uppercase">Format</label>
                           <MorphSelect
                             value={meta.format}
                             onValueChange={(v) =>
@@ -280,7 +280,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                           </MorphSelect>
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">Qty</label>
+                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-[#9A9AA2] uppercase">Qty</label>
                           <input
                             type="number"
                             min={1}
@@ -291,11 +291,11 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                                 [item.id]: { ...meta, quantity: Math.max(1, Number(e.target.value) || 1) },
                               }))
                             }
-                            className="w-full px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+                            className="w-full px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">Pages</label>
+                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-[#9A9AA2] uppercase">Pages</label>
                           <input
                             type="number"
                             min={1}
@@ -306,11 +306,11 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                                 [item.id]: { ...meta, pageCount: Math.max(1, Number(e.target.value) || 1) },
                               }))
                             }
-                            className="w-full px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+                            className="w-full px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-slate-400 uppercase">Correction Note</label>
+                          <label className="text-[10px] font-semibold text-[#0F172A]/60 dark:text-[#9A9AA2] uppercase">Correction Note</label>
                           <input
                             type="text"
                             value={meta.conditionRemarks}
@@ -321,7 +321,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
                               }))
                             }
                             placeholder="Updated stamp/copy"
-                            className="w-full px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                            className="w-full px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
                           />
                         </div>
                       </div>
@@ -333,11 +333,11 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
           </div>
 
           {receivedItems.length > 0 && (
-            <div className="p-3 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800 space-y-1">
-              <div className="text-[11px] font-bold text-[#0F172A]/65 dark:text-slate-400 uppercase">
+            <div className="p-3 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] space-y-1">
+              <div className="text-[11px] font-bold text-[#0F172A]/65 dark:text-[#9A9AA2] uppercase">
                 Already Received in Earlier Custody ({receivedItems.length})
               </div>
-              <div className="flex flex-wrap gap-2 text-xs text-[#16A34A] dark:text-emerald-400">
+              <div className="flex flex-wrap gap-2 text-xs text-[#16A34A] dark:text-[#34C26B]">
                 {receivedItems.map((r) => (
                   <span key={r.id} className="inline-flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
@@ -349,7 +349,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
           )}
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-[#0F172A] dark:text-slate-300">
+            <label className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">
               Follow-Up Delivery Notes
             </label>
             <textarea
@@ -357,17 +357,17 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
               value={deliveryNotes}
               onChange={(e) => setDeliveryNotes(e.target.value)}
               placeholder="Explain where/how missing items were handed over to Admission Team..."
-              className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+              className="w-full px-3 py-2 text-xs rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-slate-400 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
             />
           </div>
         </form>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-900/80 flex items-center justify-end gap-2">
+        <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#161616] flex items-center justify-end gap-2">
           <MotionButton
             type="button"
             onClick={onClose}
-            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40 transition-colors"
+            className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md hover:bg-[#EFF6FF]/40 dark:hover:bg-[#2E2E32] transition-colors"
           >
             Cancel
           </MotionButton>
@@ -375,7 +375,7 @@ export const FollowUpDeliveryModal: React.FC<FollowUpDeliveryModalProps> = ({
             type="button"
             disabled={!isCounselor || isSubmitting}
             onClick={handleSubmit}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-md transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] disabled:opacity-50 rounded-md transition-colors"
           >
             {isSubmitting ? (
               <Spinner size="sm" shade="inherit" aria-hidden="true" />

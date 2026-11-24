@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import {
   X,
   ListTodo,
@@ -20,26 +19,26 @@ import { ModalTransition, MotionButton } from './animations';
 const renderCategoryIcon = (category: TaskCategory) => {
   switch (category) {
     case 'Work':
-      return <Briefcase className="w-3.5 h-3.5 shrink-0 text-[#1E40AF]" />;
+      return <Briefcase className="w-3.5 h-3.5 shrink-0 text-[#1E40AF] dark:text-[#4C8DF6]" />;
     case 'Study':
-      return <GraduationCap className="w-3.5 h-3.5 shrink-0 text-[#16A34A]" />;
+      return <GraduationCap className="w-3.5 h-3.5 shrink-0 text-[#16A34A] dark:text-[#34C26B]" />;
     case 'Business':
-      return <Building2 className="w-3.5 h-3.5 shrink-0 text-[#1E3A8A] dark:text-blue-400" />;
+      return <Building2 className="w-3.5 h-3.5 shrink-0 text-[#1E3A8A] dark:text-[#4C8DF6]" />;
     case 'Personal':
-      return <User className="w-3.5 h-3.5 shrink-0 text-[#D97706]" />;
+      return <User className="w-3.5 h-3.5 shrink-0 text-[#D97706] dark:text-[#F0A030]" />;
     default:
-      return <Tag className="w-3.5 h-3.5 shrink-0 text-[#1E40AF]" />;
+      return <Tag className="w-3.5 h-3.5 shrink-0 text-[#1E40AF] dark:text-[#4C8DF6]" />;
   }
 };
 
 const renderPriorityIndicator = (priority: TaskPriority) => {
   switch (priority) {
     case 'High':
-      return <span className="w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />;
+      return <span className="w-2 h-2 rounded-full bg-[#DC2626] dark:bg-[#EF5350] shrink-0" />;
     case 'Medium':
-      return <span className="w-2 h-2 rounded-full bg-[#D97706] shrink-0" />;
+      return <span className="w-2 h-2 rounded-full bg-[#D97706] dark:bg-[#F0A030] shrink-0" />;
     default:
-      return <span className="w-2 h-2 rounded-full bg-[#1E40AF] shrink-0" />;
+      return <span className="w-2 h-2 rounded-full bg-[#1E40AF] dark:bg-[#4C8DF6] shrink-0" />;
   }
 };
 
@@ -142,28 +141,28 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
     }
   };
 
-  return createPortal(
+  return (
     <ModalTransition
       isOpen={isOpen}
       onClose={onClose}
-      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
-      cardClassName="w-full max-w-xl rounded-lg bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xl overflow-hidden"
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/70 backdrop-blur-xs"
+      cardClassName="w-full max-w-xl rounded-lg bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-xl dark:shadow-none overflow-hidden"
     >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] dark:bg-[#161616]">
           <div>
             <h2
               id="task-form-title"
-              className="text-base font-semibold text-[#0F172A] dark:text-slate-100"
+              className="text-base font-semibold text-[#0F172A] dark:text-[#ECECEE]"
             >
               {editingTask ? 'Edit Task' : 'Create New Task'}
             </h2>
-            <p className="text-xs text-[#0F172A]/65 dark:text-slate-400">
+            <p className="text-xs text-[#0F172A]/65 dark:text-[#9A9AA2]">
               Automatically synchronized with local SQLite and connected Google Spreadsheet
             </p>
           </div>
           <MotionButton
             onClick={onClose}
-            className="p-1.5 text-[#0F172A]/50 hover:text-[#1E3A8A] dark:hover:text-slate-200 rounded transition-colors"
+            className="p-1.5 text-[#0F172A]/50 dark:text-[#9A9AA2] hover:text-[#1E3A8A] dark:hover:text-[#ECECEE] dark:hover:bg-[#252528] rounded transition-colors"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
@@ -172,7 +171,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {validationError && (
-            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-red-950/40 border border-[#DC2626]/35 dark:border-red-900 text-xs font-medium text-[#DC2626] dark:text-red-400">
+            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/35 dark:border-[#EF5350]/40 text-xs font-medium text-[#DC2626] dark:text-[#EF5350]">
               {validationError}
             </div>
           )}
@@ -181,7 +180,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
           <div>
             <label
               htmlFor="task-title-input"
-              className="block text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1"
+              className="block text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1"
             >
               Task Title *
             </label>
@@ -196,7 +195,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
                 if (validationError) setValidationError(null);
               }}
               placeholder="e.g., Prepare Q4 Financial Reconciliation Spreadsheet"
-              className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3.5 py-2 text-sm text-[#0F172A] dark:text-slate-100 placeholder:text-[#0F172A]/40 focus:border-[#1E40AF] focus:outline-none"
+              className="w-full rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3.5 py-2 text-sm text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#0F172A]/40 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
             />
           </div>
 
@@ -204,9 +203,9 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
           <div>
             <label
               htmlFor="task-desc-input"
-              className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1"
+              className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1"
             >
-              <ListTodo className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <ListTodo className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
               Detailed Description
             </label>
             <textarea
@@ -215,25 +214,25 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe key deliverables, context, or acceptance criteria..."
-              className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3.5 py-2 text-sm text-[#0F172A] dark:text-slate-100 placeholder:text-[#0F172A]/40 focus:border-[#1E40AF] focus:outline-none"
+              className="w-full rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3.5 py-2 text-sm text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#0F172A]/40 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
             />
           </div>
 
           {/* Category & Priority Segmented Selectors */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <span className="block text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1.5">
+              <span className="block text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1.5">
                 Category
               </span>
-              <div className="flex flex-wrap gap-1 p-1 rounded-md bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700">
+              <div className="flex flex-wrap gap-1 p-1 rounded-md bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32]">
                 {CATEGORIES.map((cat) => (
                   <MotionButton
                     key={cat}
                     onClick={() => setCategory(cat)}
                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                       category === cat
-                        ? 'bg-[#FFFFFF] dark:bg-slate-900 text-[#1E3A8A] dark:text-slate-100 shadow-xs ring-1 ring-[#1E40AF]/60 dark:ring-slate-700'
-                        : 'text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-100'
+                        ? 'bg-[#FFFFFF] dark:bg-[#1C1C1E] text-[#1E3A8A] dark:text-[#ECECEE] shadow-xs dark:shadow-none ring-1 ring-[#1E40AF]/60 dark:ring-[#4C8DF6]'
+                        : 'text-[#0F172A]/70 dark:text-[#9A9AA2] hover:text-[#1E3A8A] dark:hover:text-[#ECECEE]'
                     }`}
                   >
                     {renderCategoryIcon(cat)}
@@ -244,10 +243,10 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             </div>
 
             <div>
-              <span className="block text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1.5">
+              <span className="block text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1.5">
                 Priority Level
               </span>
-              <div className="grid grid-cols-3 gap-1 p-1 rounded-md bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700">
+              <div className="grid grid-cols-3 gap-1 p-1 rounded-md bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32]">
                 {PRIORITIES.map((prio) => (
                   <MotionButton
                     key={prio}
@@ -255,11 +254,11 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
                     className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                       priority === prio
                         ? prio === 'High'
-                          ? 'bg-[#DC2626] text-white shadow-xs'
+                          ? 'bg-[#DC2626] dark:bg-[#EF5350] text-white shadow-xs dark:shadow-none'
                           : prio === 'Medium'
-                          ? 'bg-[#D97706] text-white shadow-xs'
-                          : 'bg-[#1E40AF] dark:bg-slate-900 text-white shadow-xs'
-                        : 'text-[#0F172A]/70 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-slate-100'
+                          ? 'bg-[#D97706] dark:bg-[#F0A030] text-white shadow-xs dark:shadow-none'
+                          : 'bg-[#1E40AF] dark:bg-[#4C8DF6] text-white shadow-xs dark:shadow-none'
+                        : 'text-[#0F172A]/70 dark:text-[#9A9AA2] hover:text-[#1E3A8A] dark:hover:text-[#ECECEE]'
                     }`}
                   >
                     {renderPriorityIndicator(prio)}
@@ -275,9 +274,9 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             <div>
               <label
                 htmlFor="task-date-input"
-                className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1"
+                className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1"
               >
-                <Calendar className="w-3.5 h-3.5 text-[#1E40AF]" />
+                <Calendar className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Scheduled Date *
               </label>
               <input
@@ -291,16 +290,16 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
                     setDeadline(e.target.value);
                   }
                 }}
-                className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-sm tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                className="w-full rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3 py-1.5 text-sm tabular-nums text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
 
             <div>
               <label
                 htmlFor="task-deadline-input"
-                className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1"
+                className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1"
               >
-                <Calendar className="w-3.5 h-3.5 text-[#D97706]" />
+                <Calendar className="w-3.5 h-3.5 text-[#D97706] dark:text-[#F0A030]" />
                 Deadline Date
               </label>
               <input
@@ -309,16 +308,16 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
                 required
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-sm tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                className="w-full rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3 py-1.5 text-sm tabular-nums text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
 
             <div>
               <label
                 htmlFor="task-time-input"
-                className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1"
+                className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1"
               >
-                <Clock className="w-3.5 h-3.5 text-[#1E40AF]" />
+                <Clock className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Time (Optional)
               </label>
               <input
@@ -326,7 +325,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
                 type="time"
                 value={scheduledTime}
                 onChange={(e) => setScheduledTime(e.target.value)}
-                className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3 py-1.5 text-sm tabular-nums text-[#0F172A] dark:text-slate-100 focus:border-[#1E40AF] focus:outline-none"
+                className="w-full rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3 py-1.5 text-sm tabular-nums text-[#0F172A] dark:text-[#ECECEE] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
               />
             </div>
           </div>
@@ -335,9 +334,9 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
           <div>
             <label
               htmlFor="task-notes-input"
-              className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-slate-300 mb-1"
+              className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] mb-1"
             >
-              <Layers className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <Layers className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
               Notes / Additional Information
             </label>
             <textarea
@@ -346,22 +345,22 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Links, reference numbers, meeting room, or follow-up checklist..."
-              className="w-full rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-3.5 py-2 text-sm text-[#0F172A] dark:text-slate-100 placeholder:text-[#0F172A]/40 focus:border-[#1E40AF] focus:outline-none"
+              className="w-full rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] px-3.5 py-2 text-sm text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#0F172A]/40 dark:placeholder:text-[#66666E] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
             />
           </div>
 
           {/* Submit Footer */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
             <MotionButton
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF] dark:hover:bg-slate-700 transition-colors whitespace-nowrap shrink-0"
+              className="px-4 py-2 text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] transition-colors whitespace-nowrap shrink-0"
             >
               Cancel
             </MotionButton>
             <MotionButton
               type="submit"
               disabled={isSaving}
-              className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors whitespace-nowrap shrink-0 ${
+              className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors whitespace-nowrap shrink-0 ${
                 isSaving ? 'opacity-60 cursor-not-allowed' : ''
               }`}
             >
@@ -370,7 +369,6 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             </MotionButton>
           </div>
         </form>
-    </ModalTransition>,
-    document.body
+    </ModalTransition>
   );
 };

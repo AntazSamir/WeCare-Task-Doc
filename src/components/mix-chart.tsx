@@ -387,7 +387,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
       animate={shown ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: 0.6, ease: EASE }}
       className={cn(
-        "relative w-[440px] max-w-full rounded-3xl bg-white p-5 text-[#242423] sm:p-6 dark:bg-zinc-900 dark:text-zinc-100",
+        "relative w-[440px] max-w-full rounded-3xl bg-white p-5 text-[#242423] sm:p-6 dark:bg-[#1C1C1E] dark:border dark:border-[#2E2E32] dark:text-[#ECECEE]",
         className,
       )}
     >
@@ -395,7 +395,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
       {/* The range control drops under the title when they do not fit side by side. */}
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <h3 className="whitespace-nowrap text-base font-semibold tracking-tight">{title}</h3>
-        <div role="radiogroup" aria-label="Range" className="flex rounded-full bg-[#242423]/[0.06] p-0.5 dark:bg-white/[0.08]">
+        <div role="radiogroup" aria-label="Range" className="flex rounded-full bg-[#242423]/[0.06] p-0.5 dark:bg-[#252528] dark:border dark:border-[#2E2E32]">
           {ranges.map((r) => (
             <button
               key={r.id}
@@ -403,13 +403,13 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
               role="radio"
               aria-checked={r.id === range.id}
               onClick={() => setRangeId(r.id)}
-              className="relative h-7 rounded-full px-3 text-xs font-medium text-zinc-500 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-zinc-400 aria-checked:text-[#242423] dark:text-zinc-400 dark:aria-checked:text-zinc-100"
+              className="relative h-7 rounded-full px-3 text-xs font-medium text-zinc-500 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[#4C8DF6] aria-checked:text-[#242423] dark:text-[#9A9AA2] dark:aria-checked:text-[#4C8DF6]"
             >
               {r.id === range.id && (
                 <motion.span
                   layoutId={`${uid}-range`}
                   transition={still ? { duration: 0 } : PILL}
-                  className="absolute inset-0 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12)] dark:bg-zinc-700"
+                  className="absolute inset-0 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12)] dark:bg-[rgba(76,141,246,0.14)] dark:shadow-none"
                 />
               )}
               <span className="relative">{r.label}</span>
@@ -422,7 +422,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
       <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1">
         <p className="text-[32px] font-semibold leading-none tracking-[-0.03em]">
           <Total value={total} decimals={dp} run={shown} still={still} />
-          <span className="ml-1.5 text-base font-medium tracking-normal text-zinc-400 dark:text-zinc-500">{unit}</span>
+          <span className="ml-1.5 text-base font-medium tracking-normal text-zinc-400 dark:text-[#9A9AA2]">{unit}</span>
         </p>
         {range.change !== undefined && (
           <motion.span
@@ -441,7 +441,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
           </motion.span>
         )}
       </div>
-      {range.caption && <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{range.caption}</p>}
+      {range.caption && <p className="mt-1 text-sm text-zinc-500 dark:text-[#9A9AA2]">{range.caption}</p>}
 
       {/* Legend: each source switches on and off. */}
       <div className="mt-4 flex flex-wrap gap-1.5">
@@ -451,7 +451,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
             type="button"
             aria-pressed={visible[i]}
             onClick={() => toggle(s.key)}
-            className="group/chip inline-flex h-7 items-center gap-1.5 rounded-full bg-[#242423]/[0.05] pl-2 pr-2.5 text-xs font-medium outline-none transition-colors hover:bg-[#242423]/[0.09] focus-visible:ring-2 focus-visible:ring-zinc-400 dark:bg-white/[0.06] dark:hover:bg-white/[0.1]"
+            className="group/chip inline-flex h-7 items-center gap-1.5 rounded-full bg-[#242423]/[0.05] pl-2 pr-2.5 text-xs font-medium outline-none transition-colors hover:bg-[#242423]/[0.09] focus-visible:ring-2 focus-visible:ring-[#4C8DF6] dark:bg-[#252528] dark:hover:bg-[#2E2E32]"
           >
             <motion.span
               className="size-2.5 rounded-full"
@@ -462,7 +462,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
               }}
               transition={{ type: "spring", stiffness: 500, damping: 28 }}
             />
-            <span className={cn("transition-colors", visible[i] ? "text-[#242423] dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-500")}>
+            <span className={cn("transition-colors", visible[i] ? "text-[#242423] dark:text-[#ECECEE]" : "text-zinc-400 dark:text-[#66666E]")}>
               {s.label}
             </span>
           </MotionButton>
@@ -472,7 +472,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
       {/* The chart. */}
       <div className="mt-4 flex gap-2">
         {/* Axis labels. */}
-        <div className="relative w-8 shrink-0 text-right text-[12px] tabular-nums text-zinc-400 dark:text-zinc-500" style={{ height: CHART_H }}>
+        <div className="relative w-8 shrink-0 text-right text-[12px] tabular-nums text-zinc-400 dark:text-[#9A9AA2]" style={{ height: CHART_H }}>
           {[0, 1, 2, 3, 4].map((k) => (
             <motion.span
               key={`${top}-${k}`}
@@ -531,7 +531,7 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
                     onClick={() => setPicked((x) => ({ bar: i, seg: x?.seg ?? topSeg }))}
                     onKeyDown={(e) => onKey(e, i)}
                     exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                    className="flex h-full min-w-0 flex-1 cursor-pointer flex-col-reverse items-stretch rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
+                    className="flex h-full min-w-0 flex-1 cursor-pointer flex-col-reverse items-stretch rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[#4C8DF6] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#1C1C1E]"
                     style={{ gap: SEG_GAP }}
                   >
                     {series.map((s, si) => {
@@ -590,9 +590,9 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
                   top: Math.max(0, tipTop - 8),
                 }}
                 transition={still ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 34, opacity: { duration: 0.15 } }}
-                className="pointer-events-none absolute z-10 w-max -translate-x-1/2 -translate-y-full rounded-xl bg-white px-3 py-2 text-xs shadow-[0_2px_6px_rgba(0,0,0,0.06),0_16px_32px_-12px_rgba(0,0,0,0.22)] dark:bg-zinc-800"
+                className="pointer-events-none absolute z-10 w-max -translate-x-1/2 -translate-y-full rounded-xl bg-white px-3 py-2 text-xs shadow-[0_2px_6px_rgba(0,0,0,0.06),0_16px_32px_-12px_rgba(0,0,0,0.22)] dark:bg-[#252528] dark:border dark:border-[#3A3A3F] dark:shadow-none"
               >
-                <p className="text-zinc-400 dark:text-zinc-500">{p.detail ?? p.label}</p>
+                <p className="text-zinc-400 dark:text-[#9A9AA2]">{p.detail ?? p.label}</p>
                 <AnimatePresence mode="popLayout" initial={false}>
                   <motion.p
                     key={tipSeries.key}
@@ -603,8 +603,8 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
                     className="mt-1 flex items-center gap-1.5 whitespace-nowrap"
                   >
                     <span className="size-2 rounded-full" style={{ backgroundColor: tipSeries.color }} />
-                    <span className="text-zinc-500 dark:text-zinc-400">{tipSeries.label}</span>
-                    <span className="font-semibold tabular-nums text-[#242423] dark:text-zinc-100">
+                    <span className="text-zinc-500 dark:text-[#9A9AA2]">{tipSeries.label}</span>
+                    <span className="font-semibold tabular-nums text-[#242423] dark:text-[#ECECEE]">
                       {fmt(p.values[tipSeg] ?? 0, dp)} {unit}
                     </span>
                   </motion.p>
@@ -614,11 +614,11 @@ export const MixChart = React.forwardRef<HTMLDivElement, MixChartProps>(function
           </AnimatePresence>
 
           {/* Labels under the bars. */}
-          <div className="mt-2 flex text-[12px] text-zinc-400 dark:text-zinc-500" style={{ gap: points.length > 9 ? 4 : 8 }}>
+          <div className="mt-2 flex text-[12px] text-zinc-400 dark:text-[#9A9AA2]" style={{ gap: points.length > 9 ? 4 : 8 }}>
             {points.map((pt, i) => (
               <span
                 key={`${range.id}-${pt.label}`}
-                className={cn("min-w-0 flex-1 truncate text-center transition-colors", i === active && "font-medium text-[#242423] dark:text-zinc-100")}
+                className={cn("min-w-0 flex-1 truncate text-center transition-colors", i === active && "font-medium text-[#242423] dark:text-[#ECECEE]")}
               >
                 {points.length > 9 ? (
                   pt.label.slice(0, 1)

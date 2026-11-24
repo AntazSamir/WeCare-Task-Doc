@@ -140,13 +140,13 @@ export const RoundedSlidingTabs: React.FC<RoundedSlidingTabsProps> = ({
 
   const defaultTrackClass =
     variant === 'segmented'
-      ? 'relative inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/80 border border-[#E2E8F0] dark:border-slate-700 text-xs max-w-full overflow-x-auto'
+      ? 'relative inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] text-xs max-w-full overflow-x-auto'
       : 'relative flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 text-xs';
 
   const defaultIndicatorClass =
     variant === 'segmented'
-      ? 'rounded-md bg-white dark:bg-slate-900 shadow-xs'
-      : 'rounded-md bg-blue-600 shadow-xs';
+      ? 'rounded-md bg-white dark:bg-[#1C1C1E] dark:border dark:border-[#3A3A3F] shadow-xs dark:shadow-none'
+      : 'rounded-md bg-blue-600 dark:bg-[#4C8DF6] shadow-xs dark:shadow-none';
 
   const defaultButtonBase =
     variant === 'segmented'
@@ -155,13 +155,13 @@ export const RoundedSlidingTabs: React.FC<RoundedSlidingTabsProps> = ({
 
   const defaultActiveBtn =
     variant === 'segmented'
-      ? 'border border-transparent bg-transparent text-[#1E40AF] dark:text-slate-100 font-semibold'
+      ? 'border border-transparent bg-transparent text-[#1E40AF] dark:text-[#4C8DF6] font-semibold'
       : 'border border-transparent bg-transparent text-white';
 
   const defaultInactiveBtn =
     variant === 'segmented'
-      ? 'border border-transparent bg-transparent text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
-      : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800';
+      ? 'border border-transparent bg-transparent text-[#64748B] dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE]'
+      : 'bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] text-slate-600 dark:text-[#9A9AA2] hover:bg-slate-50 dark:hover:bg-[#252528]';
 
   return (
     <div
@@ -229,7 +229,7 @@ export const RoundedSlidingTabs: React.FC<RoundedSlidingTabsProps> = ({
                 : cn(defaultInactiveBtn, inactiveButtonClassName)
             )}
           >
-            <span className="relative z-20 inline-flex items-center gap-1.5">
+            <span className="relative z-20 inline-flex items-center gap-1.5 tabular-nums">
               {tab.icon}
               <span>{tab.label}</span>
               {tab.trailing}

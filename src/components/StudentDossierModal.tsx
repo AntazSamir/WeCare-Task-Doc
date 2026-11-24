@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import {
   X,
   FileCheck2,
@@ -109,29 +108,29 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
     }
   };
 
-  return createPortal(
+  return (
     <ModalTransition
       isOpen={isOpen && Boolean(student)}
       onClose={onClose}
-      backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
-      cardClassName="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-[12px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-2xl overflow-hidden"
+      backdropClassName="fixed inset-0 z-50 bg-[#0F172A]/40 dark:bg-black/70 backdrop-blur-xs"
+      cardClassName="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-[12px] bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-2xl dark:shadow-none overflow-hidden"
     >
       {student && (
         <>
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between shrink-0 bg-[#F8FAFC] dark:bg-slate-900">
+        <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between shrink-0 bg-[#F8FAFC] dark:bg-[#161616]">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#64748B] dark:text-slate-400 tabular-nums">Passport: {student.passportNumber}</span>
-              <span className="text-[#E2E8F0] dark:text-slate-700">·</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EFF6FF] dark:bg-slate-800 text-[#1E40AF] dark:text-slate-300 font-medium">
+              <span className="text-xs text-[#64748B] dark:text-[#9A9AA2] tabular-nums">Passport: {student.passportNumber}</span>
+              <span className="text-[#E2E8F0] dark:text-[#2E2E32]">·</span>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E40AF] dark:text-[#4C8DF6] font-medium">
                 {student.degreeLevel}
               </span>
             </div>
-            <h2 className="text-[16px] font-semibold text-[#0F172A] dark:text-slate-100 mt-1">
+            <h2 className="text-[16px] font-semibold text-[#0F172A] dark:text-[#ECECEE] mt-1">
               {student.fullName}
             </h2>
-            <div className="text-xs text-[#64748B] dark:text-slate-400">
+            <div className="text-xs text-[#64748B] dark:text-[#9A9AA2]">
               {student.appliedUniversityName} · {student.major} ({student.intakeTerm})
             </div>
           </div>
@@ -139,14 +138,14 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
           <div className="flex items-center gap-2">
             <MotionButton
               onClick={() => onCreateTaskForStudent(student)}
-              className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors duration-150 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+              className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors duration-150 shadow-xs dark:shadow-none focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2 dark:focus:ring-offset-[#161616]"
             >
               <Plus className="w-4 h-4" />
               Assign Task
             </MotionButton>
             <MotionButton
               onClick={onClose}
-              className="p-2 text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-slate-200 rounded-lg transition-colors"
+              className="p-2 text-[#64748B] hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] dark:hover:bg-[#252528] rounded-lg transition-colors"
               aria-label="Close student dossier"
             >
               <X className="w-4 h-4" />
@@ -155,10 +154,10 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
         </div>
 
         {/* Scrollable Body */}
-        <form onSubmit={handleSaveChanges} className="p-6 overflow-y-auto space-y-6 flex-1">
+        <form onSubmit={handleSaveChanges} className="p-6 overflow-y-auto scrollbar-stable space-y-6 flex-1">
           {/* Korean Visa Stage Progression Radio / Selector */}
           <div className="space-y-2">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-slate-300">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-[#ECECEE]">
               Korean Visa Stage Progression
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
@@ -170,15 +169,15 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                     onClick={() => handleQuickAdvanceStage(stage.id)}
                     className={`p-2.5 rounded-lg border text-left transition-colors ${
                       isSelected
-                        ? 'bg-[#EFF6FF] dark:bg-blue-950/60 border-[#1E40AF] dark:border-blue-500 text-[#1E40AF] dark:text-blue-100 ring-2 ring-[#1E40AF]/25'
-                        : 'bg-[#FFFFFF] dark:bg-slate-950/40 border-[#E2E8F0] dark:border-slate-800 text-[#0F172A]/75 dark:text-slate-400 hover:bg-[#F8FAFC] hover:border-[#1E40AF]/40 dark:hover:bg-slate-800/40'
+                        ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF] dark:border-[#4C8DF6] text-[#1E40AF] dark:text-[#ECECEE] ring-2 ring-[#1E40AF]/25 dark:ring-[#4C8DF6]/30'
+                        : 'bg-[#FFFFFF] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/75 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] hover:border-[#1E40AF]/40 dark:hover:bg-[#2E2E32] dark:hover:border-[#3A3A3F]'
                     }`}
                   >
                     <div className="text-xs font-semibold truncate flex items-center justify-between">
                       <span>{stage.label}</span>
-                      {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />}
+                      {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0" />}
                     </div>
-                    <div className={`text-[10px] mt-1 line-clamp-2 ${isSelected ? 'text-[#1E40AF]/80 dark:text-blue-200/80' : 'text-[#64748B] dark:text-slate-500'}`}>
+                    <div className={`text-[10px] mt-1 line-clamp-2 ${isSelected ? 'text-[#1E40AF]/80 dark:text-[#ECECEE]/80' : 'text-[#64748B] dark:text-[#66666E]'}`}>
                       {stage.desc}
                     </div>
                   </MotionButton>
@@ -188,37 +187,37 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
           </div>
 
           {/* Student Dossier Information Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] text-xs">
             <div>
-              <span className="text-[#64748B] dark:text-slate-400 block text-[10px] uppercase font-semibold">Assigned Consultant</span>
-              <span className="font-semibold text-[#0F172A] dark:text-slate-200 mt-0.5 block">
+              <span className="text-[#64748B] dark:text-[#9A9AA2] block text-[10px] uppercase font-semibold">Assigned Consultant</span>
+              <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE] mt-0.5 block">
                 {student.assignedConsultantName}
               </span>
             </div>
             <div>
-              <span className="text-[#64748B] dark:text-slate-400 block text-[10px] uppercase font-semibold">Contact Details</span>
-              <span className="text-[#0F172A] dark:text-slate-300 tabular-nums block mt-0.5 truncate font-medium">
+              <span className="text-[#64748B] dark:text-[#9A9AA2] block text-[10px] uppercase font-semibold">Contact Details</span>
+              <span className="text-[#0F172A] dark:text-[#ECECEE] tabular-nums block mt-0.5 truncate font-medium">
                 {student.contactEmail}
               </span>
-              <span className="text-[#64748B] dark:text-slate-400 tabular-nums block text-[11px]">{student.contactPhone}</span>
+              <span className="text-[#64748B] dark:text-[#9A9AA2] tabular-nums block text-[11px]">{student.contactPhone}</span>
             </div>
             <div>
-              <span className="text-[#64748B] dark:text-slate-400 block text-[10px] uppercase font-semibold">Certificate of Admission (CoA)</span>
+              <span className="text-[#64748B] dark:text-[#9A9AA2] block text-[10px] uppercase font-semibold">Certificate of Admission (CoA)</span>
               <input
                 type="text"
                 value={coaNumber}
                 onChange={(e) => setCoaNumber(e.target.value)}
                 placeholder="e.g. COA-2027-SNU-0841"
-                className="mt-1 w-full rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 px-2.5 py-1 text-xs tabular-nums text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
+                className="mt-1 w-full rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#1C1C1E] px-2.5 py-1 text-xs tabular-nums text-[#0F172A] dark:text-[#ECECEE] dark:placeholder:text-[#66666E] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
               />
             </div>
           </div>
 
           {/* DHL / Courier Dispatch Tracking Section */}
-          <div className="p-4 rounded-lg border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900 space-y-3">
+          <div className="p-4 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#1C1C1E] space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5 uppercase">
-                <Truck className="w-4 h-4 text-[#1E40AF]" />
+              <span className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5 uppercase">
+                <Truck className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Physical Document Courier Tracking (To Korea)
               </span>
               {dhlTracking && (
@@ -226,7 +225,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                   href={`https://www.dhl.com/en/express/tracking.html?AWB=${encodeURIComponent(dhlTracking)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs text-[#1E40AF] dark:text-blue-400 font-semibold hover:underline inline-flex items-center gap-1"
+                  className="text-xs text-[#1E40AF] dark:text-[#4C8DF6] font-semibold hover:underline inline-flex items-center gap-1"
                 >
                   Track on DHL.com
                   <ExternalLink className="w-3 h-3" />
@@ -236,7 +235,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="block text-[#64748B] dark:text-slate-400 mb-1">Courier Service</label>
+                <label className="block text-[#64748B] dark:text-[#9A9AA2] mb-1">Courier Service</label>
                 <MorphSelect value={courierName} onValueChange={(v) => setCourierName(v as any)}>
                   <MorphSelectTrigger>
                     <MorphSelectValue placeholder="Select courier..." />
@@ -250,13 +249,13 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[#64748B] dark:text-slate-400 mb-1">AWB Tracking Number</label>
+                <label className="block text-[#64748B] dark:text-[#9A9AA2] mb-1">AWB Tracking Number</label>
                 <input
                   type="text"
                   value={dhlTracking}
                   onChange={(e) => setDhlTracking(e.target.value)}
                   placeholder="e.g. DHL-9921-8840-KR"
-                  className="w-full rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 px-3 py-1.5 text-xs tabular-nums text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
+                  className="w-full rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] px-3 py-1.5 text-xs tabular-nums text-[#0F172A] dark:text-[#ECECEE] dark:placeholder:text-[#66666E] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                 />
               </div>
             </div>
@@ -265,27 +264,27 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
           {/* South Korean University Document Verification Checklist */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-slate-300 flex items-center gap-1.5">
-                <FileCheck2 className="w-4 h-4 text-[#1E40AF]" />
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
+                <FileCheck2 className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
                 Admission & Visa Document Verification Checklist
               </h3>
-              <span className="text-[11px] tabular-nums text-[#64748B] dark:text-slate-400">
+              <span className="text-[11px] tabular-nums text-[#64748B] dark:text-[#9A9AA2]">
                 {checklist.filter((i) => i.status === 'Verified').length}/{checklist.length} verified
               </span>
             </div>
 
-            <div className="divide-y divide-[#E2E8F0] dark:divide-slate-800 border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden text-xs">
+            <div className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg overflow-hidden text-xs">
               {checklist.map((doc) => (
-                <div key={doc.id} className="p-3 flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-slate-900">
+                <div key={doc.id} className="p-3 flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] dark:bg-[#1C1C1E]">
                   <div className="min-w-0">
-                    <div className="font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-1.5">
+                    <div className="font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
                       <span>{doc.name}</span>
                       {doc.required && (
-                        <span className="text-[10px] text-[#DC2626] font-semibold">*Required</span>
+                        <span className="text-[10px] text-[#DC2626] dark:text-[#EF5350] font-semibold">*Required</span>
                       )}
                     </div>
                     {doc.verifiedBy && (
-                      <div className="text-[10px] text-[#64748B] dark:text-slate-400 mt-0.5">
+                      <div className="text-[10px] text-[#64748B] dark:text-[#9A9AA2] mt-0.5">
                         Verified by {doc.verifiedBy}
                       </div>
                     )}
@@ -299,13 +298,13 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
                         className={`px-2 py-1 text-[11px] rounded transition-colors ${
                           doc.status === st
                             ? st === 'Verified'
-                              ? 'bg-[#16A34A] text-white font-semibold shadow-xs'
+                              ? 'bg-[#16A34A] dark:bg-[#34C26B] text-white font-semibold shadow-xs dark:shadow-none'
                               : st === 'Apostilled'
-                              ? 'bg-[#1E40AF] text-white font-semibold'
+                              ? 'bg-[#1E40AF] dark:bg-[#4C8DF6] text-white font-semibold'
                               : st === 'Notarized'
-                              ? 'bg-[#1E40AF] text-white font-semibold'
-                              : 'bg-[#D97706] text-white font-semibold'
-                            : 'bg-[#F8FAFC] dark:bg-slate-800 text-[#64748B] dark:text-slate-400 hover:bg-[#EFF6FF] hover:text-[#1E40AF] dark:hover:bg-slate-700'
+                              ? 'bg-[#1E40AF] dark:bg-[#4C8DF6] text-white font-semibold'
+                              : 'bg-[#D97706] dark:bg-[#F0A030] text-white font-semibold'
+                            : 'bg-[#F8FAFC] dark:bg-[#252528] text-[#64748B] dark:text-[#9A9AA2] hover:bg-[#EFF6FF] hover:text-[#1E40AF] dark:hover:bg-[#2E2E32] dark:hover:text-[#ECECEE]'
                         }`}
                       >
                         {st}
@@ -319,7 +318,7 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-[#0F172A] dark:text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] mb-1">
               Internal Case Notes & Visa Guidance
             </label>
             <textarea
@@ -327,22 +326,22 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Candidate interview preparation, Shinhan wire receipt confirmation, apostille submission dates..."
-              className="w-full rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 p-2.5 text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#64748B]/60 dark:placeholder:text-slate-400 focus:outline-none focus:border-[#1E40AF]"
+              className="w-full rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] p-2.5 text-xs text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#64748B]/60 dark:placeholder:text-[#66666E] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
             />
           </div>
 
           {/* Footer Submit */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
             <MotionButton
               onClick={onClose}
-              className="h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-slate-300 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg hover:bg-slate-50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+              className="h-9 px-4 text-sm font-medium text-[#0F172A] dark:text-[#ECECEE] bg-white dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg hover:bg-slate-50 dark:hover:bg-[#2E2E32] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2 dark:focus:ring-offset-[#1C1C1E]"
             >
               Cancel
             </MotionButton>
             <MotionButton
               type="submit"
               disabled={isSaving}
-              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] disabled:opacity-50 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] focus:ring-offset-2"
+              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] disabled:opacity-50 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2 dark:focus:ring-offset-[#1C1C1E]"
             >
               {isSaving && <Spinner size="sm" shade="inherit" aria-hidden="true" />}
               {isSaving ? 'Saving...' : 'Save Dossier Updates'}
@@ -351,7 +350,6 @@ export const StudentDossierModal: React.FC<StudentDossierModalProps> = ({
         </form>
         </>
       )}
-    </ModalTransition>,
-    document.body
+    </ModalTransition>
   );
 };

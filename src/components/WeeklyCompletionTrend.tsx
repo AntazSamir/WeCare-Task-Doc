@@ -179,13 +179,13 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
         ranges={ranges}
         unit="tasks"
         decimals={0}
-        className="w-full rounded-xl border border-[#E2E8F0] dark:border-slate-800/80 bg-[#FFFFFF] dark:bg-slate-900 text-[#0F172A] dark:text-slate-100 shadow-xs"
+        className="w-full rounded-xl border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#1C1C1E] text-[#0F172A] dark:text-[#ECECEE] shadow-xs dark:shadow-none"
       />
 
       {onOpenDayTasks && (
-        <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-[#64748B] dark:text-slate-400">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-[#64748B] dark:text-[#9A9AA2]">
           <span className="inline-flex items-center gap-1.5 font-medium">
-            <CalendarPlus className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400" />
+            <CalendarPlus className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
             Quick schedule by day:
           </span>
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -196,8 +196,8 @@ export const WeeklyCompletionTrend: React.FC<WeeklyCompletionTrendProps> = ({
                 onClick={() => onOpenDayTasks(d.dateIso)}
                 className={`px-2 py-0.5 rounded-md text-[11px] tabular-nums transition-colors whitespace-nowrap shrink-0 ${
                   d.isToday
-                    ? 'font-semibold text-[#1E40AF] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-blue-950/60'
-                    : 'hover:text-[#0F172A] dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'font-semibold text-[#1E40AF] dark:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[rgba(76,141,246,0.14)]'
+                    : 'hover:text-[#0F172A] dark:hover:text-[#ECECEE] hover:bg-slate-100 dark:hover:bg-[#252528]'
                 }`}
                 title={`Create task for ${d.dateIso}`}
               >

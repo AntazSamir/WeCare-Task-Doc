@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Flag,
   Send,
+  X,
 } from 'lucide-react';
 import { Spinner } from '@astryxdesign/core/Spinner';
 import {
@@ -146,61 +147,61 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
   const getHandoverStatusClass = (status: string) => {
     switch (status) {
       case 'Accepted':
-        return 'text-[#16A34A] dark:text-emerald-400';
+        return 'text-[#16A34A] dark:text-[#34C26B]';
       case 'Partially Received':
-        return 'text-[#D97706] dark:text-amber-400';
+        return 'text-[#D97706] dark:text-[#F0A030]';
       case 'Disputed':
-        return 'text-[#DC2626] dark:text-rose-400';
+        return 'text-[#DC2626] dark:text-[#EF5350]';
       case 'Follow-up Delivered':
-        return 'text-[#1E40AF] dark:text-blue-400';
+        return 'text-[#1E40AF] dark:text-[#4C8DF6]';
       default:
-        return 'text-slate-600 dark:text-slate-400';
+        return 'text-slate-600 dark:text-[#9A9AA2]';
     }
   };
 
   const renderHandoverStatusIcon = (status: string) => {
     switch (status) {
       case 'Accepted':
-        return <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] dark:text-emerald-400 shrink-0" />;
+        return <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B] shrink-0" />;
       case 'Partially Received':
-        return <AlertTriangle className="w-3.5 h-3.5 text-[#D97706] dark:text-amber-400 shrink-0" />;
+        return <AlertTriangle className="w-3.5 h-3.5 text-[#D97706] dark:text-[#F0A030] shrink-0" />;
       case 'Disputed':
-        return <XCircle className="w-3.5 h-3.5 text-[#DC2626] dark:text-rose-400 shrink-0" />;
+        return <XCircle className="w-3.5 h-3.5 text-[#DC2626] dark:text-[#EF5350] shrink-0" />;
       case 'Follow-up Delivered':
-        return <PackageCheck className="w-3.5 h-3.5 text-[#1E40AF] dark:text-blue-400 shrink-0" />;
+        return <PackageCheck className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0" />;
       default:
-        return <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0" />;
+        return <Clock className="w-3.5 h-3.5 text-slate-500 dark:text-[#9A9AA2] shrink-0" />;
     }
   };
 
   const getRequestStatusClass = (status: string) => {
     switch (status) {
       case 'Completed':
-        return 'text-[#16A34A] dark:text-emerald-400';
+        return 'text-[#16A34A] dark:text-[#34C26B]';
       case 'Partially Fulfilled':
-        return 'text-[#D97706] dark:text-amber-400';
+        return 'text-[#D97706] dark:text-[#F0A030]';
       case 'Disputed':
-        return 'text-[#DC2626] dark:text-rose-400';
+        return 'text-[#DC2626] dark:text-[#EF5350]';
       case 'Handover Submitted':
       case 'In Verification':
-        return 'text-[#1E40AF] dark:text-blue-400';
+        return 'text-[#1E40AF] dark:text-[#4C8DF6]';
       case 'Cancelled':
-        return 'text-slate-400';
+        return 'text-slate-400 dark:text-[#66666E]';
       default:
-        return 'text-[#1E3A8A] dark:text-blue-400';
+        return 'text-[#1E3A8A] dark:text-[#ECECEE]';
     }
   };
 
   const getPriorityClass = (priority: string) => {
     switch (priority) {
       case 'Urgent':
-        return 'text-[#DC2626] dark:text-rose-400';
+        return 'text-[#DC2626] dark:text-[#EF5350]';
       case 'High':
-        return 'text-[#D97706] dark:text-amber-400';
+        return 'text-[#D97706] dark:text-[#F0A030]';
       case 'Normal':
-        return 'text-[#1E40AF] dark:text-blue-400';
+        return 'text-[#1E40AF] dark:text-[#ECECEE]';
       default:
-        return 'text-slate-500';
+        return 'text-slate-500 dark:text-[#9A9AA2]';
     }
   };
 
@@ -239,18 +240,18 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
   return (
     <div className="space-y-2.5">
       {/* Header Bar */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-md bg-[#EFF6FF] dark:bg-blue-950/60 border border-[#1E40AF]/40 dark:border-blue-800 flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 shrink-0">
+          <div className="w-9 h-9 rounded-md bg-[#EFF6FF] dark:bg-[#252528] border border-[#1E40AF]/40 dark:border-[#2E2E32] flex items-center justify-center text-[#1E3A8A] dark:text-[#ECECEE] shrink-0">
             <FileCheck2 className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-lg font-display font-bold text-[#0F172A] dark:text-slate-100">
+            <h1 className="text-lg font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
               Counselor Document Handover Workspace
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-0.5">
               {currentUser.name} · Submit physical student records to Admission Team · Fulfill incoming document requests · Ledger Tab{' '}
-              <span className="tabular-nums text-[#0F172A] dark:text-slate-300">HND_{currentUser.id}</span>
+              <span className="tabular-nums text-[#0F172A] dark:text-[#ECECEE]">HND_{currentUser.id}</span>
             </p>
           </div>
         </div>
@@ -263,7 +264,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               onRefreshAll();
               loadTabData();
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#3A3A3F] rounded-md transition-colors disabled:opacity-60"
           >
             {loading ? (
               <Spinner size="sm" aria-hidden="true" />
@@ -276,7 +277,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           <MotionButton
             type="button"
             onClick={() => onOpenCreateHandover(null)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
             Create Document Handover
@@ -289,16 +290,16 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         <MotionButton
           type="button"
           onClick={() => handleTabChange('requests')}
-          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF] dark:hover:border-blue-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF] dark:hover:border-[#3A3A3F] rounded-lg p-3.5 transition-colors"
         >
-          <div className="text-[11px] font-semibold text-slate-500 uppercase flex items-center justify-between">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-[#9A9AA2] uppercase flex items-center justify-between">
             <span>Admission Requests</span>
-            <ClipboardList className="w-3.5 h-3.5 text-[#1E3A8A] dark:text-blue-400" />
+            <ClipboardList className="w-3.5 h-3.5 text-[#1E3A8A]" />
           </div>
-          <div className="mt-1 text-2xl tabular-nums font-bold tabular-nums text-[#1E3A8A] dark:text-blue-400">
+          <div className={`mt-1 text-2xl tabular-nums font-bold ${(stats?.openRequestsAssignedToMe ?? 0) === 0 ? 'text-slate-400 dark:text-[#66666E]' : 'text-[#1E3A8A] dark:text-[#ECECEE]'}`}>
             {stats?.openRequestsAssignedToMe ?? 0}
           </div>
-          <div className="mt-0.5 text-[11px] text-slate-500 tabular-nums">
+          <div className="mt-0.5 text-[11px] text-slate-500 dark:text-[#9A9AA2] tabular-nums">
             {stats?.totalRequestsAssignedToMe ?? 0} assigned total
           </div>
         </MotionButton>
@@ -306,62 +307,62 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
         <MotionButton
           type="button"
           onClick={() => handleTabChange('pending_confirmations')}
-          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF] dark:hover:border-blue-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF] dark:hover:border-[#3A3A3F] rounded-lg p-3.5 transition-colors"
         >
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-[#9A9AA2] uppercase">
             Pending Confirmations
           </div>
-          <div className="mt-1 text-2xl tabular-nums font-bold tabular-nums text-[#1E40AF] dark:text-blue-400">
+          <div className={`mt-1 text-2xl tabular-nums font-bold ${(stats?.pendingConfirmationsMyHandovers ?? 0) === 0 ? 'text-slate-400 dark:text-[#66666E]' : 'text-[#1E40AF] dark:text-[#ECECEE]'}`}>
             {stats?.pendingConfirmationsMyHandovers ?? 0}
           </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">Awaiting Admission sign-off</div>
+          <div className="mt-0.5 text-[11px] text-slate-500 dark:text-[#9A9AA2]">Awaiting Admission sign-off</div>
         </MotionButton>
 
         <MotionButton
           type="button"
           onClick={() => handleTabChange('disputed')}
-          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#D97706] dark:hover:border-amber-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#D97706] dark:hover:border-[#F0A030]/60 rounded-lg p-3.5 transition-colors"
         >
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-[#9A9AA2] uppercase">
             Needs Follow-Up
           </div>
-          <div className="mt-1 text-2xl tabular-nums font-bold tabular-nums text-[#D97706] dark:text-amber-400">
+          <div className={`mt-1 text-2xl tabular-nums font-bold ${(stats?.myNeedsFollowUp ?? 0) === 0 ? 'text-slate-400 dark:text-[#66666E]' : 'text-[#D97706] dark:text-[#F0A030]'}`}>
             {stats?.myNeedsFollowUp ?? 0}
           </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">Partial or disputed batches</div>
+          <div className="mt-0.5 text-[11px] text-slate-500 dark:text-[#9A9AA2]">Partial or disputed batches</div>
         </MotionButton>
 
         <MotionButton
           type="button"
           onClick={() => handleTabChange('received')}
-          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#16A34A] dark:hover:border-emerald-700 rounded-lg p-3.5 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#16A34A] dark:hover:border-[#34C26B]/60 rounded-lg p-3.5 transition-colors"
         >
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-[#9A9AA2] uppercase">
             Accepted in Custody
           </div>
-          <div className="mt-1 text-2xl tabular-nums font-bold tabular-nums text-[#16A34A] dark:text-emerald-400">
+          <div className={`mt-1 text-2xl tabular-nums font-bold ${(stats?.myAcceptedHandovers ?? 0) === 0 ? 'text-slate-400 dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
             {stats?.myAcceptedHandovers ?? 0}
           </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">Verified physical receipts</div>
+          <div className="mt-0.5 text-[11px] text-slate-500 dark:text-[#9A9AA2]">Verified physical receipts</div>
         </MotionButton>
 
         <MotionButton
           type="button"
           onClick={() => handleTabChange('my')}
-          className="text-left bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF] dark:hover:border-slate-700 rounded-lg p-3.5 col-span-2 lg:col-span-1 transition-colors"
+          className="text-left bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF] dark:hover:border-[#3A3A3F] rounded-lg p-3.5 col-span-2 lg:col-span-1 transition-colors"
         >
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-[#9A9AA2] uppercase">
             My Total Handovers
           </div>
-          <div className="mt-1 text-2xl tabular-nums font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
+          <div className={`mt-1 text-2xl tabular-nums font-bold ${(stats?.myTotalHandovers ?? 0) === 0 ? 'text-slate-400 dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
             {stats?.myTotalHandovers ?? 0}
           </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">Submitted across all terms</div>
+          <div className="mt-0.5 text-[11px] text-slate-500 dark:text-[#9A9AA2]">Submitted across all terms</div>
         </MotionButton>
       </div>
 
       {/* Role Segmented Navigation */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-2">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-2">
         <RoundedSlidingTabs
           variant="cards"
           value={activeTab}
@@ -370,10 +371,10 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           label="Counselor handover sections"
           onValueChange={(id) => handleTabChange(id as CounselorTab)}
           className="flex-wrap gap-1.5 pb-0 pt-0 overflow-visible"
-          indicatorClassName="rounded-md bg-[#1E3A8A] dark:bg-blue-600 shadow-xs"
+          indicatorClassName="rounded-md bg-[#1E3A8A] dark:bg-[rgba(76,141,246,0.14)] dark:border dark:border-[#4C8DF6]/40 shadow-xs dark:shadow-none"
           buttonClassName="px-3 h-[30px] rounded-md text-xs font-semibold"
-          activeButtonClassName="text-white"
-          inactiveButtonClassName="border-transparent bg-transparent text-[#0F172A] dark:text-slate-400 hover:bg-[#EFF6FF]/60 dark:hover:bg-slate-800"
+          activeButtonClassName="text-white dark:text-[#4C8DF6]"
+          inactiveButtonClassName="border-transparent bg-transparent text-[#0F172A] dark:text-[#9A9AA2] hover:bg-[#EFF6FF]/60 dark:hover:bg-[#252528] dark:hover:text-[#ECECEE]"
           tabs={tabs.map((tab) => {
             const active = activeTab === tab.id;
             return {
@@ -382,7 +383,11 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               trailing: (
                 <span
                   className={`tabular-nums text-[11px] ${
-                    active ? 'text-[#EFF6FF]' : 'text-slate-400'
+                    active
+                      ? 'text-[#EFF6FF] dark:text-[#4C8DF6]'
+                      : (tab.count ?? 0) === 0
+                      ? 'text-slate-400 dark:text-[#66666E]'
+                      : 'text-slate-400 dark:text-[#9A9AA2]'
                   }`}
                 >
                   ({tab.count ?? 0})
@@ -396,9 +401,9 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
       {/* Content Area with smooth tab transition */}
       <TabTransition viewKey={activeTab} className="space-y-3.5">
         {/* Search & Multi-Facet Filter Bar */}
-      <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5 grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3.5 grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
         <div className="md:col-span-4 relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchTerm}
@@ -408,8 +413,18 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                 ? 'Search Request ID, student, passport, requester, or document...'
                 : 'Search Handover ID, Request ID, student, passport, or doc...'
             }
-            className="w-full pl-8 pr-3 h-[28px] text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:bg-[#FFFFFF] focus:border-[#1E40AF] focus:outline-none"
+            className="w-full pl-8 pr-8 h-9 text-xs rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#64748B] dark:placeholder:text-[#66666E] focus:bg-[#FFFFFF] dark:focus:bg-[#252528] focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none transition-colors"
           />
+          {searchTerm && (
+            <MotionButton
+              type="button"
+              onClick={() => setSearchTerm('')}
+              aria-label="Clear handover search"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded"
+            >
+              <X className="w-3.5 h-3.5" />
+            </MotionButton>
+          )}
         </div>
 
         <div className="md:col-span-2">
@@ -481,13 +496,13 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
             title={activeTab === 'requests' ? 'Deadline / Created From' : 'Handover Date From'}
-            className="w-full px-2 h-[28px] text-[11px] rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 tabular-nums focus:border-[#1E40AF] focus:outline-none"
+            className="w-full px-2 h-[28px] text-[11px] rounded-md border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] tabular-nums focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] focus:outline-none"
           />
           {hasActiveFilters && (
             <MotionButton
               type="button"
               onClick={resetFilters}
-              className="px-2 py-1.5 text-[11px] font-semibold text-[#1E40AF] hover:text-[#1E3A8A] dark:hover:text-slate-100 transition-colors"
+              className="px-2 py-1.5 text-[11px] font-semibold text-[#1E40AF] dark:text-[#4C8DF6] hover:text-[#1E3A8A] dark:hover:text-[#6BA1F8] transition-colors"
             >
               Reset
             </MotionButton>
@@ -497,9 +512,18 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
 
       {/* Main Content Table */}
       {activeTab === 'requests' ? (
-        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[#F8FAFC] dark:bg-slate-800/60 text-[11px] font-semibold text-slate-500 border-b border-[#E2E8F0] dark:border-slate-800">
+        <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg overflow-x-auto">
+          <table className="w-full min-w-[1140px] table-fixed text-left text-xs">
+            <colgroup>
+              <col style={{ width: '11%' }} />
+              <col style={{ width: '16%' }} />
+              <col style={{ width: '19%' }} />
+              <col style={{ width: '14%' }} />
+              <col style={{ width: '11%' }} />
+              <col style={{ width: '12%' }} />
+              <col style={{ width: '17%' }} />
+            </colgroup>
+            <thead className="bg-[#F8FAFC] dark:bg-[#161616] text-[11px] font-semibold text-slate-500 dark:text-[#9A9AA2] border-b border-[#E2E8F0] dark:border-[#2E2E32]">
               <tr>
                 <th className="px-4 py-3">Request ID</th>
                 <th className="px-4 py-3">Student Dossier</th>
@@ -510,10 +534,10 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+            <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
               {loading && requests.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-slate-500">
+                  <td colSpan={7} className="px-6 py-10 text-center text-slate-500 dark:text-[#9A9AA2]">
                     <div className="inline-flex items-center justify-center gap-2">
                       <Spinner size="md" aria-label="Loading document requests" />
                       <span>Loading document requests from Admission Team...</span>
@@ -523,10 +547,10 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               ) : requests.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center space-y-2">
-                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-300">
+                    <div className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                       No document requests assigned to you
                     </div>
-                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    <p className="text-xs text-slate-500 dark:text-[#9A9AA2] max-w-md mx-auto">
                       When Admission Team officers request original or apostilled student documents from you, they appear here for fulfillment.
                     </p>
                   </td>
@@ -541,42 +565,42 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                   return (
                     <tr
                       key={req.id}
-                      className="hover:bg-[#F8FAFC] dark:hover:bg-slate-800/30 transition-colors"
+                      className="hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors"
                     >
                       <td className="px-4 py-3 align-top">
                         <MotionButton
                           type="button"
                           onClick={() => onOpenRequestDetail(req.id)}
-                          className="tabular-nums font-bold text-[#1E40AF] dark:text-blue-400 hover:underline text-left"
+                          className="tabular-nums font-bold text-[#1E40AF] dark:text-[#4C8DF6] hover:underline text-left"
                         >
                           {req.id}
                         </MotionButton>
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-[#0F172A] dark:text-slate-100">
+                        <div className="font-semibold text-[#0F172A] dark:text-[#ECECEE] truncate">
                           {req.studentName}
                         </div>
-                        <div className="text-[11px] tabular-nums text-slate-500">
+                        <div className="text-[11px] tabular-nums text-slate-500 dark:text-[#9A9AA2] truncate">
                           {req.studentPassport} · {req.universityName || req.intakeTerm}
                         </div>
                       </td>
 
-                      <td className="px-4 py-3 align-top max-w-xs">
-                        <div className="font-medium text-[#0F172A] dark:text-slate-200 truncate">
+                      <td className="px-4 py-3 align-top">
+                        <div className="font-medium text-[#0F172A] dark:text-[#ECECEE] truncate">
                           {req.requiredDocuments.map((d) => d.documentName).join(', ')}
                         </div>
-                        <div className="text-[11px] tabular-nums text-slate-500 mt-0.5 tabular-nums">
+                        <div className="text-[11px] tabular-nums text-slate-500 dark:text-[#9A9AA2] mt-0.5 truncate">
                           {req.requiredDocuments.length} requested item(s)
                           {req.remarks ? ` · "${req.remarks}"` : ''}
                         </div>
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-[#0F172A] dark:text-slate-200">
+                        <div className="font-semibold text-[#0F172A] dark:text-[#ECECEE] truncate">
                           {req.requestedByName}
                         </div>
-                        <div className="text-[11px] text-slate-500 tabular-nums">Admission Team</div>
+                        <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] tabular-nums">Admission Team</div>
                       </td>
 
                       <td className="px-4 py-3 align-top">
@@ -584,7 +608,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <Flag className="w-3 h-3 shrink-0" />
                           <span>{req.priority}</span>
                         </div>
-                        <div className="text-[11px] tabular-nums text-slate-500 mt-0.5 tabular-nums">
+                        <div className="text-[11px] tabular-nums text-slate-500 dark:text-[#9A9AA2] mt-0.5">
                           Due {req.deadline}
                         </div>
                       </td>
@@ -597,12 +621,12 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <MotionButton
                             type="button"
                             onClick={() => onOpenHandoverDetail(req.linkedHandoverId!)}
-                            className="mt-0.5 text-[11px] tabular-nums font-semibold text-[#1E40AF] dark:text-blue-400 hover:underline"
+                            className="mt-0.5 text-[11px] tabular-nums font-semibold text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
                           >
                             {req.linkedHandoverId} ({req.linkedHandoverStatus})
                           </MotionButton>
                         ) : (
-                          <div className="mt-0.5 text-[11px] text-slate-400">Awaiting submission</div>
+                          <div className="mt-0.5 text-[11px] text-slate-400 dark:text-[#66666E]">Awaiting submission</div>
                         )}
                       </td>
 
@@ -612,7 +636,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                             <MotionButton
                               type="button"
                               onClick={() => onOpenCreateHandover(req)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors"
                             >
                               <Send className="w-3 h-3" />
                               Submit Docs
@@ -622,7 +646,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                             <MotionButton
                               type="button"
                               onClick={() => onOpenHandoverDetail(req.linkedHandoverId!)}
-                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#D97706] hover:opacity-90 rounded-md transition-colors"
+                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#D97706] dark:bg-[#F0A030] hover:opacity-90 rounded-md transition-colors"
                             >
                               Deliver Missing
                             </MotionButton>
@@ -630,7 +654,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <MotionButton
                             type="button"
                             onClick={() => onOpenRequestDetail(req.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#0F172A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#0F172A] dark:text-[#ECECEE] bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#3A3A3F] rounded-md transition-colors"
                           >
                             <span>Details</span>
                             <ChevronRight className="w-3 h-3" />
@@ -645,9 +669,18 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
           </table>
         </div>
       ) : (
-        <div className="bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[#F8FAFC] dark:bg-slate-800/60 text-[11px] font-semibold text-slate-500 border-b border-[#E2E8F0] dark:border-slate-800">
+        <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg overflow-x-auto">
+          <table className="w-full min-w-[1140px] table-fixed text-left text-xs">
+            <colgroup>
+              <col style={{ width: '11%' }} />
+              <col style={{ width: '16%' }} />
+              <col style={{ width: '19%' }} />
+              <col style={{ width: '14%' }} />
+              <col style={{ width: '11%' }} />
+              <col style={{ width: '12%' }} />
+              <col style={{ width: '17%' }} />
+            </colgroup>
+            <thead className="bg-[#F8FAFC] dark:bg-[#161616] text-[11px] font-semibold text-slate-500 dark:text-[#9A9AA2] border-b border-[#E2E8F0] dark:border-[#2E2E32]">
               <tr>
                 <th className="px-4 py-3">Handover ID</th>
                 <th className="px-4 py-3">Student Dossier</th>
@@ -658,10 +691,10 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+            <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
               {loading && handovers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-slate-500">
+                  <td colSpan={7} className="px-6 py-10 text-center text-slate-500 dark:text-[#9A9AA2]">
                     <div className="inline-flex items-center justify-center gap-2">
                       <Spinner size="md" aria-label="Loading document handovers" />
                       <span>Loading your document handovers...</span>
@@ -671,10 +704,10 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
               ) : handovers.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center space-y-2">
-                    <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-300">
+                    <div className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                       No document handovers in this view
                     </div>
-                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    <p className="text-xs text-slate-500 dark:text-[#9A9AA2] max-w-md mx-auto">
                       Click "Create Document Handover" above when handing physical student documents to an Admission Team officer, or fulfill an incoming request from the "Requests from Admission" tab.
                     </p>
                   </td>
@@ -692,17 +725,17 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                   return (
                     <tr
                       key={h.id}
-                      className="hover:bg-[#F8FAFC] dark:hover:bg-slate-800/30 transition-colors"
+                      className="hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors"
                     >
                       <td className="px-4 py-3 align-top">
                         <MotionButton
                           type="button"
                           onClick={() => onOpenHandoverDetail(h.id)}
-                          className="tabular-nums font-bold text-[#1E40AF] dark:text-blue-400 hover:underline text-left"
+                          className="tabular-nums font-bold text-[#1E40AF] dark:text-[#4C8DF6] hover:underline text-left"
                         >
                           {h.id}
                         </MotionButton>
-                        <div className="text-[10px] tabular-nums text-slate-400 mt-0.5">
+                        <div className="text-[10px] tabular-nums text-slate-400 dark:text-[#9A9AA2] mt-0.5">
                           v{h.version}
                           {h.packageSealNumber ? ` · ${h.packageSealNumber}` : ''}
                         </div>
@@ -710,7 +743,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <MotionButton
                             type="button"
                             onClick={() => onOpenRequestDetail(h.requestId!)}
-                            className="mt-0.5 block text-[10px] tabular-nums font-semibold text-[#1E3A8A] dark:text-blue-400 hover:underline"
+                            className="mt-0.5 block text-[10px] tabular-nums font-semibold text-[#1E3A8A] dark:text-[#4C8DF6] hover:underline"
                           >
                             Req: {h.requestId}
                           </MotionButton>
@@ -718,19 +751,19 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-[#0F172A] dark:text-slate-100">
+                        <div className="font-semibold text-[#0F172A] dark:text-[#ECECEE] truncate">
                           {h.studentName}
                         </div>
-                        <div className="text-[11px] tabular-nums text-slate-500">
+                        <div className="text-[11px] tabular-nums text-slate-500 dark:text-[#9A9AA2] truncate">
                           {h.studentPassport} · {h.universityName || h.intakeTerm}
                         </div>
                       </td>
 
-                      <td className="px-4 py-3 align-top max-w-xs">
-                        <div className="font-medium text-[#0F172A] dark:text-slate-200 truncate">
+                      <td className="px-4 py-3 align-top">
+                        <div className="font-medium text-[#0F172A] dark:text-[#ECECEE] truncate">
                           {h.documents.map((d) => d.documentName).join(', ')}
                         </div>
-                        <div className="text-[11px] tabular-nums text-slate-500 mt-0.5 tabular-nums">
+                        <div className="text-[11px] tabular-nums text-slate-500 dark:text-[#9A9AA2] mt-0.5 truncate">
                           {recCount}/{h.totalDocuments} Received
                           {missCount > 0 ? ` · ${missCount} Missing` : ''}
                           {defCount > 0 ? ` · ${defCount} Defective` : ''}
@@ -738,15 +771,15 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                       </td>
 
                       <td className="px-4 py-3 align-top">
-                        <div className="font-semibold text-[#0F172A] dark:text-slate-200">
+                        <div className="font-semibold text-[#0F172A] dark:text-[#ECECEE] truncate">
                           {h.receivingEmployeeName}
                         </div>
-                        <div className="text-[11px] text-slate-500 tabular-nums">
+                        <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] tabular-nums truncate">
                           {h.lastAcknowledgedAt ? `Verified by ${h.lastAcknowledgedByName}` : 'Pending inspection'}
                         </div>
                       </td>
 
-                      <td className="px-4 py-3 align-top tabular-nums text-[11px] text-slate-600 dark:text-slate-400 tabular-nums">
+                      <td className="px-4 py-3 align-top tabular-nums text-[11px] text-slate-600 dark:text-[#9A9AA2]">
                         <div>{h.handoverDate}</div>
                         <div>{h.handoverTime}</div>
                       </td>
@@ -756,7 +789,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           {renderHandoverStatusIcon(h.status)}
                           <span>{h.status}</span>
                         </div>
-                        <div className="text-[10px] tabular-nums text-slate-400 mt-1">
+                        <div className="text-[10px] tabular-nums text-slate-400 dark:text-[#66666E] mt-1">
                           Tabs: C:{h.counselorSheetSyncStatus[0]} · R:{h.receiverSheetSyncStatus[0]} · M:{h.masterSheetSyncStatus[0]}
                         </div>
                       </td>
@@ -767,7 +800,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                             <MotionButton
                               type="button"
                               onClick={() => onOpenFollowUp(h)}
-                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#D97706] hover:opacity-90 rounded-md transition-colors"
+                              className="px-2.5 py-1.5 text-[11px] font-semibold text-white bg-[#D97706] dark:bg-[#F0A030] hover:opacity-90 rounded-md transition-colors"
                             >
                               Deliver Missing
                             </MotionButton>
@@ -775,7 +808,7 @@ export const CounselorHandoverDashboard: React.FC<CounselorHandoverDashboardProp
                           <MotionButton
                             type="button"
                             onClick={() => onOpenHandoverDetail(h.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#0F172A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-[#0F172A] dark:text-[#ECECEE] bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#3A3A3F] rounded-md transition-colors"
                           >
                             <span>Manifest</span>
                             <ChevronRight className="w-3 h-3" />

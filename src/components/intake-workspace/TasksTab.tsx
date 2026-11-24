@@ -10,6 +10,7 @@ import {
   UserCog,
   ClipboardList,
   Users,
+  X,
 } from 'lucide-react';
 import { PmsTask, UserProfile } from '../../types/pms';
 import {
@@ -39,10 +40,10 @@ interface TasksTabProps {
 }
 
 const PRIORITY_TEXT_CLASS: Record<string, string> = {
-  Urgent: 'text-[#DC2626] dark:text-red-400 font-semibold',
-  High: 'text-[#D97706] dark:text-amber-400 font-semibold',
-  Medium: 'text-[#1E40AF] dark:text-blue-400 font-medium',
-  Low: 'text-[#64748B] dark:text-slate-400',
+  Urgent: 'text-[#DC2626] dark:text-[#EF5350] font-semibold',
+  High: 'text-[#D97706] dark:text-[#F0A030] font-semibold',
+  Medium: 'text-[#1E40AF] dark:text-[#4C8DF6] font-medium',
+  Low: 'text-[#64748B] dark:text-[#9A9AA2]',
 };
 
 export const TasksTab: React.FC<TasksTabProps> = ({
@@ -129,37 +130,37 @@ export const TasksTab: React.FC<TasksTabProps> = ({
     <div className="space-y-4">
       {/* Compact KPI Summary Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5">
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">Total Intake Tasks</div>
-          <div className="mt-1 text-xl font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
+        <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3.5">
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">Total Intake Tasks</div>
+          <div className={`mt-1 text-xl font-bold tabular-nums ${taskSummary.total === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
             {taskSummary.total}
           </div>
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">linked to this campaign</div>
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">linked to this campaign</div>
         </div>
-        <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5">
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">Pending Tasks</div>
-          <div className="mt-1 text-xl font-bold tabular-nums text-[#D97706] dark:text-amber-400">
+        <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3.5">
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">Pending Tasks</div>
+          <div className={`mt-1 text-xl font-bold tabular-nums ${taskSummary.pending === 0 ? 'text-[#D97706] dark:text-[#66666E]' : 'text-[#D97706] dark:text-[#F0A030]'}`}>
             {taskSummary.pending}
           </div>
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">active deliverables</div>
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">active deliverables</div>
         </div>
-        <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5">
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">Overdue Tasks</div>
+        <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3.5">
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">Overdue Tasks</div>
           <div
             className={`mt-1 text-xl font-bold tabular-nums ${
-              taskSummary.overdue > 0 ? 'text-[#DC2626] dark:text-red-400' : 'text-[#0F172A] dark:text-slate-100'
+              taskSummary.overdue > 0 ? 'text-[#DC2626] dark:text-[#EF5350]' : 'text-[#0F172A] dark:text-[#66666E]'
             }`}
           >
             {taskSummary.overdue}
           </div>
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">past due date</div>
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">past due date</div>
         </div>
-        <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5">
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">Completed Tasks</div>
-          <div className="mt-1 text-xl font-bold tabular-nums text-[#16A34A] dark:text-emerald-400">
+        <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3.5">
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">Completed Tasks</div>
+          <div className={`mt-1 text-xl font-bold tabular-nums ${taskSummary.completed === 0 ? 'text-[#16A34A] dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
             {taskSummary.completed}
           </div>
-          <div className="text-[11px] text-[#64748B] dark:text-slate-400">
+          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2]">
             {taskSummary.total > 0
               ? `${Math.round((taskSummary.completed / taskSummary.total) * 100)}% completion rate`
               : 'no tasks yet'}
@@ -169,13 +170,13 @@ export const TasksTab: React.FC<TasksTabProps> = ({
 
       {/* Individual Team Member Progress Breakdown */}
       {teamProgress.length > 0 && (
-        <section className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-4 space-y-3">
+        <section className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-slate-200 flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#1E40AF] dark:text-blue-400" />
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
+              <Users className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
               Team Workload & Completion Progress
             </h3>
-            <span className="text-[11px] tabular-nums text-[#64748B] dark:text-slate-400">
+            <span className="text-[11px] tabular-nums text-[#64748B] dark:text-[#9A9AA2]">
               {teamProgress.length} active assignee{teamProgress.length > 1 ? 's' : ''}
             </span>
           </div>
@@ -189,8 +190,8 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                   onClick={() => setAssigneeFilter(assigneeFilter === member.id ? 'All' : member.id)}
                   className={`p-3 rounded-lg border cursor-pointer transition-colors ${
                     assigneeFilter === member.id
-                      ? 'bg-[#EFF6FF]/60 dark:bg-blue-950/30 border-[#1E40AF]'
-                      : 'bg-[#F8FAFC] dark:bg-slate-950/50 border-[#E2E8F0] dark:border-slate-800 hover:border-[#1E40AF]/40'
+                      ? 'bg-[#EFF6FF]/60 dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF] dark:border-[#4C8DF6]'
+                      : 'bg-[#F8FAFC] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF]/40 dark:hover:border-[#3A3A3F]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -203,28 +204,28 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                         />
                       )}
                       <div className="min-w-0">
-                        <div className="text-xs font-semibold text-[#0F172A] dark:text-slate-100 truncate">
+                        <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] truncate">
                           {member.name}
                         </div>
-                        <div className="text-[10px] text-[#64748B] dark:text-slate-400 truncate">
+                        <div className="text-[10px] text-[#64748B] dark:text-[#9A9AA2] truncate">
                           {member.teamLabel}
                         </div>
                       </div>
                     </div>
                     <div className="text-right text-[11px] tabular-nums shrink-0">
-                      <span className="font-bold text-[#0F172A] dark:text-slate-100">
+                      <span className="font-bold text-[#0F172A] dark:text-[#ECECEE]">
                         {member.completed}/{member.total}
                       </span>
                       {member.overdue > 0 && (
-                        <div className="text-[10px] font-semibold text-[#DC2626] dark:text-red-400">
+                        <div className="text-[10px] font-semibold text-[#DC2626] dark:text-[#EF5350]">
                           {member.overdue} overdue
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className="mt-2 w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="mt-2 w-full h-1.5 bg-slate-200 dark:bg-[#2E2E32] rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full ${pct === 100 ? 'bg-[#16A34A]' : 'bg-[#1E40AF]'}`}
+                      className={`h-full rounded-full ${pct === 100 ? 'bg-[#16A34A] dark:bg-[#34C26B]' : 'bg-[#1E40AF] dark:bg-[#4C8DF6]'}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -236,17 +237,27 @@ export const TasksTab: React.FC<TasksTabProps> = ({
       )}
 
       {/* Search, Filters & Create Task Toolbar */}
-      <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[260px]">
           <div className="relative flex-1 min-w-[190px] max-w-xs">
-            <Search className="w-3.5 h-3.5 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search task title, student, assignee..."
-              className="w-full h-9 pl-8 pr-3 text-xs rounded-lg border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950 text-[#0F172A] dark:text-slate-100 focus:outline-none focus:border-[#1E40AF]"
+              className="w-full h-9 pl-8 pr-8 text-xs rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] placeholder:text-[#64748B] dark:placeholder:text-[#66666E] focus:bg-[#FFFFFF] dark:focus:bg-[#252528] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6] transition-colors"
             />
+            {search && (
+              <MotionButton
+                type="button"
+                onClick={() => setSearch('')}
+                aria-label="Clear intake task search"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded"
+              >
+                <X className="w-3.5 h-3.5" />
+              </MotionButton>
+            )}
           </div>
 
           <div className="w-40">
@@ -298,7 +309,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
         <MotionButton
           type="button"
           onClick={onCreateIntakeTask}
-          className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors whitespace-nowrap shrink-0"
+          className="inline-flex items-center gap-1.5 h-9 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors whitespace-nowrap shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
           Create Intake Task
@@ -306,16 +317,16 @@ export const TasksTab: React.FC<TasksTabProps> = ({
       </div>
 
       {/* Tasks Data Table */}
-      <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg overflow-hidden">
         {filteredTasks.length === 0 ? (
           <div className="p-10 text-center space-y-3">
-            <ClipboardList className="w-8 h-8 text-[#64748B] mx-auto opacity-60" />
-            <div className="text-sm font-semibold text-[#0F172A] dark:text-slate-100">
+            <ClipboardList className="w-8 h-8 text-[#64748B] dark:text-[#66666E] mx-auto opacity-60" />
+            <div className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
               {tasks.length === 0
                 ? 'No tasks assigned to this intake campaign yet'
                 : 'No intake tasks match the selected filters'}
             </div>
-            <p className="text-xs text-[#64748B] dark:text-slate-400 max-w-md mx-auto">
+            <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] max-w-md mx-auto">
               {tasks.length === 0
                 ? 'Create a consultancy or admission task linked directly to this intake campaign.'
                 : 'Reset filters or search terms to view all intake tasks.'}
@@ -324,7 +335,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
               <MotionButton
                 type="button"
                 onClick={onCreateIntakeTask}
-                className="h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-lg transition-colors"
+                className="h-9 px-4 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
               >
                 Create First Intake Task
               </MotionButton>
@@ -332,10 +343,19 @@ export const TasksTab: React.FC<TasksTabProps> = ({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full min-w-[920px] table-fixed text-left border-collapse text-xs">
+              <colgroup>
+                <col style={{ width: '6%' }} />
+                <col style={{ width: '33%' }} />
+                <col style={{ width: '17%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '12%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '14%' }} />
+              </colgroup>
               <thead>
-                <tr className="border-b border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/50 text-[11px] font-semibold uppercase tracking-wider text-[#64748B] dark:text-slate-400">
-                  <th className="py-2.5 px-4 w-10">Done</th>
+                <tr className="border-b border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[11px] font-semibold uppercase tracking-wider text-[#64748B] dark:text-[#9A9AA2]">
+                  <th className="py-2.5 px-4">Done</th>
                   <th className="py-2.5 px-4">Task & Context</th>
                   <th className="py-2.5 px-4">Assignee & Team</th>
                   <th className="py-2.5 px-4">Priority</th>
@@ -344,7 +364,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                   <th className="py-2.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+              <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
                 {filteredTasks.map((task) => {
                   const isCompleted = task.status === 'Completed';
                   const isOverdue = !isCompleted && Boolean(task.deadline) && task.deadline < todayStr;
@@ -354,7 +374,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                   return (
                     <tr
                       key={task.id}
-                      className="hover:bg-[#F8FAFC]/80 dark:hover:bg-slate-800/40 transition-colors"
+                      className="hover:bg-[#F8FAFC]/80 dark:hover:bg-[#252528] transition-colors"
                     >
                       <td className="py-3 px-4 align-top">
                         <MotionButton
@@ -363,10 +383,10 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                             isCompleted ? onRestoreTaskToPending(task) : onRequestCompleteTask(task)
                           }
                           title={isCompleted ? 'Restore to Pending' : 'Mark Task Completed'}
-                          className="text-[#64748B] hover:text-[#16A34A] transition-colors mt-0.5"
+                          className="text-[#64748B] dark:text-[#9A9AA2] hover:text-[#16A34A] dark:hover:text-[#34C26B] transition-colors mt-0.5"
                         >
                           {isCompleted ? (
-                            <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                            <CheckCircle2 className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B]" />
                           ) : (
                             <Circle className="w-4 h-4" />
                           )}
@@ -375,22 +395,23 @@ export const TasksTab: React.FC<TasksTabProps> = ({
 
                       <td className="py-3 px-4">
                         <div
-                          className={`font-semibold ${
+                          className={`font-semibold truncate ${
                             isCompleted
-                              ? 'line-through text-[#64748B] dark:text-slate-500'
-                              : 'text-[#0F172A] dark:text-slate-100'
+                              ? 'line-through text-[#64748B] dark:text-[#66666E]'
+                              : 'text-[#0F172A] dark:text-[#ECECEE]'
                           }`}
+                          title={task.title}
                         >
                           {task.title}
                         </div>
                         {task.description && (
-                          <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5 line-clamp-1 max-w-md">
+                          <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2] mt-0.5 line-clamp-1">
                             {task.description}
                           </div>
                         )}
-                        <div className="flex flex-wrap items-center gap-3 mt-1 text-[11px] text-[#64748B] dark:text-slate-400">
+                        <div className="flex flex-wrap items-center gap-3 mt-1 text-[11px] text-[#64748B] dark:text-[#9A9AA2]">
                           {task.studentName && (
-                            <span className="text-[#1E40AF] dark:text-blue-400 font-medium">
+                            <span className="text-[#1E40AF] dark:text-[#4C8DF6] font-medium truncate">
                               Student: {task.studentName}
                             </span>
                           )}
@@ -400,13 +421,13 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                             </span>
                           )}
                           {task.syncState === 'synced' && (
-                            <span className="text-[#16A34A] dark:text-emerald-400">Sheet Synced</span>
+                            <span className="text-[#16A34A] dark:text-[#34C26B]">Sheet Synced</span>
                           )}
                         </div>
                       </td>
 
                       <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
                           {task.assigneeAvatar && (
                             <img
                               src={task.assigneeAvatar}
@@ -414,11 +435,11 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                               className="w-6 h-6 rounded-full object-cover shrink-0"
                             />
                           )}
-                          <div>
-                            <div className="font-medium text-[#0F172A] dark:text-slate-200">
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium text-[#0F172A] dark:text-[#ECECEE] truncate">
                               {task.assignedToName || 'Unassigned'}
                             </div>
-                            <div className="text-[11px] text-[#64748B] dark:text-slate-400">
+                            <div className="text-[11px] text-[#64748B] dark:text-[#9A9AA2] truncate">
                               {task.assigneeTeam || task.team || 'Admission Team'}
                             </div>
                           </div>
@@ -426,7 +447,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                       </td>
 
                       <td className="py-3 px-4">
-                        <span className={PRIORITY_TEXT_CLASS[task.priority] || 'text-[#0F172A]'}>
+                        <span className={PRIORITY_TEXT_CLASS[task.priority] || 'text-[#0F172A] dark:text-[#ECECEE]'}>
                           {task.priority}
                         </span>
                       </td>
@@ -435,14 +456,14 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                         <div
                           className={`inline-flex items-center gap-1 font-medium ${
                             isOverdue
-                              ? 'text-[#DC2626] dark:text-red-400 font-semibold'
-                              : 'text-[#0F172A] dark:text-slate-200'
+                              ? 'text-[#DC2626] dark:text-[#EF5350] font-semibold'
+                              : 'text-[#0F172A] dark:text-[#ECECEE]'
                           }`}
                         >
                           {isOverdue ? (
-                            <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" />
+                            <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626] dark:text-[#EF5350]" />
                           ) : (
-                            <Clock className="w-3.5 h-3.5 text-[#64748B]" />
+                            <Clock className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2]" />
                           )}
                           {task.deadline}
                         </div>
@@ -450,15 +471,15 @@ export const TasksTab: React.FC<TasksTabProps> = ({
 
                       <td className="py-3 px-4">
                         {isCompleted ? (
-                          <span className="text-[#16A34A] dark:text-emerald-400 font-semibold">
+                          <span className="text-[#16A34A] dark:text-[#34C26B] font-semibold">
                             Completed
                           </span>
                         ) : isOverdue ? (
-                          <span className="text-[#DC2626] dark:text-red-400 font-semibold">
+                          <span className="text-[#DC2626] dark:text-[#EF5350] font-semibold">
                             Overdue
                           </span>
                         ) : (
-                          <span className="text-[#D97706] dark:text-amber-400 font-medium">
+                          <span className="text-[#D97706] dark:text-[#F0A030] font-medium">
                             Pending
                           </span>
                         )}
@@ -471,7 +492,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                               type="button"
                               onClick={() => onOpenReassignModal(task)}
                               title="Reassign or adjust task priority/deadline"
-                              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-[#1E40AF] dark:text-blue-400 border border-[#E2E8F0] dark:border-slate-700 hover:border-[#1E40AF] rounded transition-colors"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-[#1E40AF] dark:text-[#4C8DF6] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF] dark:hover:border-[#4C8DF6] rounded transition-colors"
                             >
                               <UserCog className="w-3 h-3" />
                               Reassign
@@ -481,7 +502,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                             type="button"
                             onClick={() => onRequestDeleteTask(task)}
                             title="Delete task"
-                            className="p-1 text-[#64748B] hover:text-[#DC2626] rounded transition-colors"
+                            className="p-1 text-[#64748B] dark:text-[#9A9AA2] hover:text-[#DC2626] dark:hover:text-[#EF5350] rounded transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </MotionButton>

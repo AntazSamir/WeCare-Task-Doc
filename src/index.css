@@ -89,54 +89,102 @@
 
   .dark {
     color-scheme: dark;
-    /* Dark Mode Design Tokens */
-    --color-primary: #1E40AF;
-    --color-primary-hover: #1E3A8A;
-    --color-primary-soft: #1E293B;
-    --color-background: #0B1220;
-    --color-card: #172438;
-    --color-border: #2A3B52;
-    --color-text: #F1F5FB;
-    --color-muted: #899BB1;
-    --color-success: #16A34A;
-    --color-success-soft: #14532D;
-    --color-warning: #D97706;
-    --color-warning-soft: #78350F;
-    --color-danger: #DC2626;
-    --color-danger-soft: #7F1D1D;
+    /* Neutral Charcoal Dark Mode Design Tokens */
+    --color-primary: #4C8DF6;
+    --color-primary-hover: #6BA1F8;
+    --color-primary-soft: rgba(76, 141, 246, 0.14);
+    --color-background: #121212;
+    --color-card: #1C1C1E;
+    --color-border: #2E2E32;
+    --color-border-strong: #3A3A3F;
+    --color-text: #ECECEE;
+    --color-muted: #9A9AA2;
+    --color-disabled: #66666E;
+    --color-success: #34C26B;
+    --color-success-soft: rgba(52, 194, 107, 0.14);
+    --color-warning: #F0A030;
+    --color-warning-soft: rgba(240, 160, 48, 0.14);
+    --color-danger: #EF5350;
+    --color-danger-soft: rgba(239, 83, 80, 0.14);
 
-    --color-deep-blue: #1E40AF;
-    --color-primary-blue: #3B82F6;
-    --color-sky-blue: #60B8F5;
-    --color-light-blue: #EFF6FF;
-    --color-main-bg: #0B1220;
-    --color-sidebar-bg: #0F1B2D;
-    --color-workspace-bg: #111C2E;
-    --color-card-bg: #172438;
-    --color-elevated-surface: #1D2D44;
-    --color-border: #2A3B52;
-    --color-primary-text: #F1F5FB;
-    --color-secondary-text: #A7B6CA;
-    --color-muted-text: #71839C;
-    --color-main-text: #F1F5FB;
+    --color-deep-blue: #1C1C1E;
+    --color-primary-blue: #4C8DF6;
+    --color-primary-blue-hover: #6BA1F8;
+    --color-sky-blue: #4C8DF6;
+    --color-light-blue: #ECECEE;
+    --color-main-bg: #121212;
+    --color-sidebar-bg: #161616;
+    --color-workspace-bg: #121212;
+    --color-card-bg: #1C1C1E;
+    --color-elevated-surface: #252528;
+    --color-border: #2E2E32;
+    --color-primary-text: #ECECEE;
+    --color-secondary-text: #9A9AA2;
+    --color-muted-text: #66666E;
+    --color-main-text: #ECECEE;
 
-    /* Tailwind Slate Palette Overrides in Dark Mode */
-    --color-slate-950: #0B1220;
-    --color-slate-900: #172438;
-    --color-slate-850: #111C2E;
-    --color-slate-800: #1D2D44;
-    --color-slate-700: #2A3B52;
-    --color-slate-600: #3E526D;
-    --color-slate-500: #71839C;
-    --color-slate-400: #A7B6CA;
-    --color-slate-300: #C2D0E2;
-    --color-slate-200: #E2E8F0;
-    --color-slate-100: #F1F5FB;
+    /* Tailwind Neutral Charcoal & Semantic Palette Overrides in Dark Mode */
+    --color-slate-950: #121212;
+    --color-slate-900: #1C1C1E;
+    --color-slate-850: #161616;
+    --color-slate-800: #252528;
+    --color-slate-700: #2E2E32;
+    --color-slate-600: #3A3A3F;
+    --color-slate-500: #66666E;
+    --color-slate-400: #9A9AA2;
+    --color-slate-300: #D1D1D6;
+    --color-slate-200: #E2E2E6;
+    --color-slate-100: #ECECEE;
 
-    --color-blue-500: #3B82F6;
-    --color-blue-600: #2563EB;
-    --color-blue-400: #60B8F5;
-    --color-blue-300: #A9CEFF;
+    --color-blue-50: rgba(76, 141, 246, 0.14);
+    --color-blue-100: rgba(76, 141, 246, 0.14);
+    --color-blue-200: #93BDF9;
+    --color-blue-300: #6BA1F8;
+    --color-blue-400: #4C8DF6;
+    --color-blue-500: #4C8DF6;
+    --color-blue-600: #4C8DF6;
+    --color-blue-700: #4C8DF6;
+    --color-blue-800: rgba(76, 141, 246, 0.35);
+    --color-blue-900: rgba(76, 141, 246, 0.22);
+    --color-blue-950: rgba(76, 141, 246, 0.14);
+
+    --color-sky-300: #6BA1F8;
+    --color-sky-400: #4C8DF6;
+    --color-sky-500: #4C8DF6;
+    --color-sky-950: rgba(76, 141, 246, 0.14);
+
+    --color-indigo-400: #4C8DF6;
+    --color-indigo-950: rgba(76, 141, 246, 0.14);
+
+    --color-emerald-300: #34C26B;
+    --color-emerald-400: #34C26B;
+    --color-emerald-500: #34C26B;
+    --color-emerald-700: #34C26B;
+    --color-emerald-900: rgba(52, 194, 107, 0.30);
+    --color-emerald-950: rgba(52, 194, 107, 0.14);
+
+    --color-amber-200: #F5B95E;
+    --color-amber-300: #F0A030;
+    --color-amber-400: #F0A030;
+    --color-amber-500: #F0A030;
+    --color-amber-700: #F0A030;
+    --color-amber-800: rgba(240, 160, 48, 0.30);
+    --color-amber-950: rgba(240, 160, 48, 0.14);
+
+    --color-red-300: #EF5350;
+    --color-red-400: #EF5350;
+    --color-red-500: #EF5350;
+    --color-red-800: rgba(239, 83, 80, 0.30);
+    --color-red-900: rgba(239, 83, 80, 0.25);
+    --color-red-950: rgba(239, 83, 80, 0.14);
+
+    --color-rose-200: #F27C7A;
+    --color-rose-300: #EF5350;
+    --color-rose-400: #EF5350;
+    --color-rose-700: #EF5350;
+    --color-rose-800: rgba(239, 83, 80, 0.30);
+    --color-rose-900: rgba(239, 83, 80, 0.25);
+    --color-rose-950: rgba(239, 83, 80, 0.14);
   }
 
   *, ::before, ::after {
@@ -179,7 +227,7 @@
   button:focus-visible,
   [role="button"]:focus-visible,
   a:focus-visible,
-  input:not([role="combobox"][aria-label="Search"]):focus-visible,
+  input:not([data-search-combobox="true"]):focus-visible,
   select:focus-visible,
   textarea:focus-visible {
     outline: none !important;
@@ -189,11 +237,19 @@
   .dark button:focus-visible,
   .dark [role="button"]:focus-visible,
   .dark a:focus-visible,
-  .dark input:not([role="combobox"][aria-label="Search"]):focus-visible,
+  .dark input:not([data-search-combobox="true"]):focus-visible,
   .dark select:focus-visible,
   .dark textarea:focus-visible {
-    box-shadow: 0 0 0 2px #0B1220, 0 0 0 4px #3B82F6 !important;
+    outline: 2px solid #4C8DF6 !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
   }
+}
+
+/* Stable scrollbar gutters for active scroll containers (prevents horizontal jumps without forcing outer scrollbars) */
+main,
+.scrollbar-stable {
+  scrollbar-gutter: stable;
 }
 
 /* Custom subtle scrollbars for desktop workspace */
@@ -228,51 +284,51 @@
 /* CENTRALIZED DARK MODE SURFACES & COMPONENT STYLING                        */
 /* ========================================================================= */
 
-/* Sidebar Background: #0F1B2D */
+/* Sidebar Background: #161616 */
 .dark aside {
   background-color: var(--color-sidebar-bg) !important;
   border-color: var(--color-border) !important;
 }
 
-/* Workspace Background: #111C2E */
+/* Workspace Background: #121212 */
 .dark main {
   background-color: var(--color-workspace-bg) !important;
 }
 
-/* Top Header Bar */
+/* Top Header Bar: #161616 */
 .dark header {
-  background-color: var(--color-card-bg) !important;
+  background-color: var(--color-sidebar-bg) !important;
   border-color: var(--color-border) !important;
 }
 
 /* Dialogs, Modals & Drawers */
-.dark [role="dialog"]:not([aria-label="Search"]),
+.dark [role="dialog"],
 .dark .modal-card {
   background-color: var(--color-card-bg) !important;
   border-color: var(--color-border) !important;
   color: var(--color-primary-text) !important;
 }
 
-/* Form Controls & Inputs (Readable, high-contrast, no blinding white backgrounds) */
-.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([role="combobox"][aria-label="Search"]),
+/* Form Controls & Inputs */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([data-search-combobox="true"]),
 .dark select,
 .dark textarea {
-  background-color: var(--color-main-bg) !important;
+  background-color: var(--color-elevated-surface) !important;
   color: var(--color-primary-text) !important;
   border-color: var(--color-border) !important;
 }
 
-.dark input:not([role="combobox"][aria-label="Search"]):focus,
+.dark input:not([data-search-combobox="true"]):focus,
 .dark select:focus,
 .dark textarea:focus {
-  border-color: var(--color-primary-blue) !important;
-  box-shadow: 0 0 0 1px var(--color-primary-blue);
+  border-color: var(--color-primary) !important;
+  box-shadow: none !important;
   outline: none;
 }
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: var(--color-muted-text) !important;
+  color: var(--color-disabled) !important;
 }
 
 .dark select option {
@@ -282,7 +338,7 @@
 
 .dark input[type="checkbox"],
 .dark input[type="radio"] {
-  accent-color: var(--color-primary-blue);
+  accent-color: var(--color-primary);
 }
 
 /* Tables */
@@ -300,22 +356,34 @@
   background-color: var(--color-elevated-surface) !important;
 }
 
-/* Active navigation items - Blue for primary actions & active nav */
+/* Active navigation items - Soft-blue active state */
 .dark .sidebar-nav-btn.active,
 .dark .sidebar-nav-btn[data-active="true"] {
-  background-color: var(--color-primary-blue) !important;
-  color: #FFFFFF !important;
+  background-color: rgba(76, 141, 246, 0.14) !important;
+  color: #4C8DF6 !important;
 }
 
-/* Flat surfaces & avoid excessive shadows */
+/* Dark Mode Icons: Make all UI icons crisp white (#FFFFFF) */
+.dark svg.lucide,
+.dark svg[stroke="currentColor"] {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+.dark svg.lucide[class*="fill-"] {
+  fill: #FFFFFF !important;
+}
+
+/* No shadows in dark mode — rely on borders instead */
 .dark .shadow-2xl,
 .dark .shadow-xl,
 .dark .shadow-lg,
 .dark .shadow-md,
 .dark .shadow,
 .dark .shadow-sm,
-.dark .shadow-xs {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.45) !important;
+.dark .shadow-xs,
+.dark .shadow-2xs {
+  box-shadow: none !important;
 }
 
 /* ========================================================================= */
@@ -487,14 +555,13 @@ button:not(:disabled),
               border-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
               color 150ms cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
-              transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
               opacity 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 button:focus-visible,
 [role="button"]:focus-visible,
 a:focus-visible,
-input:not([role="combobox"][aria-label="Search"]):focus-visible,
+input:not([data-search-combobox="true"]):focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   outline: none !important;
@@ -504,10 +571,12 @@ textarea:focus-visible {
 .dark button:focus-visible,
 .dark [role="button"]:focus-visible,
 .dark a:focus-visible,
-.dark input:not([role="combobox"][aria-label="Search"]):focus-visible,
+.dark input:not([data-search-combobox="true"]):focus-visible,
 .dark select:focus-visible,
 .dark textarea:focus-visible {
-  box-shadow: 0 0 0 2px #0B1220, 0 0 0 4px #3B82F6 !important;
+  outline: 2px solid #4C8DF6 !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
 }
 
 /* Card & Button Global Design System Utilities */
@@ -520,9 +589,9 @@ textarea:focus-visible {
 }
 
 .dark .ui-card {
-  background-color: var(--color-card-bg);
-  border-color: var(--color-border);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  background-color: #1C1C1E;
+  border-color: #2E2E32;
+  box-shadow: none !important;
 }
 
 .btn-primary {
@@ -576,14 +645,24 @@ textarea:focus-visible {
   border-color: #CBD5E1 !important;
 }
 
+.dark .btn-primary {
+  background-color: #4C8DF6 !important;
+  color: #FFFFFF !important;
+}
+
+.dark .btn-primary:hover:not(:disabled) {
+  background-color: #6BA1F8 !important;
+}
+
 .dark .btn-secondary {
-  color: #F1F5FB !important;
-  background-color: #172438 !important;
-  border-color: #2A3B52 !important;
+  color: #ECECEE !important;
+  background-color: #1C1C1E !important;
+  border-color: #3A3A3F !important;
 }
 
 .dark .btn-secondary:hover:not(:disabled) {
-  background-color: #1D2D44 !important;
+  background-color: #252528 !important;
+  border-color: #3A3A3F !important;
 }
 
 /* Global Typography Hierarchy */
@@ -646,12 +725,12 @@ select {
 }
 
 .dark .skeleton-pulse {
-  background-color: #1e293b;
+  background-color: #252528;
   animation: subtlePulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .dark .skeleton-shimmer {
-  background-color: #1e293b;
+  background-color: #252528;
 }
 
 /* Accessibility: Respect Reduced-Motion Preference */

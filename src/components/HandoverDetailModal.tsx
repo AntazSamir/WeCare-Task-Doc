@@ -54,21 +54,21 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
   const getItemStatusColor = (st: DocumentItemStatus) => {
     switch (st) {
       case 'Received':
-        return 'text-[#16A34A] dark:text-emerald-400';
+        return 'text-[#16A34A] dark:text-[#34C26B]';
       case 'Missing':
-        return 'text-[#D97706] dark:text-amber-400';
+        return 'text-[#D97706] dark:text-[#F0A030]';
       case 'Incorrect':
       case 'Rejected':
-        return 'text-[#DC2626] dark:text-rose-400';
+        return 'text-[#DC2626] dark:text-[#EF5350]';
       default:
-        return 'text-[#0F172A]/70 dark:text-slate-400';
+        return 'text-[#0F172A]/70 dark:text-[#9A9AA2]';
     }
   };
 
   const getSyncTextClass = (st: string) => {
-    if (st === 'Synced') return 'text-[#16A34A] dark:text-emerald-400';
-    if (st === 'Failed') return 'text-[#DC2626] dark:text-rose-400';
-    return 'text-[#D97706] dark:text-amber-400';
+    if (st === 'Synced') return 'text-[#16A34A] dark:text-[#34C26B]';
+    if (st === 'Failed') return 'text-[#DC2626] dark:text-[#EF5350]';
+    return 'text-[#D97706] dark:text-[#F0A030]';
   };
 
   const handlePrint = () => {
@@ -82,28 +82,28 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
     <ModalTransition
       isOpen={isOpen && Boolean(handoverId)}
       onClose={onClose}
-      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-slate-950/60 backdrop-blur-xs"
-      cardClassName="w-full max-w-4xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg shadow-2xl flex flex-col max-h-[92vh]"
+      backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/70 backdrop-blur-xs"
+      cardClassName="w-full max-w-4xl bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg shadow-2xl dark:shadow-none flex flex-col max-h-[92vh]"
     >
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-[#EFF6FF] dark:bg-slate-800 border border-[#1E40AF]/40 dark:border-slate-700 flex items-center justify-center text-[#1E3A8A] dark:text-[#1E40AF]">
+            <div className="w-8 h-8 rounded-md bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border border-[#1E40AF]/40 dark:border-[#4C8DF6]/30 flex items-center justify-center text-[#1E3A8A] dark:text-[#4C8DF6]">
               <FileCheck2 className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold tabular-nums text-[#0F172A] dark:text-slate-100">
+                <h2 className="text-sm font-bold tabular-nums text-[#0F172A] dark:text-[#ECECEE]">
                   {handover?.id || handoverId}
                 </h2>
                 {handover && (
-                  <span className="text-[11px] tabular-nums text-[#0F172A]/60 dark:text-slate-400">
+                  <span className="text-[11px] tabular-nums text-[#0F172A]/60 dark:text-[#9A9AA2]">
                     v{handover.version} · {handover.status}
                   </span>
                 )}
               </div>
               {handover && (
-                <p className="text-[11px] text-[#0F172A]/65 dark:text-slate-400">
+                <p className="text-[11px] text-[#0F172A]/65 dark:text-[#9A9AA2]">
                   {handover.studentName} ({handover.studentPassport}) · {handover.universityName || handover.intakeTerm}
                 </p>
               )}
@@ -116,7 +116,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 <MotionButton
                   type="button"
                   onClick={() => setShowPrintSlip(!showPrintSlip)}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-[#1E3A8A] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 hover:bg-[#EFF6FF] border border-[#E2E8F0] dark:border-slate-700 rounded-md transition-colors"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-[#1E3A8A] dark:text-[#ECECEE] bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md transition-colors"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   {showPrintSlip ? 'Back to Audit View' : 'Printable Slip'}
@@ -125,7 +125,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   <MotionButton
                     type="button"
                     onClick={handlePrint}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] rounded-md transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-md transition-colors"
                   >
                     Print
                   </MotionButton>
@@ -135,7 +135,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
             <MotionButton
               type="button"
               onClick={onClose}
-              className="p-1.5 text-[#0F172A]/50 hover:text-[#0F172A] dark:hover:text-slate-200 rounded-md transition-colors"
+              className="p-1.5 text-[#0F172A]/50 dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] rounded-md transition-colors"
               aria-label="Close modal"
             >
               <X className="w-4 h-4" />
@@ -143,15 +143,15 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="flex-1 overflow-y-auto scrollbar-stable p-5">
           {loading && (
-            <div className="py-12 flex flex-col items-center justify-center gap-2.5 text-center text-xs text-[#0F172A]/60 dark:text-slate-400">
+            <div className="py-12 flex flex-col items-center justify-center gap-2.5 text-center text-xs text-[#0F172A]/60 dark:text-[#9A9AA2]">
               <Spinner size="lg" aria-label="Loading handover audit manifest" />
               <span>Loading handover audit manifest...</span>
             </div>
           )}
           {errorMsg && (
-            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/40 border border-[#DC2626]/35 text-xs text-[#DC2626]">
+            <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/35 dark:border-[#EF5350]/30 text-xs text-[#DC2626] dark:text-[#EF5350]">
               {errorMsg}
             </div>
           )}
@@ -160,12 +160,12 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
             <div className="space-y-5">
               {/* Custody Chain Strip */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800">
-                  <div className="text-[10px] font-bold uppercase text-[#0F172A]/55 dark:text-slate-400">Counselor (Sender)</div>
-                  <div className="mt-1 text-xs font-bold text-[#0F172A] dark:text-slate-100">
+                <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="text-[10px] font-bold uppercase text-[#0F172A]/55 dark:text-[#9A9AA2]">Counselor (Sender)</div>
+                  <div className="mt-1 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE]">
                     {handover.counselorName}
                   </div>
-                  <div className="text-[11px] tabular-nums text-[#0F172A]/65 dark:text-slate-400">
+                  <div className="text-[11px] tabular-nums text-[#0F172A]/65 dark:text-[#9A9AA2]">
                     Tab: HND_{handover.counselorId}
                   </div>
                   <div className={`text-[11px] tabular-nums font-semibold mt-1 ${getSyncTextClass(handover.counselorSheetSyncStatus)}`}>
@@ -173,12 +173,12 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800">
-                  <div className="text-[10px] font-bold uppercase text-[#0F172A]/55 dark:text-slate-400">Admission Officer (Receiver)</div>
-                  <div className="mt-1 text-xs font-bold text-[#0F172A] dark:text-slate-100">
+                <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="text-[10px] font-bold uppercase text-[#0F172A]/55 dark:text-[#9A9AA2]">Admission Officer (Receiver)</div>
+                  <div className="mt-1 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE]">
                     {handover.receivingEmployeeName}
                   </div>
-                  <div className="text-[11px] tabular-nums text-[#0F172A]/65 dark:text-slate-400">
+                  <div className="text-[11px] tabular-nums text-[#0F172A]/65 dark:text-[#9A9AA2]">
                     Tab: HND_{handover.receivingEmployeeId}
                   </div>
                   <div className={`text-[11px] tabular-nums font-semibold mt-1 ${getSyncTextClass(handover.receiverSheetSyncStatus)}`}>
@@ -186,17 +186,17 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800">
-                  <div className="text-[10px] font-bold uppercase text-[#0F172A]/55 dark:text-slate-400">Transfer & Custody Status</div>
-                  <div className="mt-1 text-xs font-bold text-[#0F172A] dark:text-slate-100 flex items-center gap-1.5">
+                <div className="p-3.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="text-[10px] font-bold uppercase text-[#0F172A]/55 dark:text-[#9A9AA2]">Transfer & Custody Status</div>
+                  <div className="mt-1 text-xs font-bold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
                     <span>{handover.status}</span>
                     {handover.packageSealNumber && (
-                      <span className="inline-flex items-center gap-1 text-[11px] tabular-nums text-[#0F172A]/60 dark:text-slate-400">
+                      <span className="inline-flex items-center gap-1 text-[11px] tabular-nums text-[#0F172A]/60 dark:text-[#9A9AA2]">
                         <Package className="w-3 h-3" /> {handover.packageSealNumber}
                       </span>
                     )}
                   </div>
-                  <div className="text-[11px] tabular-nums text-[#0F172A]/65 dark:text-slate-400">
+                  <div className="text-[11px] tabular-nums text-[#0F172A]/65 dark:text-[#9A9AA2]">
                     {handover.handoverDate} at {handover.handoverTime}
                   </div>
                   <div className={`text-[11px] tabular-nums font-semibold mt-1 ${getSyncTextClass(handover.masterSheetSyncStatus)}`}>
@@ -206,14 +206,14 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
               </div>
 
               {handover.requestId && (
-                <div className="p-3.5 rounded-lg bg-[#EFF6FF]/60 dark:bg-blue-950/30 border border-[#1E40AF]/40 dark:border-blue-800 flex flex-wrap items-center justify-between gap-3">
+                <div className="p-3.5 rounded-lg bg-[#EFF6FF]/60 dark:bg-[rgba(76,141,246,0.14)] border border-[#1E40AF]/40 dark:border-[#4C8DF6]/30 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5 text-xs">
-                    <ClipboardList className="w-4 h-4 text-[#1E40AF] dark:text-[#1E40AF] shrink-0" />
+                    <ClipboardList className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6] shrink-0" />
                     <div>
-                      <span className="font-bold tabular-nums text-[#1E3A8A] dark:text-blue-200">
+                      <span className="font-bold tabular-nums text-[#1E3A8A] dark:text-[#ECECEE]">
                         Linked Request: {handover.requestId}
                       </span>
-                      <span className="text-[#0F172A]/75 dark:text-blue-300">
+                      <span className="text-[#0F172A]/75 dark:text-[#9A9AA2]">
                         {handover.requestPriority ? ` · ${handover.requestPriority} Priority` : ''}
                         {handover.requestDeadline ? ` · Due ${handover.requestDeadline}` : ''}
                         {handover.requestStatus ? ` · Status: ${handover.requestStatus}` : ''}
@@ -227,7 +227,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                         onClose();
                         onOpenRequest(handover.requestId!);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1E3A8A] dark:text-blue-300 bg-[#FFFFFF] dark:bg-slate-900 hover:bg-[#EFF6FF] border border-[#1E40AF]/40 dark:border-blue-700 rounded-md transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1E3A8A] dark:text-[#4C8DF6] bg-[#FFFFFF] dark:bg-[#1C1C1E] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] border border-[#1E40AF]/40 dark:border-[#4C8DF6]/40 rounded-md transition-colors"
                     >
                       <span>View Request {handover.requestId}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -237,27 +237,27 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
               )}
 
               {handover.lastSyncError && (
-                <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-rose-950/30 border border-[#DC2626]/35 dark:border-rose-800 text-xs text-[#DC2626] dark:text-rose-300">
+                <div className="p-3 rounded-md bg-[#DC2626]/10 dark:bg-[rgba(239,83,80,0.14)] border border-[#DC2626]/35 dark:border-[#EF5350]/30 text-xs text-[#DC2626] dark:text-[#EF5350]">
                   <span className="font-bold">Google Sheets Outbox Warning:</span> {handover.lastSyncError}
                 </div>
               )}
 
               {(handover.disputeReason || handover.generalRemarks || handover.acknowledgementNotes) && (
-                <div className="p-3.5 rounded-lg border border-[#E2E8F0] dark:border-slate-800 space-y-1.5 text-xs">
+                <div className="p-3.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-transparent dark:bg-[#252528] space-y-1.5 text-xs">
                   {handover.generalRemarks && (
                     <div>
-                      <span className="font-semibold text-[#0F172A] dark:text-slate-300">Counselor Remarks:</span>{' '}
-                      <span className="text-[#0F172A]/75 dark:text-slate-400">{handover.generalRemarks}</span>
+                      <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">Counselor Remarks:</span>{' '}
+                      <span className="text-[#0F172A]/75 dark:text-[#9A9AA2]">{handover.generalRemarks}</span>
                     </div>
                   )}
                   {handover.acknowledgementNotes && (
                     <div>
-                      <span className="font-semibold text-[#0F172A] dark:text-slate-300">Receiver Verification Notes:</span>{' '}
-                      <span className="text-[#0F172A]/75 dark:text-slate-400">{handover.acknowledgementNotes}</span>
+                      <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">Receiver Verification Notes:</span>{' '}
+                      <span className="text-[#0F172A]/75 dark:text-[#9A9AA2]">{handover.acknowledgementNotes}</span>
                     </div>
                   )}
                   {handover.disputeReason && (
-                    <div className="text-[#DC2626] dark:text-rose-400">
+                    <div className="text-[#DC2626] dark:text-[#EF5350]">
                       <span className="font-bold">Dispute / Discrepancy Report:</span> {handover.disputeReason}
                     </div>
                   )}
@@ -266,12 +266,12 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
 
               {/* Per-Document Table */}
               <div className="space-y-2">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-[#0F172A] dark:text-slate-300">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-[#0F172A] dark:text-[#ECECEE]">
                   Itemized Physical Document Manifest ({handover.documents.length})
                 </h3>
-                <div className="border border-[#E2E8F0] dark:border-slate-800 rounded-lg overflow-x-auto">
+                <div className="border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F8FAFC] dark:bg-slate-800/60 text-[11px] font-semibold text-[#0F172A]/65 dark:text-slate-400 border-b border-[#E2E8F0] dark:border-slate-800">
+                    <thead className="bg-[#F8FAFC] dark:bg-[#252528] text-[11px] font-semibold text-[#0F172A]/65 dark:text-[#9A9AA2] border-b border-[#E2E8F0] dark:border-[#2E2E32]">
                       <tr>
                         <th className="px-3 py-2">#</th>
                         <th className="px-3 py-2">Document Name</th>
@@ -282,30 +282,30 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                         <th className="px-3 py-2">Verification & Remarks</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+                    <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
                       {handover.documents.map((doc) => (
-                        <tr key={doc.id} className="hover:bg-[#F8FAFC] dark:hover:bg-slate-800/30">
-                          <td className="px-3 py-2.5 tabular-nums text-[11px] text-[#0F172A]/55 dark:text-slate-400">{doc.id}</td>
+                        <tr key={doc.id} className="hover:bg-[#F8FAFC] dark:hover:bg-[#252528]">
+                          <td className="px-3 py-2.5 tabular-nums text-[11px] text-[#0F172A]/55 dark:text-[#9A9AA2]">{doc.id}</td>
                           <td className="px-3 py-2.5">
-                            <div className="font-semibold text-[#0F172A] dark:text-slate-100">
+                            <div className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">
                               {doc.documentName}
                             </div>
-                            <div className="text-[11px] text-[#0F172A]/60 dark:text-slate-400">{doc.documentType}</div>
+                            <div className="text-[11px] text-[#0F172A]/60 dark:text-[#9A9AA2]">{doc.documentType}</div>
                           </td>
-                          <td className="px-3 py-2.5 text-[#0F172A] dark:text-slate-300">{doc.format}</td>
-                          <td className="px-3 py-2.5 tabular-nums text-[#0F172A] dark:text-slate-300">
+                          <td className="px-3 py-2.5 text-[#0F172A] dark:text-[#ECECEE]">{doc.format}</td>
+                          <td className="px-3 py-2.5 tabular-nums text-[#0F172A] dark:text-[#ECECEE]">
                             {doc.quantity}x ({doc.pageCount}p)
                           </td>
-                          <td className="px-3 py-2.5 tabular-nums text-[11px] text-[#0F172A]/60 dark:text-slate-400">
+                          <td className="px-3 py-2.5 tabular-nums text-[11px] text-[#0F172A]/60 dark:text-[#9A9AA2]">
                             Batch #{doc.deliveryBatch}
                           </td>
                           <td className={`px-3 py-2.5 tabular-nums font-bold ${getItemStatusColor(doc.status)}`}>
                             {doc.status}
                           </td>
-                          <td className="px-3 py-2.5 text-[11px] text-[#0F172A]/70 dark:text-slate-400">
+                          <td className="px-3 py-2.5 text-[11px] text-[#0F172A]/70 dark:text-[#9A9AA2]">
                             {doc.verificationNotes || doc.conditionRemarks || '—'}
                             {doc.verifiedByName && (
-                              <div className="text-[10px] text-[#0F172A]/50 dark:text-slate-400 tabular-nums mt-0.5">
+                              <div className="text-[10px] text-[#0F172A]/50 dark:text-[#9A9AA2] tabular-nums mt-0.5">
                                 Checked by {doc.verifiedByName}
                               </div>
                             )}
@@ -320,25 +320,25 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
               {/* Follow-up Deliveries History */}
               {handover.followUpDeliveries && handover.followUpDeliveries.length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-[#0F172A] dark:text-slate-300">
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-[#0F172A] dark:text-[#ECECEE]">
                     Follow-Up Delivery Batches Under {handover.id}
                   </h3>
                   <div className="space-y-2">
                     {handover.followUpDeliveries.map((fb) => (
                       <div
                         key={fb.batchNumber}
-                        className="p-3 rounded-lg bg-[#F8FAFC] dark:bg-slate-800/40 border border-[#E2E8F0] dark:border-slate-800 text-xs flex flex-wrap items-center justify-between gap-2"
+                        className="p-3 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] text-xs flex flex-wrap items-center justify-between gap-2"
                       >
                         <div>
-                          <div className="font-bold text-[#0F172A] dark:text-slate-100">
+                          <div className="font-bold text-[#0F172A] dark:text-[#ECECEE]">
                             Batch #{fb.batchNumber} — Delivered {fb.deliveryDate} at {fb.deliveryTime} by {fb.deliveredByName}
                           </div>
-                          <div className="text-[#0F172A]/70 dark:text-slate-400 mt-0.5">
+                          <div className="text-[#0F172A]/70 dark:text-[#9A9AA2] mt-0.5">
                             Items: {fb.documentNamesDelivered.join(', ')}
                             {fb.deliveryNotes ? ` · "${fb.deliveryNotes}"` : ''}
                           </div>
                         </div>
-                        <span className="tabular-nums text-[11px] font-semibold text-[#1E3A8A] dark:text-slate-300">
+                        <span className="tabular-nums text-[11px] font-semibold text-[#1E3A8A] dark:text-[#ECECEE]">
                           {fb.status}
                         </span>
                       </div>
@@ -350,23 +350,23 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
               {/* Immutable Custody Event Audit Timeline */}
               {handover.events && handover.events.length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-[#0F172A] dark:text-slate-300 flex items-center gap-1.5">
-                    <History className="w-3.5 h-3.5 text-[#1E40AF]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-1.5">
+                    <History className="w-3.5 h-3.5 text-[#1E40AF] dark:text-[#4C8DF6]" />
                     Immutable Custody Audit Trail (Append-Only)
                   </h3>
-                  <div className="border border-[#E2E8F0] dark:border-slate-800 rounded-lg divide-y divide-[#E2E8F0] dark:divide-slate-800">
+                  <div className="border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
                     {handover.events.map((ev) => (
                       <div key={ev.id} className="p-3 text-xs flex items-start justify-between gap-3">
                         <div className="space-y-0.5">
-                          <div className="font-semibold text-[#0F172A] dark:text-slate-100 flex items-center gap-2">
-                            <span className="tabular-nums text-[11px] text-[#1E40AF] dark:text-[#1E40AF]">
+                          <div className="font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
+                            <span className="tabular-nums text-[11px] text-[#1E40AF] dark:text-[#4C8DF6]">
                               [{ev.actionType}]
                             </span>
                             <span>{ev.actorName}</span>
                           </div>
-                          <div className="text-[#0F172A]/70 dark:text-slate-400">{ev.details}</div>
+                          <div className="text-[#0F172A]/70 dark:text-[#9A9AA2]">{ev.details}</div>
                         </div>
-                        <div className="tabular-nums text-[11px] text-[#0F172A]/50 dark:text-slate-400 shrink-0">
+                        <div className="tabular-nums text-[11px] text-[#0F172A]/50 dark:text-[#9A9AA2] shrink-0">
                           {formatTimestamp(ev.timestamp)}
                         </div>
                       </div>
@@ -379,17 +379,17 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
 
           {/* Printable Physical Slip Preview */}
           {handover && showPrintSlip && (
-            <div className="p-6 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 print:bg-white print:text-black space-y-5">
-              <div className="flex items-start justify-between border-b-2 border-slate-900 dark:border-slate-700 pb-4">
+            <div className="p-6 border border-slate-300 dark:border-[#2E2E32] rounded-md bg-white dark:bg-[#1C1C1E] text-slate-900 dark:text-[#ECECEE] print:bg-white print:text-black space-y-5">
+              <div className="flex items-start justify-between border-b-2 border-slate-900 dark:border-[#3A3A3F] pb-4">
                 <div>
                   <div className="text-lg font-bold tracking-tight">KOREA STUDY HUB PMS — PHYSICAL DOCUMENT HANDOVER SLIP</div>
-                  <div className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                  <div className="text-xs text-slate-600 dark:text-[#9A9AA2] mt-0.5">
                     In-Office Chain of Custody Record · File inside student physical dossier folder
                   </div>
                 </div>
                 <div className="text-right tabular-nums">
                   <div className="text-base font-bold">{handover.id}</div>
-                  <div className="text-xs text-slate-600 dark:text-slate-400">Status: {handover.status} (v{handover.version})</div>
+                  <div className="text-xs text-slate-600 dark:text-[#9A9AA2]">Status: {handover.status} (v{handover.version})</div>
                 </div>
               </div>
 
@@ -409,39 +409,39 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                 </div>
               </div>
 
-              <table className="w-full border-collapse border border-slate-400 dark:border-slate-700 text-xs">
+              <table className="w-full border-collapse border border-slate-400 dark:border-[#2E2E32] text-xs">
                 <thead>
-                  <tr className="bg-slate-100 dark:bg-slate-800">
-                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">ID</th>
-                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">Physical Document Name</th>
-                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">Format</th>
-                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-center">Qty / Pages</th>
-                    <th className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-left">Status</th>
+                  <tr className="bg-slate-100 dark:bg-[#252528]">
+                    <th className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 text-left">ID</th>
+                    <th className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 text-left">Physical Document Name</th>
+                    <th className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 text-left">Format</th>
+                    <th className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 text-center">Qty / Pages</th>
+                    <th className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 text-left">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {handover.documents.map((d) => (
                     <tr key={d.id}>
-                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 tabular-nums">{d.id}</td>
-                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5">{d.documentName}</td>
-                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5">{d.format}</td>
-                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 text-center tabular-nums">
+                      <td className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 tabular-nums">{d.id}</td>
+                      <td className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5">{d.documentName}</td>
+                      <td className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5">{d.format}</td>
+                      <td className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 text-center tabular-nums">
                         {d.quantity} / {d.pageCount}p
                       </td>
-                      <td className="border border-slate-400 dark:border-slate-700 px-2.5 py-1.5 tabular-nums font-bold">{d.status}</td>
+                      <td className="border border-slate-400 dark:border-[#2E2E32] px-2.5 py-1.5 tabular-nums font-bold">{d.status}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <div className="grid grid-cols-2 gap-8 pt-8 text-xs">
-                <div className="border-t border-slate-900 dark:border-slate-700 pt-2">
+                <div className="border-t border-slate-900 dark:border-[#3A3A3F] pt-2">
                   <div className="font-bold">Counselor Signature & Date</div>
-                  <div className="text-slate-500 dark:text-slate-400 mt-1">{handover.counselorName}</div>
+                  <div className="text-slate-500 dark:text-[#9A9AA2] mt-1">{handover.counselorName}</div>
                 </div>
-                <div className="border-t border-slate-900 dark:border-slate-700 pt-2">
+                <div className="border-t border-slate-900 dark:border-[#3A3A3F] pt-2">
                   <div className="font-bold">Admission Receiver Verification Signature & Date</div>
-                  <div className="text-slate-500 dark:text-slate-400 mt-1">
+                  <div className="text-slate-500 dark:text-[#9A9AA2] mt-1">
                     {handover.lastAcknowledgedByName || handover.receivingEmployeeName}
                     {handover.lastAcknowledgedAt ? ` · Verified ${formatTimestamp(handover.lastAcknowledgedAt)}` : ''}
                   </div>
@@ -452,8 +452,8 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-900/80 flex items-center justify-between gap-3">
-          <div className="text-[11px] tabular-nums text-[#0F172A]/60 dark:text-slate-400">
+        <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#161616] flex items-center justify-between gap-3">
+          <div className="text-[11px] tabular-nums text-[#0F172A]/60 dark:text-[#9A9AA2]">
             Created: {handover ? formatTimestamp(handover.createdAt) : '—'}
           </div>
           <div className="flex items-center gap-2">
@@ -464,7 +464,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   onClose();
                   onOpenFollowUp(handover);
                 }}
-                className="px-3.5 py-2 text-xs font-semibold text-white bg-[#D97706] hover:bg-[#CF8B28] rounded-md transition-colors"
+                className="px-3.5 py-2 text-xs font-semibold text-white bg-[#D97706] hover:bg-[#CF8B28] dark:bg-[#F0A030] dark:hover:bg-[#F0A030]/90 rounded-md transition-colors"
               >
                 Deliver Missing / Corrected Items
               </MotionButton>
@@ -476,7 +476,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
                   onClose();
                   onOpenVerify(handover);
                 }}
-                className="px-3.5 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] rounded-md transition-colors"
+                className="px-3.5 py-2 text-xs font-semibold text-white bg-[#16A34A] hover:bg-[#138A59] dark:bg-[#34C26B] dark:hover:bg-[#34C26B]/90 rounded-md transition-colors"
               >
                 Inspect & Acknowledge Receipt
               </MotionButton>
@@ -484,7 +484,7 @@ export const HandoverDetailModal: React.FC<HandoverDetailModalProps> = ({
             <MotionButton
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-slate-300 bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-md hover:bg-[#EFF6FF]/40 transition-colors"
+              className="px-3.5 py-2 text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE] bg-[#FFFFFF] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md hover:bg-[#EFF6FF]/40 dark:hover:bg-[#2E2E32] transition-colors"
             >
               Close
             </MotionButton>
