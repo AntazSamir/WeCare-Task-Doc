@@ -27,6 +27,15 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 import { type ClassValue, clsx } from "clsx";
 import { AnimatePresence, motion, type Transition, useAnimation, useInView, useReducedMotion, type Variants } from "motion/react";
 import { twMerge } from "tailwind-merge";
+import { AnimateIcon } from "@animate-ui/react/icons";
+import { Bell as AnimatedBellIcon } from "./animate-ui/icons/bell";
+import { CalendarDays as AnimatedCalendarDaysIcon } from "./animate-ui/icons/calendar-days";
+import { Folder as AnimatedFolderIcon } from "./animate-ui/icons/folder";
+import { LayoutDashboard as AnimatedLayoutDashboardIcon } from "./animate-ui/icons/layout-dashboard";
+import { PanelLeftClose as AnimatedPanelLeftClose } from "./animate-ui/icons/panel-left-close";
+import { PanelLeftOpen as AnimatedPanelLeftOpen } from "./animate-ui/icons/panel-left-open";
+import { Settings as AnimatedSettingsIcon } from "./animate-ui/icons/settings";
+import { Users as AnimatedUsersIcon } from "./animate-ui/icons/users";
 
 // cn(): merges Tailwind classes, later ones win.
 /** Merge Tailwind classes, letting later classes win conflicts. */
@@ -2529,21 +2538,41 @@ const ROW: Variants = {
 };
 
 type IconType = React.ComponentType<{ active?: boolean; className?: string }>;
+
+function makeAnimateUiIcon(
+  Icon: React.ComponentType<{ size?: number; className?: string }>,
+  defaultSize = 17,
+): IconType {
+  const Wrapped: IconType = ({ active, className }) => {
+    const size = className?.includes("20px")
+      ? 20
+      : className?.includes("18px")
+        ? 18
+        : defaultSize;
+    return (
+      <AnimateIcon animate={Boolean(active)}>
+        <Icon size={size} className={className} />
+      </AnimateIcon>
+    );
+  };
+  return Wrapped;
+}
+
 const ICONS: Record<SidebarIcon, IconType> = {
   home: HomeIcon,
   search: SearchIcon,
   messages: MessageCircleIcon,
-  projects: FoldersIcon,
+  projects: makeAnimateUiIcon(AnimatedFolderIcon),
   analytics: ChartLineIcon,
-  calendar: CalendarDaysIcon,
+  calendar: makeAnimateUiIcon(AnimatedCalendarDaysIcon),
   agents: BotIcon,
   workflows: WorkflowIcon,
   integrations: PlugZapIcon,
-  apps: LayoutGridIcon,
+  apps: makeAnimateUiIcon(AnimatedLayoutDashboardIcon),
   explore: CompassIcon,
-  team: UsersIcon,
-  bell: BellIcon,
-  settings: SettingsIcon,
+  team: makeAnimateUiIcon(AnimatedUsersIcon),
+  bell: makeAnimateUiIcon(AnimatedBellIcon),
+  settings: makeAnimateUiIcon(AnimatedSettingsIcon),
 };
 
 const BADGE_TONE_CLASSES: Record<SidebarBadgeTone, string> = {
@@ -2648,21 +2677,18 @@ function renderNavIcon(
 ) {
   if (typeof icon === "string") {
     const BuiltInIcon = ICONS[icon];
-    return <BuiltInIcon className={className} active={hovered} />;
+    return <BuiltInIcon className={className} active={hovered && !still} />;
   }
   const CustomIcon = icon;
+  const size = className.includes("20px")
+    ? 20
+    : className.includes("17px")
+      ? 17
+      : 18;
   return (
-    <motion.span
-      className="inline-grid place-items-center"
-      animate={
-        hovered && !still
-          ? { scale: 1.12, rotate: -4 }
-          : { scale: 1, rotate: 0 }
-      }
-      transition={{ type: "spring", stiffness: 420, damping: 18 }}
-    >
-      <CustomIcon className={className} />
-    </motion.span>
+    <AnimateIcon animate={!still && hovered}>
+      <CustomIcon size={size} className={className} />
+    </AnimateIcon>
   );
 }
 
@@ -2836,6 +2862,7 @@ export const SidebarNav = React.forwardRef<HTMLElement, SidebarNavProps>(
 
     const [hover, setHover] = React.useState<string | null>(null);
     const [logoHover, setLogoHover] = React.useState(false);
+    const [foldHover, setFoldHover] = React.useState(false);
 
     // One tooltip for the slim rail, sliding to the row under the pointer.
     const [tip, setTip] = React.useState<{
@@ -2999,10 +3026,14 @@ export const SidebarNav = React.forwardRef<HTMLElement, SidebarNavProps>(
               aria-expanded={!collapsed}
               title={collapsed ? "Expand sidebar (Ctrl+B)" : "Collapse sidebar (Ctrl+B)"}
               onClick={() => setCollapsed(!collapsed)}
-              onPointerEnter={(e) =>
-                showTip(e.currentTarget, collapsed ? "Expand sidebar" : "Collapse sidebar", "Ctrl+B")
-              }
-              onPointerLeave={() => setTip(null)}
+              onPointerEnter={(e) => {
+                setFoldHover(true);
+                showTip(e.currentTarget, collapsed ? "Expand sidebar" : "Collapse sidebar", "Ctrl+B");
+              }}
+              onPointerLeave={() => {
+                setFoldHover(false);
+                setTip(null);
+              }}
               onFocus={(e) =>
                 showTip(e.currentTarget, collapsed ? "Expand sidebar" : "Collapse sidebar", "Ctrl+B")
               }
@@ -3025,7 +3056,9 @@ export const SidebarNav = React.forwardRef<HTMLElement, SidebarNavProps>(
                 }}
                 transition={{ duration: still ? 0 : 0.2 }}
               >
-                <PanelLeftCloseIcon className="size-[18px]" />
+                <AnimateIcon animate={foldHover && !still}>
+                  <AnimatedPanelLeftClose size={18} className="size-[18px]" />
+                </AnimateIcon>
               </motion.span>
               <motion.span
                 className="absolute inset-0 grid place-items-center"
@@ -3039,7 +3072,9 @@ export const SidebarNav = React.forwardRef<HTMLElement, SidebarNavProps>(
                   delay: collapsed && !still ? 0.18 : 0,
                 }}
               >
-                <PanelLeftOpenIcon className="size-[18px]" />
+                <AnimateIcon animate={foldHover && !still}>
+                  <AnimatedPanelLeftOpen size={18} className="size-[18px]" />
+                </AnimateIcon>
               </motion.span>
             </motion.button>
           </motion.div>
@@ -3417,16 +3452,18 @@ export const SidebarNav = React.forwardRef<HTMLElement, SidebarNavProps>(
                         </span>
                       )}
                     </span>
-                    <motion.button
-                      type="button"
-                      aria-label="Settings"
-                      tabIndex={collapsed ? -1 : 0}
-                      onClick={onSettings}
-                      whileTap={still ? undefined : { scale: 0.9 }}
-                      className="grid size-8 cursor-pointer place-items-center rounded-lg text-[#64748B] dark:text-white outline-none transition-colors hover:bg-[#F1F5F9] dark:hover:bg-[#252528] hover:text-[#0F172A] dark:hover:text-white focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1E40AF]/40 dark:focus-visible:ring-[#4C8DF6]/50"
-                    >
-                      <SettingsIcon className="size-[18px]" />
-                    </motion.button>
+                    <AnimateIcon animateOnHover className="inline-flex">
+                      <motion.button
+                        type="button"
+                        aria-label="Settings"
+                        tabIndex={collapsed ? -1 : 0}
+                        onClick={onSettings}
+                        whileTap={still ? undefined : { scale: 0.9 }}
+                        className="grid size-8 cursor-pointer place-items-center rounded-lg text-[#64748B] dark:text-white outline-none transition-colors hover:bg-[#F1F5F9] dark:hover:bg-[#252528] hover:text-[#0F172A] dark:hover:text-white focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1E40AF]/40 dark:focus-visible:ring-[#4C8DF6]/50"
+                      >
+                        <AnimatedSettingsIcon size={18} className="size-[18px]" />
+                      </motion.button>
+                    </AnimateIcon>
                   </motion.div>
                 </div>
               </div>

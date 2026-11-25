@@ -1,18 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } from 'react';
 import { Spinner } from '@astryxdesign/core/Spinner';
 import {
-  Sun,
   CalendarClock,
   Calendar as CalendarIcon,
-  ListTodo,
-  CheckCircle2,
   FileSpreadsheet,
-  Plus,
-  RefreshCw,
-  Bell,
-  Moon,
-  Wifi,
-  WifiOff,
   AlertTriangle,
   LayoutList,
   Check,
@@ -22,10 +13,23 @@ import {
   Clock,
   Layers,
   Percent,
-  FileCheck2,
-  GraduationCap,
   RotateCcw,
 } from 'lucide-react';
+import { AnimateIcon } from '@animate-ui/react/icons';
+import { Bell } from './components/animate-ui/icons/bell';
+import { CalendarDays } from './components/animate-ui/icons/calendar-days';
+import { CircleCheckBig } from './components/animate-ui/icons/circle-check-big';
+import { FileCheck } from './components/animate-ui/icons/file-check';
+import { Folder } from './components/animate-ui/icons/folder';
+import { GraduationCap } from './components/animate-ui/icons/graduation-cap';
+import { LayoutDashboard } from './components/animate-ui/icons/layout-dashboard';
+import { List } from './components/animate-ui/icons/list';
+import { Moon } from './components/animate-ui/icons/moon';
+import { Plus } from './components/animate-ui/icons/plus';
+import { RefreshCw } from './components/animate-ui/icons/refresh-cw';
+import { Settings as AnimatedSettings } from './components/animate-ui/icons/settings';
+import { Sun } from './components/animate-ui/icons/sun';
+import { Users } from './components/animate-ui/icons/users';
 import {
   AppNotification,
   AppSettings,
@@ -2267,13 +2271,13 @@ export function App() {
       {
         section: 'OVERVIEW',
         label: 'Dashboard',
-        icon: 'apps',
+        icon: LayoutDashboard,
         route: 'dashboard',
       },
       {
         section: 'ADMISSIONS',
         label: 'Students',
-        icon: 'team',
+        icon: Users,
         route: 'students',
         badge: {
           count: students.length,
@@ -2284,7 +2288,7 @@ export function App() {
       {
         section: 'ADMISSIONS',
         label: 'Intake Campaigns',
-        icon: 'projects',
+        icon: Folder,
         route: 'projects',
         badge: {
           count: projects.length,
@@ -2295,7 +2299,7 @@ export function App() {
       {
         section: 'ADMISSIONS',
         label: 'Universities',
-        icon: GraduationCap as SidebarItem['icon'],
+        icon: GraduationCap,
         route: 'universities',
         badge: {
           count: universities.length,
@@ -2306,7 +2310,7 @@ export function App() {
       {
         section: 'ADMISSIONS',
         label: 'Document Handover',
-        icon: FileCheck2 as SidebarItem['icon'],
+        icon: FileCheck,
         route: 'document-handover',
         badge: {
           count: handoverBadgeCount,
@@ -2328,7 +2332,7 @@ export function App() {
       {
         section: 'MY WORK',
         label: 'All Tasks',
-        icon: ListTodo,
+        icon: List,
         route: 'all-tasks',
         badge: {
           count: stats.pendingCount,
@@ -2339,14 +2343,14 @@ export function App() {
       {
         section: 'MY WORK',
         label: 'Calendar',
-        icon: 'calendar',
+        icon: CalendarDays,
         route: 'calendar',
         badge: calendarMetrics.sidebarBadge,
       },
       {
         section: 'MY WORK',
         label: 'Completed',
-        icon: CheckCircle2,
+        icon: CircleCheckBig,
         route: 'completed',
         badge: {
           count: stats.completedCount,
@@ -2357,7 +2361,7 @@ export function App() {
       {
         section: 'WORKSPACE',
         label: 'Settings',
-        icon: 'settings',
+        icon: AnimatedSettings,
         route: 'settings',
       },
     ],
@@ -2637,19 +2641,21 @@ export function App() {
                   <span className="truncate">{isOffline ? 'Sync Failed' : connection.syncStatus}</span>
                 </span>
               </button>
-              <MotionButton
-                type="button"
-                onClick={handleManualSyncNow}
-                title="Sync now with Google Sheets"
-                className="inline-flex items-center gap-1 px-2 py-1 text-[10.5px] font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[rgba(76,141,246,0.14)] rounded transition-colors duration-150 shrink-0"
-              >
-                {connection.syncStatus === 'Syncing' ? (
-                  <Spinner size="sm" shade="inherit" aria-hidden="true" />
-                ) : (
-                  <RefreshCw className="w-3 h-3" />
-                )}
-                <span>Sync now</span>
-              </MotionButton>
+              <AnimateIcon animateOnHover className="inline-flex shrink-0">
+                <MotionButton
+                  type="button"
+                  onClick={handleManualSyncNow}
+                  title="Sync now with Google Sheets"
+                  className="inline-flex items-center gap-1 px-2 py-1 text-[10.5px] font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[rgba(76,141,246,0.14)] rounded transition-colors duration-150 shrink-0"
+                >
+                  {connection.syncStatus === 'Syncing' ? (
+                    <Spinner size="sm" shade="inherit" aria-hidden="true" />
+                  ) : (
+                    <RefreshCw size={12} className="w-3 h-3" />
+                  )}
+                  <span>Sync now</span>
+                </MotionButton>
+              </AnimateIcon>
             </div>
           ) : (
             <div className="flex justify-center">
@@ -2739,53 +2745,59 @@ export function App() {
             </MotionButton>
 
             {/* Real-time In-App Notification Center Drawer Trigger */}
-            <MotionButton
-              type="button"
-              onClick={() => setIsNotificationDrawerOpen(true)}
-              className="relative p-2 text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-[#2E2E32]"
-              title="Open Real-time Notifications & Operational Alerts"
-              aria-label="Notifications and Reminders"
-            >
-              <Bell className="w-4 h-4" />
-              {pmsNotifications.filter((n) => !n.read).length > 0 && (
-                <span className="absolute -top-1 -right-1 px-1 min-w-[16px] h-4 rounded-full bg-[#1E40AF] dark:bg-[#4C8DF6] text-white text-[10px] font-semibold flex items-center justify-center tabular-nums">
-                  {pmsNotifications.filter((n) => !n.read).length}
-                </span>
-              )}
-            </MotionButton>
+            <AnimateIcon animateOnHover className="inline-flex">
+              <MotionButton
+                type="button"
+                onClick={() => setIsNotificationDrawerOpen(true)}
+                className="relative p-2 text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-[#2E2E32]"
+                title="Open Real-time Notifications & Operational Alerts"
+                aria-label="Notifications and Reminders"
+              >
+                <Bell size={16} className="w-4 h-4" />
+                {pmsNotifications.filter((n) => !n.read).length > 0 && (
+                  <span className="absolute -top-1 -right-1 px-1 min-w-[16px] h-4 rounded-full bg-[#1E40AF] dark:bg-[#4C8DF6] text-white text-[10px] font-semibold flex items-center justify-center tabular-nums">
+                    {pmsNotifications.filter((n) => !n.read).length}
+                  </span>
+                )}
+              </MotionButton>
+            </AnimateIcon>
 
             {/* Theme Toggle (Light / Dark) */}
-            <ThemeTogglerButton
-              type="button"
-              theme={resolvedTheme}
-              resolvedTheme={resolvedTheme}
-              setTheme={handleSetTheme}
-              modes={['light', 'dark']}
-              variant="outline"
-              size="default"
-              className="h-9 w-9 rounded-lg border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#1C1C1E] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] shadow-none"
-              title={resolvedTheme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
-              aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
-            >
-              <ThemeTogglerButtonIcon
-                light={<Sun className="w-4 h-4 text-[#D97706]" />}
-                dark={<Moon className="w-4 h-4 text-white" />}
-              />
-            </ThemeTogglerButton>
+            <AnimateIcon animateOnHover className="inline-flex">
+              <ThemeTogglerButton
+                type="button"
+                theme={resolvedTheme}
+                resolvedTheme={resolvedTheme}
+                setTheme={handleSetTheme}
+                modes={['light', 'dark']}
+                variant="outline"
+                size="default"
+                className="h-9 w-9 rounded-lg border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#1C1C1E] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] shadow-none"
+                title={resolvedTheme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
+                aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+              >
+                <ThemeTogglerButtonIcon
+                  light={<Sun size={16} className="w-4 h-4 text-[#D97706]" />}
+                  dark={<Moon size={16} className="w-4 h-4 text-white" />}
+                />
+              </ThemeTogglerButton>
+            </AnimateIcon>
 
             {/* Primary CTA: Assign Task / New Task */}
-            <MotionButton
-              type="button"
-              onClick={() => {
-                setTaskContextStudentId(undefined);
-                setTaskContextProjectId(undefined);
-                setIsEnhancedTaskModalOpen(true);
-              }}
-              className="inline-flex items-center gap-1.5 px-4 h-9 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg shadow-xs dark:shadow-none transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
-            >
-              <Plus className="w-4 h-4" />
-              {currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
-            </MotionButton>
+            <AnimateIcon animateOnHover className="inline-flex shrink-0">
+              <MotionButton
+                type="button"
+                onClick={() => {
+                  setTaskContextStudentId(undefined);
+                  setTaskContextProjectId(undefined);
+                  setIsEnhancedTaskModalOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-4 h-9 text-sm font-medium text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg shadow-xs dark:shadow-none transition-colors duration-150 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] focus:ring-offset-2"
+              >
+                <Plus size={16} className="w-4 h-4" />
+                {currentUser.role === 'Admission_Manager' ? 'Assign Task' : 'New Task'}
+              </MotionButton>
+            </AnimateIcon>
           </div>
         </header>
 
@@ -2928,7 +2940,7 @@ export function App() {
                   {w.metricToday && (
                   <div className="p-3 rounded-md bg-[#D97706]/8 dark:bg-[#1C1C1E] border border-[#D97706]/25 dark:border-[#2E2E32] transition-all hover:border-[#D97706]/50 dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#D97706] dark:text-[#9A9AA2] font-medium">
-                      <Sun className="w-3.5 h-3.5 shrink-0" />
+                      <Sun size={14} animateOnHover className="w-3.5 h-3.5 shrink-0" />
                       <span>Today</span>
                     </div>
                     <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.todayCount === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
@@ -2950,7 +2962,7 @@ export function App() {
                   {w.metricCompleted && (
                   <div className="p-3 rounded-md bg-[#16A34A]/8 dark:bg-[#1C1C1E] border border-[#16A34A]/25 dark:border-[#2E2E32] transition-all hover:border-[#16A34A]/50 dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#16A34A] dark:text-[#34C26B] font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                      <CircleCheckBig size={14} animateOnHover className="w-3.5 h-3.5 shrink-0" />
                       <span>Completed</span>
                     </div>
                     <div className={`mt-1.5 text-xl tabular-nums font-bold ${stats.completedCount === 0 ? 'text-[#16A34A] dark:text-[#66666E]' : 'text-[#16A34A] dark:text-[#34C26B]'}`}>
@@ -3359,7 +3371,7 @@ export function App() {
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2.5">
-                        <Sun className="w-5 h-5 text-[#D97706] dark:text-[#ECECEE] shrink-0" />
+                        <Sun size={20} animateOnHover className="w-5 h-5 text-[#D97706] dark:text-[#ECECEE] shrink-0" />
                         <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
                           Today — {formatFullHeaderDate()}
                         </h1>
@@ -3369,18 +3381,20 @@ export function App() {
                         today ({stats.dailyCompletionPct}% complete)
                       </p>
                     </div>
-                    <MotionButton
-                      type="button"
-                      onClick={() => {
-                        setEditingTask(null);
-                        setModalInitialDate(todayIso);
-                        setIsTaskModalOpen(true);
-                      }}
-                      className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      Schedule Task for Today
-                    </MotionButton>
+                    <AnimateIcon animateOnHover className="inline-flex">
+                      <MotionButton
+                        type="button"
+                        onClick={() => {
+                          setEditingTask(null);
+                          setModalInitialDate(todayIso);
+                          setIsTaskModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
+                      >
+                        <Plus size={14} className="w-3.5 h-3.5" />
+                        Schedule Task for Today
+                      </MotionButton>
+                    </AnimateIcon>
                   </div>
 
                   {/* Focus Strip: Priority & Category Filters */}
@@ -3488,7 +3502,7 @@ export function App() {
                 {stats.todayTasks.length > 0 && stats.todayPendingCount === 0 && !hasTodayFilters && (
                   <div className="bg-[#DCFCE7]/60 dark:bg-[rgba(52,194,107,0.14)] border border-[#16A34A]/30 dark:border-[#34C26B]/30 rounded-[12px] px-4 py-3 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 text-xs">
-                      <CheckCircle2 className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
+                      <CircleCheckBig size={16} animateOnHover className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
                       <span className="font-semibold text-[#15803d] dark:text-[#34C26B]">
                         All {stats.todayTasks.length} tasks scheduled for today are completed!
                       </span>
@@ -3507,7 +3521,7 @@ export function App() {
                 {filteredTodayTasks.length === 0 ? (
                   <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] p-12 text-center space-y-3">
                     <div className="w-11 h-11 rounded-full bg-[#EFF6FF] dark:bg-[#252528] flex items-center justify-center mx-auto text-[#1E40AF] dark:text-[#ECECEE]">
-                      <Sun className="w-5 h-5" />
+                      <Sun size={20} animateOnHover className="w-5 h-5" />
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
@@ -3535,18 +3549,20 @@ export function App() {
                           Reset Filters
                         </MotionButton>
                       ) : (
-                        <MotionButton
-                          type="button"
-                          onClick={() => {
-                            setEditingTask(null);
-                            setModalInitialDate(todayIso);
-                            setIsTaskModalOpen(true);
-                          }}
-                          className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                          Schedule Task for Today
-                        </MotionButton>
+                        <AnimateIcon animateOnHover className="inline-flex">
+                          <MotionButton
+                            type="button"
+                            onClick={() => {
+                              setEditingTask(null);
+                              setModalInitialDate(todayIso);
+                              setIsTaskModalOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
+                          >
+                            <Plus size={14} className="w-3.5 h-3.5" />
+                            Schedule Task for Today
+                          </MotionButton>
+                        </AnimateIcon>
                       )}
                     </div>
                   </div>

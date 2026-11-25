@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
 import {
-  Sun,
-  Moon,
-  CheckCircle2,
-  Bell,
   Volume2,
   VolumeX,
   Layers,
-  GraduationCap,
-  Calendar,
-  ListTodo,
   FileSpreadsheet,
   WifiOff,
   User,
@@ -26,9 +19,15 @@ import {
   ArrowRight,
   Clock,
   HardDrive,
-  RefreshCw,
   LayoutGrid,
 } from 'lucide-react';
+import { AnimateIcon } from '@animate-ui/react/icons';
+import { Sun } from './animate-ui/icons/sun';
+import { Moon } from './animate-ui/icons/moon';
+import { Bell } from './animate-ui/icons/bell';
+import { CircleCheckBig } from './animate-ui/icons/circle-check-big';
+import { GraduationCap } from './animate-ui/icons/graduation-cap';
+import { List } from './animate-ui/icons/list';
 import {
   AppSettings,
   TaskCategory,
@@ -270,7 +269,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     pushNotification('Settings Reset', 'All settings restored to factory defaults.', 'info');
   };
 
-  const navItems: { id: SettingsSection; label: string; icon: React.FC<{ className?: string }>; description: string }[] = [
+  const navItems: { id: SettingsSection; label: string; icon: React.FC<{ className?: string; size?: number }>; description: string }[] = [
     {
       id: 'appearance',
       label: 'Appearance & Display',
@@ -292,7 +291,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     {
       id: 'tasks',
       label: 'Tasks & Automation',
-      icon: ListTodo,
+      icon: List,
       description: 'Priorities, pagination & confirmation',
     },
     {
@@ -341,7 +340,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         <div className="flex items-center gap-3 shrink-0">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-emerald-700 bg-emerald-50 dark:bg-[rgba(52,194,107,0.14)] dark:text-[#34C26B] border border-emerald-200 dark:border-[#34C26B]/30 rounded-full">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+            <CircleCheckBig size={14} animateOnHover className="w-3.5 h-3.5" />
             <span>Preferences Auto-Saved</span>
           </div>
 
@@ -367,22 +366,23 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             const Icon = item.icon;
             const isActive = activeSection === item.id;
             return (
-              <MotionButton
-                key={item.id}
-                onClick={() => setActiveSection(item.id)}
-                whileHover={{ scale: 1.01 }}
-                className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors ${
-                  isActive
-                    ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E40AF] dark:text-[#4C8DF6] font-semibold'
-                    : 'text-slate-700 dark:text-[#ECECEE] hover:bg-slate-50 dark:hover:bg-[#252528]'
-                }`}
-              >
-                <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${isActive ? 'text-[#1E40AF] dark:text-[#4C8DF6]' : 'text-slate-400 dark:text-[#9A9AA2]'}`} />
-                <div className="min-w-0">
-                  <div className="text-xs font-medium leading-snug">{item.label}</div>
-                  <div className="text-[11px] text-slate-400 dark:text-[#9A9AA2] truncate">{item.description}</div>
-                </div>
-              </MotionButton>
+              <AnimateIcon key={item.id} animateOnHover className="block">
+                <MotionButton
+                  onClick={() => setActiveSection(item.id)}
+                  whileHover={{ scale: 1.01 }}
+                  className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors ${
+                    isActive
+                      ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E40AF] dark:text-[#4C8DF6] font-semibold'
+                      : 'text-slate-700 dark:text-[#ECECEE] hover:bg-slate-50 dark:hover:bg-[#252528]'
+                  }`}
+                >
+                  <Icon size={16} className={`w-4 h-4 mt-0.5 shrink-0 ${isActive ? 'text-[#1E40AF] dark:text-[#4C8DF6]' : 'text-slate-400 dark:text-[#9A9AA2]'}`} />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium leading-snug">{item.label}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-[#9A9AA2] truncate">{item.description}</div>
+                  </div>
+                </MotionButton>
+              </AnimateIcon>
             );
           })}
 
@@ -438,60 +438,66 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <label className="block text-xs font-semibold text-slate-700 dark:text-[#ECECEE] uppercase tracking-wider">
                     Color Theme
                   </label>
-                  <ThemeTogglerButton
-                    type="button"
-                    theme={settings.theme}
-                    resolvedTheme={settings.theme === 'dark' ? 'dark' : 'light'}
-                    setTheme={(nextTheme: ThemeSelection) =>
-                      onUpdateSettings({ theme: nextTheme === 'dark' ? 'dark' : 'light' })
-                    }
-                    modes={['light', 'dark']}
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 rounded-lg border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#1C1C1E] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] shadow-none"
-                    title={settings.theme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
-                    aria-label={`Switch to ${settings.theme === 'dark' ? 'light' : 'dark'} mode`}
-                  >
-                    <ThemeTogglerButtonIcon
-                      light={<Sun className="w-3.5 h-3.5 text-[#D97706]" />}
-                      dark={<Moon className="w-3.5 h-3.5 text-white" />}
-                    />
-                  </ThemeTogglerButton>
+                  <AnimateIcon animateOnHover className="inline-flex">
+                    <ThemeTogglerButton
+                      type="button"
+                      theme={settings.theme}
+                      resolvedTheme={settings.theme === 'dark' ? 'dark' : 'light'}
+                      setTheme={(nextTheme: ThemeSelection) =>
+                        onUpdateSettings({ theme: nextTheme === 'dark' ? 'dark' : 'light' })
+                      }
+                      modes={['light', 'dark']}
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 rounded-lg border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#1C1C1E] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] shadow-none"
+                      title={settings.theme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
+                      aria-label={`Switch to ${settings.theme === 'dark' ? 'light' : 'dark'} mode`}
+                    >
+                      <ThemeTogglerButtonIcon
+                        light={<Sun size={14} className="w-3.5 h-3.5 text-[#D97706]" />}
+                        dark={<Moon size={14} className="w-3.5 h-3.5 text-white" />}
+                      />
+                    </ThemeTogglerButton>
+                  </AnimateIcon>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <MotionButton
-                    onClick={() => onUpdateSettings({ theme: 'light' })}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
-                      settings.theme === 'light'
-                        ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] ring-2 ring-[#1E40AF]/20 dark:ring-[#4C8DF6]/25'
-                        : 'border-[#E2E8F0] dark:border-[#2E2E32] hover:border-slate-300 dark:hover:border-[#3A3A3F]'
-                    }`}
-                  >
-                    <span className="p-2 rounded-md bg-amber-50 dark:bg-[rgba(240,160,48,0.14)] text-amber-600 dark:text-[#F0A030] border border-amber-200 dark:border-[#F0A030]/30">
-                      <Sun className="w-4 h-4" />
-                    </span>
-                    <div>
-                      <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">Light Mode</div>
-                      <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">High-contrast daytime clarity</div>
-                    </div>
-                  </MotionButton>
+                  <AnimateIcon animateOnHover className="block">
+                    <MotionButton
+                      onClick={() => onUpdateSettings({ theme: 'light' })}
+                      className={`w-full flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
+                        settings.theme === 'light'
+                          ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] ring-2 ring-[#1E40AF]/20 dark:ring-[#4C8DF6]/25'
+                          : 'border-[#E2E8F0] dark:border-[#2E2E32] hover:border-slate-300 dark:hover:border-[#3A3A3F]'
+                      }`}
+                    >
+                      <span className="p-2 rounded-md bg-amber-50 dark:bg-[rgba(240,160,48,0.14)] text-amber-600 dark:text-[#F0A030] border border-amber-200 dark:border-[#F0A030]/30">
+                        <Sun size={16} className="w-4 h-4" />
+                      </span>
+                      <div>
+                        <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">Light Mode</div>
+                        <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">High-contrast daytime clarity</div>
+                      </div>
+                    </MotionButton>
+                  </AnimateIcon>
 
-                  <MotionButton
-                    onClick={() => onUpdateSettings({ theme: 'dark' })}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
-                      settings.theme === 'dark'
-                        ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] ring-2 ring-[#1E40AF]/20 dark:ring-[#4C8DF6]/25'
-                        : 'border-[#E2E8F0] dark:border-[#2E2E32] hover:border-slate-300 dark:hover:border-[#3A3A3F]'
-                    }`}
-                  >
-                    <span className="p-2 rounded-md bg-[#1C1C1E] dark:bg-[#252528] text-white border border-[#2E2E32] dark:border-[#3A3A3F]">
-                      <Moon className="w-4 h-4" />
-                    </span>
-                    <div>
-                      <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">Dark Mode</div>
-                      <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">Neutral charcoal for night shifts</div>
-                    </div>
-                  </MotionButton>
+                  <AnimateIcon animateOnHover className="block">
+                    <MotionButton
+                      onClick={() => onUpdateSettings({ theme: 'dark' })}
+                      className={`w-full flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
+                        settings.theme === 'dark'
+                          ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] ring-2 ring-[#1E40AF]/20 dark:ring-[#4C8DF6]/25'
+                          : 'border-[#E2E8F0] dark:border-[#2E2E32] hover:border-slate-300 dark:hover:border-[#3A3A3F]'
+                      }`}
+                    >
+                      <span className="p-2 rounded-md bg-[#1C1C1E] dark:bg-[#252528] text-white border border-[#2E2E32] dark:border-[#3A3A3F]">
+                        <Moon size={16} className="w-4 h-4" />
+                      </span>
+                      <div>
+                        <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">Dark Mode</div>
+                        <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">Neutral charcoal for night shifts</div>
+                      </div>
+                    </MotionButton>
+                  </AnimateIcon>
                 </div>
               </div>
 
@@ -1455,7 +1461,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
                 {lastBackupFile && (
                   <div className="p-2.5 rounded bg-emerald-50 dark:bg-[rgba(52,194,107,0.14)] border border-emerald-200 dark:border-[#34C26B]/30 text-xs text-emerald-800 dark:text-[#34C26B] flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-[#34C26B] shrink-0" />
+                    <CircleCheckBig size={16} animateOnHover className="w-4 h-4 text-emerald-600 dark:text-[#34C26B] shrink-0" />
                     <span>Snapshot created: <strong className="tabular-nums">{lastBackupFile}</strong></span>
                   </div>
                 )}

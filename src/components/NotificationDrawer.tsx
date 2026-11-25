@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Bell,
   BellOff,
   CheckCheck,
   ExternalLink,
@@ -11,6 +10,7 @@ import {
   FileCheck2,
   X,
 } from 'lucide-react';
+import { Bell } from './animate-ui/icons/bell';
 import { InAppNotification } from '../types/pms';
 import { formatTimestamp } from '../utils/dateUtils';
 import { requestDesktopNotificationPermission } from '../services/pmsService';
@@ -58,7 +58,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
         <div className="p-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] dark:bg-[#252528] border border-[#1E40AF]/40 dark:border-[#2E2E32] flex items-center justify-center text-[#1E40AF] dark:text-[#4C8DF6]">
-              <Bell className="w-4 h-4" />
+              <Bell size={16} animate={isOpen} animateOnHover className="w-4 h-4" />
             </div>
             <div>
               <h2 className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
@@ -88,7 +88,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
         <div className="px-4 py-2 bg-[#F8FAFC] dark:bg-[#161616] border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 text-[#0F172A]/75 dark:text-[#9A9AA2]">
             {browserPermission === 'granted' ? (
-              <Bell className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B]" />
+              <Bell size={14} animateOnHover className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B]" />
             ) : (
               <BellOff className="w-3.5 h-3.5 text-[#D97706] dark:text-[#F0A030]" />
             )}
@@ -122,7 +122,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
           {notifications.length === 0 ? (
             <div className="py-16 text-center space-y-2">
               <div className="w-10 h-10 mx-auto rounded-full bg-[#EFF6FF] dark:bg-[#252528] border border-transparent dark:border-[#2E2E32] flex items-center justify-center text-[#1E40AF] dark:text-[#9A9AA2]">
-                <Bell className="w-5 h-5 opacity-70" />
+                <Bell size={20} animateOnHover className="w-5 h-5 opacity-70" />
               </div>
               <p className="text-sm font-medium text-[#0F172A] dark:text-[#ECECEE]">
                 No notifications yet
