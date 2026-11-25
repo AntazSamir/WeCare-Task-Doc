@@ -32,7 +32,7 @@
               if (parsed?.settings?.theme) stored = parsed.settings.theme;
             }
           }
-          var isDark = stored === 'dark' || (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var isDark = stored === 'dark';
           if (isDark) {
             document.documentElement.classList.add('dark');
           } else {

@@ -174,7 +174,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidgetsConfig = {
 };
 
 export interface AppSettings {
-  theme: 'light' | 'dark' | 'system';
+  theme: 'light' | 'dark';
   remindersEnabled: boolean;
   todayReminderShownDate: string | null;
   defaultCategory: TaskCategory;

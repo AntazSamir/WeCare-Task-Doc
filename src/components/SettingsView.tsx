@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Sun,
   Moon,
-  Monitor,
   CheckCircle2,
   Bell,
   Volume2,
@@ -43,6 +42,11 @@ import {
 import { Spinner } from '@astryxdesign/core/Spinner';
 import { UserProfile, StudentApplication, KoreanUniversity } from '../types/pms';
 import { playNotificationChime, playCompletionChime } from '../utils/soundUtils';
+import {
+  ThemeTogglerButton,
+  ThemeTogglerButtonIcon,
+  type ThemeSelection,
+} from './animate-ui/buttons/theme-toggler';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 import { TabTransition, MotionButton } from './animations';
 
@@ -430,10 +434,31 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
               {/* Theme Palette */}
               <div className="pt-2">
-                <label className="block text-xs font-semibold text-slate-700 dark:text-[#ECECEE] uppercase tracking-wider mb-2">
-                  Color Theme
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-[#ECECEE] uppercase tracking-wider">
+                    Color Theme
+                  </label>
+                  <ThemeTogglerButton
+                    type="button"
+                    theme={settings.theme}
+                    resolvedTheme={settings.theme === 'dark' ? 'dark' : 'light'}
+                    setTheme={(nextTheme: ThemeSelection) =>
+                      onUpdateSettings({ theme: nextTheme === 'dark' ? 'dark' : 'light' })
+                    }
+                    modes={['light', 'dark']}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 rounded-lg border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#1C1C1E] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] shadow-none"
+                    title={settings.theme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
+                    aria-label={`Switch to ${settings.theme === 'dark' ? 'light' : 'dark'} mode`}
+                  >
+                    <ThemeTogglerButtonIcon
+                      light={<Sun className="w-3.5 h-3.5 text-[#D97706]" />}
+                      dark={<Moon className="w-3.5 h-3.5 text-white" />}
+                    />
+                  </ThemeTogglerButton>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <MotionButton
                     onClick={() => onUpdateSettings({ theme: 'light' })}
                     className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
@@ -459,29 +484,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         : 'border-[#E2E8F0] dark:border-[#2E2E32] hover:border-slate-300 dark:hover:border-[#3A3A3F]'
                     }`}
                   >
-                    <span className="p-2 rounded-md bg-slate-800 dark:bg-[#252528] text-blue-400 dark:text-[#4C8DF6] border border-slate-700 dark:border-[#3A3A3F]">
+                    <span className="p-2 rounded-md bg-[#1C1C1E] dark:bg-[#252528] text-white border border-[#2E2E32] dark:border-[#3A3A3F]">
                       <Moon className="w-4 h-4" />
                     </span>
                     <div>
-                      <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">Dark Navy</div>
-                      <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">Reduced eye strain for night shifts</div>
-                    </div>
-                  </MotionButton>
-
-                  <MotionButton
-                    onClick={() => onUpdateSettings({ theme: 'system' })}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
-                      settings.theme === 'system'
-                        ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] ring-2 ring-[#1E40AF]/20 dark:ring-[#4C8DF6]/25'
-                        : 'border-[#E2E8F0] dark:border-[#2E2E32] hover:border-slate-300 dark:hover:border-[#3A3A3F]'
-                    }`}
-                  >
-                    <span className="p-2 rounded-md bg-slate-100 dark:bg-[#252528] text-slate-700 dark:text-[#ECECEE] border border-slate-200 dark:border-[#3A3A3F]">
-                      <Monitor className="w-4 h-4" />
-                    </span>
-                    <div>
-                      <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">System OS</div>
-                      <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">Sync with Windows/macOS</div>
+                      <div className="text-xs font-semibold text-[#0F172A] dark:text-[#ECECEE]">Dark Mode</div>
+                      <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">Neutral charcoal for night shifts</div>
                     </div>
                   </MotionButton>
                 </div>

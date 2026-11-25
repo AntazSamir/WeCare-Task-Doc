@@ -13,7 +13,6 @@ import {
   RefreshCw,
   Bell,
   Moon,
-  Monitor,
   Wifi,
   WifiOff,
   AlertTriangle,
@@ -116,6 +115,11 @@ import {
   type GlobalSearchAction,
 } from './components/GlobalSearchBar';
 import { AnimatePresence } from 'motion/react';
+import {
+  ThemeTogglerButton,
+  ThemeTogglerButtonIcon,
+  type ThemeSelection,
+} from './components/animate-ui/buttons/theme-toggler';
 
 // Lazy-loaded Views (Code Splitting)
 const SettingsView = React.lazy(() =>
@@ -531,10 +535,10 @@ export function App() {
   const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
   const [syncQueue, setSyncQueue] = useState<SyncQueueItem[]>([]);
   const [settings, setSettings] = useState<AppSettings>(() => {
-    let initialTheme: 'light' | 'dark' | 'system' = 'light';
+    let initialTheme: 'light' | 'dark' = 'light';
     try {
       const stored = localStorage.getItem('pms_theme_preference');
-      if (stored === 'light' || stored === 'dark' || stored === 'system') {
+      if (stored === 'dark' || stored === 'light') {
         initialTheme = stored;
       }
     } catch {}
@@ -731,35 +735,20 @@ export function App() {
   const isFlushingQueueRef = useRef<boolean>(false);
   const prevIsOfflineRef = useRef<boolean>(isOffline);
 
-  // Apply Light / Dark / System Theme to <html> and synchronize storage
+  const resolvedTheme: 'light' | 'dark' = settings.theme === 'dark' ? 'dark' : 'light';
+
+  // Apply Light / Dark Theme to <html> and synchronize storage
   useEffect(() => {
     const root = document.documentElement;
-    const applyTheme = () => {
-      let isDark = false;
-      if (settings.theme === 'system') {
-        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      } else {
-        isDark = settings.theme === 'dark';
-      }
-      if (isDark) {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-    };
-
-    applyTheme();
-    try {
-      localStorage.setItem('pms_theme_preference', settings.theme);
-    } catch {}
-
-    if (settings.theme === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const listener = () => applyTheme();
-      mediaQuery.addEventListener('change', listener);
-      return () => mediaQuery.removeEventListener('change', listener);
+    if (resolvedTheme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
     }
-  }, [settings.theme]);
+    try {
+      localStorage.setItem('pms_theme_preference', resolvedTheme);
+    } catch {}
+  }, [resolvedTheme]);
 
   // Helper to show non-intrusive toast and record notification
   const pushNotification = useCallback(
@@ -819,6 +808,13 @@ export function App() {
     });
   }, []);
 
+  const handleSetTheme = useCallback(
+    (nextTheme: ThemeSelection) => {
+      handleUpdateSettings({ theme: nextTheme === 'dark' ? 'dark' : 'light' });
+    },
+    [handleUpdateSettings]
+  );
+
   useEffect(() => {
     if (!activeToast) return;
     const timer = setTimeout(() => {
@@ -873,11 +869,17 @@ export function App() {
           setSyncLogs(parsed.syncLogs);
         }
         if (parsed.settings) {
-          const storedTheme = localStorage.getItem('pms_theme_preference') as ('light' | 'dark' | 'system' | null);
+          const storedTheme = localStorage.getItem('pms_theme_preference');
+          const resolvedStored =
+            storedTheme === 'dark' || storedTheme === 'light'
+              ? storedTheme
+              : parsed.settings.theme === 'dark'
+              ? 'dark'
+              : null;
           setSettings((prev) => ({
             ...prev,
             ...parsed.settings,
-            theme: storedTheme || parsed.settings.theme || prev.theme,
+            theme: resolvedStored || (prev.theme === 'dark' ? 'dark' : 'light'),
             dashboardWidgets: {
               ...DEFAULT_DASHBOARD_WIDGETS,
               ...parsed.settings.dashboardWidgets,
@@ -912,7 +914,13 @@ export function App() {
           setSyncLogs(data.syncLogs);
         }
         if (data.settings) {
-          const storedTheme = localStorage.getItem('pms_theme_preference') as ('light' | 'dark' | 'system' | null);
+          const storedTheme = localStorage.getItem('pms_theme_preference');
+          const resolvedStored =
+            storedTheme === 'dark' || storedTheme === 'light'
+              ? storedTheme
+              : data.settings.theme === 'dark'
+              ? 'dark'
+              : null;
           let localExtended: Partial<AppSettings> = {};
           try {
             const rawExt = localStorage.getItem('pms_app_settings');
@@ -921,7 +929,7 @@ export function App() {
           setSettings((prev) => ({
             ...prev,
             ...data.settings,
-            theme: storedTheme || data.settings.theme || prev.theme,
+            theme: resolvedStored || (prev.theme === 'dark' ? 'dark' : 'light'),
             dashboardWidgets: {
               ...DEFAULT_DASHBOARD_WIDGETS,
               ...data.settings.dashboardWidgets,
@@ -2809,40 +2817,24 @@ export function App() {
               )}
             </MotionButton>
 
-            {/* Theme Toggle (Light / Dark / System) */}
-            <MotionButton
+            {/* Theme Toggle (Light / Dark) */}
+            <ThemeTogglerButton
               type="button"
-              onClick={() => {
-                const nextTheme: 'light' | 'dark' | 'system' =
-                  settings.theme === 'light'
-                    ? 'dark'
-                    : settings.theme === 'dark'
-                    ? 'system'
-                    : 'light';
-                const nextSettings = { ...settings, theme: nextTheme };
-                setSettings(nextSettings);
-                try {
-                  localStorage.setItem('pms_theme_preference', nextTheme);
-                  const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-                  if (raw) {
-                    const parsed = JSON.parse(raw);
-                    parsed.settings = nextSettings;
-                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-                  }
-                } catch {}
-              }}
-              className="p-2 text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-lg transition-colors h-9 w-9 flex items-center justify-center border border-[#E2E8F0] dark:border-[#2E2E32]"
-              title={`Theme: ${settings.theme === 'system' ? 'System' : settings.theme === 'dark' ? 'Dark' : 'Light'} (Click to cycle)`}
-              aria-label="Toggle color theme"
+              theme={resolvedTheme}
+              resolvedTheme={resolvedTheme}
+              setTheme={handleSetTheme}
+              modes={['light', 'dark']}
+              variant="outline"
+              size="default"
+              className="h-9 w-9 rounded-lg border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#1C1C1E] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] shadow-none"
+              title={resolvedTheme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
+              aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
             >
-              {settings.theme === 'dark' ? (
-                <Moon className="w-4 h-4 text-[#4C8DF6]" />
-              ) : settings.theme === 'system' ? (
-                <Monitor className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
-              ) : (
-                <Sun className="w-4 h-4 text-[#D97706]" />
-              )}
-            </MotionButton>
+              <ThemeTogglerButtonIcon
+                light={<Sun className="w-4 h-4 text-[#D97706]" />}
+                dark={<Moon className="w-4 h-4 text-white" />}
+              />
+            </ThemeTogglerButton>
 
             {/* Primary CTA: Assign Task / New Task */}
             <MotionButton
