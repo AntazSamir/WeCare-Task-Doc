@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } from 'react';
 import { Spinner } from '@astryxdesign/core/Spinner';
 import {
-  LayoutDashboard,
   Sun,
   CalendarClock,
   Calendar as CalendarIcon,
   ListTodo,
   CheckCircle2,
   FileSpreadsheet,
-  Settings as SettingsIcon,
   Plus,
   RefreshCw,
   Bell,
@@ -20,10 +18,6 @@ import {
   Check,
   X,
   GripVertical,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Users,
-  FolderKanban,
   Building2,
   Clock,
   Layers,
@@ -108,7 +102,7 @@ import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, 
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { playCompletionChime, playNotificationChime } from './utils/soundUtils';
 import { PageTransition, TabTransition, ToastTransition, MotionButton } from './components/animations';
-import { SidebarTabBar } from '@/components/tab-bar';
+import { SidebarNav, type SidebarSection, type SidebarItem } from '@/components/sidebar-nav';
 import {
   GlobalSearchBar,
   type GlobalSearchItem,
@@ -2261,7 +2255,7 @@ export function App() {
   const navConfig: {
     section: 'OVERVIEW' | 'ADMISSIONS' | 'MY WORK' | 'WORKSPACE';
     label: string;
-    icon: React.ComponentType<{ className?: string; size?: number; color?: string }>;
+    icon: SidebarItem['icon'];
     route: NavigationTab;
     badge?: {
       count: number;
@@ -2273,13 +2267,13 @@ export function App() {
       {
         section: 'OVERVIEW',
         label: 'Dashboard',
-        icon: LayoutDashboard,
+        icon: 'apps',
         route: 'dashboard',
       },
       {
         section: 'ADMISSIONS',
         label: 'Students',
-        icon: Users as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        icon: 'team',
         route: 'students',
         badge: {
           count: students.length,
@@ -2290,7 +2284,7 @@ export function App() {
       {
         section: 'ADMISSIONS',
         label: 'Intake Campaigns',
-        icon: FolderKanban as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        icon: 'projects',
         route: 'projects',
         badge: {
           count: projects.length,
@@ -2301,7 +2295,7 @@ export function App() {
       {
         section: 'ADMISSIONS',
         label: 'Universities',
-        icon: GraduationCap as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        icon: GraduationCap as SidebarItem['icon'],
         route: 'universities',
         badge: {
           count: universities.length,
@@ -2312,7 +2306,7 @@ export function App() {
       {
         section: 'ADMISSIONS',
         label: 'Document Handover',
-        icon: FileCheck2 as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        icon: FileCheck2 as SidebarItem['icon'],
         route: 'document-handover',
         badge: {
           count: handoverBadgeCount,
@@ -2345,7 +2339,7 @@ export function App() {
       {
         section: 'MY WORK',
         label: 'Calendar',
-        icon: CalendarIcon,
+        icon: 'calendar',
         route: 'calendar',
         badge: calendarMetrics.sidebarBadge,
       },
@@ -2363,7 +2357,7 @@ export function App() {
       {
         section: 'WORKSPACE',
         label: 'Settings',
-        icon: SettingsIcon,
+        icon: 'settings',
         route: 'settings',
       },
     ],
@@ -2379,7 +2373,7 @@ export function App() {
     ]
   );
 
-  const navSections = useMemo(() => {
+  const sidebarSections: SidebarSection[] = useMemo(() => {
     const order: ('OVERVIEW' | 'ADMISSIONS' | 'MY WORK' | 'WORKSPACE')[] = [
       'OVERVIEW',
       'ADMISSIONS',
@@ -2387,11 +2381,11 @@ export function App() {
       'WORKSPACE',
     ];
     return order.map((title) => ({
-      title,
+      label: title,
       items: navConfig
         .filter((item) => item.section === title)
         .map(({ route, label, icon, badge }) => ({
-          route,
+          id: route,
           label,
           icon,
           badge: badge && badge.count > 0 ? badge : undefined,
@@ -2571,76 +2565,48 @@ export function App() {
 
   return (
     <div className="min-h-screen flex bg-[#F8FAFC] dark:bg-[#121212] text-[#0F172A] dark:text-[#ECECEE]">
-      {/* LEFT SIDEBAR NAVIGATION (Collapsible: 224px expanded / 56px collapsed) */}
-      <aside
-        className={`shrink-0 bg-white dark:bg-[#161616] border-r border-[#E2E8F0] dark:border-[#2E2E32] flex flex-col h-screen sticky top-0 select-none transition-all z-30 ${
-          isSidebarCollapsed ? 'w-14' : 'w-56'
-        }`}
-        style={{
-          transitionDuration: 'var(--anim-dur-slow)',
-          transitionTimingFunction: 'var(--anim-ease-standard)',
-        }}
-      >
-        {/* Brand Header */}
-        <div className="h-14 shrink-0 px-3 flex items-center border-b border-[#E2E8F0] dark:border-[#2E2E32]">
-          {!isSidebarCollapsed ? (
-            <div className="flex items-center gap-2 min-w-0">
-              <img
-                src="/assets/wecare_task_logo.webp"
-                alt="WeCare Task"
-                className="w-8 h-8 object-contain shrink-0 select-none"
-              />
-              <div className="min-w-0">
-                <div className="font-bold text-[13.5px] tracking-tight text-[#0F172A] dark:text-[#ECECEE] leading-tight truncate">
-                  WeCare Task
-                </div>
-                <div className="text-[10px] text-[#64748B] dark:text-[#9A9AA2] mt-0.5 truncate">
-                  Korea Visa &amp; Tasks
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="w-full flex items-center justify-center" title="WeCare Task">
-              <img
-                src="/assets/wecare_task_logo.webp"
-                alt="WeCare Task"
-                className="w-8 h-8 object-contain shrink-0 select-none"
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Middle Scrollable Area: Main Navigation */}
-        <div className={`flex-1 overflow-y-auto overscroll-contain ${isSidebarCollapsed ? 'p-1.5 py-2' : 'px-2.5 py-2'}`}>
-          <SidebarTabBar
-            sections={navSections}
-            value={activeNav}
-            onChange={(route) => {
-              const target = route as NavigationTab;
-              setSelectedProjectId(null);
-              setSelectedUniversityId(null);
-              setSelectedStudentForDossier(null);
-              setPendingStudentId(null);
-              if (target === 'students') {
-                setStudentStageFilter('All');
-              }
-              navigateTo(target, {
-                studentStage: target === 'students' ? 'All' : undefined,
-                studentId: null,
-                projectId: null,
-                universityId: null,
-              });
-            }}
-            collapsed={isSidebarCollapsed}
+      {/* LEFT SIDEBAR NAVIGATION (Motion-Brew SidebarNav with WeCare Task Color Schema) */}
+      <SidebarNav
+        brand="WeCare Task"
+        subtitle="Korea Visa & Tasks"
+        logo={
+          <img
+            src="/assets/wecare_task_logo.webp"
+            alt="WeCare Task"
+            className="w-8 h-8 object-contain shrink-0 select-none"
           />
-        </div>
-
-        {/* Dedicated Sticky Footer Container inside Sidebar */}
-        {!isSidebarCollapsed ? (
-          <div className="shrink-0 p-2.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#161616] space-y-1">
-            {/* Google Sheets Live Sync Card (links to Google Sheets view + Sync now action) */}
+        }
+        sections={sidebarSections}
+        value={activeNav}
+        onNavigate={(route) => {
+          const target = route as NavigationTab;
+          setSelectedProjectId(null);
+          setSelectedUniversityId(null);
+          setSelectedStudentForDossier(null);
+          setPendingStudentId(null);
+          if (target === 'students') {
+            setStudentStageFilter('All');
+          }
+          navigateTo(target, {
+            studentStage: target === 'students' ? 'All' : undefined,
+            studentId: null,
+            projectId: null,
+            universityId: null,
+          });
+        }}
+        defaultOpen={[]}
+        collapsed={isSidebarCollapsed}
+        onCollapsedChange={(next) => {
+          setIsSidebarCollapsed(next);
+          try {
+            localStorage.setItem('KOREA_STUDY_HUB_SIDEBAR_COLLAPSED', String(next));
+          } catch {}
+        }}
+        mobile="sidebar"
+        footer={(collapsed) =>
+          !collapsed ? (
             <div
-              className={`flex items-center justify-between gap-1.5 p-1 rounded-md border transition-colors duration-150 ${
+              className={`flex items-center justify-between gap-1.5 p-1 rounded-lg border transition-colors duration-150 ${
                 activeNav === 'sheets-connection'
                   ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF]/30 dark:border-[#4C8DF6]/40'
                   : 'bg-[#F8FAFC] dark:bg-[#1C1C1E] border-[#E2E8F0] dark:border-[#2E2E32]'
@@ -2685,68 +2651,39 @@ export function App() {
                 <span>Sync now</span>
               </MotionButton>
             </div>
-
-            {/* Collapse Sidebar Button */}
-            <MotionButton
-              type="button"
-              onClick={toggleSidebar}
-              title="Collapse sidebar (Ctrl+B)"
-              className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-medium text-[#64748B] dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] hover:bg-[#F1F5F9] dark:hover:bg-[#252528] rounded-md transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-[#3A3A3F]"
-              aria-label="Collapse sidebar"
-            >
-              <span className="flex items-center gap-1.5">
-                <PanelLeftClose className="w-4 h-4 text-[#64748B] dark:text-[#9A9AA2] group-hover:text-[#0F172A] dark:group-hover:text-[#ECECEE] transition-colors duration-150" />
-                <span>Collapse Sidebar</span>
-              </span>
-              <kbd className="hidden sm:inline-block px-1 py-0.5 text-[9.5px] text-[#64748B] dark:text-[#9A9AA2] bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded">
-                Ctrl+B
-              </kbd>
-            </MotionButton>
-          </div>
-        ) : (
-          <div className="shrink-0 p-2 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#161616] flex flex-col items-center gap-1.5 shadow-xs dark:shadow-none">
-            {/* Collapsed Google Sheets Page Link */}
-            <MotionButton
-              type="button"
-              onClick={() => {
-                navigateTo('sheets-connection');
-                setSelectedProjectId(null);
-                setSelectedUniversityId(null);
-              }}
-              aria-current={activeNav === 'sheets-connection' ? 'page' : undefined}
-              title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to open Google Sheets`}
-              className={`w-8 h-8 rounded-md flex items-center justify-center relative border transition-colors duration-150 group ${
-                activeNav === 'sheets-connection'
-                  ? 'sidebar-nav-active bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF]/30 dark:border-[#4C8DF6]/40'
-                  : 'bg-[#F8FAFC] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#16A34A]/50 dark:hover:border-[#34C26B]/60'
-              }`}
-              aria-label="Open Google Sheets synchronization"
-            >
-              <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B]" />
-              <span
-                className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-[#161616] ${
-                  isOffline || connection.syncStatus === 'Sync Failed'
-                    ? 'bg-[#DC2626] dark:bg-[#EF5350]'
-                    : connection.syncStatus === 'Syncing'
-                    ? 'bg-[#D97706] dark:bg-[#F0A030]'
-                    : 'bg-[#16A34A] dark:bg-[#34C26B]'
+          ) : (
+            <div className="flex justify-center">
+              <MotionButton
+                type="button"
+                onClick={() => {
+                  navigateTo('sheets-connection');
+                  setSelectedProjectId(null);
+                  setSelectedUniversityId(null);
+                }}
+                aria-current={activeNav === 'sheets-connection' ? 'page' : undefined}
+                title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to open Google Sheets`}
+                className={`w-9 h-9 rounded-lg flex items-center justify-center relative border transition-colors duration-150 group ${
+                  activeNav === 'sheets-connection'
+                    ? 'sidebar-nav-active bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF]/30 dark:border-[#4C8DF6]/40'
+                    : 'bg-[#F8FAFC] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#16A34A]/50 dark:hover:border-[#34C26B]/60'
                 }`}
-              />
-            </MotionButton>
-
-            {/* Expand Sidebar Button */}
-            <MotionButton
-              type="button"
-              onClick={toggleSidebar}
-              title="Expand sidebar (Ctrl+B)"
-              className="w-8 h-8 rounded-md bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] flex items-center justify-center transition-colors duration-150 group border border-[#E2E8F0] dark:border-[#2E2E32]"
-              aria-label="Expand sidebar"
-            >
-              <PanelLeftOpen className="w-4 h-4" />
-            </MotionButton>
-          </div>
-        )}
-      </aside>
+                aria-label="Open Google Sheets synchronization"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B]" />
+                <span
+                  className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-[#161616] ${
+                    isOffline || connection.syncStatus === 'Sync Failed'
+                      ? 'bg-[#DC2626] dark:bg-[#EF5350]'
+                      : connection.syncStatus === 'Syncing'
+                      ? 'bg-[#D97706] dark:bg-[#F0A030]'
+                      : 'bg-[#16A34A] dark:bg-[#34C26B]'
+                  }`}
+                />
+              </MotionButton>
+            </div>
+          )
+        }
+      />
 
       {/* MAIN WORKSPACE CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
