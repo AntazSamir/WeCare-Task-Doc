@@ -42,6 +42,10 @@ interface TaskCardProps {
   onMoveTask?: (task: Task, direction: 'up' | 'down') => void;
   canMoveUp?: boolean;
   canMoveDown?: boolean;
+  draggable?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (task: Task) => void;
 }
 
 function CategoryIcon({ category, className = 'w-3.5 h-3.5' }: { category: string; className?: string }) {
@@ -86,6 +90,10 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
   onMoveTask,
   canMoveUp,
   canMoveDown,
+  draggable = false,
+  selectable = false,
+  selected = false,
+  onToggleSelect,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -153,9 +161,11 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
     }
   };
 
+  const isCardDraggable = Boolean(onReorderTasks || draggable);
+
   return (
     <div
-      draggable={Boolean(onReorderTasks)}
+      draggable={isCardDraggable}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
@@ -164,6 +174,8 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
       className={`group relative rounded-[12px] border transition-all duration-150 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none ${
         isDragging
           ? 'opacity-40 border-dashed border-[#1E40AF] dark:border-[#4C8DF6] scale-[0.99] shadow-xs dark:shadow-none'
+          : selected
+          ? 'bg-[#EFF6FF]/60 dark:bg-[rgba(76,141,246,0.10)] border-[#1E40AF] dark:border-[#4C8DF6]'
           : isCompleted
           ? 'bg-[#F8FAFC] dark:bg-[#1C1C1E]/75 border-[#E2E8F0] dark:border-[#2E2E32]'
           : overdue
@@ -182,10 +194,21 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         {/* Left: Drag Handle + Completion Trigger + Primary Content */}
         <div className="flex items-start gap-2.5 sm:gap-3.5 min-w-0 flex-1">
+          {/* Selection Checkbox (Multi-Select Bulk Actions) */}
+          {selectable && onToggleSelect && (
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={() => onToggleSelect(task)}
+              aria-label={`Select ${task.title}`}
+              title="Select task for bulk actions"
+              className="mt-1 w-4 h-4 rounded border-[#CBD5E1] dark:border-[#3A3A3F] text-[#1E40AF] dark:text-[#4C8DF6] focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] cursor-pointer shrink-0 accent-[#1E40AF] dark:accent-[#4C8DF6]"
+            />
+          )}
           {/* Drag Handle */}
-          {onReorderTasks && (
+          {isCardDraggable && (
             <div
-              title="Drag to reorder task"
+              title={onReorderTasks ? 'Drag to reorder task' : 'Drag onto a calendar day to reschedule'}
               className="mt-0.5 -ml-1 text-[#64748B]/40 dark:text-[#66666E] group-hover:text-[#1E40AF] dark:group-hover:text-[#ECECEE] cursor-grab active:cursor-grabbing hover:bg-[#EFF6FF] dark:hover:bg-[#252528] p-0.5 rounded transition-colors shrink-0"
               aria-label="Drag handle"
             >

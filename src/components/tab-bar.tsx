@@ -1779,14 +1779,19 @@ export const TabBar = React.forwardRef<HTMLElement, TabBarProps>(
 );
 
 // ─── SidebarTabBar (Vertical Sidebar Navigation using TabBar Motion Engine) ───
+export type SidebarBadgeTone = "gray" | "blue" | "red";
+
+export interface SidebarNavBadge {
+  count: number;
+  tone: SidebarBadgeTone;
+  tooltip: string;
+}
+
 export interface SidebarNavItem {
-  id: string;
+  route: string;
   label: string;
   icon: React.ComponentType<{ className?: string; size?: number; color?: string }>;
-  count?: number;
-  isLiveSync?: boolean;
-  syncStatusColor?: string;
-  syncTitle?: string;
+  badge?: SidebarNavBadge;
 }
 
 export interface SidebarNavSection {
@@ -1797,10 +1802,22 @@ export interface SidebarNavSection {
 export interface SidebarTabBarProps {
   sections: SidebarNavSection[];
   value: string;
-  onChange: (id: string) => void;
+  onChange: (route: string) => void;
   collapsed?: boolean;
   className?: string;
 }
+
+const BADGE_TONE_CLASSES: Record<SidebarBadgeTone, string> = {
+  gray: "bg-[#F1F5F9] text-[#475569] dark:bg-[#252528] dark:text-[#9A9AA2]",
+  blue: "bg-[#EFF6FF] text-[#1E40AF] dark:bg-[rgba(76,141,246,0.18)] dark:text-[#4C8DF6]",
+  red: "bg-[#FEF2F2] text-[#DC2626] dark:bg-[rgba(239,83,80,0.18)] dark:text-[#EF5350]",
+};
+
+const COLLAPSED_DOT_CLASSES: Record<SidebarBadgeTone, string> = {
+  gray: "bg-[#64748B] dark:bg-[#9A9AA2]",
+  blue: "bg-[#1E40AF] dark:bg-[#4C8DF6]",
+  red: "bg-[#DC2626] dark:bg-[#EF5350]",
+};
 
 export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
   function SidebarTabBar(
@@ -1813,10 +1830,10 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
     React.useImperativeHandle(ref, () => root.current!);
     const [taps, setTaps] = React.useState<Record<string, number>>({});
 
-    const choose = (id: string) => {
-      setTaps((t) => ({ ...t, [id]: (t[id] ?? 0) + 1 }));
-      if (id !== value) {
-        onChange(id);
+    const choose = (route: string) => {
+      setTaps((t) => ({ ...t, [route]: (t[route] ?? 0) + 1 }));
+      if (route !== value) {
+        onChange(route);
       }
     };
 
@@ -1850,58 +1867,61 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
         ref={root}
         aria-label="Main Navigation"
         onKeyDown={onKeyDown}
-        className={cn("space-y-2.5", className)}
+        className={cn("space-y-2", className)}
       >
         <LayoutGroup id={`${uid}-sidebar`}>
           {sections.map((section, idx) => (
             <div key={section.title} className="space-y-0.5">
               {!collapsed ? (
-                <div className="px-2 pt-0.5 pb-0.5">
-                  <span className="text-[10px] font-semibold tracking-[0.06em] uppercase text-[#64748B] dark:text-[#9A9AA2]">
+                <div className="px-3 pt-0.5 pb-0">
+                  <span className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#475569] dark:text-[#C8C8D0]">
                     {section.title}
                   </span>
                 </div>
               ) : (
                 idx > 0 && (
-                  <div className="my-1.5 mx-1.5 border-t border-[#E2E8F0] dark:border-[#2E2E32]" />
+                  <div className="my-1 mx-1.5 border-t border-[#E2E8F0] dark:border-[#2E2E32]" />
                 )
               )}
 
-              <div className={cn("space-y-0.5", collapsed && "flex flex-col items-center")}>
+              <div className={cn("space-y-0", collapsed && "flex flex-col items-center")}>
                 {section.items.map((item) => {
                   const itemIndex = globalIdx++;
                   const Icon = item.icon;
-                  const on = value === item.id;
-                  const ripple = taps[item.id] ?? 0;
+                  const on = value === item.route;
+                  const ripple = taps[item.route] ?? 0;
+                  const badge = item.badge && item.badge.count > 0 ? item.badge : undefined;
 
                   return (
                     <motion.button
-                      key={item.id}
+                      key={item.route}
                       type="button"
                       data-sidebar-tab=""
-                      onClick={() => choose(item.id)}
+                      onClick={() => choose(item.route)}
                       aria-current={on ? "page" : undefined}
-                      aria-label={item.label}
+                      aria-label={badge ? `${item.label}, ${badge.tooltip}` : item.label}
                       title={
                         collapsed
-                          ? `${item.label}${typeof item.count === "number" ? ` (${item.count})` : ""}`
-                          : undefined
+                          ? badge
+                            ? `${item.label} — ${badge.tooltip}`
+                            : item.label
+                          : badge?.tooltip
                       }
                       initial={still ? false : { opacity: 0, x: -6 }}
                       animate={{ opacity: 1, x: 0 }}
-                      whileTap={still ? undefined : { scale: collapsed ? 0.88 : 0.97 }}
+                      whileTap={still ? undefined : { scale: collapsed ? 0.9 : 0.98 }}
                       transition={{
-                        opacity: { duration: 0.25, delay: still ? 0 : Math.min(itemIndex * 0.02, 0.24) },
-                        x: { ...SPRING, delay: still ? 0 : Math.min(itemIndex * 0.02, 0.24) },
+                        opacity: { duration: 0.2, delay: still ? 0 : Math.min(itemIndex * 0.015, 0.18) },
+                        x: { ...SPRING, delay: still ? 0 : Math.min(itemIndex * 0.015, 0.18) },
                       }}
                       className={cn(
                         "group relative flex cursor-pointer select-none items-center rounded-md outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#1E40AF]/40 dark:focus-visible:ring-[#4C8DF6]/50",
                         collapsed
                           ? "h-8 w-8 justify-center"
-                          : "w-full justify-between px-2.5 py-1.5 text-xs font-medium whitespace-nowrap shrink-0",
+                          : "h-8 w-full justify-between px-2.5 text-xs font-medium whitespace-nowrap shrink-0",
                         on
-                          ? "text-[#1E40AF] dark:text-[#4C8DF6]"
-                          : "text-[#0F172A] dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#ECECEE]",
+                          ? "sidebar-nav-active text-[#1E40AF] dark:text-[#4C8DF6]"
+                          : "text-[#0F172A] dark:text-[#9A9AA2] hover:bg-[#F1F5F9] dark:hover:bg-[#252528] hover:text-[#0F172A] dark:hover:text-[#ECECEE]",
                       )}
                     >
                       {/* Gliding active background capsule */}
@@ -1909,24 +1929,16 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                         <motion.span
                           layoutId={`${uid}-sidebar-pill`}
                           transition={still ? { duration: 0 } : SPRING}
-                          className="pointer-events-none absolute inset-0 z-0 rounded-md bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border border-[#1E40AF]/15 dark:border-[rgba(76,141,246,0.28)] shadow-[0_1px_2px_rgba(30,64,175,0.06)] dark:shadow-none"
+                          className="pointer-events-none absolute inset-0 z-0 rounded-md bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)]"
                         />
                       )}
 
-                      {/* Gliding active left accent bar */}
+                      {/* Gliding 3px active left bar */}
                       {on && (
                         <motion.span
                           layoutId={`${uid}-sidebar-accent`}
                           transition={still ? { duration: 0 } : SPRING}
-                          className="pointer-events-none absolute left-0 top-1.5 bottom-1.5 z-20 w-[2.5px] rounded-r bg-[#1E40AF] dark:bg-[#4C8DF6]"
-                        />
-                      )}
-
-                      {/* Soft hover wash for inactive tabs */}
-                      {!on && (
-                        <span
-                          aria-hidden
-                          className="pointer-events-none absolute inset-0 z-0 rounded-md bg-[#F1F5F9]/80 dark:bg-[#252528] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                          className="pointer-events-none absolute left-0 top-1 bottom-1 z-20 w-[3px] rounded-r bg-[#1E40AF] dark:bg-[#4C8DF6]"
                         />
                       )}
 
@@ -1942,7 +1954,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                                   animate={{ scale: 2, opacity: 0 }}
                                   exit={{ opacity: 0 }}
                                   transition={{ duration: 0.55, ease: GLIDE }}
-                                  className="pointer-events-none absolute size-5 rounded-full bg-[#1E40AF]/20 dark:bg-[rgba(76,141,246,0.22)]"
+                                  className="pointer-events-none absolute size-4 rounded-full bg-[#1E40AF]/20 dark:bg-[rgba(76,141,246,0.22)]"
                                 />
                               )}
                             </AnimatePresence>
@@ -1955,25 +1967,24 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                             >
                               <Icon
                                 className={cn(
-                                  "w-3.5 h-3.5 shrink-0 transition-colors duration-200",
+                                  "w-4 h-4 shrink-0 transition-colors duration-150",
                                   on
                                     ? "text-[#1E40AF] dark:text-[#4C8DF6]"
-                                    : "text-[#64748B] group-hover:text-[#1E40AF] dark:text-[#9A9AA2] dark:group-hover:text-[#ECECEE]",
+                                    : "text-[#64748B] group-hover:text-[#0F172A] dark:text-[#ECECEE] dark:group-hover:text-[#FFFFFF]",
                                 )}
                               />
                             </motion.span>
                           </span>
 
-                          {item.isLiveSync ? (
+                          {badge && (
                             <span
+                              title={badge.tooltip}
                               className={cn(
-                                "absolute top-1.5 right-1.5 z-20 w-1.5 h-1.5 rounded-full ring-2 ring-white dark:ring-[#161616]",
-                                item.syncStatusColor ?? "bg-[#16A34A] dark:bg-[#34C26B]",
+                                "absolute top-1 right-1 z-20 w-1.5 h-1.5 rounded-full ring-2 ring-white dark:ring-[#161616]",
+                                COLLAPSED_DOT_CLASSES[badge.tone],
                               )}
                             />
-                          ) : typeof item.count === "number" && item.count > 0 ? (
-                            <span className="absolute top-1 right-1 z-20 w-1.5 h-1.5 rounded-full bg-[#1E40AF] dark:bg-[#4C8DF6] ring-2 ring-white dark:ring-[#161616]" />
-                          ) : null}
+                          )}
                         </>
                       ) : (
                         <>
@@ -1988,7 +1999,7 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                                     animate={{ scale: 2, opacity: 0 }}
                                     exit={{ opacity: 0 }}
                                     transition={{ duration: 0.55, ease: GLIDE }}
-                                    className="pointer-events-none absolute size-5 rounded-full bg-[#1E40AF]/20 dark:bg-[rgba(76,141,246,0.22)]"
+                                    className="pointer-events-none absolute size-4 rounded-full bg-[#1E40AF]/20 dark:bg-[rgba(76,141,246,0.22)]"
                                   />
                                 )}
                               </AnimatePresence>
@@ -2001,60 +2012,37 @@ export const SidebarTabBar = React.forwardRef<HTMLElement, SidebarTabBarProps>(
                               >
                                 <Icon
                                   className={cn(
-                                    "w-3.5 h-3.5 shrink-0 transition-colors duration-200",
+                                    "w-4 h-4 shrink-0 transition-colors duration-150",
                                     on
                                       ? "text-[#1E40AF] dark:text-[#4C8DF6]"
-                                      : "text-[#64748B] group-hover:text-[#1E40AF] dark:text-[#9A9AA2] dark:group-hover:text-[#ECECEE]",
+                                      : "text-[#64748B] group-hover:text-[#0F172A] dark:text-[#9A9AA2] dark:group-hover:text-[#ECECEE]",
                                   )}
                                 />
                               </motion.span>
                             </span>
-                            <motion.span
+                            <span
                               className={cn(
-                                "truncate transition-colors duration-200",
+                                "truncate font-medium transition-colors duration-150",
                                 on
-                                  ? "font-semibold text-[#1E40AF] dark:text-[#4C8DF6]"
-                                  : "text-[#0F172A] dark:text-[#9A9AA2] group-hover:text-[#1E40AF] dark:group-hover:text-[#ECECEE]",
+                                  ? "text-[#1E40AF] dark:text-[#4C8DF6]"
+                                  : "text-[#0F172A] dark:text-[#ECECEE] group-hover:text-[#0F172A] dark:group-hover:text-[#FFFFFF]",
                               )}
-                              animate={{ x: on && !still ? 2 : 0 }}
-                              transition={SPRING}
                             >
                               {item.label}
-                            </motion.span>
+                            </span>
                           </span>
 
-                          <div className="relative z-10 flex items-center gap-1 shrink-0">
-                            {item.isLiveSync && (
-                              <span
-                                className={cn(
-                                  "w-1.5 h-1.5 rounded-full",
-                                  item.syncStatusColor ?? "bg-[#16A34A] dark:bg-[#34C26B]",
-                                )}
-                                title={item.syncTitle}
-                              />
-                            )}
-                            <AnimatePresence mode="popLayout">
-                              {typeof item.count === "number" && (
-                                <motion.span
-                                  key={item.count}
-                                  initial={still ? false : { scale: 0.85, opacity: 0.6 }}
-                                  animate={{ scale: 1, opacity: 1 }}
-                                  exit={still ? undefined : { scale: 0.8, opacity: 0 }}
-                                  transition={POP}
-                                  className={cn(
-                                    "tabular-nums text-[10px] px-1.5 py-0.5 leading-none rounded-full font-medium transition-colors duration-200",
-                                    on
-                                      ? "bg-[#1E40AF]/12 text-[#1E40AF] dark:bg-[rgba(76,141,246,0.18)] dark:text-[#4C8DF6]"
-                                      : item.count === 0
-                                      ? "text-[#64748B] bg-[#F1F5F9] dark:bg-[#252528] dark:text-[#66666E]"
-                                      : "text-[#64748B] bg-[#F1F5F9] dark:bg-[#252528] dark:text-[#9A9AA2]",
-                                  )}
-                                >
-                                  {item.count}
-                                </motion.span>
+                          {badge && (
+                            <span
+                              title={badge.tooltip}
+                              className={cn(
+                                "relative z-10 shrink-0 tabular-nums text-[10px] px-1.5 py-0.5 leading-none rounded-full font-medium transition-colors duration-150",
+                                BADGE_TONE_CLASSES[badge.tone],
                               )}
-                            </AnimatePresence>
-                          </div>
+                            >
+                              {badge.count}
+                            </span>
+                          )}
                         </>
                       )}
                     </motion.button>

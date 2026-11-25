@@ -216,7 +216,7 @@ export const UniversityDirectoryView: React.FC<UniversityDirectoryViewProps> = (
             </div>
             <div>
               <h1 className="text-[24px] font-semibold text-[#0F172A] dark:text-[#ECECEE] leading-tight">
-                South Korean Partner Universities
+                Universities
               </h1>
               <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] mt-1">
                 {summaryMetrics.totalUniversities} partner institutions · {summaryMetrics.openIntakes} open admission intakes · Select any institution for full guidelines, tuition, refund rules &amp; wire details

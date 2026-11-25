@@ -43,6 +43,7 @@ import {
 } from '../services/pmsService';
 import { MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem } from './ui/MorphSelect';
 import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
+import { BulkTaskActionBar } from './BulkTaskActionBar';
 import { PageTransition, TabTransition, ModalTransition, StaggerContainer, StaggerItem, MotionButton } from './animations';
 
 export type TaskViewType =
@@ -67,6 +68,9 @@ interface TeamTaskManagementViewProps {
   onRequestComplete: (task: PmsTask) => void;
   onRestorePending: (task: PmsTask) => void;
   onDeleteTask: (task: PmsTask) => void;
+  onBulkCompleteTasks?: (taskIds: string[]) => void;
+  onBulkPostponeTasks?: (taskIds: string[], mode: 'plus1' | 'today') => void;
+  onBulkReassignTasks?: (taskIds: string[], targetUserId: string) => void;
 }
 
 export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
@@ -81,6 +85,9 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   onRequestComplete,
   onRestorePending,
   onDeleteTask,
+  onBulkCompleteTasks,
+  onBulkPostponeTasks,
+  onBulkReassignTasks,
 }) => {
   const isAdmin = currentUser.role === 'Admission_Manager';
   const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
@@ -93,6 +100,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedPriority, setSelectedPriority] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
   const PAGE_SIZE = 25;
 
   useEffect(() => {
@@ -221,6 +229,32 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
     const start = (currentPage - 1) * PAGE_SIZE;
     return displayedTasks.slice(start, start + PAGE_SIZE);
   }, [displayedTasks, currentPage]);
+
+  const displayedTaskIdSet = useMemo(() => new Set(displayedTasks.map((t) => t.id)), [displayedTasks]);
+  const activeSelectedIds = useMemo(
+    () => selectedTaskIds.filter((id) => displayedTaskIdSet.has(id)),
+    [selectedTaskIds, displayedTaskIdSet]
+  );
+  const activeSelectedSet = useMemo(() => new Set(activeSelectedIds), [activeSelectedIds]);
+  const pendingSelectedCount = useMemo(
+    () => displayedTasks.filter((t) => activeSelectedSet.has(t.id) && t.status !== 'Completed').length,
+    [displayedTasks, activeSelectedSet]
+  );
+  const canBulkAct = Boolean(onBulkCompleteTasks || onBulkPostponeTasks || onBulkReassignTasks);
+
+  const handleToggleSelectTask = (taskId: string) => {
+    setSelectedTaskIds((prev) =>
+      prev.includes(taskId) ? prev.filter((id) => id !== taskId) : [...prev, taskId]
+    );
+  };
+
+  const handleSelectAllDisplayed = () => {
+    setSelectedTaskIds(displayedTasks.map((t) => t.id));
+  };
+
+  const handleClearSelection = () => {
+    setSelectedTaskIds([]);
+  };
 
   // Selected Employee tasks
   const employeeTasks = useMemo(() => {
@@ -704,7 +738,22 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {canBulkAct && displayedTasks.length > 0 && (
+              <MotionButton
+                type="button"
+                onClick={
+                  activeSelectedIds.length === displayedTasks.length
+                    ? handleClearSelection
+                    : handleSelectAllDisplayed
+                }
+                className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline px-1.5"
+              >
+                {activeSelectedIds.length === displayedTasks.length
+                  ? 'Deselect all'
+                  : `Select all (${displayedTasks.length})`}
+              </MotionButton>
+            )}
             {/* Category Filter */}
             <div className="flex items-center gap-1 text-xs">
               <span className="text-[#0F172A]/60 dark:text-[#9A9AA2] hidden sm:inline">Category:</span>
@@ -747,6 +796,34 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
         </div>
       </div>
 
+      {/* BULK TASK ACTION BAR */}
+      {canBulkAct && (
+        <BulkTaskActionBar
+          selectedCount={activeSelectedIds.length}
+          totalSelectableCount={displayedTasks.length}
+          pendingSelectedCount={pendingSelectedCount}
+          team={team}
+          onSelectAll={handleSelectAllDisplayed}
+          onClearSelection={handleClearSelection}
+          onBulkComplete={() => {
+            onBulkCompleteTasks?.(activeSelectedIds);
+            handleClearSelection();
+          }}
+          onBulkPostpone={(mode) => {
+            onBulkPostponeTasks?.(activeSelectedIds, mode);
+            handleClearSelection();
+          }}
+          onBulkReassign={
+            onBulkReassignTasks
+              ? (targetUserId) => {
+                  onBulkReassignTasks(activeSelectedIds, targetUserId);
+                  handleClearSelection();
+                }
+              : undefined
+          }
+        />
+      )}
+
       {/* 4. TASK LIST ACCORDING TO VIEW */}
       <TabTransition viewKey={activeView} className="space-y-3">
         {displayedTasks.length === 0 ? (
@@ -788,12 +865,15 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
             const isCompleted = task.status === 'Completed';
             const isOverdue = !isCompleted && task.deadline < todayStr;
             const isDueToday = !isCompleted && (task.deadline === todayStr || task.taskDate === todayStr);
+            const isSelected = activeSelectedSet.has(task.id);
 
             return (
               <div
                 key={task.id}
                 className={`group bg-[#FFFFFF] dark:bg-[#1C1C1E] border rounded-xl p-4 transition-all shadow-2xs hover:shadow-sm dark:shadow-none ${
-                  isCompleted
+                  isSelected
+                    ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF]/50 dark:bg-[rgba(76,141,246,0.10)]'
+                    : isCompleted
                     ? 'border-[#E2E8F0] dark:border-[#2E2E32] opacity-80'
                     : isOverdue
                     ? 'border-[#DC2626]/50 dark:border-[#EF5350]/40 bg-[#DC2626]/5 dark:bg-[rgba(239,83,80,0.14)]'
@@ -804,6 +884,16 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3 min-w-0 flex-1">
+                    {canBulkAct && (
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleToggleSelectTask(task.id)}
+                        aria-label={`Select ${task.title}`}
+                        title="Select task for bulk actions"
+                        className="mt-1 w-4 h-4 rounded border-[#CBD5E1] dark:border-[#3A3A3F] text-[#1E40AF] dark:text-[#4C8DF6] focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] cursor-pointer shrink-0 accent-[#1E40AF] dark:accent-[#4C8DF6]"
+                      />
+                    )}
                     {/* Completion Toggle Button */}
                     <MotionButton
                       type="button"

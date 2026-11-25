@@ -28,8 +28,18 @@ import {
   Clock,
   HardDrive,
   RefreshCw,
+  LayoutGrid,
 } from 'lucide-react';
-import { AppSettings, TaskCategory, TaskPriority, GoogleSheetsConnectionState, Task, NavigationTab } from '../types/task';
+import {
+  AppSettings,
+  TaskCategory,
+  TaskPriority,
+  GoogleSheetsConnectionState,
+  Task,
+  NavigationTab,
+  DashboardWidgetsConfig,
+  DEFAULT_DASHBOARD_WIDGETS,
+} from '../types/task';
 import { Spinner } from '@astryxdesign/core/Spinner';
 import { UserProfile, StudentApplication, KoreanUniversity } from '../types/pms';
 import { playNotificationChime, playCompletionChime } from '../utils/soundUtils';
@@ -53,6 +63,7 @@ interface SettingsViewProps {
 
 type SettingsSection =
   | 'appearance'
+  | 'dashboard'
   | 'admissions'
   | 'tasks'
   | 'sheets'
@@ -250,6 +261,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       overdueAlertsEnabled: true,
       handoverAlertsEnabled: true,
       desktopNotificationsEnabled: false,
+      dashboardWidgets: { ...DEFAULT_DASHBOARD_WIDGETS },
     });
     pushNotification('Settings Reset', 'All settings restored to factory defaults.', 'info');
   };
@@ -260,6 +272,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       label: 'Appearance & Display',
       icon: Sun,
       description: 'Theme, density & motion',
+    },
+    {
+      id: 'dashboard',
+      label: 'Dashboard Widgets',
+      icon: LayoutGrid,
+      description: 'Show or hide cards, progress & metrics',
     },
     {
       id: 'admissions',
@@ -513,6 +531,253 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
           )}
 
+          {/* SECTION 1B: DASHBOARD WIDGETS VISIBILITY */}
+          {activeSection === 'dashboard' && (() => {
+            const widgetState: DashboardWidgetsConfig = {
+              ...DEFAULT_DASHBOARD_WIDGETS,
+              ...settings.dashboardWidgets,
+            };
+
+            const toggleWidget = (key: keyof DashboardWidgetsConfig, checked: boolean) => {
+              onUpdateSettings({
+                dashboardWidgets: {
+                  ...widgetState,
+                  [key]: checked,
+                },
+              });
+            };
+
+            const executiveItems: { key: keyof DashboardWidgetsConfig; title: string; desc: string }[] = [
+              {
+                key: 'executiveBanner',
+                title: 'Executive Command Banner',
+                desc: 'Top overview hero banner with Register Student and Assign Task shortcuts.',
+              },
+              {
+                key: 'kpiMetrics',
+                title: 'Executive KPI Metric Cards',
+                desc: 'Four-card summary row for Intake Campaigns, Candidates, Pending Tasks, and Visas Issued.',
+              },
+              {
+                key: 'visaPipeline',
+                title: 'Visa Pipeline Funnel Matrix',
+                desc: 'Eight-stage student dossier progression from document prep through visa issuance.',
+              },
+              {
+                key: 'universityDeadlines',
+                title: 'University Intake Deadlines',
+                desc: 'Upcoming partner university intake deadline dates and quota progress bars.',
+              },
+              {
+                key: 'teamWorkload',
+                title: 'Team Workload & Accountability',
+                desc: 'Consultant roster allocation showing pending and completed task counts.',
+              },
+            ];
+
+            const dailyItems: { key: keyof DashboardWidgetsConfig; title: string; desc: string }[] = [
+              {
+                key: 'dailyProgressBar',
+                title: 'Daily Completion Progress Bar',
+                desc: 'Horizontal progress bar showing percentage of today’s scheduled tasks completed.',
+              },
+              {
+                key: 'taskMetricStrip',
+                title: 'Task Summary Metric Strip',
+                desc: 'Row of daily task counters (individual cards can also be toggled below).',
+              },
+              {
+                key: 'quickAddBar',
+                title: 'Quick Add Task Bar',
+                desc: 'Inline creation bar for quickly adding tasks directly from the dashboard.',
+              },
+              {
+                key: 'overdueTasks',
+                title: 'Overdue Tasks Alert Widget',
+                desc: 'Highlighted overdue tasks panel with quick reschedule-to-today actions.',
+              },
+              {
+                key: 'upcomingDeadlines',
+                title: 'Upcoming Deadlines Widget',
+                desc: 'Side panel listing upcoming task deadlines alongside Today’s Tasks.',
+              },
+              {
+                key: 'connectedSheetCard',
+                title: 'Connected Google Sheet Card',
+                desc: 'Summary card displaying the active spreadsheet, worksheet range, and sync account.',
+              },
+              {
+                key: 'weeklyCompletionTrend',
+                title: 'Weekly Completion Trend Chart',
+                desc: 'Seven-day visual completion trend chart at the bottom of the dashboard.',
+              },
+            ];
+
+            const individualMetrics: { key: keyof DashboardWidgetsConfig; label: string }[] = [
+              { key: 'metricToday', label: 'Today' },
+              { key: 'metricUpcoming', label: 'Upcoming' },
+              { key: 'metricCompleted', label: 'Completed' },
+              { key: 'metricPending', label: 'Pending' },
+              { key: 'metricOverdue', label: 'Overdue' },
+              { key: 'metricTotal', label: 'Total' },
+              { key: 'metricRate', label: 'Rate (%)' },
+            ];
+
+            const mainKeys = [...executiveItems, ...dailyItems].map((i) => i.key);
+            const visibleCount = mainKeys.filter((k) => widgetState[k]).length;
+
+            return (
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-base font-bold text-[#0F172A] dark:text-[#ECECEE]">
+                      Dashboard Widget &amp; Metric Visibility
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-0.5">
+                      Hide progress bars, summary sections, or individual metric cards on the Dashboard to reduce visual clutter.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[11px] font-medium tabular-nums text-slate-500 dark:text-[#9A9AA2] mr-1">
+                      {visibleCount}/{mainKeys.length} visible
+                    </span>
+                    <MotionButton
+                      type="button"
+                      onClick={() =>
+                        onUpdateSettings({
+                          dashboardWidgets: {
+                            ...DEFAULT_DASHBOARD_WIDGETS,
+                            executiveBanner: false,
+                            visaPipeline: false,
+                            dailyProgressBar: false,
+                            connectedSheetCard: false,
+                            weeklyCompletionTrend: false,
+                          },
+                        })
+                      }
+                      className="px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-[#ECECEE] bg-slate-100 dark:bg-[#252528] hover:bg-slate-200 dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#3A3A3F] rounded-md transition-colors whitespace-nowrap shrink-0"
+                    >
+                      Minimal Focus
+                    </MotionButton>
+                    <MotionButton
+                      type="button"
+                      onClick={() =>
+                        onUpdateSettings({
+                          dashboardWidgets: { ...DEFAULT_DASHBOARD_WIDGETS },
+                        })
+                      }
+                      className="px-2.5 py-1.5 text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] hover:bg-[#DBEAFE] dark:hover:bg-[rgba(76,141,246,0.22)] rounded-md transition-colors whitespace-nowrap shrink-0"
+                    >
+                      Show All
+                    </MotionButton>
+                  </div>
+                </div>
+
+                {/* Executive Overview Widgets */}
+                <div className="space-y-3 pt-2 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-[#9A9AA2]">
+                    Executive Overview Widgets
+                  </h3>
+                  <div className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
+                    {executiveItems.map((item) => (
+                      <div key={item.key} className="py-3 flex items-center justify-between gap-4">
+                        <div>
+                          <div className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
+                            {item.title}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">
+                            {item.desc}
+                          </div>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                          <input
+                            type="checkbox"
+                            checked={widgetState[item.key]}
+                            onChange={(e) => toggleWidget(item.key, e.target.checked)}
+                            aria-label={`Toggle ${item.title}`}
+                            className="sr-only peer"
+                          />
+                          <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-[#2E2E32] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#1E40AF] dark:peer-checked:bg-[#4C8DF6]"></div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Daily Command Center & Task Widgets */}
+                <div className="space-y-3 pt-4 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-[#9A9AA2]">
+                    Daily Command Center &amp; Task Widgets
+                  </h3>
+                  <div className="divide-y divide-[#E2E8F0] dark:divide-[#2E2E32]">
+                    {dailyItems.map((item) => (
+                      <div key={item.key} className="py-3 flex items-center justify-between gap-4">
+                        <div>
+                          <div className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
+                            {item.title}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">
+                            {item.desc}
+                          </div>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                          <input
+                            type="checkbox"
+                            checked={widgetState[item.key]}
+                            onChange={(e) => toggleWidget(item.key, e.target.checked)}
+                            aria-label={`Toggle ${item.title}`}
+                            className="sr-only peer"
+                          />
+                          <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-[#2E2E32] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#1E40AF] dark:peer-checked:bg-[#4C8DF6]"></div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Individual Task Summary Metric Cards */}
+                <div className="space-y-3 pt-4 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-[#9A9AA2]">
+                        Individual Task Metric Cards
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-0.5">
+                        {widgetState.taskMetricStrip
+                          ? 'Choose which individual summary cards appear in the Task Summary Metric Strip.'
+                          : 'Enable "Task Summary Metric Strip" above to display these cards on the dashboard.'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2.5 ${!widgetState.taskMetricStrip ? 'opacity-50 pointer-events-none' : ''}`}>
+                    {individualMetrics.map((metric) => (
+                      <div
+                        key={metric.key}
+                        className="px-3.5 py-2.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] flex items-center justify-between gap-3"
+                      >
+                        <span className="text-xs font-medium text-[#0F172A] dark:text-[#ECECEE]">
+                          {metric.label} Card
+                        </span>
+                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                          <input
+                            type="checkbox"
+                            disabled={!widgetState.taskMetricStrip}
+                            checked={widgetState[metric.key]}
+                            onChange={(e) => toggleWidget(metric.key, e.target.checked)}
+                            aria-label={`Toggle ${metric.label} metric card`}
+                            className="sr-only peer"
+                          />
+                          <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-[#161616] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#1E40AF] dark:peer-checked:bg-[#4C8DF6]"></div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* SECTION 2: ADMISSIONS & VISA OPERATIONS */}
           {activeSection === 'admissions' && (
             <div className="space-y-6">
@@ -760,7 +1025,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     Task List & Archive Pagination Size
                   </div>
                   <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">
-                    Items displayed per page in Team Tasks and Completed Archive views.
+                    Items displayed per page in All Tasks and Completed views.
                   </div>
                 </div>
                 <div className="w-48 shrink-0">
@@ -806,7 +1071,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       {connection.selectedSpreadsheetTitle || 'Personal Daily Task Master 2026'}
                     </div>
                     <div className="text-[11px] text-slate-500 dark:text-[#9A9AA2]">
-                      Worksheet: <span className="font-mono text-[#1E40AF] dark:text-[#4C8DF6]">{connection.selectedWorksheet || 'Tasks'}</span>
+                      Worksheet: <span className="tabular-nums text-[#1E40AF] dark:text-[#4C8DF6]">{connection.selectedWorksheet || 'Tasks'}</span>
                       {connection.connected ? ' · OAuth 2.0 Connected' : ' · Ready for Connection'}
                     </div>
                   </div>
@@ -1183,7 +1448,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 {lastBackupFile && (
                   <div className="p-2.5 rounded bg-emerald-50 dark:bg-[rgba(52,194,107,0.14)] border border-emerald-200 dark:border-[#34C26B]/30 text-xs text-emerald-800 dark:text-[#34C26B] flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-[#34C26B] shrink-0" />
-                    <span>Snapshot created: <strong className="font-mono">{lastBackupFile}</strong></span>
+                    <span>Snapshot created: <strong className="tabular-nums">{lastBackupFile}</strong></span>
                   </div>
                 )}
               </div>
@@ -1233,23 +1498,23 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   System Architecture Diagnostics
                 </div>
                 <div className="rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] overflow-hidden divide-y divide-[#E2E8F0] dark:divide-[#2E2E32] text-xs">
-                  <div className="flex justify-between px-3 py-2 bg-slate-50 dark:bg-[#252528] font-mono text-[11px]">
+                  <div className="flex justify-between px-3 py-2 bg-slate-50 dark:bg-[#252528] tabular-nums text-[11px]">
                     <span className="text-slate-500 dark:text-[#9A9AA2]">Database Engine</span>
                     <span className="font-semibold text-slate-800 dark:text-[#ECECEE]">SQLite 3 (WAL Mode + Foreign Keys)</span>
                   </div>
-                  <div className="flex justify-between px-3 py-2 font-mono text-[11px]">
+                  <div className="flex justify-between px-3 py-2 tabular-nums text-[11px]">
                     <span className="text-slate-500 dark:text-[#9A9AA2]">Database Location</span>
                     <span className="text-slate-800 dark:text-[#ECECEE]">data/consultancy_pms.sqlite</span>
                   </div>
-                  <div className="flex justify-between px-3 py-2 font-mono text-[11px]">
+                  <div className="flex justify-between px-3 py-2 tabular-nums text-[11px]">
                     <span className="text-slate-500 dark:text-[#9A9AA2]">Sync Pipeline</span>
                     <span className="text-slate-800 dark:text-[#ECECEE]">Google Sheets API v4 (12-column schema)</span>
                   </div>
-                  <div className="flex justify-between px-3 py-2 font-mono text-[11px]">
+                  <div className="flex justify-between px-3 py-2 tabular-nums text-[11px]">
                     <span className="text-slate-500 dark:text-[#9A9AA2]">Event Stream (SSE)</span>
                     <span className="text-emerald-600 dark:text-[#34C26B] font-semibold">Active (/api/notifications/stream)</span>
                   </div>
-                  <div className="flex justify-between px-3 py-2 font-mono text-[11px]">
+                  <div className="flex justify-between px-3 py-2 tabular-nums text-[11px]">
                     <span className="text-slate-500 dark:text-[#9A9AA2]">Bundle Partitioning</span>
                     <span className="text-slate-800 dark:text-[#ECECEE]">Vite 8 + Rollup manualChunks (81% reduced)</span>
                   </div>

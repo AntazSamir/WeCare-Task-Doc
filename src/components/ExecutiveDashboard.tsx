@@ -9,7 +9,8 @@ import {
   Plane,
   Building2,
 } from 'lucide-react';
-import { UserProfile } from '../types/pms';
+import { UserProfile, VisaStage } from '../types/pms';
+import { DashboardWidgetsConfig, DEFAULT_DASHBOARD_WIDGETS } from '../types/task';
 import { StaggerContainer, StaggerItem, MotionButton } from './animations';
 import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 
@@ -17,8 +18,10 @@ interface ExecutiveDashboardProps {
   analytics: any;
   currentUser: UserProfile;
   onNavigateTab: (tab: any) => void;
+  onSelectVisaStage?: (stage: VisaStage) => void;
   onOpenNewStudentModal: () => void;
   onOpenNewTaskModal: () => void;
+  widgets?: Partial<DashboardWidgetsConfig>;
 }
 
 const VISA_STAGES_CONFIG: {
@@ -26,6 +29,7 @@ const VISA_STAGES_CONFIG: {
   label: string;
   labelKo: string;
   stageKey: string;
+  visaStage: VisaStage;
   color: string;
   colorDark: string;
   bgLight: string;
@@ -36,6 +40,7 @@ const VISA_STAGES_CONFIG: {
     label: '1. Document Prep',
     labelKo: '서류 수집',
     stageKey: 'documentGathering',
+    visaStage: 'Document_Gathering',
     color: 'text-[#172B4D]',
     colorDark: 'dark:text-[#ECECEE]',
     bgLight: 'bg-[#F4F2EE]',
@@ -46,6 +51,7 @@ const VISA_STAGES_CONFIG: {
     label: '2. Apostille & Notarization',
     labelKo: '아포스티유 공증',
     stageKey: 'apostilleVerification',
+    visaStage: 'Apostille_Verification',
     color: 'text-[#123B78]',
     colorDark: 'dark:text-[#ECECEE]',
     bgLight: 'bg-[#F4F2EE]',
@@ -56,6 +62,7 @@ const VISA_STAGES_CONFIG: {
     label: '3. University Submitted',
     labelKo: '원서 접수 완료',
     stageKey: 'universitySubmitted',
+    visaStage: 'University_Submitted',
     color: 'text-[#1769E8]',
     colorDark: 'dark:text-[#ECECEE]',
     bgLight: 'bg-[#DCEBFF]/60',
@@ -66,6 +73,7 @@ const VISA_STAGES_CONFIG: {
     label: '4. Admission Granted',
     labelKo: '합격 통지',
     stageKey: 'admissionGranted',
+    visaStage: 'Admission_Granted',
     color: 'text-[#1769E8]',
     colorDark: 'dark:text-[#ECECEE]',
     bgLight: 'bg-[#DCEBFF]/80',
@@ -76,6 +84,7 @@ const VISA_STAGES_CONFIG: {
     label: '5. Tuition Paid',
     labelKo: '등록금 납부',
     stageKey: 'tuitionPaid',
+    visaStage: 'Tuition_Paid',
     color: 'text-[#E9A23B]',
     colorDark: 'dark:text-[#ECECEE]',
     bgLight: 'bg-[#E9A23B]/10',
@@ -86,6 +95,7 @@ const VISA_STAGES_CONFIG: {
     label: '6. CoA Received',
     labelKo: '표준입학허가서',
     stageKey: 'coaReceived',
+    visaStage: 'CoA_Received',
     color: 'text-[#123B78]',
     colorDark: 'dark:text-[#ECECEE]',
     bgLight: 'bg-[#DCEBFF]',
@@ -96,6 +106,7 @@ const VISA_STAGES_CONFIG: {
     label: '7. Embassy Visa Filing',
     labelKo: '비자 신청',
     stageKey: 'embassyVisaFiling',
+    visaStage: 'Embassy_Visa_Filing',
     color: 'text-[#1769E8]',
     colorDark: 'dark:text-[#ECECEE]',
     bgLight: 'bg-[#F4F2EE]',
@@ -106,6 +117,7 @@ const VISA_STAGES_CONFIG: {
     label: '8. Visa Issued (D-2/D-4)',
     labelKo: '비자 발급 완료',
     stageKey: 'visaIssued',
+    visaStage: 'Visa_Issued',
     color: 'text-[#16A36A]',
     colorDark: 'dark:text-[#34C26B]',
     bgLight: 'bg-[#16A36A]/10',
@@ -117,11 +129,14 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
   analytics,
   currentUser,
   onNavigateTab,
+  onSelectVisaStage,
   onOpenNewStudentModal,
   onOpenNewTaskModal,
+  widgets,
 }) => {
   const isAdmin = currentUser.role === 'Admission_Manager';
   const pipeline = analytics?.visaPipeline || {};
+  const w = { ...DEFAULT_DASHBOARD_WIDGETS, ...widgets };
 
   const [workloadTeamFilter, setWorkloadTeamFilter] = useState<'All' | 'Admission Team' | 'Counseling Team'>('All');
 
@@ -136,13 +151,23 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
     [rawWorkload]
   );
 
+  const hasAnySection =
+    w.executiveBanner ||
+    w.kpiMetrics ||
+    w.visaPipeline ||
+    w.universityDeadlines ||
+    w.teamWorkload;
+
+  if (!hasAnySection) return null;
+
   return (
     <div className="space-y-2">
       {/* Top Banner / Welcome & Quick Actions */}
+      {w.executiveBanner && (
       <div className="bg-[var(--color-deep-blue)] dark:bg-[#1C1C1E] border border-[var(--color-deep-blue)] dark:border-[#2E2E32] rounded-lg p-3.5 sm:p-4 text-white shadow-sm dark:shadow-none flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-semibold tracking-wider uppercase text-[var(--color-sky-blue)] dark:text-[#9A9AA2]">
+            <span className="text-xs font-semibold tracking-wider uppercase text-[var(--color-sky-blue)] dark:text-[#9A9AA2]">
               South Korea Student Visa & Admission PMS
             </span>
             <span className="text-[#DCEBFF]/50 dark:text-[#66666E]">·</span>
@@ -175,8 +200,10 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           </MotionButton>
         </div>
       </div>
+      )}
 
       {/* 4 Core Operational KPI Metric Strip */}
+      {w.kpiMetrics && (
       <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <StaggerItem>
           <div className="p-3.5 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E3EAF3] dark:border-[#2E2E32] rounded-lg shadow-xs dark:shadow-none hover:border-[#36A5F5] dark:hover:border-[#3A3A3F] transition-colors h-full">
@@ -185,7 +212,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               <Building2 className="w-6 h-6 text-[#1769E8] shrink-0" />
             </div>
             <div
-              className={`mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#172B4D] ${
+              className={`mt-1.5 text-2xl font-bold tabular-nums text-[#172B4D] ${
                 (analytics?.totalActiveProjects || 0) === 0 ? 'dark:text-[#66666E]' : 'dark:text-[#ECECEE]'
               }`}
             >
@@ -210,7 +237,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               <Users className="w-6 h-6 text-[#123B78] shrink-0" />
             </div>
             <div
-              className={`mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#123B78] ${
+              className={`mt-1.5 text-2xl font-bold tabular-nums text-[#123B78] ${
                 (analytics?.totalStudents || 0) === 0 ? 'dark:text-[#66666E]' : 'dark:text-[#ECECEE]'
               }`}
             >
@@ -235,7 +262,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               <Clock className="w-6 h-6 text-[#E9A23B] shrink-0" />
             </div>
             <div
-              className={`mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#E9A23B] ${
+              className={`mt-1.5 text-2xl font-bold tabular-nums text-[#E9A23B] ${
                 (analytics?.taskStats?.pending || 0) === 0 ? 'dark:text-[#66666E]' : 'dark:text-[#F0A030]'
               }`}
             >
@@ -260,7 +287,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               <Plane className="w-6 h-6 text-[#16A36A] shrink-0" />
             </div>
             <div
-              className={`mt-1.5 text-2xl font-bold font-mono tabular-nums text-[#16A36A] ${
+              className={`mt-1.5 text-2xl font-bold tabular-nums text-[#16A36A] ${
                 (pipeline?.visaIssued || 0) === 0 ? 'dark:text-[#66666E]' : 'dark:text-[#34C26B]'
               }`}
             >
@@ -273,8 +300,10 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           </div>
         </StaggerItem>
       </StaggerContainer>
+      )}
 
       {/* PRIMARY FEATURE: South Korean Student Visa Pipeline Stage Matrix */}
+      {w.visaPipeline && (
       <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E3EAF3] dark:border-[#2E2E32] rounded-md p-4 shadow-xs dark:shadow-none space-y-3">
         <div className="flex items-center justify-between border-b border-[#E3EAF3] dark:border-[#2E2E32] pb-3">
           <div>
@@ -302,19 +331,31 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             return (
               <StaggerItem key={stg.key}>
                 <div
-                  onClick={() => onNavigateTab('students')}
-                  className={`p-3 rounded-md border border-[#E3EAF3] dark:border-[#2E2E32] dark:border-t-2 ${stg.topBorderDark} ${stg.bgLight} dark:bg-[#1C1C1E] flex flex-col justify-between cursor-pointer hover:ring-2 hover:ring-[#1769E8]/40 dark:hover:ring-0 dark:hover:border-x-[#3A3A3F] dark:hover:border-b-[#3A3A3F] dark:hover:bg-[#252528] transition-all h-full`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    onSelectVisaStage ? onSelectVisaStage(stg.visaStage) : onNavigateTab('students')
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      if (onSelectVisaStage) onSelectVisaStage(stg.visaStage);
+                      else onNavigateTab('students');
+                    }
+                  }}
+                  title={`View ${count} student${count === 1 ? '' : 's'} in ${stg.label}`}
+                  className={`p-3 rounded-md border border-[#E3EAF3] dark:border-[#2E2E32] dark:border-t-2 ${stg.topBorderDark} ${stg.bgLight} dark:bg-[#1C1C1E] flex flex-col justify-between cursor-pointer hover:ring-2 hover:ring-[#1769E8]/40 dark:hover:ring-0 dark:hover:border-x-[#3A3A3F] dark:hover:border-b-[#3A3A3F] dark:hover:bg-[#252528] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1769E8] dark:focus-visible:ring-[#4C8DF6] transition-all h-full`}
                 >
                   <div>
                     <div className="text-[11px] font-semibold text-[#172B4D] dark:text-[#ECECEE] leading-tight">
                       {stg.label}
                     </div>
-                    <div className="text-[10px] text-slate-500 dark:text-[#9A9AA2] font-mono mt-0.5">
+                    <div className="text-[10px] text-slate-500 dark:text-[#9A9AA2] mt-0.5">
                       {stg.labelKo}
                     </div>
                   </div>
                   <div
-                    className={`mt-3 text-xl font-mono font-bold tabular-nums ${stg.color} ${
+                    className={`mt-3 text-xl font-bold tabular-nums ${stg.color} ${
                       count === 0 ? 'dark:text-[#66666E]' : stg.colorDark
                     }`}
                   >
@@ -326,11 +367,14 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           })}
         </StaggerContainer>
       </div>
+      )}
 
       {/* Split Section: Upcoming Korean University Deadlines & Consultant Workload */}
+      {(w.universityDeadlines || w.teamWorkload) && (
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 items-start">
-        {/* Left: Urgent Korean University Deadlines (7 Cols) */}
-        <div className="lg:col-span-7 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E3EAF3] dark:border-[#2E2E32] rounded-md p-5 space-y-4 shadow-xs dark:shadow-none">
+        {/* Left: Urgent Korean University Deadlines (7 Cols or 12 Cols when workload hidden) */}
+        {w.universityDeadlines && (
+        <div className={`${w.teamWorkload ? 'lg:col-span-7' : 'lg:col-span-12'} bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E3EAF3] dark:border-[#2E2E32] rounded-md p-5 space-y-4 shadow-xs dark:shadow-none`}>
           <div className="flex items-center justify-between border-b border-[#E3EAF3] dark:border-[#2E2E32] pb-3">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-[#DC4545]" />
@@ -362,10 +406,10 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
                   <div className="flex items-center gap-4 shrink-0">
                     <div className="text-right">
-                      <div className="font-mono text-[11px] text-[#DC4545] dark:text-[#EF5350] font-semibold">
+                      <div className="tabular-nums text-[11px] text-[#DC4545] dark:text-[#EF5350] font-semibold">
                         Deadline: {d.deadline}
                       </div>
-                      <div className="text-[10px] text-slate-400 dark:text-[#9A9AA2] font-mono mt-0.5">
+                      <div className="text-[10px] text-slate-400 dark:text-[#9A9AA2] tabular-nums mt-0.5">
                         {d.current_students || 0}/{d.target_quota} quota ({fillPct}%)
                       </div>
                     </div>
@@ -382,9 +426,11 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             })}
           </div>
         </div>
+        )}
 
-        {/* Right: Team Workload & Consultant Allocation (5 Cols) - Compact Design */}
-        <div className="lg:col-span-5 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E3EAF3] dark:border-[#2E2E32] rounded-lg p-4 sm:p-5 space-y-3 shadow-xs dark:shadow-none">
+        {/* Right: Team Workload & Consultant Allocation (5 Cols or 12 Cols when deadlines hidden) - Compact Design */}
+        {w.teamWorkload && (
+        <div className={`${w.universityDeadlines ? 'lg:col-span-5' : 'lg:col-span-12'} bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E3EAF3] dark:border-[#2E2E32] rounded-lg p-4 sm:p-5 space-y-3 shadow-xs dark:shadow-none`}>
           <div className="flex items-center justify-between border-b border-[#E3EAF3] dark:border-[#2E2E32] pb-2.5">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-[#1769E8]" />
@@ -424,7 +470,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               ]}
             />
 
-            <div className="text-[11px] font-mono text-slate-500 dark:text-[#9A9AA2]">
+            <div className="text-[11px] tabular-nums text-slate-500 dark:text-[#9A9AA2]">
               <span
                 className={`font-semibold text-[#E9A23B] ${
                   totalPendingWorkload === 0 ? 'dark:text-[#66666E]' : 'dark:text-[#F0A030]'
@@ -459,13 +505,13 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                       <span className="font-semibold text-[#172B4D] dark:text-[#ECECEE] group-hover:text-[#1769E8] dark:group-hover:text-[#4C8DF6] transition-colors">
                         {c.name}
                       </span>
-                      <span className="ml-1.5 text-[10px] text-slate-400 dark:text-[#9A9AA2] font-mono">
+                      <span className="ml-1.5 text-[10px] text-slate-400 dark:text-[#9A9AA2] tabular-nums">
                         · {c.dossiers} {c.dossiers === 1 ? 'file' : 'files'}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0 font-mono text-[10px]">
+                  <div className="flex items-center gap-1.5 shrink-0 tabular-nums text-[10px]">
                     <span
                       className={`px-1.5 py-0.5 rounded bg-[#E9A23B]/15 text-[#B45309] font-semibold ${
                         (c.pending_tasks || 0) === 0
@@ -492,7 +538,9 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             )}
           </div>
         </div>
+        )}
       </div>
+      )}
     </div>
   );
 };

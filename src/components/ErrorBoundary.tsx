@@ -54,7 +54,7 @@ export class ErrorBoundary extends Component<Props, State> {
               An unexpected error occurred while rendering this section. Your task data is safe in local storage and Google Sheets sync.
             </p>
             {this.state.error?.message && (
-              <p className="text-[11px] text-[#DC2626] dark:text-[#EF5350] bg-[#FEE2E2]/60 dark:bg-[rgba(239,83,80,0.14)] p-2 rounded-md font-mono mt-2 text-left truncate">
+              <p className="text-[11px] text-[#DC2626] dark:text-[#EF5350] bg-[#FEE2E2]/60 dark:bg-[rgba(239,83,80,0.14)] p-2 rounded-md tabular-nums mt-2 text-left truncate">
                 {this.state.error.message}
               </p>
             )}

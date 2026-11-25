@@ -26,6 +26,8 @@ import { RoundedSlidingTabs } from './ui/RoundedSlidingTabs';
 interface StudentDossierListProps {
   students: StudentApplication[];
   currentUser: UserProfile;
+  selectedStage?: string;
+  onStageChange?: (stage: string) => void;
   onSelectStudent: (student: StudentApplication) => void;
   onOpenNewStudentModal: () => void;
 }
@@ -129,12 +131,22 @@ type SortField = 'name' | 'university' | 'progress' | 'term' | 'stage';
 export const StudentDossierList: React.FC<StudentDossierListProps> = ({
   students,
   currentUser,
+  selectedStage,
+  onStageChange,
   onSelectStudent,
   onOpenNewStudentModal,
 }) => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 250);
-  const [stageFilter, setStageFilter] = useState<string>('All');
+  const [internalStageFilter, setInternalStageFilter] = useState<string>('All');
+  const stageFilter = selectedStage !== undefined ? selectedStage : internalStageFilter;
+  const setStageFilter = (stage: string) => {
+    if (onStageChange) {
+      onStageChange(stage);
+    } else {
+      setInternalStageFilter(stage);
+    }
+  };
   const [degreeFilter, setDegreeFilter] = useState<string>('All');
   const [termFilter, setTermFilter] = useState<string>('All');
   const [sortField, setSortField] = useState<SortField>('name');
@@ -234,7 +246,7 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
             </div>
             <div>
               <h1 className="text-[24px] font-semibold text-[#0F172A] dark:text-[#ECECEE] leading-tight">
-                Student Application Dossiers
+                Students
               </h1>
               <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] mt-1">
                 {currentUser.role === 'Admission_Manager'
@@ -296,7 +308,9 @@ export const StudentDossierList: React.FC<StudentDossierListProps> = ({
               'Apostille_Verification',
               'University_Submitted',
               'Admission_Granted',
+              'Tuition_Paid',
               'CoA_Received',
+              'Embassy_Visa_Filing',
               'Visa_Issued',
             ] as VisaStage[]
           ).map((stg) => {

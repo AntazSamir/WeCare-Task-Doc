@@ -30,10 +30,13 @@ import {
   Layers,
   Percent,
   FileCheck2,
+  GraduationCap,
+  RotateCcw,
 } from 'lucide-react';
 import {
   AppNotification,
   AppSettings,
+  DEFAULT_DASHBOARD_WIDGETS,
   GOOGLE_SHEETS_HEADERS,
   GoogleSheetsConnectionState,
   GoogleSpreadsheetItem,
@@ -53,8 +56,11 @@ import {
   isTaskOverdue,
   isTaskToday,
   isTaskUpcoming,
-  getDaysDifference,
 } from './utils/dateUtils';
+import {
+  computeCalendarAndDeadlineMetrics,
+} from './utils/calendarStats';
+import type { CalendarTabMode } from './components/CalendarView';
 import {
   createLiveGoogleSpreadsheet,
   deduplicateTasks,
@@ -65,6 +71,7 @@ import {
   pushTasksToLiveGoogleSheet,
 } from './services/googleSheetsService';
 import { TaskCard } from './components/TaskCard';
+import { BulkTaskActionBar } from './components/BulkTaskActionBar';
 import { UpcomingDeadlinesWidget } from './components/UpcomingDeadlinesWidget';
 import { OverdueTasksWidget } from './components/OverdueTasksWidget';
 import {
@@ -75,6 +82,7 @@ import {
   PmsTask,
   InAppNotification,
   HandoverStats,
+  VisaStage,
 } from './types/pms';
 import {
   getSessionUser,
@@ -92,6 +100,8 @@ import {
   fetchHandoverStats,
   togglePmsTask,
   deletePmsTask,
+  updatePmsTask,
+  reassignPmsTask,
 } from './services/pmsService';
 import { RoleSwitcherBar } from './components/RoleSwitcherBar';
 import { DashboardSkeleton } from './components/SkeletonLoaders';
@@ -163,13 +173,300 @@ const NotificationDrawer = React.lazy(() =>
 );
 
 const LOCAL_STORAGE_KEY = 'sheetsync_pc_state_v1';
+const CALENDAR_TAB_STORAGE_KEY = 'wecare_calendar_last_tab';
+
+function getStoredCalendarTab(): CalendarTabMode {
+  try {
+    const stored = localStorage.getItem(CALENDAR_TAB_STORAGE_KEY);
+    return stored === 'list' || stored === 'month' ? stored : 'month';
+  } catch {
+    return 'month';
+  }
+}
+
+function saveStoredCalendarTab(tab: CalendarTabMode) {
+  try {
+    localStorage.setItem(CALENDAR_TAB_STORAGE_KEY, tab);
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+const VALID_APP_ROUTES: NavigationTab[] = [
+  'dashboard',
+  'my-day',
+  'calendar',
+  'all-tasks',
+  'students',
+  'projects',
+  'universities',
+  'document-handover',
+  'completed',
+  'sheets-connection',
+  'settings',
+];
+
+const VALID_VISA_STAGES = new Set<string>([
+  'All',
+  'Document_Gathering',
+  'Apostille_Verification',
+  'University_Submitted',
+  'Admission_Granted',
+  'Tuition_Paid',
+  'CoA_Received',
+  'Embassy_Visa_Filing',
+  'Visa_Issued',
+  'Rejected',
+]);
+
+function buildAppUrl(
+  nav: NavigationTab,
+  options?: {
+    calendarView?: CalendarTabMode;
+    studentStage?: string;
+    studentId?: string | null;
+    projectId?: string | null;
+    universityId?: string | null;
+  }
+): string {
+  if (nav === 'calendar') {
+    return `/calendar?view=${options?.calendarView ?? getStoredCalendarTab()}`;
+  }
+  if (nav === 'students') {
+    const params = new URLSearchParams();
+    if (options?.studentStage && options.studentStage !== 'All') {
+      params.set('stage', options.studentStage);
+    }
+    if (options?.studentId) {
+      params.set('id', options.studentId);
+    }
+    const qs = params.toString();
+    return qs ? `/students?${qs}` : '/students';
+  }
+  if (nav === 'projects') {
+    return options?.projectId
+      ? `/projects?id=${encodeURIComponent(options.projectId)}`
+      : '/projects';
+  }
+  if (nav === 'universities') {
+    return options?.universityId
+      ? `/universities?id=${encodeURIComponent(options.universityId)}`
+      : '/universities';
+  }
+  return nav === 'dashboard' ? '/' : `/${nav}`;
+}
+
+function resolveLocationState(): {
+  nav: NavigationTab;
+  calendarTab: CalendarTabMode;
+  studentStage: string;
+  studentId: string | null;
+  projectId: string | null;
+  universityId: string | null;
+  redirectUrl?: string;
+} {
+  if (typeof window === 'undefined') {
+    return {
+      nav: 'dashboard',
+      calendarTab: 'month',
+      studentStage: 'All',
+      studentId: null,
+      projectId: null,
+      universityId: null,
+    };
+  }
+  const rawPath = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const params = new URLSearchParams(window.location.search);
+  const viewParam = params.get('view');
+  const stageParam = params.get('stage') || 'All';
+  const idParam = params.get('id') || null;
+  const resolvedStage = VALID_VISA_STAGES.has(stageParam) ? stageParam : 'All';
+
+  // Legacy Deadlines / Upcoming routes redirect to Calendar List view
+  if (
+    rawPath === '/deadlines' ||
+    rawPath === '/upcoming' ||
+    params.get('tab') === 'upcoming' ||
+    params.get('route') === 'upcoming'
+  ) {
+    return {
+      nav: 'calendar',
+      calendarTab: 'list',
+      studentStage: 'All',
+      studentId: null,
+      projectId: null,
+      universityId: null,
+      redirectUrl: '/calendar?view=list',
+    };
+  }
+
+  // Calendar route: read ?view=list|month or fall back to last remembered tab
+  if (rawPath === '/calendar') {
+    const tab: CalendarTabMode =
+      viewParam === 'list' || viewParam === 'month'
+        ? viewParam
+        : getStoredCalendarTab();
+    return {
+      nav: 'calendar',
+      calendarTab: tab,
+      studentStage: 'All',
+      studentId: null,
+      projectId: null,
+      universityId: null,
+      redirectUrl: viewParam === tab ? undefined : `/calendar?view=${tab}`,
+    };
+  }
+
+  if (rawPath === '/today') {
+    return {
+      nav: 'my-day',
+      calendarTab: getStoredCalendarTab(),
+      studentStage: 'All',
+      studentId: null,
+      projectId: null,
+      universityId: null,
+      redirectUrl: '/my-day',
+    };
+  }
+
+  if (rawPath === '/students') {
+    return {
+      nav: 'students',
+      calendarTab: getStoredCalendarTab(),
+      studentStage: resolvedStage,
+      studentId: idParam,
+      projectId: null,
+      universityId: null,
+    };
+  }
+
+  if (rawPath === '/projects') {
+    return {
+      nav: 'projects',
+      calendarTab: getStoredCalendarTab(),
+      studentStage: 'All',
+      studentId: null,
+      projectId: idParam,
+      universityId: null,
+    };
+  }
+
+  if (rawPath === '/universities') {
+    return {
+      nav: 'universities',
+      calendarTab: getStoredCalendarTab(),
+      studentStage: 'All',
+      studentId: null,
+      projectId: null,
+      universityId: idParam,
+    };
+  }
+
+  const slug = rawPath.slice(1) as NavigationTab;
+  if (VALID_APP_ROUTES.includes(slug)) {
+    return {
+      nav: slug,
+      calendarTab: getStoredCalendarTab(),
+      studentStage: 'All',
+      studentId: null,
+      projectId: null,
+      universityId: null,
+    };
+  }
+
+  return {
+    nav: 'dashboard',
+    calendarTab: getStoredCalendarTab(),
+    studentStage: 'All',
+    studentId: null,
+    projectId: null,
+    universityId: null,
+  };
+}
+
+function diffIsoDays(fromIso: string, toIso: string): number {
+  const [fy, fm, fd] = fromIso.split('-').map(Number);
+  const [ty, tm, td] = toIso.split('-').map(Number);
+  if (!fy || !fm || !fd || !ty || !tm || !td) return 0;
+  const fromUtc = Date.UTC(fy, fm - 1, fd);
+  const toUtc = Date.UTC(ty, tm - 1, td);
+  return Math.round((toUtc - fromUtc) / 86400000);
+}
 
 export function App() {
   const todayIso = getLocalTodayIso();
+  const initialLocation = useMemo(() => resolveLocationState(), []);
 
   // Navigation & View Mode
-  const [activeNav, setActiveNav] = useState<NavigationTab>('dashboard');
+  const [activeNav, setActiveNav] = useState<NavigationTab>(initialLocation.nav);
+  const [calendarTab, setCalendarTab] = useState<CalendarTabMode>(initialLocation.calendarTab);
   const [dashboardViewMode, setDashboardViewMode] = useState<'list' | 'calendar'>('list');
+  const [studentStageFilter, setStudentStageFilter] = useState<string>(initialLocation.studentStage);
+  const [pendingStudentId, setPendingStudentId] = useState<string | null>(initialLocation.studentId);
+
+  // Today (my-day) focus filters & bulk selection
+  const [todayPriorityFilter, setTodayPriorityFilter] = useState<'All' | TaskPriority>('All');
+  const [todayCategoryFilter, setTodayCategoryFilter] = useState<'All' | TaskCategory>('All');
+  const [todaySelectedIds, setTodaySelectedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (initialLocation.nav === 'calendar') {
+      saveStoredCalendarTab(initialLocation.calendarTab);
+    }
+    if (initialLocation.redirectUrl) {
+      window.history.replaceState(null, '', initialLocation.redirectUrl);
+    }
+  }, [initialLocation]);
+
+  const navigateTo = useCallback(
+    (
+      target: NavigationTab,
+      options?: {
+        calendarView?: CalendarTabMode;
+        studentStage?: string;
+        studentId?: string | null;
+        projectId?: string | null;
+        universityId?: string | null;
+        replace?: boolean;
+      }
+    ) => {
+      const isLegacyUpcoming = target === 'upcoming';
+      const resolvedNav: NavigationTab = isLegacyUpcoming ? 'calendar' : target;
+      const nextCalendarView: CalendarTabMode = isLegacyUpcoming
+        ? options?.calendarView ?? 'list'
+        : options?.calendarView ?? calendarTab;
+
+      if (resolvedNav === 'calendar') {
+        setCalendarTab(nextCalendarView);
+        saveStoredCalendarTab(nextCalendarView);
+      }
+      if (resolvedNav === 'students' && options?.studentStage !== undefined) {
+        setStudentStageFilter(options.studentStage);
+      }
+
+      setActiveNav(resolvedNav);
+      const nextUrl = buildAppUrl(resolvedNav, {
+        calendarView: nextCalendarView,
+        studentStage: options?.studentStage,
+        studentId: options?.studentId,
+        projectId: options?.projectId,
+        universityId: options?.universityId,
+      });
+      if (window.location.pathname + window.location.search !== nextUrl) {
+        window.history[options?.replace ? 'replaceState' : 'pushState'](null, '', nextUrl);
+      }
+    },
+    [calendarTab]
+  );
+
+  const handleCalendarTabChange = useCallback((nextTab: CalendarTabMode) => {
+    setCalendarTab(nextTab);
+    saveStoredCalendarTab(nextTab);
+    const nextUrl = `/calendar?view=${nextTab}`;
+    if (window.location.pathname + window.location.search !== nextUrl) {
+      window.history.pushState(null, '', nextUrl);
+    }
+  }, []);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
     try {
       return localStorage.getItem('sheetsync_sidebar_collapsed') === 'true';
@@ -272,6 +569,10 @@ export function App() {
       handoverAlertsEnabled: true,
       desktopNotificationsEnabled: false,
       ...storedExtended,
+      dashboardWidgets: {
+        ...DEFAULT_DASHBOARD_WIDGETS,
+        ...storedExtended.dashboardWidgets,
+      },
     };
   });
 
@@ -321,8 +622,8 @@ export function App() {
   const [isEnhancedTaskModalOpen, setIsEnhancedTaskModalOpen] = useState(false);
   const [taskContextStudentId, setTaskContextStudentId] = useState<string | undefined>(undefined);
   const [taskContextProjectId, setTaskContextProjectId] = useState<string | undefined>(undefined);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [selectedUniversityId, setSelectedUniversityId] = useState<string | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialLocation.projectId);
+  const [selectedUniversityId, setSelectedUniversityId] = useState<string | null>(initialLocation.universityId);
   const [workspaceRefreshNonce, setWorkspaceRefreshNonce] = useState(0);
   const [prefillStudentProjectId, setPrefillStudentProjectId] = useState<string | undefined>(undefined);
   const [prefillStudentUniversityId, setPrefillStudentUniversityId] = useState<string | undefined>(undefined);
@@ -331,6 +632,85 @@ export function App() {
   const [handoverStats, setHandoverStats] = useState<HandoverStats | null>(null);
   const [selectedHandoverIdFromNotif, setSelectedHandoverIdFromNotif] = useState<string | null>(null);
   const clearSelectedHandoverFromNotif = useCallback(() => setSelectedHandoverIdFromNotif(null), []);
+
+  // Resolve pending deep-linked Student ID once students finish loading, and sync browser popstate
+  useEffect(() => {
+    if (!pendingStudentId || students.length === 0) return;
+    const match = students.find((s) => s.id === pendingStudentId) || null;
+    setSelectedStudentForDossier(match);
+    setPendingStudentId(null);
+  }, [pendingStudentId, students]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const resolved = resolveLocationState();
+      setActiveNav(resolved.nav);
+      setCalendarTab(resolved.calendarTab);
+      setStudentStageFilter(resolved.studentStage);
+      setSelectedProjectId(resolved.projectId);
+      setSelectedUniversityId(resolved.universityId);
+      if (resolved.studentId) {
+        const match = students.find((s) => s.id === resolved.studentId);
+        if (match) {
+          setSelectedStudentForDossier(match);
+          setPendingStudentId(null);
+        } else {
+          setPendingStudentId(resolved.studentId);
+        }
+      } else {
+        setSelectedStudentForDossier(null);
+        setPendingStudentId(null);
+      }
+      if (resolved.nav === 'calendar') {
+        saveStoredCalendarTab(resolved.calendarTab);
+      }
+      if (resolved.redirectUrl) {
+        window.history.replaceState(null, '', resolved.redirectUrl);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [students]);
+
+  const handleOpenStudentDossier = useCallback(
+    (student: StudentApplication, forceStudentsNav = false) => {
+      setSelectedStudentForDossier(student);
+      if (forceStudentsNav || activeNav === 'students') {
+        navigateTo('students', {
+          studentStage: forceStudentsNav ? 'All' : studentStageFilter,
+          studentId: student.id,
+        });
+      }
+    },
+    [activeNav, studentStageFilter, navigateTo]
+  );
+
+  const handleCloseStudentDossier = useCallback(() => {
+    setSelectedStudentForDossier(null);
+    setPendingStudentId(null);
+    if (activeNav === 'students') {
+      navigateTo('students', {
+        studentStage: studentStageFilter,
+        studentId: null,
+      });
+    }
+  }, [activeNav, studentStageFilter, navigateTo]);
+
+  const handleSelectProjectDetail = useCallback(
+    (projectId: string | null) => {
+      setSelectedProjectId(projectId);
+      navigateTo('projects', { projectId });
+    },
+    [navigateTo]
+  );
+
+  const handleSelectUniversityDetail = useCallback(
+    (uniId: string | null) => {
+      setSelectedUniversityId(uniId);
+      navigateTo('universities', { universityId: uniId });
+    },
+    [navigateTo]
+  );
 
   const isOffline = !browserOnline || settings.simulateOffline;
 
@@ -410,7 +790,17 @@ export function App() {
 
   const handleUpdateSettings = useCallback((partial: Partial<AppSettings>) => {
     setSettings((prev) => {
-      const next = { ...prev, ...partial };
+      const next: AppSettings = {
+        ...prev,
+        ...partial,
+        dashboardWidgets: partial.dashboardWidgets
+          ? {
+              ...DEFAULT_DASHBOARD_WIDGETS,
+              ...prev.dashboardWidgets,
+              ...partial.dashboardWidgets,
+            }
+          : prev.dashboardWidgets,
+      };
       if (partial.theme) {
         try {
           localStorage.setItem('pms_theme_preference', partial.theme);
@@ -488,6 +878,11 @@ export function App() {
             ...prev,
             ...parsed.settings,
             theme: storedTheme || parsed.settings.theme || prev.theme,
+            dashboardWidgets: {
+              ...DEFAULT_DASHBOARD_WIDGETS,
+              ...parsed.settings.dashboardWidgets,
+              ...prev.dashboardWidgets,
+            },
           }));
         }
         // Cached data is immediately ready!
@@ -518,10 +913,21 @@ export function App() {
         }
         if (data.settings) {
           const storedTheme = localStorage.getItem('pms_theme_preference') as ('light' | 'dark' | 'system' | null);
+          let localExtended: Partial<AppSettings> = {};
+          try {
+            const rawExt = localStorage.getItem('pms_app_settings');
+            if (rawExt) localExtended = JSON.parse(rawExt);
+          } catch {}
           setSettings((prev) => ({
             ...prev,
             ...data.settings,
             theme: storedTheme || data.settings.theme || prev.theme,
+            dashboardWidgets: {
+              ...DEFAULT_DASHBOARD_WIDGETS,
+              ...data.settings.dashboardWidgets,
+              ...prev.dashboardWidgets,
+              ...localExtended.dashboardWidgets,
+            },
           }));
         }
 
@@ -1280,6 +1686,209 @@ export function App() {
     );
   };
 
+  // Drag-to-Reschedule Task onto a Specific Calendar Day
+  const handleRescheduleTaskToDate = useCallback(
+    (taskId: string, targetDateIso: string) => {
+      const currentTasks = tasksRef.current;
+      const targetTask = currentTasks.find((t) => t.id === taskId);
+      if (!targetTask || targetTask.taskDate === targetDateIso) return;
+
+      const dayDelta = targetTask.taskDate ? diffIsoDays(targetTask.taskDate, targetDateIso) : 0;
+      const nextDeadline =
+        targetTask.deadline && targetTask.deadline !== targetTask.taskDate && dayDelta !== 0
+          ? addDaysToIsoDate(targetTask.deadline, dayDelta)
+          : targetDateIso;
+      const nowIso = new Date().toISOString();
+
+      const updatedList = currentTasks.map((t) =>
+        t.id === taskId
+          ? {
+              ...t,
+              taskDate: targetDateIso,
+              deadline: nextDeadline,
+              lastUpdated: nowIso,
+            }
+          : t
+      );
+      setTasks(updatedList);
+
+      if (connectionRef.current.autoSync) {
+        synchronizeWithSheets(
+          updatedList,
+          'UPDATE',
+          `Dragged task ${taskId} ("${targetTask.title}") to ${targetDateIso} in ${connectionRef.current.selectedWorksheet}`,
+          taskId
+        );
+      }
+
+      updatePmsTask(taskId, { taskDate: targetDateIso, deadline: nextDeadline })
+        .then(() => setWorkspaceRefreshNonce((n) => n + 1))
+        .catch(() => {});
+
+      pushNotification(
+        'Task Rescheduled',
+        `"${targetTask.title}" moved to ${formatReadableDate(targetDateIso, todayIso)}.`,
+        'success',
+        taskId
+      );
+    },
+    [synchronizeWithSheets, pushNotification, todayIso]
+  );
+
+  // Bulk Task Action: Complete Selected
+  const handleBulkCompleteTasks = useCallback(
+    (taskIds: string[]) => {
+      if (taskIds.length === 0) return;
+      const idSet = new Set(taskIds);
+      const currentTasks = tasksRef.current;
+      const toComplete = currentTasks.filter((t) => idSet.has(t.id) && t.status !== 'Completed');
+      if (toComplete.length === 0) return;
+
+      const completedIso = new Date().toISOString();
+      const updatedList = currentTasks.map((t) =>
+        idSet.has(t.id) && t.status !== 'Completed'
+          ? {
+              ...t,
+              status: 'Completed' as const,
+              completedAt: completedIso,
+              lastUpdated: completedIso,
+            }
+          : t
+      );
+      setTasks(updatedList);
+
+      if (connectionRef.current.autoSync) {
+        synchronizeWithSheets(
+          updatedList,
+          'COMPLETE',
+          `Bulk completed ${toComplete.length} tasks in ${connectionRef.current.selectedWorksheet}`
+        );
+      }
+
+      if (settingsRef.current.soundEnabled !== false) {
+        playCompletionChime();
+      }
+
+      Promise.allSettled(toComplete.map((t) => togglePmsTask(t.id))).then(() => {
+        setWorkspaceRefreshNonce((n) => n + 1);
+      });
+
+      pushNotification(
+        'Bulk Completed',
+        `Marked ${toComplete.length} ${toComplete.length === 1 ? 'task' : 'tasks'} as Completed and synced to Google Sheets.`,
+        'success'
+      );
+    },
+    [synchronizeWithSheets, pushNotification]
+  );
+
+  // Bulk Task Action: Postpone (+1 Day or Move to Today)
+  const handleBulkPostponeTasks = useCallback(
+    (taskIds: string[], mode: 'plus1' | 'today') => {
+      if (taskIds.length === 0) return;
+      const idSet = new Set(taskIds);
+      const currentTasks = tasksRef.current;
+      const nowIso = new Date().toISOString();
+      const updatedItems: { id: string; taskDate: string; deadline: string }[] = [];
+
+      const updatedList = currentTasks.map((t) => {
+        if (!idSet.has(t.id)) return t;
+        const nextTaskDate =
+          mode === 'today' ? todayIso : addDaysToIsoDate(t.taskDate || todayIso, 1);
+        const nextDeadline =
+          mode === 'today' ? todayIso : addDaysToIsoDate(t.deadline || t.taskDate || todayIso, 1);
+        updatedItems.push({ id: t.id, taskDate: nextTaskDate, deadline: nextDeadline });
+        return {
+          ...t,
+          taskDate: nextTaskDate,
+          deadline: nextDeadline,
+          lastUpdated: nowIso,
+        };
+      });
+
+      if (updatedItems.length === 0) return;
+      setTasks(updatedList);
+
+      if (connectionRef.current.autoSync) {
+        synchronizeWithSheets(
+          updatedList,
+          'UPDATE',
+          `Bulk ${mode === 'today' ? 'moved to Today' : 'postponed +1 day'} (${updatedItems.length} tasks) in ${connectionRef.current.selectedWorksheet}`
+        );
+      }
+
+      Promise.allSettled(
+        updatedItems.map((u) =>
+          updatePmsTask(u.id, { taskDate: u.taskDate, deadline: u.deadline })
+        )
+      ).then(() => {
+        setWorkspaceRefreshNonce((n) => n + 1);
+      });
+
+      pushNotification(
+        mode === 'today' ? 'Moved to Today' : 'Postponed +1 Day',
+        `Rescheduled ${updatedItems.length} ${updatedItems.length === 1 ? 'task' : 'tasks'}.`,
+        'info'
+      );
+    },
+    [todayIso, synchronizeWithSheets, pushNotification]
+  );
+
+  // Bulk Task Action: Reassign Selected to Team Member
+  const handleBulkReassignTasks = useCallback(
+    (taskIds: string[], targetUserId: string) => {
+      if (taskIds.length === 0 || !targetUserId) return;
+      const targetUser = team.find((m) => m.id === targetUserId);
+      if (!targetUser) return;
+
+      const idSet = new Set(taskIds);
+      const currentTasks = tasksRef.current;
+      const matchedCount = currentTasks.filter((t) => idSet.has(t.id)).length;
+      if (matchedCount === 0) return;
+
+      const nowIso = new Date().toISOString();
+      const updatedList = currentTasks.map((t) =>
+        idSet.has(t.id)
+          ? ({
+              ...t,
+              assignedToId: targetUser.id,
+              assignedToName: targetUser.name,
+              assigneeAvatar: targetUser.avatar,
+              team: targetUser.team,
+              lastUpdated: nowIso,
+            } as Task)
+          : t
+      );
+      setTasks(updatedList);
+
+      Promise.allSettled(
+        taskIds.map((id) =>
+          reassignPmsTask(id, {
+            assignedToId: targetUser.id,
+            team: targetUser.team,
+          })
+        )
+      ).then(() => {
+        setWorkspaceRefreshNonce((n) => n + 1);
+      });
+
+      if (connectionRef.current.autoSync) {
+        synchronizeWithSheets(
+          updatedList,
+          'UPDATE',
+          `Bulk reassigned ${matchedCount} tasks to ${targetUser.name} (${targetUser.team})`
+        );
+      }
+
+      pushNotification(
+        'Tasks Reassigned',
+        `Assigned ${matchedCount} ${matchedCount === 1 ? 'task' : 'tasks'} to ${targetUser.name}.`,
+        'success'
+      );
+    },
+    [team, synchronizeWithSheets, pushNotification]
+  );
+
   // Drag-and-Drop Task Reordering
   const handleReorderTasks = useCallback(
     (sourceTaskId: string, targetTaskId: string, position: 'before' | 'after') => {
@@ -1630,124 +2239,161 @@ export function App() {
   }, [tasks, todayIso]);
 
 
-  const navSections: {
-    title: string;
-    items: {
-      id: NavigationTab;
-      label: string;
-      icon: React.FC<{ className?: string; size?: number; color?: string }>;
-      accentColor: string;
-      count?: number;
-      badgeTone?: 'overdue' | 'normal';
-      isLiveSync?: boolean;
-    }[];
-  }[] = [
-    {
-      title: 'Consultancy PMS',
-      items: [
-        {
-          id: 'dashboard',
-          label: 'Executive Pipeline',
-          icon: LayoutDashboard,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'students',
-          label: 'Student Dossiers',
-          icon: Users as any,
-          count: students.length,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'projects',
-          label: 'Intake Projects',
-          icon: FolderKanban as any,
-          count: projects.length,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'universities',
-          label: 'Korean Universities',
-          icon: Building2 as any,
-          count: universities.length,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'document-handover',
-          label: 'Document Handover',
-          icon: FileCheck2 as any,
-          count:
-            currentUser.team === 'Counseling Team'
-              ? (handoverStats?.actionNeededRequestsAssignedToMe || 0) +
-                (handoverStats?.myNeedsFollowUp || 0)
-              : handoverStats?.myPendingVerifications ?? handoverStats?.pendingReceipts ?? 0,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-      ],
-    },
-    {
-      title: 'Tasks & Schedule',
-      items: [
-        {
-          id: 'all-tasks',
-          label: 'All Tasks Directory',
-          icon: ListTodo,
-          count: stats.total,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'my-day',
-          label: 'My Day',
-          icon: Sun,
-          count: stats.todayCount,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'upcoming',
-          label: 'Upcoming Deadlines',
-          icon: CalendarClock,
-          count: stats.upcomingCount,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'calendar',
-          label: 'Calendar Schedule',
-          icon: CalendarIcon,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-        {
-          id: 'completed',
-          label: 'Completed Archive',
-          icon: CheckCircle2,
-          count: stats.completedCount,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-      ],
-    },
-    {
-      title: 'Workspace',
-      items: [
-        {
-          id: 'sheets-connection',
-          label: 'Google Sheets',
-          icon: FileSpreadsheet,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-          isLiveSync: true,
-        },
-        {
-          id: 'settings',
-          label: 'Settings',
-          icon: SettingsIcon,
-          accentColor: 'text-[#1E40AF] dark:text-[#4C8DF6]',
-        },
-      ],
-    },
-  ];
+  const calendarMetrics = useMemo(
+    () => computeCalendarAndDeadlineMetrics(tasks, todayIso),
+    [tasks, todayIso]
+  );
 
-  const allNavItems = useMemo(() => navSections.flatMap((s) => s.items), [navSections]);
+  const handoverBadgeCount =
+    currentUser.team === 'Counseling Team'
+      ? (handoverStats?.actionNeededRequestsAssignedToMe || 0) +
+        (handoverStats?.myNeedsFollowUp || 0)
+      : handoverStats?.myPendingVerifications ?? handoverStats?.pendingReceipts ?? 0;
+
+  const navConfig: {
+    section: 'OVERVIEW' | 'ADMISSIONS' | 'MY WORK' | 'WORKSPACE';
+    label: string;
+    icon: React.ComponentType<{ className?: string; size?: number; color?: string }>;
+    route: NavigationTab;
+    badge?: {
+      count: number;
+      tone: 'gray' | 'blue' | 'red';
+      tooltip: string;
+    };
+  }[] = useMemo(
+    () => [
+      {
+        section: 'OVERVIEW',
+        label: 'Dashboard',
+        icon: LayoutDashboard,
+        route: 'dashboard',
+      },
+      {
+        section: 'ADMISSIONS',
+        label: 'Students',
+        icon: Users as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        route: 'students',
+        badge: {
+          count: students.length,
+          tone: 'gray',
+          tooltip: `${students.length} ${students.length === 1 ? 'student' : 'students'}`,
+        },
+      },
+      {
+        section: 'ADMISSIONS',
+        label: 'Intake Campaigns',
+        icon: FolderKanban as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        route: 'projects',
+        badge: {
+          count: projects.length,
+          tone: 'gray',
+          tooltip: `${projects.length} intake ${projects.length === 1 ? 'campaign' : 'campaigns'}`,
+        },
+      },
+      {
+        section: 'ADMISSIONS',
+        label: 'Universities',
+        icon: GraduationCap as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        route: 'universities',
+        badge: {
+          count: universities.length,
+          tone: 'gray',
+          tooltip: `${universities.length} partner ${universities.length === 1 ? 'university' : 'universities'}`,
+        },
+      },
+      {
+        section: 'ADMISSIONS',
+        label: 'Document Handover',
+        icon: FileCheck2 as React.ComponentType<{ className?: string; size?: number; color?: string }>,
+        route: 'document-handover',
+        badge: {
+          count: handoverBadgeCount,
+          tone: 'gray',
+          tooltip: `${handoverBadgeCount} pending ${handoverBadgeCount === 1 ? 'handover' : 'handovers'}`,
+        },
+      },
+      {
+        section: 'MY WORK',
+        label: 'Today',
+        icon: Sun,
+        route: 'my-day',
+        badge: {
+          count: stats.todayPendingCount,
+          tone: 'blue',
+          tooltip: `${stats.todayPendingCount} ${stats.todayPendingCount === 1 ? 'task' : 'tasks'} due today`,
+        },
+      },
+      {
+        section: 'MY WORK',
+        label: 'All Tasks',
+        icon: ListTodo,
+        route: 'all-tasks',
+        badge: {
+          count: stats.pendingCount,
+          tone: 'gray',
+          tooltip: `${stats.pendingCount} pending ${stats.pendingCount === 1 ? 'task' : 'tasks'}`,
+        },
+      },
+      {
+        section: 'MY WORK',
+        label: 'Calendar',
+        icon: CalendarIcon,
+        route: 'calendar',
+        badge: calendarMetrics.sidebarBadge,
+      },
+      {
+        section: 'MY WORK',
+        label: 'Completed',
+        icon: CheckCircle2,
+        route: 'completed',
+        badge: {
+          count: stats.completedCount,
+          tone: 'gray',
+          tooltip: `${stats.completedCount} completed ${stats.completedCount === 1 ? 'task' : 'tasks'}`,
+        },
+      },
+      {
+        section: 'WORKSPACE',
+        label: 'Settings',
+        icon: SettingsIcon,
+        route: 'settings',
+      },
+    ],
+    [
+      students.length,
+      projects.length,
+      universities.length,
+      handoverBadgeCount,
+      stats.todayPendingCount,
+      stats.pendingCount,
+      calendarMetrics.sidebarBadge,
+      stats.completedCount,
+    ]
+  );
+
+  const navSections = useMemo(() => {
+    const order: ('OVERVIEW' | 'ADMISSIONS' | 'MY WORK' | 'WORKSPACE')[] = [
+      'OVERVIEW',
+      'ADMISSIONS',
+      'MY WORK',
+      'WORKSPACE',
+    ];
+    return order.map((title) => ({
+      title,
+      items: navConfig
+        .filter((item) => item.section === title)
+        .map(({ route, label, icon, badge }) => ({
+          route,
+          label,
+          icon,
+          badge: badge && badge.count > 0 ? badge : undefined,
+        })),
+    }));
+  }, [navConfig]);
 
   const currentNavTitle =
-    allNavItems.find((item) => item.id === activeNav)?.label || 'Dashboard';
+    navConfig.find((item) => item.route === activeNav)?.label ||
+    (activeNav === 'sheets-connection' ? 'Google Sheets' : 'Dashboard');
 
   const searchItems = useMemo<GlobalSearchItem[]>(() => {
     const taskItems: GlobalSearchItem[] = tasks.map((t) => {
@@ -1852,9 +2498,9 @@ export function App() {
 
   const searchActions = useMemo<GlobalSearchAction[]>(
     () => [
-      { id: 'nav:dashboard', label: 'Executive Pipeline', icon: 'chart', shortcutKey: '1' },
-      { id: 'nav:all-tasks', label: 'All Tasks Directory', icon: 'grid', shortcutKey: '2' },
-      { id: 'nav:universities', label: 'Korean Universities', icon: 'compass', shortcutKey: '3' },
+      { id: 'nav:dashboard', label: 'Dashboard', icon: 'chart', shortcutKey: '1' },
+      { id: 'nav:all-tasks', label: 'All Tasks', icon: 'grid', shortcutKey: '2' },
+      { id: 'nav:universities', label: 'Universities', icon: 'compass', shortcutKey: '3' },
       { id: 'nav:team-tasks', label: 'Team Workload', icon: 'trend', shortcutKey: '4' },
     ],
     []
@@ -1874,7 +2520,7 @@ export function App() {
         const navTarget = entry.id.replace('nav:', '') as NavigationTab;
         if (navTarget === 'universities') setSelectedUniversityId(null);
         if (navTarget === 'projects') setSelectedProjectId(null);
-        setActiveNav(navTarget);
+        navigateTo(navTarget);
         return;
       }
       if (entry.id.startsWith('task:')) {
@@ -1884,32 +2530,35 @@ export function App() {
           setEditingTask(found);
           setIsTaskModalOpen(true);
         } else {
-          setActiveNav('all-tasks');
+          navigateTo('all-tasks');
         }
         return;
       }
       if (entry.id.startsWith('student:')) {
         const studentId = entry.id.slice(8);
         const found = students.find((s) => s.id === studentId);
-        setActiveNav('students');
         if (found) {
           setSelectedStudentForDossier(found);
+          setPendingStudentId(null);
+        } else {
+          setPendingStudentId(studentId);
         }
+        navigateTo('students', { studentStage: 'All', studentId });
         return;
       }
       if (entry.id.startsWith('uni:')) {
         const uniId = entry.id.slice(4);
         setSelectedUniversityId(uniId);
-        setActiveNav('universities');
+        navigateTo('universities', { universityId: uniId });
         return;
       }
       if (entry.id.startsWith('project:')) {
         const projectId = entry.id.slice(8);
         setSelectedProjectId(projectId);
-        setActiveNav('projects');
+        navigateTo('projects', { projectId });
       }
     },
-    [tasks, students]
+    [tasks, students, navigateTo]
   );
 
   return (
@@ -1954,30 +2603,25 @@ export function App() {
         </div>
 
         {/* Middle Scrollable Area: Main Navigation */}
-        <div className={`flex-1 overflow-y-auto overscroll-contain ${isSidebarCollapsed ? 'p-1.5 py-2' : 'px-2.5 py-2.5'}`}>
+        <div className={`flex-1 overflow-y-auto overscroll-contain ${isSidebarCollapsed ? 'p-1.5 py-2' : 'px-2.5 py-2'}`}>
           <SidebarTabBar
-            sections={navSections.map((section) => ({
-              title: section.title,
-              items: section.items.map((item) => ({
-                id: item.id,
-                label: item.label,
-                icon: item.icon,
-                count: item.count,
-                isLiveSync: item.isLiveSync,
-                syncStatusColor:
-                  isOffline || connection.syncStatus === 'Sync Failed'
-                    ? 'bg-[#DC2626]'
-                    : connection.syncStatus === 'Syncing'
-                    ? 'bg-[#D97706]'
-                    : 'bg-[#16A34A]',
-                syncTitle: `Google Sheets: ${isOffline ? 'Offline' : connection.syncStatus}`,
-              })),
-            }))}
+            sections={navSections}
             value={activeNav}
-            onChange={(id) => {
-              setActiveNav(id as NavigationTab);
+            onChange={(route) => {
+              const target = route as NavigationTab;
               setSelectedProjectId(null);
               setSelectedUniversityId(null);
+              setSelectedStudentForDossier(null);
+              setPendingStudentId(null);
+              if (target === 'students') {
+                setStudentStageFilter('All');
+              }
+              navigateTo(target, {
+                studentStage: target === 'students' ? 'All' : undefined,
+                studentId: null,
+                projectId: null,
+                universityId: null,
+              });
             }}
             collapsed={isSidebarCollapsed}
           />
@@ -1985,15 +2629,28 @@ export function App() {
 
         {/* Dedicated Sticky Footer Container inside Sidebar */}
         {!isSidebarCollapsed ? (
-          <div className="shrink-0 p-2.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#161616] space-y-1.5">
-            {/* Google Sheets Live Sync: Compact Row */}
+          <div className="shrink-0 p-2.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#161616] space-y-1">
+            {/* Google Sheets Live Sync Card (links to Google Sheets view + Sync now action) */}
             <div
-              className="flex items-center justify-between px-2 py-1 rounded-md bg-[#F8FAFC] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] group"
-              title={`${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}`}
+              className={`flex items-center justify-between gap-1.5 p-1 rounded-md border transition-colors duration-150 ${
+                activeNav === 'sheets-connection'
+                  ? 'bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF]/30 dark:border-[#4C8DF6]/40'
+                  : 'bg-[#F8FAFC] dark:bg-[#1C1C1E] border-[#E2E8F0] dark:border-[#2E2E32]'
+              }`}
             >
-              <div className="flex items-center gap-1.5 min-w-0">
-                <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
-                <span className="flex items-center gap-1.5 text-[11px] text-[#0F172A] dark:text-[#ECECEE] min-w-0">
+              <button
+                type="button"
+                onClick={() => {
+                  navigateTo('sheets-connection');
+                  setSelectedProjectId(null);
+                  setSelectedUniversityId(null);
+                }}
+                aria-current={activeNav === 'sheets-connection' ? 'page' : undefined}
+                title={`Open Google Sheets Sync (${connection.selectedSpreadsheetTitle} · ${connection.selectedWorksheet})`}
+                className="flex items-center gap-1.5 px-1.5 py-1 rounded text-left min-w-0 flex-1 hover:bg-[#F1F5F9] dark:hover:bg-[#252528] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF]/40 dark:focus-visible:ring-[#4C8DF6]/50"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
+                <span className="flex items-center gap-1.5 text-[11px] font-medium text-[#0F172A] dark:text-[#ECECEE] min-w-0">
                   <span
                     className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                       isOffline || connection.syncStatus === 'Sync Failed'
@@ -2005,17 +2662,17 @@ export function App() {
                   />
                   <span className="truncate">{isOffline ? 'Sync Failed' : connection.syncStatus}</span>
                 </span>
-              </div>
+              </button>
               <MotionButton
                 type="button"
                 onClick={handleManualSyncNow}
                 title="Sync now with Google Sheets"
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10.5px] font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[rgba(76,141,246,0.14)] rounded transition-colors shrink-0"
+                className="inline-flex items-center gap-1 px-2 py-1 text-[10.5px] font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[rgba(76,141,246,0.14)] rounded transition-colors duration-150 shrink-0"
               >
                 {connection.syncStatus === 'Syncing' ? (
                   <Spinner size="sm" shade="inherit" aria-hidden="true" />
                 ) : (
-                  <RefreshCw className="w-2.5 h-2.5" />
+                  <RefreshCw className="w-3 h-3" />
                 )}
                 <span>Sync now</span>
               </MotionButton>
@@ -2026,11 +2683,11 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Collapse sidebar (Ctrl+B)"
-              className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-medium text-[#64748B] dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] rounded-md transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-[#3A3A3F]"
+              className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-medium text-[#64748B] dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] hover:bg-[#F1F5F9] dark:hover:bg-[#252528] rounded-md transition-colors duration-150 group border border-transparent hover:border-[#E2E8F0] dark:hover:border-[#3A3A3F]"
               aria-label="Collapse sidebar"
             >
               <span className="flex items-center gap-1.5">
-                <PanelLeftClose className="w-3.5 h-3.5 text-[#64748B] dark:text-[#9A9AA2] group-hover:text-[#1E40AF] dark:group-hover:text-[#ECECEE] transition-colors" />
+                <PanelLeftClose className="w-4 h-4 text-[#64748B] dark:text-[#9A9AA2] group-hover:text-[#0F172A] dark:group-hover:text-[#ECECEE] transition-colors duration-150" />
                 <span>Collapse Sidebar</span>
               </span>
               <kbd className="hidden sm:inline-block px-1 py-0.5 text-[9.5px] text-[#64748B] dark:text-[#9A9AA2] bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] rounded">
@@ -2040,15 +2697,24 @@ export function App() {
           </div>
         ) : (
           <div className="shrink-0 p-2 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#161616] flex flex-col items-center gap-1.5 shadow-xs dark:shadow-none">
-            {/* Collapsed Google Sheets Icon Button */}
+            {/* Collapsed Google Sheets Page Link */}
             <MotionButton
               type="button"
-              onClick={handleManualSyncNow}
-              title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to sync now`}
-              className="w-8 h-8 rounded-md flex items-center justify-center relative bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#16A34A]/50 dark:hover:border-[#34C26B]/60 transition-colors group"
-              aria-label="Google Sheets synchronization status"
+              onClick={() => {
+                navigateTo('sheets-connection');
+                setSelectedProjectId(null);
+                setSelectedUniversityId(null);
+              }}
+              aria-current={activeNav === 'sheets-connection' ? 'page' : undefined}
+              title={`Google Sheets: ${isOffline ? 'Sync Failed' : connection.syncStatus}\nSpreadsheet: ${connection.selectedSpreadsheetTitle}\nTab: ${connection.selectedWorksheet}\nClick to open Google Sheets`}
+              className={`w-8 h-8 rounded-md flex items-center justify-center relative border transition-colors duration-150 group ${
+                activeNav === 'sheets-connection'
+                  ? 'sidebar-nav-active bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] border-[#1E40AF]/30 dark:border-[#4C8DF6]/40'
+                  : 'bg-[#F8FAFC] dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#16A34A]/50 dark:hover:border-[#34C26B]/60'
+              }`}
+              aria-label="Open Google Sheets synchronization"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#34C26B] group-hover:scale-105 transition-transform" />
+              <FileSpreadsheet className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B]" />
               <span
                 className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-[#161616] ${
                   isOffline || connection.syncStatus === 'Sync Failed'
@@ -2065,10 +2731,10 @@ export function App() {
               type="button"
               onClick={toggleSidebar}
               title="Expand sidebar (Ctrl+B)"
-              className="w-8 h-8 rounded-md bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] flex items-center justify-center transition-colors group border border-[#E2E8F0] dark:border-[#2E2E32]"
+              className="w-8 h-8 rounded-md bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] flex items-center justify-center transition-colors duration-150 group border border-[#E2E8F0] dark:border-[#2E2E32]"
               aria-label="Expand sidebar"
             >
-              <PanelLeftOpen className="w-3.5 h-3.5 transition-transform group-hover:scale-105" />
+              <PanelLeftOpen className="w-4 h-4" />
             </MotionButton>
           </div>
         )}
@@ -2203,19 +2869,53 @@ export function App() {
           {activeNav === 'dashboard' && (
             isInitialLoading ? (
               <DashboardSkeleton />
-            ) : (
+            ) : (() => {
+              const w = { ...DEFAULT_DASHBOARD_WIDGETS, ...settings.dashboardWidgets };
+              const visibleMetrics = [
+                w.metricToday,
+                w.metricUpcoming,
+                w.metricCompleted,
+                w.metricPending,
+                w.metricOverdue,
+                w.metricTotal,
+                w.metricRate,
+              ].filter(Boolean).length;
+
+              const metricGridClass =
+                visibleMetrics === 7
+                  ? 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-7'
+                  : visibleMetrics === 6
+                  ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6'
+                  : visibleMetrics === 5
+                  ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+                  : visibleMetrics === 4
+                  ? 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4'
+                  : visibleMetrics === 3
+                  ? 'grid-cols-1 sm:grid-cols-3'
+                  : visibleMetrics === 2
+                  ? 'grid-cols-1 sm:grid-cols-2'
+                  : 'grid-cols-1';
+
+              const hasRightColumn = w.upcomingDeadlines || w.connectedSheetCard;
+
+              return (
             <>
               {/* Executive Management Dashboard: 8-Stage Korean Visa Pipeline, Active Intakes & Workload */}
               <ExecutiveDashboard
                 analytics={analytics}
                 currentUser={currentUser}
-                onNavigateTab={(tab) => setActiveNav(tab)}
+                onNavigateTab={(tab) => navigateTo(tab)}
+                onSelectVisaStage={(stage: VisaStage) => {
+                  setSelectedStudentForDossier(null);
+                  navigateTo('students', { studentStage: stage, studentId: null });
+                }}
                 onOpenNewStudentModal={() => setIsNewStudentModalOpen(true)}
                 onOpenNewTaskModal={() => {
                   setTaskContextStudentId(undefined);
                   setTaskContextProjectId(undefined);
                   setIsEnhancedTaskModalOpen(true);
                 }}
+                widgets={w}
               />
 
               {/* Welcome Banner & Daily Progress */}
@@ -2269,6 +2969,7 @@ export function App() {
                 </div>
 
                 {/* Daily Progress Bar */}
+                {w.dailyProgressBar && (
                 <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
                   <div className="flex items-center justify-between text-xs mb-1.5">
                     <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">
@@ -2290,9 +2991,12 @@ export function App() {
                     />
                   </div>
                 </div>
+                )}
 
-                {/* 7-Metric Task Summary Strip */}
-                <div className="mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32] grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+                {/* Metric Task Summary Strip */}
+                {w.taskMetricStrip && visibleMetrics > 0 && (
+                <div className={`mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32] grid ${metricGridClass} gap-2.5`}>
+                  {w.metricToday && (
                   <div className="p-3 rounded-md bg-[#D97706]/8 dark:bg-[#1C1C1E] border border-[#D97706]/25 dark:border-[#2E2E32] transition-all hover:border-[#D97706]/50 dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#D97706] dark:text-[#9A9AA2] font-medium">
                       <Sun className="w-3.5 h-3.5 shrink-0" />
@@ -2302,6 +3006,8 @@ export function App() {
                       {stats.todayCount}
                     </div>
                   </div>
+                  )}
+                  {w.metricUpcoming && (
                   <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] transition-all hover:border-[#1E40AF] dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-[#9A9AA2] font-medium">
                       <CalendarClock className="w-3.5 h-3.5 shrink-0" />
@@ -2311,6 +3017,8 @@ export function App() {
                       {stats.upcomingCount}
                     </div>
                   </div>
+                  )}
+                  {w.metricCompleted && (
                   <div className="p-3 rounded-md bg-[#16A34A]/8 dark:bg-[#1C1C1E] border border-[#16A34A]/25 dark:border-[#2E2E32] transition-all hover:border-[#16A34A]/50 dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#16A34A] dark:text-[#34C26B] font-medium">
                       <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
@@ -2320,6 +3028,8 @@ export function App() {
                       {stats.completedCount}
                     </div>
                   </div>
+                  )}
+                  {w.metricPending && (
                   <div className="p-3 rounded-md bg-[#EFF6FF]/50 dark:bg-[#1C1C1E] border border-[#1E40AF]/25 dark:border-[#2E2E32] transition-all hover:border-[#1E40AF]/60 dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-[#F0A030] font-medium">
                       <Clock className="w-3.5 h-3.5 shrink-0" />
@@ -2329,6 +3039,8 @@ export function App() {
                       {stats.pendingCount}
                     </div>
                   </div>
+                  )}
+                  {w.metricOverdue && (
                   <div className="p-3 rounded-md bg-[#DC2626]/8 dark:bg-[#1C1C1E] border border-[#DC2626]/25 dark:border-[#2E2E32] transition-all hover:border-[#DC2626]/50 dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#DC2626] dark:text-[#EF5350] font-medium">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
@@ -2338,6 +3050,8 @@ export function App() {
                       {stats.overdueCount}
                     </div>
                   </div>
+                  )}
+                  {w.metricTotal && (
                   <div className="p-3 rounded-md bg-[#F8FAFC] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] transition-all hover:border-[#1E40AF] dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#1E3A8A] dark:text-[#9A9AA2] font-medium">
                       <Layers className="w-3.5 h-3.5 shrink-0" />
@@ -2347,6 +3061,8 @@ export function App() {
                       {stats.total}
                     </div>
                   </div>
+                  )}
+                  {w.metricRate && (
                   <div className="p-3 rounded-md bg-[#EFF6FF]/60 dark:bg-[#1C1C1E] border border-[#1E40AF]/30 dark:border-[#2E2E32] transition-all hover:border-[#1E40AF]/50 dark:hover:border-[#3A3A3F]">
                     <div className="flex items-center gap-1.5 text-xs text-[#1E40AF] dark:text-[#9A9AA2] font-medium">
                       <Percent className="w-3.5 h-3.5 shrink-0" />
@@ -2356,10 +3072,13 @@ export function App() {
                       {stats.dailyCompletionPct}%
                     </div>
                   </div>
+                  )}
                 </div>
+                )}
               </div>
 
               {/* Quick Inline Task Creation Bar */}
+              {w.quickAddBar && (
               <form
                 onSubmit={handleQuickAddSubmit}
                 className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-4 flex flex-wrap items-center gap-3"
@@ -2423,11 +3142,14 @@ export function App() {
                   Quick Add
                 </MotionButton>
               </form>
+              )}
 
               <TabTransition viewKey={dashboardViewMode}>
               {dashboardViewMode === 'calendar' ? (
                 <CalendarView
+                  embedded
                   tasks={tasks}
+                  team={team}
                   onCreateTaskForDate={(dateIso) => {
                     setEditingTask(null);
                     setModalInitialDate(dateIso);
@@ -2442,13 +3164,14 @@ export function App() {
                   onDuplicate={handleDuplicateTask}
                   onDelete={handleDeleteTask}
                   onQuickReschedule={handleQuickReschedule}
+                  onRescheduleTaskToDate={handleRescheduleTaskToDate}
                 />
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                  {/* Left 7 Columns: Today's Tasks & Overdue Tasks */}
-                  <div className="lg:col-span-7 space-y-6">
+                  {/* Left 7 Columns (or 12 Columns if right panel widgets hidden): Today's Tasks & Overdue Tasks */}
+                  <div className={`${hasRightColumn ? 'lg:col-span-7' : 'lg:col-span-12'} space-y-6`}>
                     {/* Overdue Tasks Section - Modern Minimal Widget */}
-                    {stats.overdueTasks.length > 0 && (
+                    {w.overdueTasks && stats.overdueTasks.length > 0 && (
                       <OverdueTasksWidget
                         tasks={stats.overdueTasks}
                         onRequestComplete={handleRequestCompleteTask}
@@ -2482,10 +3205,10 @@ export function App() {
                         </div>
                         <MotionButton
                           type="button"
-                          onClick={() => setActiveNav('my-day')}
+                          onClick={() => navigateTo('my-day')}
                           className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
                         >
-                          Focus My Day →
+                          Focus Today →
                         </MotionButton>
                       </div>
 
@@ -2525,10 +3248,12 @@ export function App() {
                   </div>
 
                   {/* Right 5 Columns: Upcoming Deadlines Widget & Recent Sheet Syncs */}
+                  {hasRightColumn && (
                   <div className="lg:col-span-5 space-y-6">
+                    {w.upcomingDeadlines && (
                     <UpcomingDeadlinesWidget
                       tasks={tasks}
-                      onViewAll={() => setActiveNav('upcoming')}
+                      onViewAll={() => navigateTo('calendar', { calendarView: 'list' })}
                       onRequestComplete={handleRequestCompleteTask}
                       onEdit={(t) => {
                         setEditingTask(t);
@@ -2541,8 +3266,10 @@ export function App() {
                         setIsTaskModalOpen(true);
                       }}
                     />
+                    )}
 
                     {/* Live Google Sheets Connection Summary Card */}
+                    {w.connectedSheetCard && (
                     <section className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-5 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -2553,7 +3280,7 @@ export function App() {
                         </div>
                         <MotionButton
                           type="button"
-                          onClick={() => setActiveNav('sheets-connection')}
+                          onClick={() => navigateTo('sheets-connection')}
                           className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
                         >
                           Open Sheet Grid →
@@ -2566,12 +3293,15 @@ export function App() {
                         <div>Account: {connection.accountEmail}</div>
                       </div>
                     </section>
+                    )}
                   </div>
+                  )}
                 </div>
               )}
               </TabTransition>
 
               {/* Weekly Task Completion Trend Section */}
+              {w.weeklyCompletionTrend && (
               <WeeklyCompletionTrend
                 tasks={tasks}
                 onOpenDayTasks={(dateIso) => {
@@ -2580,8 +3310,10 @@ export function App() {
                   setIsTaskModalOpen(true);
                 }}
               />
+              )}
             </>
-            )
+              );
+            })()
           )}
 
           {/* VIEW: STUDENT DOSSIERS (CRM) */}
@@ -2589,7 +3321,15 @@ export function App() {
             <StudentDossierList
               students={students}
               currentUser={currentUser}
-              onSelectStudent={(student) => setSelectedStudentForDossier(student)}
+              selectedStage={studentStageFilter}
+              onStageChange={(stage) => {
+                setStudentStageFilter(stage);
+                navigateTo('students', {
+                  studentStage: stage,
+                  studentId: selectedStudentForDossier?.id ?? null,
+                });
+              }}
+              onSelectStudent={(student) => handleOpenStudentDossier(student)}
               onOpenNewStudentModal={() => setIsNewStudentModalOpen(true)}
             />
           )}
@@ -2602,10 +3342,10 @@ export function App() {
                 currentUser={currentUser}
                 team={team}
                 refreshKey={workspaceRefreshNonce}
-                onBack={() => setSelectedProjectId(null)}
+                onBack={() => handleSelectProjectDetail(null)}
                 onRefreshParent={refreshPmsData}
                 onReloadTasks={handleReloadTasks}
-                onOpenStudentDossier={(student) => setSelectedStudentForDossier(student)}
+                onOpenStudentDossier={(student) => handleOpenStudentDossier(student)}
                 onOpenNewStudentModal={(proj) => {
                   setPrefillStudentProjectId(proj.id);
                   setPrefillStudentUniversityId(proj.universityId);
@@ -2628,7 +3368,7 @@ export function App() {
                 currentUser={currentUser}
                 onRefresh={refreshPmsData}
                 onSelectProject={(proj) => {
-                  setSelectedProjectId(proj.id);
+                  handleSelectProjectDetail(proj.id);
                 }}
               />
             ))}
@@ -2640,7 +3380,7 @@ export function App() {
               currentUser={currentUser}
               onRefresh={refreshPmsData}
               selectedUniversityId={selectedUniversityId}
-              onSelectUniversity={setSelectedUniversityId}
+              onSelectUniversity={handleSelectUniversityDetail}
               onApplyStudentForProgram={(uniId, prog, term) => {
                 setPrefillStudentUniversityId(uniId);
                 setPrefillStudentProgramId(prog.id);
@@ -2662,260 +3402,262 @@ export function App() {
           )}
 
           {/* VIEW 2: MY DAY */}
-          {activeNav === 'my-day' && (
-            <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-6">
-                <div>
-                  <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
-                    My Day — {formatFullHeaderDate()}
-                  </h1>
-                  <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-1">
-                    {stats.todayCompletedCount} completed · {stats.todayPendingCount} remaining for
-                    today ({stats.dailyCompletionPct}% complete)
-                  </p>
-                </div>
-                <MotionButton
-                  type="button"
-                  onClick={() => {
-                    setEditingTask(null);
-                    setModalInitialDate(todayIso);
-                    setIsTaskModalOpen(true);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  Schedule Task for Today
-                </MotionButton>
-              </div>
-
-              <div className="space-y-3">
-                {stats.todayTasks.map((task, idx) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    onRequestComplete={handleRequestCompleteTask}
-                    onRestorePending={handleRestoreTaskToPending}
-                    onEdit={(t) => {
-                      setEditingTask(t);
-                      setIsTaskModalOpen(true);
-                    }}
-                    onDuplicate={handleDuplicateTask}
-                    onDelete={handleDeleteTask}
-                    onQuickReschedule={handleQuickReschedule}
-                    onReorderTasks={handleReorderTasks}
-                    onMoveTask={(t, dir) => handleMoveTask(t, dir, stats.todayTasks)}
-                    canMoveUp={idx > 0}
-                    canMoveDown={idx < stats.todayTasks.length - 1}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* VIEW 3: UPCOMING TASKS */}
-          {activeNav === 'upcoming' && (() => {
-            const tomorrowIso = addDaysToIsoDate(todayIso, 1);
-            const tomorrowTasks = stats.upcomingTasks.filter(
-              (t) => (t.deadline || t.taskDate) === tomorrowIso
-            );
-            const thisWeekTasks = stats.upcomingTasks.filter((t) => {
-              const d = t.deadline || t.taskDate;
-              const diff = getDaysDifference(d, todayIso);
-              return diff >= 2 && diff <= 7;
+          {activeNav === 'my-day' && (() => {
+            const hasTodayFilters =
+              todayPriorityFilter !== 'All' || todayCategoryFilter !== 'All';
+            const filteredTodayTasks = stats.todayTasks.filter((t) => {
+              if (todayPriorityFilter !== 'All' && t.priority !== todayPriorityFilter) return false;
+              if (todayCategoryFilter !== 'All' && t.category !== todayCategoryFilter) return false;
+              return true;
             });
-            const laterTasks = stats.upcomingTasks.filter((t) => {
-              const d = t.deadline || t.taskDate;
-              const diff = getDaysDifference(d, todayIso);
-              return diff > 7;
-            });
+            const todayIdSet = new Set(filteredTodayTasks.map((t) => t.id));
+            const activeTodaySelected = todaySelectedIds.filter((id) => todayIdSet.has(id));
+            const activeTodaySelectedSet = new Set(activeTodaySelected);
+            const todayPendingSelectedCount = filteredTodayTasks.filter(
+              (t) => activeTodaySelectedSet.has(t.id) && t.status !== 'Completed'
+            ).length;
+
+            const handleToggleTodaySelect = (task: Task) => {
+              setTodaySelectedIds((prev) =>
+                prev.includes(task.id) ? prev.filter((id) => id !== task.id) : [...prev, task.id]
+              );
+            };
 
             return (
-              <div className="space-y-6">
-                {/* Header Banner */}
-                <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-6">
+              <div className="space-y-5">
+                {/* Header + Focus Filter Strip (Matching Unified Calendar Header) */}
+                <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none space-y-4">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2.5">
-                        <CalendarClock className="w-5 h-5 text-[#1E40AF] dark:text-[#4C8DF6]" />
+                        <Sun className="w-5 h-5 text-[#D97706] dark:text-[#ECECEE] shrink-0" />
                         <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
-                          Upcoming Schedule & Deadlines
+                          Today — {formatFullHeaderDate()}
                         </h1>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-1">
-                        Timeline of future commitments and deliverables, synchronized with Google Sheets
+                      <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] mt-1 tabular-nums">
+                        {stats.todayCompletedCount} completed · {stats.todayPendingCount} remaining for
+                        today ({stats.dailyCompletionPct}% complete)
                       </p>
                     </div>
-
                     <MotionButton
                       type="button"
                       onClick={() => {
                         setEditingTask(null);
-                        setModalInitialDate(tomorrowIso);
+                        setModalInitialDate(todayIso);
                         setIsTaskModalOpen(true);
                       }}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors whitespace-nowrap shrink-0"
+                      className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      Schedule Upcoming Task
+                      Schedule Task for Today
                     </MotionButton>
                   </div>
 
-                  {/* Horizon Summary Strip */}
-                  <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-[#2E2E32] grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div>
-                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Total Upcoming</div>
-                      <div className={`mt-1 text-xl tabular-nums font-bold ${stats.upcomingTasks.length === 0 ? 'text-[#0F172A] dark:text-[#66666E]' : 'text-[#0F172A] dark:text-[#ECECEE]'}`}>
-                        {stats.upcomingTasks.length}
+                  {/* Focus Strip: Priority & Category Filters */}
+                  <div className="pt-3.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <div className="w-36">
+                        <MorphSelect
+                          value={todayPriorityFilter}
+                          onValueChange={(v) => setTodayPriorityFilter(v as 'All' | TaskPriority)}
+                        >
+                          <MorphSelectTrigger aria-label="Filter today tasks by priority">
+                            <MorphSelectValue placeholder="Priority" />
+                          </MorphSelectTrigger>
+                          <MorphSelectContent>
+                            <MorphSelectItem value="All">All Priorities</MorphSelectItem>
+                            <MorphSelectItem value="Urgent">Urgent</MorphSelectItem>
+                            <MorphSelectItem value="High">High</MorphSelectItem>
+                            <MorphSelectItem value="Medium">Medium</MorphSelectItem>
+                            <MorphSelectItem value="Low">Low</MorphSelectItem>
+                          </MorphSelectContent>
+                        </MorphSelect>
                       </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Due Tomorrow</div>
-                      <div className={`mt-1 text-xl tabular-nums font-bold ${tomorrowTasks.length === 0 ? 'text-[#D97706] dark:text-[#66666E]' : 'text-[#D97706] dark:text-[#F0A030]'}`}>
-                        {tomorrowTasks.length}
+
+                      <div className="w-40">
+                        <MorphSelect
+                          value={todayCategoryFilter}
+                          onValueChange={(v) => setTodayCategoryFilter(v as 'All' | TaskCategory)}
+                        >
+                          <MorphSelectTrigger aria-label="Filter today tasks by category">
+                            <MorphSelectValue placeholder="Category" />
+                          </MorphSelectTrigger>
+                          <MorphSelectContent>
+                            <MorphSelectItem value="All">All Categories</MorphSelectItem>
+                            <MorphSelectItem value="Work">Work</MorphSelectItem>
+                            <MorphSelectItem value="Study">Study</MorphSelectItem>
+                            <MorphSelectItem value="Business">Business</MorphSelectItem>
+                            <MorphSelectItem value="Personal">Personal</MorphSelectItem>
+                            <MorphSelectItem value="Other">Other</MorphSelectItem>
+                          </MorphSelectContent>
+                        </MorphSelect>
                       </div>
+
+                      {hasTodayFilters && (
+                        <MotionButton
+                          type="button"
+                          onClick={() => {
+                            setTodayPriorityFilter('All');
+                            setTodayCategoryFilter('All');
+                          }}
+                          className="inline-flex items-center gap-1 h-9 px-2.5 text-xs font-medium text-[#64748B] dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] rounded-lg border border-transparent hover:border-[#E2E8F0] dark:hover:border-[#2E2E32] transition-colors"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>Reset filters</span>
+                        </MotionButton>
+                      )}
                     </div>
-                    <div>
-                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Due This Week (2–7d)</div>
-                      <div className={`mt-1 text-xl tabular-nums font-bold ${thisWeekTasks.length === 0 ? 'text-[#1E40AF] dark:text-[#66666E]' : 'text-[#1E40AF] dark:text-[#ECECEE]'}`}>
-                        {thisWeekTasks.length}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-500 dark:text-[#9A9AA2]">Later Milestones (8d+)</div>
-                      <div className={`mt-1 text-xl tabular-nums font-bold ${laterTasks.length === 0 ? 'text-[#1E3A8A] dark:text-[#66666E]' : 'text-[#1E3A8A] dark:text-[#ECECEE]'}`}>
-                        {laterTasks.length}
+
+                    <div className="flex items-center gap-3">
+                      {filteredTodayTasks.length > 0 && (
+                        <MotionButton
+                          type="button"
+                          onClick={() =>
+                            activeTodaySelected.length === filteredTodayTasks.length
+                              ? setTodaySelectedIds([])
+                              : setTodaySelectedIds(filteredTodayTasks.map((t) => t.id))
+                          }
+                          className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
+                        >
+                          {activeTodaySelected.length === filteredTodayTasks.length
+                            ? 'Deselect all'
+                            : `Select all (${filteredTodayTasks.length})`}
+                        </MotionButton>
+                      )}
+                      <div className="text-xs text-[#64748B] dark:text-[#9A9AA2] tabular-nums">
+                        Showing {filteredTodayTasks.length} of {stats.todayTasks.length}{' '}
+                        {stats.todayTasks.length === 1 ? 'task' : 'tasks'}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {stats.upcomingTasks.length === 0 ? (
-                  <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-12 text-center space-y-3">
-                    <p className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
-                      No upcoming tasks scheduled yet
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-[#9A9AA2] max-w-sm mx-auto">
-                      Schedule your future tasks and deadlines to stay organized and keep Google Sheets in sync.
-                    </p>
-                    <div className="pt-2">
-                      <MotionButton
-                        type="button"
-                        onClick={() => {
-                          setEditingTask(null);
-                          setModalInitialDate(tomorrowIso);
-                          setIsTaskModalOpen(true);
-                        }}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        Create Your First Upcoming Task
-                      </MotionButton>
+                {/* Bulk Task Action Bar */}
+                <BulkTaskActionBar
+                  selectedCount={activeTodaySelected.length}
+                  totalSelectableCount={filteredTodayTasks.length}
+                  pendingSelectedCount={todayPendingSelectedCount}
+                  team={team}
+                  onSelectAll={() => setTodaySelectedIds(filteredTodayTasks.map((t) => t.id))}
+                  onClearSelection={() => setTodaySelectedIds([])}
+                  onBulkComplete={() => {
+                    handleBulkCompleteTasks(activeTodaySelected);
+                    setTodaySelectedIds([]);
+                  }}
+                  onBulkPostpone={(mode) => {
+                    handleBulkPostponeTasks(activeTodaySelected, mode);
+                    setTodaySelectedIds([]);
+                  }}
+                  onBulkReassign={(targetUserId) => {
+                    handleBulkReassignTasks(activeTodaySelected, targetUserId);
+                    setTodaySelectedIds([]);
+                  }}
+                />
+
+                {/* All Caught Up Banner when all today tasks are completed */}
+                {stats.todayTasks.length > 0 && stats.todayPendingCount === 0 && !hasTodayFilters && (
+                  <div className="bg-[#DCFCE7]/60 dark:bg-[rgba(52,194,107,0.14)] border border-[#16A34A]/30 dark:border-[#34C26B]/30 rounded-[12px] px-4 py-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 text-xs">
+                      <CheckCircle2 className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
+                      <span className="font-semibold text-[#15803d] dark:text-[#34C26B]">
+                        All {stats.todayTasks.length} tasks scheduled for today are completed!
+                      </span>
+                    </div>
+                    <MotionButton
+                      type="button"
+                      onClick={() => navigateTo('calendar', { calendarView: 'list' })}
+                      className="text-xs font-medium text-[#15803d] dark:text-[#34C26B] hover:underline shrink-0"
+                    >
+                      View Upcoming →
+                    </MotionButton>
+                  </div>
+                )}
+
+                {/* Empty State or Task List */}
+                {filteredTodayTasks.length === 0 ? (
+                  <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] p-12 text-center space-y-3">
+                    <div className="w-11 h-11 rounded-full bg-[#EFF6FF] dark:bg-[#252528] flex items-center justify-center mx-auto text-[#1E40AF] dark:text-[#ECECEE]">
+                      <Sun className="w-5 h-5" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
+                        {hasTodayFilters
+                          ? 'No tasks match your focus filters'
+                          : 'No tasks scheduled for today yet'}
+                      </p>
+                      <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] max-w-md mx-auto">
+                        {hasTodayFilters
+                          ? 'Try resetting the priority or category filters above to view all tasks scheduled for today.'
+                          : 'Schedule a task for today or pull upcoming deliverables from your Calendar to stay on track.'}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 pt-1">
+                      {hasTodayFilters ? (
+                        <MotionButton
+                          type="button"
+                          onClick={() => {
+                            setTodayPriorityFilter('All');
+                            setTodayCategoryFilter('All');
+                          }}
+                          className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] rounded-lg hover:bg-[#dbeafe] transition-colors"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          Reset Filters
+                        </MotionButton>
+                      ) : (
+                        <MotionButton
+                          type="button"
+                          onClick={() => {
+                            setEditingTask(null);
+                            setModalInitialDate(todayIso);
+                            setIsTaskModalOpen(true);
+                          }}
+                          className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          Schedule Task for Today
+                        </MotionButton>
+                      )}
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-6">
-                    {/* Horizon 1: Tomorrow */}
-                    {tomorrowTasks.length > 0 && (
-                      <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
-                          <h2 className="text-sm font-semibold text-[#D97706] dark:text-[#F0A030] flex items-center gap-2">
-                            <span>Tomorrow</span>
-                            <span className="tabular-nums text-xs text-slate-500 dark:text-[#9A9AA2]">
-                              ({tomorrowTasks.length}) · {formatReadableDate(tomorrowIso, todayIso)}
-                            </span>
-                          </h2>
-                        </div>
-                        <div className="space-y-2.5">
-                          {tomorrowTasks.map((task) => (
-                            <TaskCard
-                              key={task.id}
-                              task={task}
-                              onRequestComplete={handleRequestCompleteTask}
-                              onRestorePending={handleRestoreTaskToPending}
-                              onEdit={(t) => {
-                                setEditingTask(t);
-                                setIsTaskModalOpen(true);
-                              }}
-                              onDuplicate={handleDuplicateTask}
-                              onDelete={handleDeleteTask}
-                              onQuickReschedule={handleQuickReschedule}
-                            />
-                          ))}
-                        </div>
-                      </section>
-                    )}
-
-                    {/* Horizon 2: This Week (2-7 Days) */}
-                    {thisWeekTasks.length > 0 && (
-                      <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
-                          <h2 className="text-sm font-semibold text-[#1E40AF] dark:text-[#ECECEE] flex items-center gap-2">
-                            <span>This Week (Next 2–7 Days)</span>
-                            <span className="tabular-nums text-xs text-slate-500 dark:text-[#9A9AA2]">
-                              ({thisWeekTasks.length})
-                            </span>
-                          </h2>
-                        </div>
-                        <div className="space-y-2.5">
-                          {thisWeekTasks.map((task) => (
-                            <TaskCard
-                              key={task.id}
-                              task={task}
-                              onRequestComplete={handleRequestCompleteTask}
-                              onRestorePending={handleRestoreTaskToPending}
-                              onEdit={(t) => {
-                                setEditingTask(t);
-                                setIsTaskModalOpen(true);
-                              }}
-                              onDuplicate={handleDuplicateTask}
-                              onDelete={handleDeleteTask}
-                              onQuickReschedule={handleQuickReschedule}
-                            />
-                          ))}
-                        </div>
-                      </section>
-                    )}
-
-                    {/* Horizon 3: Later (8+ Days) */}
-                    {laterTasks.length > 0 && (
-                      <section className="space-y-3">
-                        <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0] dark:border-[#2E2E32]">
-                          <h2 className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
-                            <span>Later Milestones</span>
-                            <span className="tabular-nums text-xs text-slate-500 dark:text-[#9A9AA2]">
-                              ({laterTasks.length})
-                            </span>
-                          </h2>
-                        </div>
-                        <div className="space-y-2.5">
-                          {laterTasks.map((task) => (
-                            <TaskCard
-                              key={task.id}
-                              task={task}
-                              onRequestComplete={handleRequestCompleteTask}
-                              onRestorePending={handleRestoreTaskToPending}
-                              onEdit={(t) => {
-                                setEditingTask(t);
-                                setIsTaskModalOpen(true);
-                              }}
-                              onDuplicate={handleDuplicateTask}
-                              onDelete={handleDeleteTask}
-                              onQuickReschedule={handleQuickReschedule}
-                            />
-                          ))}
-                        </div>
-                      </section>
-                    )}
+                  <div className="space-y-3">
+                    {filteredTodayTasks.map((task, idx) => (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        selectable
+                        selected={activeTodaySelectedSet.has(task.id)}
+                        onToggleSelect={handleToggleTodaySelect}
+                        onRequestComplete={handleRequestCompleteTask}
+                        onRestorePending={handleRestoreTaskToPending}
+                        onEdit={(t) => {
+                          setEditingTask(t);
+                          setIsTaskModalOpen(true);
+                        }}
+                        onDuplicate={handleDuplicateTask}
+                        onDelete={handleDeleteTask}
+                        onQuickReschedule={handleQuickReschedule}
+                        onReorderTasks={handleReorderTasks}
+                        onMoveTask={(t, dir) => handleMoveTask(t, dir, filteredTodayTasks)}
+                        canMoveUp={idx > 0}
+                        canMoveDown={idx < filteredTodayTasks.length - 1}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
             );
           })()}
 
-          {/* VIEW 4: CALENDAR */}
+          {/* VIEW 3: UNIFIED CALENDAR (LIST & MONTH VIEWS) */}
           {activeNav === 'calendar' && (
             <CalendarView
               tasks={tasks}
+              team={team}
+              activeTab={calendarTab}
+              onTabChange={handleCalendarTabChange}
               onCreateTaskForDate={(dateIso) => {
                 setEditingTask(null);
                 setModalInitialDate(dateIso);
@@ -2930,6 +3672,10 @@ export function App() {
               onDuplicate={handleDuplicateTask}
               onDelete={handleDeleteTask}
               onQuickReschedule={handleQuickReschedule}
+              onRescheduleTaskToDate={handleRescheduleTaskToDate}
+              onBulkCompleteTasks={handleBulkCompleteTasks}
+              onBulkPostponeTasks={handleBulkPostponeTasks}
+              onBulkReassignTasks={handleBulkReassignTasks}
             />
           )}
 
@@ -2954,6 +3700,9 @@ export function App() {
               onRequestComplete={handleRequestCompleteTask}
               onRestorePending={handleRestoreTaskToPending}
               onDeleteTask={handleDeleteTask}
+              onBulkCompleteTasks={handleBulkCompleteTasks}
+              onBulkPostponeTasks={handleBulkPostponeTasks}
+              onBulkReassignTasks={handleBulkReassignTasks}
             />
           )}
 
@@ -2970,7 +3719,7 @@ export function App() {
                 <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md p-6 flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
-                      Completed Tasks Archive ({stats.completedTasks.length})
+                      Completed ({stats.completedTasks.length})
                     </h1>
                     <p className="text-xs text-slate-500 dark:text-[#9A9AA2] mt-1">
                       Every completed task below has a verified completion timestamp synced to Column
@@ -3084,7 +3833,7 @@ export function App() {
               tasks={tasks}
               students={students}
               universities={universities}
-              onNavigateTab={(tab) => setActiveNav(tab)}
+              onNavigateTab={(tab) => navigateTo(tab)}
             />
           )}
           </PageTransition>
@@ -3144,11 +3893,11 @@ export function App() {
           student={selectedStudentForDossier}
           currentUser={currentUser}
           isOpen={!!selectedStudentForDossier}
-          onClose={() => setSelectedStudentForDossier(null)}
+          onClose={handleCloseStudentDossier}
           onRefresh={refreshPmsData}
           onCreateTaskForStudent={(stu) => {
             setTaskContextStudentId(stu.id);
-            setSelectedStudentForDossier(null);
+            handleCloseStudentDossier();
             setIsEnhancedTaskModalOpen(true);
           }}
         />
@@ -3197,22 +3946,27 @@ export function App() {
           onNavigateToEntity={(entityType, entityId) => {
             if (entityType === 'student') {
               const found = students.find((s) => s.id === entityId);
-              if (found) setSelectedStudentForDossier(found);
-              setActiveNav('students');
+              if (found) {
+                setSelectedStudentForDossier(found);
+                setPendingStudentId(null);
+              } else {
+                setPendingStudentId(entityId);
+              }
+              navigateTo('students', { studentStage: 'All', studentId: entityId });
             } else if (entityType === 'project') {
               setSelectedProjectId(entityId);
-              setActiveNav('projects');
+              navigateTo('projects', { projectId: entityId });
             } else if (entityType === 'task') {
               const found = tasks.find((t) => t.id === entityId);
               if (found) {
                 setEditingTask(found);
                 setIsTaskModalOpen(true);
               } else {
-                setActiveNav('all-tasks');
+                navigateTo('all-tasks');
               }
             } else if (entityType === 'handover') {
               setSelectedHandoverIdFromNotif(entityId);
-              setActiveNav('document-handover');
+              navigateTo('document-handover');
             }
           }}
         />

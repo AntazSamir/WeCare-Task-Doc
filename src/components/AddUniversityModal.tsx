@@ -559,7 +559,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                   trailing: hasErr ? (
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 dark:bg-[#EF5350] animate-pulse" />
                   ) : (
-                    <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-slate-100 dark:bg-[#252528] text-slate-500 dark:text-[#9A9AA2]">
+                    <span className="text-[10px] tabular-nums px-1 py-0.2 rounded bg-slate-100 dark:bg-[#252528] text-slate-500 dark:text-[#9A9AA2]">
                       {idx + 1}
                     </span>
                   ),
@@ -774,7 +774,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                         placeholder="20000"
                         className={
                           (errors.bankBalanceUsd ? ERROR_INPUT_CLS : INPUT_CLS) +
-                          ' pl-7 tabular-nums font-mono'
+                          ' pl-7 tabular-nums'
                         }
                       />
                     </div>
@@ -1014,7 +1014,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                           value={progCode}
                           onChange={(e) => setProgCode(e.target.value)}
                           placeholder="e.g. KLP or CS-101"
-                          className={INPUT_CLS + ' font-mono uppercase'}
+                          className={INPUT_CLS + ' tabular-nums uppercase'}
                         />
                       </div>
                     </div>
@@ -1055,7 +1055,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                           value={progTuitionKrw}
                           onChange={(e) => setProgTuitionKrw(e.target.value === '' ? '' : Number(e.target.value))}
                           placeholder="1730000"
-                          className={INPUT_CLS + ' tabular-nums font-mono'}
+                          className={INPUT_CLS + ' tabular-nums'}
                         />
                         <p className="text-[10px] text-slate-400 dark:text-[#9A9AA2] mt-0.5">
                           ~${progTuitionKrw ? Math.round(Number(progTuitionKrw) / 1320).toLocaleString() : 0} USD
@@ -1068,7 +1068,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                           value={progAppFeeKrw}
                           onChange={(e) => setProgAppFeeKrw(e.target.value === '' ? '' : Number(e.target.value))}
                           placeholder="80000"
-                          className={INPUT_CLS + ' tabular-nums font-mono'}
+                          className={INPUT_CLS + ' tabular-nums'}
                         />
                       </div>
                       <div>
@@ -1185,7 +1185,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                           value={accountNumber}
                           onChange={(e) => setAccountNumber(e.target.value)}
                           placeholder="Virtual Account Issued Upon Acceptance"
-                          className={INPUT_CLS + ' font-mono'}
+                          className={INPUT_CLS + ' tabular-nums'}
                         />
                       </div>
                       <div>
@@ -1195,7 +1195,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
                           value={swiftCode}
                           onChange={(e) => setSwiftCode(e.target.value.toUpperCase())}
                           placeholder="e.g. SHBKKRSE"
-                          className={INPUT_CLS + ' uppercase font-mono'}
+                          className={INPUT_CLS + ' uppercase tabular-nums'}
                         />
                       </div>
                     </div>

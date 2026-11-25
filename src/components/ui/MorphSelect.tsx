@@ -232,10 +232,11 @@ export function MorphSelectValue({ placeholder, className }: MorphSelectValuePro
 
 export interface MorphSelectTriggerProps {
   className?: string;
+  'aria-label'?: string;
   children: ReactNode;
 }
 
-export function MorphSelectTrigger({ className, children }: MorphSelectTriggerProps) {
+export function MorphSelectTrigger({ className, 'aria-label': ariaLabel, children }: MorphSelectTriggerProps) {
   const ctx = useMorphContext('MorphSelectTrigger');
 
   if (ctx.open) {
@@ -251,6 +252,7 @@ export function MorphSelectTrigger({ className, children }: MorphSelectTriggerPr
       type="button"
       id={ctx.triggerId}
       disabled={ctx.disabled}
+      aria-label={ariaLabel}
       aria-haspopup="listbox"
       aria-expanded={false}
       aria-controls={ctx.listId}

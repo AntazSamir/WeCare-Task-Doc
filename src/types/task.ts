@@ -124,6 +124,55 @@ export interface SyncLogEntry {
   rowRange?: string;
 }
 
+export interface DashboardWidgetsConfig {
+  // Executive Overview Widgets
+  executiveBanner: boolean;
+  kpiMetrics: boolean;
+  visaPipeline: boolean;
+  universityDeadlines: boolean;
+  teamWorkload: boolean;
+
+  // Daily Command Center & Task Widgets
+  dailyProgressBar: boolean;
+  taskMetricStrip: boolean;
+  quickAddBar: boolean;
+  overdueTasks: boolean;
+  upcomingDeadlines: boolean;
+  connectedSheetCard: boolean;
+  weeklyCompletionTrend: boolean;
+
+  // Individual Task Summary Metric Cards
+  metricToday: boolean;
+  metricUpcoming: boolean;
+  metricCompleted: boolean;
+  metricPending: boolean;
+  metricOverdue: boolean;
+  metricTotal: boolean;
+  metricRate: boolean;
+}
+
+export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidgetsConfig = {
+  executiveBanner: true,
+  kpiMetrics: true,
+  visaPipeline: true,
+  universityDeadlines: true,
+  teamWorkload: true,
+  dailyProgressBar: true,
+  taskMetricStrip: true,
+  quickAddBar: true,
+  overdueTasks: true,
+  upcomingDeadlines: true,
+  connectedSheetCard: true,
+  weeklyCompletionTrend: true,
+  metricToday: true,
+  metricUpcoming: true,
+  metricCompleted: true,
+  metricPending: true,
+  metricOverdue: true,
+  metricTotal: true,
+  metricRate: true,
+};
+
 export interface AppSettings {
   theme: 'light' | 'dark' | 'system';
   remindersEnabled: boolean;
@@ -135,6 +184,7 @@ export interface AppSettings {
   // Appearance & Interface
   compactMode?: boolean;
   reducedMotion?: boolean;
+  dashboardWidgets?: Partial<DashboardWidgetsConfig>;
 
   // Admissions & Visa Operations Defaults
   defaultIntakeTerm?: string;

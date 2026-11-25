@@ -5,7 +5,8 @@
 @theme {
   --font-sans: 'Mona Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Mona Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Mona Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-numeric: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --color-primary: #1E40AF;
   --color-primary-hover: #1E3A8A;
@@ -28,7 +29,8 @@
     color-scheme: light;
     --font-display: 'Mona Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-sans: 'Mona Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'Mona Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-numeric: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
     /* Global Design System Tokens */
     --color-primary: #1E40AF;
@@ -213,13 +215,15 @@
     text-wrap: balance;
   }
 
-  /* Remove all monospace fonts. Numbers use tabular-nums */
+  /* Replace monospace fonts with Inter and tabular numbers */
   .font-mono, kbd, code, pre {
-    font-family: var(--font-sans) !important;
+    font-family: var(--font-numeric) !important;
     font-variant-numeric: tabular-nums;
   }
 
-  .tabular-nums {
+  .tabular-nums,
+  .font-numeric {
+    font-family: var(--font-numeric);
     font-variant-numeric: tabular-nums;
   }
 
@@ -372,6 +376,12 @@ main,
 
 .dark svg.lucide[class*="fill-"] {
   fill: #FFFFFF !important;
+}
+
+.dark .sidebar-nav-active svg.lucide,
+.dark .sidebar-nav-active svg[stroke="currentColor"] {
+  color: #4C8DF6 !important;
+  stroke: #4C8DF6 !important;
 }
 
 /* No shadows in dark mode — rely on borders instead */
