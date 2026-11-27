@@ -1368,7 +1368,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
         backdropClassName="fixed inset-0 z-50 bg-[#1E3A8A]/40 dark:bg-black/75 backdrop-blur-xs"
         cardClassName="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl shadow-2xl dark:shadow-none w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden"
       >
-            <div className="p-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between bg-[#F8FAFC] dark:bg-[#252528]">
+            <div className="p-4 border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between bg-[#F8FAFC] dark:bg-[#252528] shrink-0">
               <div>
                 <h2 className="text-base font-bold text-[#0F172A] dark:text-[#ECECEE] flex items-center gap-2">
                   <CheckSquare className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
@@ -1381,13 +1381,14 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               <MotionButton
                 type="button"
                 onClick={() => setIsAssignModalOpen(false)}
-                className="p-1 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded-lg"
+                className="p-1 text-[#0F172A]/50 hover:text-[#0F172A] dark:text-[#9A9AA2] dark:hover:text-[#ECECEE] rounded-lg shrink-0"
               >
                 <X className="w-5 h-5" />
               </MotionButton>
             </div>
 
-            <form onSubmit={handleSaveTaskAssignment} className="p-5 overflow-y-auto scrollbar-stable space-y-4 text-xs">
+            <form onSubmit={handleSaveTaskAssignment} className="flex flex-col flex-1 min-h-0 text-xs">
+              <div className="p-5 overflow-y-auto flex-1 space-y-4">
               {/* Assignment Scope Selector */}
               <div>
                 <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1.5">
@@ -1402,8 +1403,9 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     <MotionButton
                       key={mode.id}
                       type="button"
+                      whileHover={{ scale: 1.01 }}
                       onClick={() => setAssignMode(mode.id as any)}
-                      className={`py-2 px-2 text-center rounded-lg border font-semibold transition-colors ${
+                      className={`w-full min-w-0 flex items-center justify-center py-2 px-2.5 text-center leading-tight rounded-lg border font-semibold transition-colors ${
                         assignMode === mode.id
                           ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6]'
                           : 'border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/70 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528]'
@@ -1415,95 +1417,94 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                 </div>
               </div>
 
-              {/* Mode-specific Assignee Pickers */}
-              {assignMode === 'single' && (
-                <div>
-                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
-                    Select Assignee
-                  </label>
-                  <MorphSelect value={selectedAssigneeId} onValueChange={(v) => setSelectedAssigneeId(v)}>
-                    <MorphSelectTrigger>
-                      <MorphSelectValue placeholder="Select Assignee" />
-                    </MorphSelectTrigger>
-                    <MorphSelectContent>
-                      {admissionMembers.map((m) => (
-                        <MorphSelectItem key={m.id} value={m.id}>
-                          [Admission] {m.name} ({m.title})
-                        </MorphSelectItem>
-                      ))}
-                      {counselingMembers.map((m) => (
-                        <MorphSelectItem key={m.id} value={m.id}>
-                          [Counseling] {m.name} ({m.title})
-                        </MorphSelectItem>
-                      ))}
-                    </MorphSelectContent>
-                  </MorphSelect>
-                </div>
-              )}
+              {/* Mode-specific Assignee Pickers — always rendered, hidden via CSS to prevent layout shift */}
 
-              {assignMode === 'multiple' && (
-                <div>
-                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
-                    Select Employees ({selectedMultiAssigneeIds.length} selected)
-                  </label>
-                  <div className="max-h-36 overflow-y-auto border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-2 space-y-1.5 bg-[#F8FAFC] dark:bg-[#252528]">
-                    {team.map((m) => {
-                      const isChecked = selectedMultiAssigneeIds.includes(m.id);
-                      return (
-                        <label
-                          key={m.id}
-                          className="flex items-center gap-2 px-2 py-1 rounded hover:bg-[#EFF6FF]/60 dark:hover:bg-[#2E2E32] cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedMultiAssigneeIds([...selectedMultiAssigneeIds, m.id]);
-                              } else {
-                                setSelectedMultiAssigneeIds(selectedMultiAssigneeIds.filter((id) => id !== m.id));
-                              }
-                            }}
-                            className="rounded text-[#1E40AF] dark:text-[#4C8DF6] focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6]"
-                          />
-                          <img src={m.avatar} alt={m.name} className="w-4 h-4 rounded-full object-cover" />
-                          <span className="font-medium text-[#0F172A] dark:text-[#ECECEE]">{m.name}</span>
-                          <span className="text-[10px] text-[#0F172A]/55 dark:text-[#9A9AA2]">({m.team})</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {assignMode === 'team' && (
-                <div>
-                  <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
-                    Select Target Team
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {(['Admission Team', 'Counseling Team'] as const).map((tName) => (
-                      <MotionButton
-                        key={tName}
-                        type="button"
-                        onClick={() => setSelectedAssigneeTeam(tName)}
-                        className={`p-3 rounded-lg border text-left font-semibold transition-colors ${
-                          selectedAssigneeTeam === tName
-                            ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] ring-1 ring-[#1E40AF] dark:ring-[#4C8DF6]'
-                            : 'border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528]'
-                        }`}
-                      >
-                        <div>{tName}</div>
-                        <div className="text-[10px] font-normal text-[#0F172A]/65 dark:text-[#9A9AA2] mt-0.5">
-                          {tName === 'Admission Team'
-                            ? `Assigns to all ${admissionMembers.length} admission officers`
-                            : `Assigns to all ${counselingMembers.length} counselors`}
-                        </div>
-                      </MotionButton>
+              {/* Single Assignee picker */}
+              <div className={assignMode === 'single' ? '' : 'hidden'}>
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
+                  Select Assignee
+                </label>
+                <MorphSelect value={selectedAssigneeId} onValueChange={(v) => setSelectedAssigneeId(v)}>
+                  <MorphSelectTrigger>
+                    <MorphSelectValue placeholder="Select Assignee" />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    {admissionMembers.map((m) => (
+                      <MorphSelectItem key={m.id} value={m.id}>
+                        [Admission] {m.name} ({m.title})
+                      </MorphSelectItem>
                     ))}
-                  </div>
+                    {counselingMembers.map((m) => (
+                      <MorphSelectItem key={m.id} value={m.id}>
+                        [Counseling] {m.name} ({m.title})
+                      </MorphSelectItem>
+                    ))}
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
+
+              {/* Multiple Employees picker */}
+              <div className={assignMode === 'multiple' ? '' : 'hidden'}>
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
+                  Select Employees ({selectedMultiAssigneeIds.length} selected)
+                </label>
+                <div className="max-h-36 overflow-y-auto border border-[#E2E8F0] dark:border-[#2E2E32] rounded-lg p-2 space-y-1.5 bg-[#F8FAFC] dark:bg-[#252528]">
+                  {team.map((m) => {
+                    const isChecked = selectedMultiAssigneeIds.includes(m.id);
+                    return (
+                      <label
+                        key={m.id}
+                        className="flex items-center gap-2 px-2 py-1 rounded hover:bg-[#EFF6FF]/60 dark:hover:bg-[#2E2E32] cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedMultiAssigneeIds([...selectedMultiAssigneeIds, m.id]);
+                            } else {
+                              setSelectedMultiAssigneeIds(selectedMultiAssigneeIds.filter((id) => id !== m.id));
+                            }
+                          }}
+                          className="rounded text-[#1E40AF] dark:text-[#4C8DF6] focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6]"
+                        />
+                        <img src={m.avatar} alt={m.name} className="w-4 h-4 rounded-full object-cover" />
+                        <span className="font-medium text-[#0F172A] dark:text-[#ECECEE]">{m.name}</span>
+                        <span className="text-[10px] text-[#0F172A]/55 dark:text-[#9A9AA2]">({m.team})</span>
+                      </label>
+                    );
+                  })}
                 </div>
-              )}
+              </div>
+
+              {/* Entire Team picker */}
+              <div className={assignMode === 'team' ? '' : 'hidden'}>
+                <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1.5">
+                  Select Target Team
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {(['Admission Team', 'Counseling Team'] as const).map((tName) => (
+                    <MotionButton
+                      key={tName}
+                      type="button"
+                      whileHover={{ scale: 1.01 }}
+                      onClick={() => setSelectedAssigneeTeam(tName)}
+                      className={`w-full min-w-0 flex flex-col items-start justify-start p-3 rounded-lg border text-left font-semibold transition-colors ${
+                        selectedAssigneeTeam === tName
+                          ? 'border-[#1E40AF] dark:border-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] text-[#1E3A8A] dark:text-[#4C8DF6] ring-1 ring-inset ring-[#1E40AF] dark:ring-[#4C8DF6]'
+                          : 'border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528]'
+                      }`}
+                    >
+                      <div className="w-full">{tName}</div>
+                      <div className="w-full text-[10px] font-normal text-[#0F172A]/65 dark:text-[#9A9AA2] mt-0.5">
+                        {tName === 'Admission Team'
+                          ? `Assigns to all ${admissionMembers.length} admission officers`
+                          : `Assigns to all ${counselingMembers.length} counselors`}
+                      </div>
+                    </MotionButton>
+                  ))}
+                </div>
+              </div>
 
               {/* Task Details */}
               <div>
@@ -1534,7 +1535,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <div>
+                <div className="min-w-0">
                   <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Scheduled Date *
                   </label>
@@ -1546,7 +1547,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Deadline *
                   </label>
@@ -1558,7 +1559,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     className="w-full px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#FFFFFF] dark:bg-[#252528] text-[#0F172A] dark:text-[#ECECEE] focus:outline-none focus:border-[#1E40AF] dark:focus:border-[#4C8DF6]"
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Priority
                   </label>
@@ -1577,7 +1578,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                     </MorphSelectContent>
                   </MorphSelect>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Category
                   </label>
@@ -1600,8 +1601,8 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
               </div>
 
               {/* Optional University / Student Link */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="min-w-0">
                   <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Link University (Optional)
                   </label>
@@ -1623,7 +1624,7 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   </MorphSelect>
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <label className="block text-[#0F172A] dark:text-[#ECECEE] font-semibold mb-1">
                     Link Student Dossier (Optional)
                   </label>
@@ -1645,18 +1646,19 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   </MorphSelect>
                 </div>
               </div>
+              </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32]">
+              <div className="px-5 py-3.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 shrink-0">
                 <MotionButton
                   type="button"
                   onClick={() => setIsAssignModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A]/75 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors"
+                  className="w-full sm:w-auto px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-white dark:bg-[#1C1C1E] text-[#0F172A]/75 dark:text-[#9A9AA2] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] transition-colors text-center"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white font-semibold shadow-xs dark:shadow-none transition-colors"
+                  className="w-full sm:w-auto px-4 py-1.5 rounded-lg bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] text-white font-semibold shadow-xs dark:shadow-none transition-colors text-center"
                 >
                   Create & Dispatch Task
                 </MotionButton>
