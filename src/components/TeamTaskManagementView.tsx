@@ -23,6 +23,7 @@ import {
   Layers,
   CheckSquare,
   GraduationCap,
+  ArrowUpDown,
 } from 'lucide-react';
 import {
   UserProfile,
@@ -99,13 +100,15 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedPriority, setSelectedPriority] = useState<string>('All');
+  const [sortField, setSortField] = useState<'deadline' | 'priority' | 'createdAt'>('deadline');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
   const PAGE_SIZE = 25;
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeView, debouncedSearchQuery, selectedCategory, selectedPriority, selectedTeamTab]);
+  }, [activeView, debouncedSearchQuery, selectedCategory, selectedPriority, selectedTeamTab, sortField, sortDir]);
 
   // Selected Employee Profile Drawer/Modal
   const [selectedEmployee, setSelectedEmployee] = useState<UserProfile | null>(null);
@@ -175,9 +178,16 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
   const overdueTasks = tasks.filter((t) => t.status === 'Pending' && t.deadline < todayStr).length;
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  // Filtered tasks based on active view and search
+  // Filtered and sorted tasks based on active view, search, filters, and sort selection
   const displayedTasks = useMemo(() => {
-    return tasks.filter((t) => {
+    const priorityWeight: Record<TaskPriority, number> = {
+      Urgent: 4,
+      High: 3,
+      Medium: 2,
+      Low: 1,
+    };
+
+    const filtered = tasks.filter((t) => {
       // 1. View filter
       if (activeView === 'admission-team') {
         const isAdm = t.team === 'Admission Team' || admissionMembers.some((m) => m.id === t.assignedToId);
@@ -222,7 +232,42 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
 
       return true;
     });
-  }, [tasks, activeView, admissionMembers, counselingMembers, currentUser.id, todayStr, debouncedSearchQuery, selectedCategory, selectedPriority]);
+
+    return [...filtered].sort((a, b) => {
+      let cmp = 0;
+      if (sortField === 'deadline') {
+        const aDate = a.deadline || a.taskDate || '9999-12-31';
+        const bDate = b.deadline || b.taskDate || '9999-12-31';
+        cmp = aDate.localeCompare(bDate);
+      } else if (sortField === 'priority') {
+        cmp = (priorityWeight[a.priority] ?? 0) - (priorityWeight[b.priority] ?? 0);
+      } else if (sortField === 'createdAt') {
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        cmp = (Number.isNaN(aTime) ? 0 : aTime) - (Number.isNaN(bTime) ? 0 : bTime);
+      }
+
+      if (cmp === 0) {
+        const aDead = a.deadline || a.taskDate || '';
+        const bDead = b.deadline || b.taskDate || '';
+        return aDead.localeCompare(bDead) || a.title.localeCompare(b.title);
+      }
+      return sortDir === 'asc' ? cmp : -cmp;
+    });
+  }, [tasks, activeView, admissionMembers, counselingMembers, currentUser.id, todayStr, debouncedSearchQuery, selectedCategory, selectedPriority, sortField, sortDir]);
+
+  const sortDirectionLabel =
+    sortField === 'deadline'
+      ? sortDir === 'asc'
+        ? 'Earliest deadline first'
+        : 'Latest deadline first'
+      : sortField === 'priority'
+      ? sortDir === 'desc'
+        ? 'Highest priority first'
+        : 'Lowest priority first'
+      : sortDir === 'desc'
+      ? 'Newest created first'
+      : 'Oldest created first';
 
   const totalPages = Math.max(1, Math.ceil(displayedTasks.length / PAGE_SIZE));
   const paginatedTasks = useMemo(() => {
@@ -791,6 +836,39 @@ export const TeamTaskManagementView: React.FC<TeamTaskManagementViewProps> = ({
                   </MorphSelectContent>
                 </MorphSelect>
               </div>
+            </div>
+
+            {/* Sort By Dropdown */}
+            <div className="flex items-center gap-1 text-xs">
+              <span className="text-[#0F172A]/60 dark:text-[#9A9AA2] hidden sm:inline">Sort:</span>
+              <div className="w-36">
+                <MorphSelect
+                  value={sortField}
+                  onValueChange={(v) => {
+                    const next = v as 'deadline' | 'priority' | 'createdAt';
+                    setSortField(next);
+                    setSortDir(next === 'deadline' ? 'asc' : 'desc');
+                  }}
+                >
+                  <MorphSelectTrigger aria-label="Sort tasks by">
+                    <MorphSelectValue placeholder="Sort by" />
+                  </MorphSelectTrigger>
+                  <MorphSelectContent>
+                    <MorphSelectItem value="deadline">Deadline</MorphSelectItem>
+                    <MorphSelectItem value="priority">Priority</MorphSelectItem>
+                    <MorphSelectItem value="createdAt">Creation Date</MorphSelectItem>
+                  </MorphSelectContent>
+                </MorphSelect>
+              </div>
+              <MotionButton
+                type="button"
+                onClick={() => setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+                title={sortDirectionLabel}
+                aria-label={`Toggle sort order (${sortDirectionLabel})`}
+                className="h-9 w-9 flex items-center justify-center rounded-lg border border-[#E2E8F0] dark:border-[#2E2E32] bg-[#F8FAFC] dark:bg-[#252528] text-[#0F172A]/70 dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#ECECEE] hover:border-[#1E40AF]/40 dark:hover:border-[#3A3A3F] transition-colors shrink-0"
+              >
+                <ArrowUpDown className="w-3.5 h-3.5" />
+              </MotionButton>
             </div>
           </div>
         </div>
