@@ -39,9 +39,16 @@ function extractText(node: ReactNode): string {
 
 const MORPH_SPRING: Transition = {
   type: 'spring',
-  stiffness: 450,
-  damping: 32,
-  mass: 0.8,
+  stiffness: 360,
+  damping: 30,
+  mass: 0.9,
+};
+
+const MORPH_RETURN_SPRING: Transition = {
+  type: 'spring',
+  stiffness: 190,
+  damping: 26,
+  mass: 1.05,
 };
 
 const ROW =
@@ -97,12 +104,38 @@ export function MorphSelect({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const closeTimerRef = useRef<number | null>(null);
   const [open, setOpen] = useState(false);
   const [internal, setInternal] = useState(defaultValue);
   const [labels, setLabels] = useState<
     Map<string, { label: string; count: number }>
   >(new Map());
   const [placeholder, setPlaceholder] = useState('Select');
+
+  const cancelCloseTimer = useCallback(() => {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleCloseTimer = useCallback(() => {
+    cancelCloseTimer();
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      setOpen(false);
+    }, 2000);
+  }, [cancelCloseTimer]);
+
+  useEffect(() => {
+    if (!open) {
+      cancelCloseTimer();
+    }
+  }, [open, cancelCloseTimer]);
+
+  useEffect(() => {
+    return () => cancelCloseTimer();
+  }, [cancelCloseTimer]);
 
   const controlled = value !== undefined;
   const current = controlled ? value : internal;
@@ -193,6 +226,10 @@ export function MorphSelect({
       <MorphContext.Provider value={ctx}>
         <div
           ref={wrapperRef}
+          onMouseEnter={cancelCloseTimer}
+          onMouseLeave={() => {
+            if (open) scheduleCloseTimer();
+          }}
           className={cn(
             'relative w-full h-9 box-border min-w-0',
             open && 'z-40',
@@ -247,7 +284,7 @@ export function MorphSelectTrigger({ className, 'aria-label': ariaLabel, childre
     <motion.button
       ref={ctx.triggerRef}
       layoutId={ctx.morphId}
-      transition={ctx.reduce ? { duration: 0 } : MORPH_SPRING}
+      transition={ctx.reduce ? { duration: 0 } : MORPH_RETURN_SPRING}
       style={{ borderRadius: 8 }}
       type="button"
       id={ctx.triggerId}
@@ -270,11 +307,12 @@ export function MorphSelectTrigger({ className, 'aria-label': ariaLabel, childre
     >
       <motion.span
         layout="position"
+        transition={ctx.reduce ? { duration: 0 } : MORPH_RETURN_SPRING}
         className="min-w-0 truncate text-left flex-1 block"
       >
         {children}
       </motion.span>
-      <ChevronDown className="h-3.5 w-3.5 text-[#64748B] dark:text-[#9A9AA2] shrink-0 ml-1 transition-transform duration-150" />
+      <ChevronDown className="h-3.5 w-3.5 text-[#64748B] dark:text-[#9A9AA2] shrink-0 ml-1 transition-transform duration-300" />
     </motion.button>
   );
 }

@@ -363,7 +363,11 @@ export const DropdownTransition = forwardRef<HTMLDivElement, DropdownTransitionP
             exit={{
               opacity: 0,
               scale: shouldReduceMotion ? 1 : animationScales.dropdownInitial,
-              y: shouldReduceMotion ? 0 : -4,
+              y: shouldReduceMotion ? 0 : -6,
+              transition: {
+                duration: shouldReduceMotion ? 0.001 : 0.36,
+                ease: animationEasings.standard,
+              },
             }}
             transition={{
               duration: shouldReduceMotion ? 0.001 : animationDurations.fast,

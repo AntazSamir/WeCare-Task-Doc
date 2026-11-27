@@ -13,7 +13,6 @@ import {
   Clock,
   Layers,
   Percent,
-  RotateCcw,
 } from 'lucide-react';
 import { AnimateIcon } from '@animate-ui/react/icons';
 import { Bell } from './components/animate-ui/icons/bell';
@@ -68,7 +67,7 @@ import {
   pushTasksToLiveGoogleSheet,
 } from './services/googleSheetsService';
 import { TaskCard } from './components/TaskCard';
-import { BulkTaskActionBar } from './components/BulkTaskActionBar';
+import { TodayView } from './components/TodayView';
 import { UpcomingDeadlinesWidget } from './components/UpcomingDeadlinesWidget';
 import { OverdueTasksWidget } from './components/OverdueTasksWidget';
 import {
@@ -405,11 +404,6 @@ export function App() {
   const [dashboardViewMode, setDashboardViewMode] = useState<'list' | 'calendar'>('list');
   const [studentStageFilter, setStudentStageFilter] = useState<string>(initialLocation.studentStage);
   const [pendingStudentId, setPendingStudentId] = useState<string | null>(initialLocation.studentId);
-
-  // Today (my-day) focus filters & bulk selection
-  const [todayPriorityFilter, setTodayPriorityFilter] = useState<'All' | TaskPriority>('All');
-  const [todayCategoryFilter, setTodayCategoryFilter] = useState<'All' | TaskCategory>('All');
-  const [todaySelectedIds, setTodaySelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (initialLocation.nav === 'calendar') {
@@ -3342,259 +3336,54 @@ export function App() {
             />
           )}
 
-          {/* VIEW 2: MY DAY */}
-          {activeNav === 'my-day' && (() => {
-            const hasTodayFilters =
-              todayPriorityFilter !== 'All' || todayCategoryFilter !== 'All';
-            const filteredTodayTasks = stats.todayTasks.filter((t) => {
-              if (todayPriorityFilter !== 'All' && t.priority !== todayPriorityFilter) return false;
-              if (todayCategoryFilter !== 'All' && t.category !== todayCategoryFilter) return false;
-              return true;
-            });
-            const todayIdSet = new Set(filteredTodayTasks.map((t) => t.id));
-            const activeTodaySelected = todaySelectedIds.filter((id) => todayIdSet.has(id));
-            const activeTodaySelectedSet = new Set(activeTodaySelected);
-            const todayPendingSelectedCount = filteredTodayTasks.filter(
-              (t) => activeTodaySelectedSet.has(t.id) && t.status !== 'Completed'
-            ).length;
-
-            const handleToggleTodaySelect = (task: Task) => {
-              setTodaySelectedIds((prev) =>
-                prev.includes(task.id) ? prev.filter((id) => id !== task.id) : [...prev, task.id]
-              );
-            };
-
-            return (
-              <div className="space-y-5">
-                {/* Header + Focus Filter Strip (Matching Unified Calendar Header) */}
-                <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2.5">
-                        <Sun size={20} animateOnHover className="w-5 h-5 text-[#D97706] dark:text-[#ECECEE] shrink-0" />
-                        <h1 className="text-xl font-display font-bold text-[#0F172A] dark:text-[#ECECEE]">
-                          Today — {formatFullHeaderDate()}
-                        </h1>
-                      </div>
-                      <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] mt-1 tabular-nums">
-                        {stats.todayCompletedCount} completed · {stats.todayPendingCount} remaining for
-                        today ({stats.dailyCompletionPct}% complete)
-                      </p>
-                    </div>
-                    <AnimateIcon animateOnHover className="inline-flex">
-                      <MotionButton
-                        type="button"
-                        onClick={() => {
-                          setEditingTask(null);
-                          setModalInitialDate(todayIso);
-                          setIsTaskModalOpen(true);
-                        }}
-                        className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
-                      >
-                        <Plus size={14} className="w-3.5 h-3.5" />
-                        Schedule Task for Today
-                      </MotionButton>
-                    </AnimateIcon>
-                  </div>
-
-                  {/* Focus Strip: Priority & Category Filters */}
-                  <div className="pt-3.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <div className="w-36">
-                        <MorphSelect
-                          value={todayPriorityFilter}
-                          onValueChange={(v) => setTodayPriorityFilter(v as 'All' | TaskPriority)}
-                        >
-                          <MorphSelectTrigger aria-label="Filter today tasks by priority">
-                            <MorphSelectValue placeholder="Priority" />
-                          </MorphSelectTrigger>
-                          <MorphSelectContent>
-                            <MorphSelectItem value="All">All Priorities</MorphSelectItem>
-                            <MorphSelectItem value="Urgent">Urgent</MorphSelectItem>
-                            <MorphSelectItem value="High">High</MorphSelectItem>
-                            <MorphSelectItem value="Medium">Medium</MorphSelectItem>
-                            <MorphSelectItem value="Low">Low</MorphSelectItem>
-                          </MorphSelectContent>
-                        </MorphSelect>
-                      </div>
-
-                      <div className="w-40">
-                        <MorphSelect
-                          value={todayCategoryFilter}
-                          onValueChange={(v) => setTodayCategoryFilter(v as 'All' | TaskCategory)}
-                        >
-                          <MorphSelectTrigger aria-label="Filter today tasks by category">
-                            <MorphSelectValue placeholder="Category" />
-                          </MorphSelectTrigger>
-                          <MorphSelectContent>
-                            <MorphSelectItem value="All">All Categories</MorphSelectItem>
-                            <MorphSelectItem value="Work">Work</MorphSelectItem>
-                            <MorphSelectItem value="Study">Study</MorphSelectItem>
-                            <MorphSelectItem value="Business">Business</MorphSelectItem>
-                            <MorphSelectItem value="Personal">Personal</MorphSelectItem>
-                            <MorphSelectItem value="Other">Other</MorphSelectItem>
-                          </MorphSelectContent>
-                        </MorphSelect>
-                      </div>
-
-                      {hasTodayFilters && (
-                        <MotionButton
-                          type="button"
-                          onClick={() => {
-                            setTodayPriorityFilter('All');
-                            setTodayCategoryFilter('All');
-                          }}
-                          className="inline-flex items-center gap-1 h-9 px-2.5 text-xs font-medium text-[#64748B] dark:text-[#9A9AA2] hover:text-[#0F172A] dark:hover:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] rounded-lg border border-transparent hover:border-[#E2E8F0] dark:hover:border-[#2E2E32] transition-colors"
-                        >
-                          <RotateCcw className="w-3 h-3" />
-                          <span>Reset filters</span>
-                        </MotionButton>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      {filteredTodayTasks.length > 0 && (
-                        <MotionButton
-                          type="button"
-                          onClick={() =>
-                            activeTodaySelected.length === filteredTodayTasks.length
-                              ? setTodaySelectedIds([])
-                              : setTodaySelectedIds(filteredTodayTasks.map((t) => t.id))
-                          }
-                          className="text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] hover:underline"
-                        >
-                          {activeTodaySelected.length === filteredTodayTasks.length
-                            ? 'Deselect all'
-                            : `Select all (${filteredTodayTasks.length})`}
-                        </MotionButton>
-                      )}
-                      <div className="text-xs text-[#64748B] dark:text-[#9A9AA2] tabular-nums">
-                        Showing {filteredTodayTasks.length} of {stats.todayTasks.length}{' '}
-                        {stats.todayTasks.length === 1 ? 'task' : 'tasks'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bulk Task Action Bar */}
-                <BulkTaskActionBar
-                  selectedCount={activeTodaySelected.length}
-                  totalSelectableCount={filteredTodayTasks.length}
-                  pendingSelectedCount={todayPendingSelectedCount}
-                  team={team}
-                  onSelectAll={() => setTodaySelectedIds(filteredTodayTasks.map((t) => t.id))}
-                  onClearSelection={() => setTodaySelectedIds([])}
-                  onBulkComplete={() => {
-                    handleBulkCompleteTasks(activeTodaySelected);
-                    setTodaySelectedIds([]);
-                  }}
-                  onBulkPostpone={(mode) => {
-                    handleBulkPostponeTasks(activeTodaySelected, mode);
-                    setTodaySelectedIds([]);
-                  }}
-                  onBulkReassign={(targetUserId) => {
-                    handleBulkReassignTasks(activeTodaySelected, targetUserId);
-                    setTodaySelectedIds([]);
-                  }}
-                />
-
-                {/* All Caught Up Banner when all today tasks are completed */}
-                {stats.todayTasks.length > 0 && stats.todayPendingCount === 0 && !hasTodayFilters && (
-                  <div className="bg-[#DCFCE7]/60 dark:bg-[rgba(52,194,107,0.14)] border border-[#16A34A]/30 dark:border-[#34C26B]/30 rounded-[12px] px-4 py-3 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 text-xs">
-                      <CircleCheckBig size={16} animateOnHover className="w-4 h-4 text-[#16A34A] dark:text-[#34C26B] shrink-0" />
-                      <span className="font-semibold text-[#15803d] dark:text-[#34C26B]">
-                        All {stats.todayTasks.length} tasks scheduled for today are completed!
-                      </span>
-                    </div>
-                    <MotionButton
-                      type="button"
-                      onClick={() => navigateTo('calendar', { calendarView: 'list' })}
-                      className="text-xs font-medium text-[#15803d] dark:text-[#34C26B] hover:underline shrink-0"
-                    >
-                      View Upcoming →
-                    </MotionButton>
-                  </div>
-                )}
-
-                {/* Empty State or Task List */}
-                {filteredTodayTasks.length === 0 ? (
-                  <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-[12px] p-12 text-center space-y-3">
-                    <div className="w-11 h-11 rounded-full bg-[#EFF6FF] dark:bg-[#252528] flex items-center justify-center mx-auto text-[#1E40AF] dark:text-[#ECECEE]">
-                      <Sun size={20} animateOnHover className="w-5 h-5" />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold text-[#0F172A] dark:text-[#ECECEE]">
-                        {hasTodayFilters
-                          ? 'No tasks match your focus filters'
-                          : 'No tasks scheduled for today yet'}
-                      </p>
-                      <p className="text-xs text-[#64748B] dark:text-[#9A9AA2] max-w-md mx-auto">
-                        {hasTodayFilters
-                          ? 'Try resetting the priority or category filters above to view all tasks scheduled for today.'
-                          : 'Schedule a task for today or pull upcoming deliverables from your Calendar to stay on track.'}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 pt-1">
-                      {hasTodayFilters ? (
-                        <MotionButton
-                          type="button"
-                          onClick={() => {
-                            setTodayPriorityFilter('All');
-                            setTodayCategoryFilter('All');
-                          }}
-                          className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] rounded-lg hover:bg-[#dbeafe] transition-colors"
-                        >
-                          <RotateCcw className="w-3.5 h-3.5" />
-                          Reset Filters
-                        </MotionButton>
-                      ) : (
-                        <AnimateIcon animateOnHover className="inline-flex">
-                          <MotionButton
-                            type="button"
-                            onClick={() => {
-                              setEditingTask(null);
-                              setModalInitialDate(todayIso);
-                              setIsTaskModalOpen(true);
-                            }}
-                            className="inline-flex items-center gap-1.5 h-8 px-3.5 text-xs font-semibold text-white bg-[#1E40AF] hover:bg-[#1E3A8A] dark:bg-[#4C8DF6] dark:hover:bg-[#6BA1F8] rounded-lg transition-colors"
-                          >
-                            <Plus size={14} className="w-3.5 h-3.5" />
-                            Schedule Task for Today
-                          </MotionButton>
-                        </AnimateIcon>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {filteredTodayTasks.map((task, idx) => (
-                      <TaskCard
-                        key={task.id}
-                        task={task}
-                        selectable
-                        selected={activeTodaySelectedSet.has(task.id)}
-                        onToggleSelect={handleToggleTodaySelect}
-                        onRequestComplete={handleRequestCompleteTask}
-                        onRestorePending={handleRestoreTaskToPending}
-                        onEdit={(t) => {
-                          setEditingTask(t);
-                          setIsTaskModalOpen(true);
-                        }}
-                        onDuplicate={handleDuplicateTask}
-                        onDelete={handleDeleteTask}
-                        onQuickReschedule={handleQuickReschedule}
-                        onReorderTasks={handleReorderTasks}
-                        onMoveTask={(t, dir) => handleMoveTask(t, dir, filteredTodayTasks)}
-                        canMoveUp={idx > 0}
-                        canMoveDown={idx < filteredTodayTasks.length - 1}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })()}
+          {/* VIEW 2: MY DAY (TODAY) */}
+          {activeNav === 'my-day' && (
+            <TodayView
+              tasks={tasks}
+              todayIso={todayIso}
+              currentUser={currentUser}
+              team={team}
+              students={students}
+              projects={projects}
+              universities={universities}
+              handoverStats={handoverStats}
+              defaultCategory={settings.defaultCategory}
+              defaultPriority={settings.defaultPriority}
+              onCreateTaskForDate={(dateIso) => {
+                setEditingTask(null);
+                setModalInitialDate(dateIso);
+                setIsTaskModalOpen(true);
+              }}
+              onQuickAddTodayTask={(data) =>
+                handleSaveTask({
+                  title: data.title,
+                  description: '',
+                  category: data.category,
+                  priority: data.priority,
+                  taskDate: data.taskDate,
+                  deadline: data.deadline,
+                  notes: '',
+                })
+              }
+              onRequestComplete={handleRequestCompleteTask}
+              onRestorePending={handleRestoreTaskToPending}
+              onEditTask={(t) => {
+                setEditingTask(t);
+                setIsTaskModalOpen(true);
+              }}
+              onDuplicateTask={handleDuplicateTask}
+              onDeleteTask={handleDeleteTask}
+              onQuickReschedule={handleQuickReschedule}
+              onRescheduleToToday={handleRescheduleToToday}
+              onRescheduleAllOverdueToToday={handleRescheduleAllOverdueToToday}
+              onReorderTasks={handleReorderTasks}
+              onMoveTask={handleMoveTask}
+              onBulkCompleteTasks={handleBulkCompleteTasks}
+              onBulkPostponeTasks={handleBulkPostponeTasks}
+              onBulkReassignTasks={handleBulkReassignTasks}
+              onNavigateTo={(target, options) => navigateTo(target, options)}
+            />
+          )}
 
           {/* VIEW 3: UNIFIED CALENDAR (LIST & MONTH VIEWS) */}
           {activeNav === 'calendar' && (

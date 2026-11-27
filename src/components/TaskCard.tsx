@@ -5,21 +5,14 @@ import {
   ArrowUp,
   ArrowDown,
   Check,
-  Clock,
   Copy,
   Edit3,
   RotateCcw,
   Trash2,
   AlertTriangle,
-  Calendar,
+  Clock,
   GripVertical,
-  FileSpreadsheet,
   CalendarPlus,
-  Briefcase,
-  GraduationCap,
-  Building2,
-  User,
-  Tag,
 } from 'lucide-react';
 import { Task } from '../types/task';
 import {
@@ -48,34 +41,25 @@ interface TaskCardProps {
   onToggleSelect?: (task: Task) => void;
 }
 
-function CategoryIcon({ category, className = 'w-3.5 h-3.5' }: { category: string; className?: string }) {
-  switch (category) {
-    case 'Work':
-      return <Briefcase className={className} />;
-    case 'Study':
-      return <GraduationCap className={className} />;
-    case 'Business':
-      return <Building2 className={className} />;
-    case 'Personal':
-      return <User className={className} />;
+function priorityDotAndText(priority: string): { dot: string; text: string } {
+  switch (priority) {
+    case 'Urgent':
+    case 'High':
+      return {
+        dot: 'bg-[#DC2626] dark:bg-[#EF5350]',
+        text: 'text-[#DC2626] dark:text-[#EF5350]',
+      };
+    case 'Medium':
+      return {
+        dot: 'bg-[#D97706] dark:bg-[#F0A030]',
+        text: 'text-[#D97706] dark:text-[#F0A030]',
+      };
     default:
-      return <Tag className={className} />;
+      return {
+        dot: 'bg-[#16A34A] dark:bg-[#34C26B]',
+        text: 'text-[#16A34A] dark:text-[#34C26B]',
+      };
   }
-}
-
-function PriorityIndicator({ priority }: { priority: string }) {
-  const color =
-    priority === 'High' || priority === 'Urgent'
-      ? 'text-[#DC2626] dark:text-[#EF5350]'
-      : priority === 'Medium'
-      ? 'text-[#D97706] dark:text-[#F0A030]'
-      : 'text-[#16A34A] dark:text-[#34C26B]';
-  return (
-    <span className={`inline-flex items-center gap-1 font-medium ${color}`}>
-      <span className="w-1.5 h-1.5 rounded-full bg-current" />
-      <span>{priority}</span>
-    </span>
-  );
 }
 
 export const TaskCard: React.FC<TaskCardProps> = React.memo(({
@@ -102,28 +86,7 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
   const todayIso = getLocalTodayIso();
   const overdue = isTaskOverdue(task, todayIso);
   const isCompleted = task.status === 'Completed';
-
-  const priorityBorderClass = isCompleted
-    ? task.priority === 'Urgent'
-      ? 'border-l-[3.5px] border-l-[#DC2626]/50 dark:border-l-[#EF5350]/50'
-      : task.priority === 'High'
-      ? 'border-l-[3.5px] border-l-[#DC2626]/50 dark:border-l-[#EF5350]/40'
-      : task.priority === 'Medium'
-      ? 'border-l-[3.5px] border-l-[#D97706]/50 dark:border-l-[#F0A030]/40'
-      : 'border-l-[3.5px] border-l-[#1E40AF]/50 dark:border-l-[#3A3A3F]'
-    : task.priority === 'Urgent'
-    ? 'border-l-[3.5px] border-l-[#DC2626] dark:border-l-[#EF5350] shadow-xs dark:shadow-none'
-    : task.priority === 'High'
-    ? 'border-l-[3.5px] border-l-[#DC2626] dark:border-l-[#EF5350]'
-    : task.priority === 'Medium'
-    ? 'border-l-[3.5px] border-l-[#D97706] dark:border-l-[#F0A030]'
-    : 'border-l-[3.5px] border-l-[#1E40AF] dark:border-l-[#3A3A3F]';
-
-  const statusTextClass = isCompleted
-    ? 'text-[#16A34A] dark:text-[#34C26B] font-medium'
-    : overdue
-    ? 'text-[#DC2626] dark:text-[#EF5350] font-semibold'
-    : 'text-[#64748B] dark:text-[#9A9AA2]';
+  const priorityStyle = priorityDotAndText(task.priority);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('text/plain', task.id);
@@ -162,6 +125,10 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
   };
 
   const isCardDraggable = Boolean(onReorderTasks || draggable);
+  const effectiveDate = task.deadline || task.taskDate;
+  const dueLabel = `${formatReadableDate(effectiveDate, todayIso)}${
+    task.scheduledTime ? ` · ${task.scheduledTime}` : ''
+  }`;
 
   return (
     <div
@@ -171,280 +138,271 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`group relative rounded-[12px] border transition-all duration-150 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none ${
+      className={`group relative rounded-[10px] border transition-all duration-150 ${
         isDragging
-          ? 'opacity-40 border-dashed border-[#1E40AF] dark:border-[#4C8DF6] scale-[0.99] shadow-xs dark:shadow-none'
+          ? 'opacity-40 border-dashed border-[#1E40AF] dark:border-[#4C8DF6] scale-[0.99]'
           : selected
-          ? 'bg-[#EFF6FF]/60 dark:bg-[rgba(76,141,246,0.10)] border-[#1E40AF] dark:border-[#4C8DF6]'
+          ? 'bg-[#EFF6FF]/65 dark:bg-[rgba(76,141,246,0.10)] border-[#1E40AF] dark:border-[#4C8DF6]'
           : isCompleted
           ? 'bg-[#F8FAFC] dark:bg-[#1C1C1E]/75 border-[#E2E8F0] dark:border-[#2E2E32]'
           : overdue
-          ? 'bg-[#FEE2E2]/30 dark:bg-[#1C1C1E] border-[#DC2626]/30 dark:border-[#EF5350]/40 hover:border-[#DC2626]/60 dark:hover:border-[#EF5350]/70'
-          : 'bg-white dark:bg-[#1C1C1E] border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#1E40AF]/40 dark:hover:border-[#3A3A3F]'
-      } ${priorityBorderClass} p-4`}
+          ? 'bg-[#FFFFFF] dark:bg-[#1C1C1E] border-[#DC2626]/35 dark:border-[#EF5350]/40 hover:border-[#DC2626]/65 dark:hover:border-[#EF5350]/70'
+          : 'bg-[#FFFFFF] dark:bg-[#1C1C1E] border-[#E2E8F0] dark:border-[#2E2E32] hover:border-[#CBD5E1] dark:hover:border-[#3A3A3F]'
+      } px-3.5 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.03)] dark:shadow-none`}
     >
       {/* Visual Drop Placement Indicators */}
       {dropIndicator === 'top' && (
-        <div className="absolute -top-1 left-2 right-2 h-1 bg-[#1E40AF] dark:bg-[#4C8DF6] rounded-full z-30 pointer-events-none shadow-xs dark:shadow-none ring-1 ring-[#EFF6FF] dark:ring-[#4C8DF6]/30" />
+        <div className="absolute -top-1 left-2 right-2 h-1 bg-[#1E40AF] dark:bg-[#4C8DF6] rounded-full z-30 pointer-events-none" />
       )}
       {dropIndicator === 'bottom' && (
-        <div className="absolute -bottom-1 left-2 right-2 h-1 bg-[#1E40AF] dark:bg-[#4C8DF6] rounded-full z-30 pointer-events-none shadow-xs dark:shadow-none ring-1 ring-[#EFF6FF] dark:ring-[#4C8DF6]/30" />
+        <div className="absolute -bottom-1 left-2 right-2 h-1 bg-[#1E40AF] dark:bg-[#4C8DF6] rounded-full z-30 pointer-events-none" />
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        {/* Left: Drag Handle + Completion Trigger + Primary Content */}
-        <div className="flex items-start gap-2.5 sm:gap-3.5 min-w-0 flex-1">
-          {/* Selection Checkbox (Multi-Select Bulk Actions) */}
+      <div className="flex items-start justify-between gap-3">
+        {/* Left: Selection / Drag / Complete Circle + Compact Content */}
+        <div className="flex items-start gap-2.5 min-w-0 flex-1">
+          {/* Bulk Selection Checkbox (Square) */}
           {selectable && onToggleSelect && (
             <input
               type="checkbox"
               checked={selected}
               onChange={() => onToggleSelect(task)}
               aria-label={`Select ${task.title}`}
-              title="Select task for bulk actions"
-              className="mt-1 w-4 h-4 rounded border-[#CBD5E1] dark:border-[#3A3A3F] text-[#1E40AF] dark:text-[#4C8DF6] focus:ring-[#1E40AF] dark:focus:ring-[#4C8DF6] cursor-pointer shrink-0 accent-[#1E40AF] dark:accent-[#4C8DF6]"
+              title="Select for bulk actions"
+              className={`mt-1 w-3.5 h-3.5 rounded-[4px] border-[#CBD5E1] dark:border-[#3A3A3F] cursor-pointer shrink-0 accent-[#1E40AF] dark:accent-[#4C8DF6] transition-opacity ${
+                selected
+                  ? 'opacity-100'
+                  : 'opacity-45 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100'
+              }`}
             />
           )}
-          {/* Drag Handle */}
+
+          {/* Drag Handle (Subtle on hover) */}
           {isCardDraggable && (
             <div
-              title={onReorderTasks ? 'Drag to reorder task' : 'Drag onto a calendar day to reschedule'}
-              className="mt-0.5 -ml-1 text-[#64748B]/40 dark:text-[#66666E] group-hover:text-[#1E40AF] dark:group-hover:text-[#ECECEE] cursor-grab active:cursor-grabbing hover:bg-[#EFF6FF] dark:hover:bg-[#252528] p-0.5 rounded transition-colors shrink-0"
+              title={onReorderTasks ? 'Drag to reorder' : 'Drag onto a calendar day'}
+              className="mt-0.5 -mx-1 text-[#94A3B8] dark:text-[#66666E] sm:opacity-0 sm:group-hover:opacity-100 cursor-grab active:cursor-grabbing p-0.5 rounded transition-opacity shrink-0"
               aria-label="Drag handle"
             >
-              <GripVertical className="w-4 h-4" />
+              <GripVertical className="w-3.5 h-3.5" />
             </div>
           )}
+
+          {/* Complete Toggle (Distinct Circle) */}
           {isCompleted ? (
             <MotionButton
               onClick={() => onRestorePending(task)}
-              title="Completed — Click to restore task to Pending"
-              className="mt-0.5 w-[18px] h-[18px] rounded flex items-center justify-center bg-[#16A34A] dark:bg-[#34C26B] text-white hover:bg-[#15803d] transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16A34A] shadow-xs dark:shadow-none"
+              title="Completed — Click to reopen"
+              className="mt-0.5 w-[18px] h-[18px] rounded-full flex items-center justify-center bg-[#16A34A] dark:bg-[#34C26B] text-white hover:bg-[#15803d] transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16A34A]"
               aria-label={`Restore ${task.title} to Pending`}
             >
-              <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+              <Check className="w-3 h-3 stroke-[2.75]" />
             </MotionButton>
           ) : (
             <MotionButton
               onClick={() => onRequestComplete(task)}
-              title="Click to confirm task completion"
-              className="mt-0.5 w-[18px] h-[18px] rounded border border-[#E2E8F0] dark:border-[#3A3A3F] hover:border-[#1E40AF] dark:hover:border-[#4C8DF6] bg-white dark:bg-[#252528] flex items-center justify-center transition-colors shrink-0 group/check focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF]"
+              title="Mark as completed"
+              className={`mt-0.5 w-[18px] h-[18px] rounded-full border-[1.5px] flex items-center justify-center transition-colors shrink-0 group/check focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] ${
+                overdue
+                  ? 'border-[#DC2626]/70 dark:border-[#EF5350]/70 hover:border-[#DC2626]'
+                  : 'border-[#CBD5E1] dark:border-[#4A4A52] hover:border-[#1E40AF] dark:hover:border-[#4C8DF6]'
+              } bg-white dark:bg-[#252528]`}
               aria-label={`Complete task ${task.title}`}
             >
-              <Check className="w-3 h-3 text-transparent group-hover/check:text-[#1E40AF] dark:group-hover/check:text-[#4C8DF6] transition-colors" />
+              <Check className="w-2.5 h-2.5 text-transparent group-hover/check:text-[#1E40AF] dark:group-hover/check:text-[#4C8DF6] transition-colors stroke-[2.5]" />
             </MotionButton>
           )}
 
+          {/* Task Content (Tight 2-3 Line Hierarchy) */}
           <div className="min-w-0 flex-1">
-            {/* Title Row */}
-            <div className="flex items-center gap-2.5 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setExpanded((prev) => !prev)}
+              className="text-left w-full group/title focus:outline-none"
+            >
               <h3
-                className={`text-[16px] font-semibold leading-snug break-words ${
+                className={`text-sm font-semibold leading-snug break-words ${
                   isCompleted
                     ? 'line-through text-[#64748B] dark:text-[#66666E]'
-                    : 'text-[#0F172A] dark:text-[#ECECEE]'
+                    : 'text-[#0F172A] dark:text-[#ECECEE] group-hover/title:text-[#1E40AF] dark:group-hover/title:text-[#4C8DF6] transition-colors'
                 }`}
               >
                 {task.title}
               </h3>
-            </div>
+            </button>
 
-            {/* Description Preview */}
             {task.description && (
               <p
-                className={`mt-1 text-sm leading-relaxed ${
+                className={`mt-0.5 text-xs leading-relaxed ${
                   isCompleted
-                    ? 'text-[#64748B] dark:text-[#66666E]'
-                    : 'text-[#0F172A]/80 dark:text-[#9A9AA2]'
-                } ${expanded ? '' : 'line-clamp-2'}`}
+                    ? 'text-[#94A3B8] dark:text-[#66666E]'
+                    : 'text-[#64748B] dark:text-[#9A9AA2]'
+                } ${expanded ? '' : 'line-clamp-1'}`}
               >
                 {task.description}
               </p>
             )}
 
-            {/* Clean Unboxed Metadata Line with Real Lucide Icons */}
-            <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs text-[#64748B] dark:text-[#9A9AA2]">
-              <span className="inline-flex items-center gap-1 font-medium text-[#0F172A] dark:text-[#ECECEE] whitespace-nowrap">
-                <CategoryIcon category={task.category} className="w-3.5 h-3.5 shrink-0 text-[#1E40AF]" />
-                <span>{task.category}</span>
+            {/* Concise Single-Line Essential Metadata */}
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-[#64748B] dark:text-[#9A9AA2] tabular-nums">
+              <span className={`inline-flex items-center gap-1 font-medium ${priorityStyle.text}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${priorityStyle.dot}`} />
+                <span>{task.priority}</span>
               </span>
-              <span aria-hidden="true" className="text-[#E2E8F0] dark:text-[#3A3A3F]">·</span>
-              <span className="whitespace-nowrap">
-                <PriorityIndicator priority={task.priority} />
-              </span>
-              <span aria-hidden="true" className="text-[#E2E8F0] dark:text-[#3A3A3F]">·</span>
-              <span className="inline-flex items-center gap-1 tabular-nums whitespace-nowrap">
-                <Clock className="w-3.5 h-3.5 shrink-0 text-[#1E40AF]" />
-                <span>Scheduled: {formatReadableDate(task.taskDate, todayIso)}</span>
-              </span>
-              <span aria-hidden="true" className="text-[#E2E8F0] dark:text-[#3A3A3F]">·</span>
-              <span
-                className={`inline-flex items-center gap-1 tabular-nums whitespace-nowrap ${
-                  overdue ? 'text-[#DC2626] dark:text-[#EF5350] font-semibold' : ''
-                }`}
-              >
-                {overdue ? (
-                  <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-[#DC2626]" />
-                ) : (
-                  <Calendar className="w-3.5 h-3.5 shrink-0 text-[#64748B]" />
-                )}
-                <span>
-                  Deadline: {formatReadableDate(task.deadline, todayIso)}
-                  {task.scheduledTime ? ` at ${task.scheduledTime}` : ''}
+
+              <span aria-hidden="true" className="text-[#CBD5E1] dark:text-[#3A3A3F]">·</span>
+
+              <span>{task.category}</span>
+
+              <span aria-hidden="true" className="text-[#CBD5E1] dark:text-[#3A3A3F]">·</span>
+
+              {isCompleted ? (
+                <span className="text-[#16A34A] dark:text-[#34C26B] font-medium">
+                  Done {task.completedAt ? formatReadableDate(task.completedAt.slice(0, 10), todayIso) : ''}
                 </span>
-              </span>
-              <span aria-hidden="true" className="text-[#E2E8F0] dark:text-[#3A3A3F]">·</span>
-              <span className={`${statusTextClass} whitespace-nowrap`}>
-                {isCompleted ? 'Completed' : overdue ? 'Overdue' : 'Pending'}
-              </span>
-              {task.sheetRowNumber && (
-                <>
-                  <span aria-hidden="true" className="text-[#E2E8F0] dark:text-[#3A3A3F]">·</span>
-                  <span className="inline-flex items-center gap-1 tabular-nums text-[#64748B] dark:text-[#9A9AA2] whitespace-nowrap">
-                    <FileSpreadsheet className="w-3.5 h-3.5 shrink-0 text-[#16A34A]" />
-                    Row {task.sheetRowNumber}
-                  </span>
-                </>
+              ) : overdue ? (
+                <span className="inline-flex items-center gap-1 text-[#DC2626] dark:text-[#EF5350] font-semibold">
+                  <AlertTriangle className="w-3 h-3 shrink-0" />
+                  <span>Overdue · {dueLabel}</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1">
+                  <Clock className="w-3 h-3 shrink-0 text-[#64748B] dark:text-[#9A9AA2]" />
+                  <span>Due {dueLabel}</span>
+                </span>
               )}
             </div>
 
-            {/* Completed Timestamp or Sync State Notice */}
-            {isCompleted && task.completedAt && (
-              <div className="mt-1.5 text-xs text-[#16A34A] dark:text-[#34C26B] tabular-nums">
-                Confirmed completed on {formatTimestamp(task.completedAt)}
-              </div>
-            )}
-
-            {/* Expanded Notes & Timestamps */}
+            {/* Expandable Notes & Full Details */}
             <CollapseTransition isOpen={expanded}>
-              <div className="mt-3 pt-3 border-t border-[#E2E8F0] dark:border-[#2E2E32] text-xs text-[#0F172A]/80 dark:text-[#9A9AA2] space-y-1.5">
-                {task.notes ? (
-                  <div>
-                    <span className="font-semibold text-[#0F172A] dark:text-[#ECECEE]">
-                      Notes:{' '}
-                    </span>
-                    <span>{task.notes}</span>
-                  </div>
-                ) : (
-                  <div className="text-[#64748B] dark:text-[#66666E] italic">
-                    No additional task notes attached.
-                  </div>
+              <div className="mt-2.5 pt-2.5 border-t border-[#E2E8F0] dark:border-[#2E2E32] text-xs text-[#64748B] dark:text-[#9A9AA2] space-y-1">
+                {task.notes && (
+                  <p className="text-[#0F172A]/85 dark:text-[#ECECEE]/90">
+                    <span className="font-medium text-[#0F172A] dark:text-[#ECECEE]">Notes: </span>
+                    {task.notes}
+                  </p>
                 )}
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] tabular-nums text-[#64748B] dark:text-[#66666E]">
-                  <span>Created: {formatTimestamp(task.createdAt)}</span>
-                  <span aria-hidden="true">·</span>
-                  <span>Last Updated: {formatTimestamp(task.lastUpdated)}</span>
-                  <span aria-hidden="true">·</span>
-                  <span>
-                    Sheet Sync:{' '}
-                    {task.syncState === 'pending_sync'
-                      ? 'Pending (Offline Queue)'
-                      : task.syncState === 'sync_failed'
-                      ? 'Sync Failed'
-                      : 'Synced'}
-                  </span>
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] tabular-nums">
+                  <span>Scheduled: {formatReadableDate(task.taskDate, todayIso)}</span>
+                  {task.completedAt && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span>Completed: {formatTimestamp(task.completedAt)}</span>
+                    </>
+                  )}
+                  {task.sheetRowNumber && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span>Sheet Row {task.sheetRowNumber}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </CollapseTransition>
           </div>
         </div>
 
-        {/* Right: Functional Action Controls */}
-        <div className="flex items-center gap-1.5 shrink-0 flex-wrap self-end sm:self-auto">
+        {/* Right: Clean Primary Action + Hover Secondary Tools */}
+        <div className="flex items-center gap-1 shrink-0">
+          {/* Hover / Focus Secondary Actions */}
+          <div className="flex items-center gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-150">
+            {!isCompleted && (
+              <MotionButton
+                onClick={() => onQuickReschedule(task, 1)}
+                title="Move +1 day"
+                className="w-7 h-7 flex items-center justify-center text-[#64748B] dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-md transition-colors"
+                aria-label="Reschedule +1 day"
+              >
+                <CalendarPlus className="w-3.5 h-3.5" />
+              </MotionButton>
+            )}
+
+            <MotionButton
+              onClick={() => onEdit(task)}
+              title="Edit task"
+              className="w-7 h-7 flex items-center justify-center text-[#64748B] dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-md transition-colors"
+              aria-label="Edit task"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+            </MotionButton>
+
+            <MotionButton
+              onClick={() => onDuplicate(task)}
+              title="Duplicate task"
+              className="hidden sm:flex w-7 h-7 items-center justify-center text-[#64748B] dark:text-[#9A9AA2] hover:text-[#1E40AF] dark:hover:text-[#4C8DF6] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-md transition-colors"
+              aria-label="Duplicate task"
+            >
+              <Copy className="w-3.5 h-3.5" />
+            </MotionButton>
+
+            <MotionButton
+              onClick={() => onDelete(task)}
+              title="Delete task"
+              className="w-7 h-7 flex items-center justify-center text-[#64748B] dark:text-[#9A9AA2] hover:text-[#DC2626] dark:hover:text-[#EF5350] hover:bg-[#FEE2E2] dark:hover:bg-[rgba(239,83,80,0.14)] rounded-md transition-colors"
+              aria-label="Delete task"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </MotionButton>
+
+            {onMoveTask && (
+              <>
+                <MotionButton
+                  onClick={() => onMoveTask(task, 'up')}
+                  disabled={!canMoveUp}
+                  title="Move up"
+                  className={`hidden md:flex w-6 h-7 items-center justify-center rounded transition-colors ${
+                    canMoveUp
+                      ? 'text-[#64748B] dark:text-[#9A9AA2] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528]'
+                      : 'text-[#CBD5E1] dark:text-[#3A3A3F] cursor-not-allowed opacity-40'
+                  }`}
+                  aria-label="Move task up"
+                >
+                  <ArrowUp className="w-3 h-3" />
+                </MotionButton>
+                <MotionButton
+                  onClick={() => onMoveTask(task, 'down')}
+                  disabled={!canMoveDown}
+                  title="Move down"
+                  className={`hidden md:flex w-6 h-7 items-center justify-center rounded transition-colors ${
+                    canMoveDown
+                      ? 'text-[#64748B] dark:text-[#9A9AA2] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528]'
+                      : 'text-[#CBD5E1] dark:text-[#3A3A3F] cursor-not-allowed opacity-40'
+                  }`}
+                  aria-label="Move task down"
+                >
+                  <ArrowDown className="w-3 h-3" />
+                </MotionButton>
+              </>
+            )}
+          </div>
+
+          {/* Primary Always-Visible Action */}
           {!isCompleted ? (
             <MotionButton
               onClick={() => onRequestComplete(task)}
-              className="inline-flex items-center gap-1 px-3 h-[28px] box-border text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] hover:bg-[#dbeafe] dark:hover:bg-[rgba(76,141,246,0.22)] rounded-md transition-colors duration-150 whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1 px-2.5 h-7 text-xs font-medium text-[#1E40AF] dark:text-[#4C8DF6] bg-[#EFF6FF] dark:bg-[rgba(76,141,246,0.14)] hover:bg-[#DBEAFE] dark:hover:bg-[rgba(76,141,246,0.22)] rounded-md transition-colors whitespace-nowrap shrink-0"
             >
-              <Check className="w-3.5 h-3.5 text-[#1E40AF]" />
-              Complete
+              <Check className="w-3 h-3" />
+              <span>Done</span>
             </MotionButton>
           ) : (
             <MotionButton
               onClick={() => onRestorePending(task)}
-              className="inline-flex items-center gap-1 px-3 h-[28px] box-border text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] bg-white dark:bg-[#252528] hover:bg-[#F8FAFC] dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md transition-colors duration-150 whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1 px-2.5 h-7 text-xs font-medium text-[#0F172A] dark:text-[#ECECEE] bg-[#F8FAFC] dark:bg-[#252528] hover:bg-[#EFF6FF] dark:hover:bg-[#2E2E32] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-md transition-colors whitespace-nowrap shrink-0"
             >
               <RotateCcw className="w-3 h-3 text-[#16A34A] dark:text-[#34C26B]" />
-              Restore
+              <span>Reopen</span>
             </MotionButton>
           )}
 
-          {!isCompleted && (
-            <MotionButton
-              onClick={() => onQuickReschedule(task, 1)}
-              title="Reschedule +1 Day"
-              className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-md transition-colors duration-150"
-              aria-label="Reschedule +1 day"
-            >
-              <CalendarPlus className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
-            </MotionButton>
-          )}
-
-          <MotionButton
-            onClick={() => onEdit(task)}
-            title="Edit Task"
-            className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-md transition-colors duration-150"
-            aria-label="Edit task"
-          >
-            <Edit3 className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
-          </MotionButton>
-
-          <MotionButton
-            onClick={() => onDuplicate(task)}
-            title="Duplicate Task"
-            className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded-md transition-colors duration-150"
-            aria-label="Duplicate task"
-          >
-            <Copy className="w-4 h-4 text-[#1E40AF] dark:text-[#4C8DF6]" />
-          </MotionButton>
-
-          <MotionButton
-            onClick={() => onDelete(task)}
-            title="Delete Task"
-            className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#DC2626] hover:bg-[#FEE2E2] dark:hover:bg-[rgba(239,83,80,0.14)] rounded-md transition-colors duration-150"
-            aria-label="Delete task"
-          >
-            <Trash2 className="w-4 h-4 text-[#DC2626] dark:text-[#EF5350]" />
-          </MotionButton>
-
-          {onMoveTask && (
-            <div className="flex items-center">
-              <MotionButton
-                onClick={() => onMoveTask(task, 'up')}
-                disabled={!canMoveUp}
-                title="Move Task Up"
-                className={`w-7 h-7 flex items-center justify-center rounded transition-colors duration-150 ${
-                  canMoveUp
-                    ? 'text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528]'
-                    : 'text-[#64748B]/30 dark:text-[#66666E] cursor-not-allowed opacity-40'
-                }`}
-                aria-label="Move task up"
-              >
-                <ArrowUp className="w-3.5 h-3.5" />
-              </MotionButton>
-              <MotionButton
-                onClick={() => onMoveTask(task, 'down')}
-                disabled={!canMoveDown}
-                title="Move Task Down"
-                className={`w-7 h-7 flex items-center justify-center rounded transition-colors duration-150 ${
-                  canMoveDown
-                    ? 'text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528]'
-                    : 'text-[#64748B]/30 dark:text-[#66666E] cursor-not-allowed opacity-40'
-                }`}
-                aria-label="Move task down"
-              >
-                <ArrowDown className="w-3.5 h-3.5" />
-              </MotionButton>
-            </div>
-          )}
-
+          {/* Expand Details Toggle */}
           <MotionButton
             onClick={() => setExpanded((prev) => !prev)}
-            title={expanded ? 'Hide details' : 'Show notes & audit timestamps'}
-            className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-[#1E40AF] hover:bg-[#EFF6FF] dark:hover:bg-[#252528] rounded transition-colors duration-150"
-            aria-label="Toggle task notes"
+            title={expanded ? 'Hide details' : 'Show details'}
+            className="w-7 h-7 flex items-center justify-center text-[#94A3B8] dark:text-[#66666E] hover:text-[#0F172A] dark:hover:text-[#ECECEE] hover:bg-[#F8FAFC] dark:hover:bg-[#252528] rounded-md transition-colors"
+            aria-label="Toggle task details"
           >
-            {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </MotionButton>
         </div>
       </div>

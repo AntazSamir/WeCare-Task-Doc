@@ -133,8 +133,34 @@ export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<number | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const cancelCloseTimer = useCallback(() => {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleCloseTimer = useCallback(() => {
+    cancelCloseTimer();
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      setIsOpen(false);
+    }, 2000);
+  }, [cancelCloseTimer]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      cancelCloseTimer();
+    }
+  }, [isOpen, cancelCloseTimer]);
+
+  useEffect(() => {
+    return () => cancelCloseTimer();
+  }, [cancelCloseTimer]);
   const [query, setQuery] = useState('');
   const [activeScope, setActiveScope] = useState<'All' | SearchGroup>('All');
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -398,6 +424,10 @@ export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({
   return (
     <div
       ref={containerRef}
+      onMouseEnter={cancelCloseTimer}
+      onMouseLeave={() => {
+        if (isOpen) scheduleCloseTimer();
+      }}
       className={`relative w-full flex-1 max-w-[460px] lg:max-w-[520px] z-40 ${className}`}
     >
       {/* Search Combobox Bar */}
@@ -514,7 +544,16 @@ export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({
             aria-label="Search results"
             initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.99 }}
             animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -4, scale: 0.99 }}
+            exit={
+              reduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    y: -8,
+                    scale: 0.985,
+                    transition: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+                  }
+            }
             transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
             className="absolute left-0 w-[min(580px,calc(100vw-24px))] top-[calc(100%+8px)] bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] rounded-xl shadow-2xl dark:shadow-none overflow-hidden z-50"
           >

@@ -16,6 +16,32 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
   onSwitchUser,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const closeTimerRef = React.useRef<number | null>(null);
+
+  const cancelCloseTimer = React.useCallback(() => {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleCloseTimer = React.useCallback(() => {
+    cancelCloseTimer();
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      setIsOpen(false);
+    }, 2000);
+  }, [cancelCloseTimer]);
+
+  React.useEffect(() => {
+    if (!isOpen) {
+      cancelCloseTimer();
+    }
+  }, [isOpen, cancelCloseTimer]);
+
+  React.useEffect(() => {
+    return () => cancelCloseTimer();
+  }, [cancelCloseTimer]);
 
   // If currently simulating a consultant, allow quick reset to Admin
   const isAdmin = currentUser.role === 'Admission_Manager';
@@ -25,9 +51,15 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
       <MotionButton
         type="button"
         onClick={() => setIsOpen(!isOpen)}
+        onMouseEnter={cancelCloseTimer}
+        onMouseLeave={() => {
+          if (isOpen) scheduleCloseTimer();
+        }}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         className={`h-9 flex items-center gap-2 px-3 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+          isOpen ? 'relative z-50 ' : ''
+        }${
           isAdmin
             ? 'bg-white dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] hover:border-[#1E40AF] dark:hover:border-[#4C8DF6]'
             : 'bg-white dark:bg-[#252528] border-[#E2E8F0] dark:border-[#2E2E32] text-[#0F172A] dark:text-[#ECECEE] hover:border-[#1E40AF] dark:hover:border-[#4C8DF6]'
@@ -58,6 +90,10 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
             <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
             <DropdownTransition
               align="right"
+              onMouseEnter={cancelCloseTimer}
+              onMouseLeave={() => {
+                if (isOpen) scheduleCloseTimer();
+              }}
               className="absolute right-0 mt-1 w-72 max-w-[calc(100vw-24px)] rounded-lg bg-white dark:bg-[#1C1C1E] border border-[#E2E8F0] dark:border-[#2E2E32] shadow-xl dark:shadow-none z-50 p-1 space-y-0.5 max-h-80 overflow-y-auto scrollbar-stable"
             >
               <div className="px-2 py-1 text-[10px] font-semibold tracking-wider text-slate-400 dark:text-[#9A9AA2] uppercase tabular-nums border-b border-[#E2E8F0] dark:border-[#2E2E32] flex items-center justify-between sticky top-0 bg-white dark:bg-[#1C1C1E] z-10">
