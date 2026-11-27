@@ -536,7 +536,7 @@ export const AddUniversityModal: React.FC<AddUniversityModalProps> = ({
               blur={10}
               label="University dossier sections"
               onValueChange={(id) => setActiveSection(id as DossierSectionId)}
-              className="gap-1.5 pb-0 pt-0 scrollbar-thin"
+              className="gap-1.5 pb-0 pt-0 scrollbar-none"
               indicatorClassName="rounded-lg bg-white dark:bg-[rgba(76,141,246,0.14)] border border-blue-200 dark:border-[#4C8DF6]/40 shadow-xs dark:shadow-none"
               buttonClassName="px-3 h-[30px] rounded-lg text-xs font-semibold"
               activeButtonClassName="text-[#1E40AF] dark:text-[#4C8DF6]"

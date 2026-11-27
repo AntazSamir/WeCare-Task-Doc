@@ -140,8 +140,8 @@ export const RoundedSlidingTabs: React.FC<RoundedSlidingTabsProps> = ({
 
   const defaultTrackClass =
     variant === 'segmented'
-      ? 'relative inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] text-xs max-w-full overflow-x-auto'
-      : 'relative flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 text-xs';
+      ? 'relative inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-[#F8FAFC] dark:bg-[#252528] border border-[#E2E8F0] dark:border-[#2E2E32] text-xs max-w-full overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
+      : 'relative flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 text-xs [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden';
 
   const defaultIndicatorClass =
     variant === 'segmented'
@@ -168,6 +168,11 @@ export const RoundedSlidingTabs: React.FC<RoundedSlidingTabsProps> = ({
       ref={trackRef}
       role="tablist"
       aria-label={label}
+      onWheel={(e) => {
+        if (trackRef.current && e.deltaY !== 0) {
+          trackRef.current.scrollLeft += e.deltaY;
+        }
+      }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowRight') {
           e.preventDefault();

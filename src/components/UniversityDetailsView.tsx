@@ -214,7 +214,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
   return (
     <PageTransition viewKey={universityId} className="space-y-3.5">
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
         <MotionButton
           type="button"
           onClick={onBack}
@@ -224,7 +224,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
           <span>Back to Universities</span>
         </MotionButton>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {isAdmin && (
             <MotionButton
               type="button"
@@ -254,9 +254,9 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
       <div className="relative overflow-hidden bg-white dark:bg-[#1C1C1E] border border-slate-200/90 dark:border-[#2E2E32] rounded-2xl p-4 sm:p-5 shadow-[0_2px_14px_rgba(0,0,0,0.03)] dark:shadow-none">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
 
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
             {uni.id === 'UNI-SNU' ? (
-              <div className="h-20 w-52 sm:w-56 rounded-xl border border-blue-100 dark:border-[#2E2E32] bg-white dark:bg-[#252528] p-2 shadow-xs dark:shadow-none flex items-center justify-center shrink-0 overflow-hidden">
+              <div className="h-16 sm:h-20 w-44 sm:w-56 rounded-xl border border-blue-100 dark:border-[#2E2E32] bg-white dark:bg-[#252528] p-2 shadow-xs dark:shadow-none flex items-center justify-center shrink-0 overflow-hidden">
                 <img
                   src="/assets/snu_logo_badge.png"
                   alt="Seoul National University"
@@ -1085,7 +1085,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </div>
 
                   {/* Financial & Tuition Cards */}
-                  <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs p-3 rounded-lg bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
                     <div>
                       <span className="text-[10px] font-bold text-slate-400 dark:text-[#9A9AA2] uppercase tabular-nums block">
                         Tuition Fee (Per Term / Semester)
@@ -1594,7 +1594,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#252528] border border-slate-100 dark:border-[#2E2E32]">
                     <span className="text-[10px] uppercase tabular-nums text-slate-400 dark:text-[#9A9AA2] font-bold block mb-1">
                       1. Application Open
@@ -1753,7 +1753,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
       {/* ADMIN EDIT MODALS */}
       {/* ========================================================================= */}
 
-            {/* Edit University Info Modal � uses AddUniversityModal in edit mode */}
+            {/* Edit University Info Modal - uses AddUniversityModal in edit mode */}
       {showEditUniModal && uni && (
         <AddUniversityModal
           initialData={uni}
@@ -1786,17 +1786,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         isOpen={showProgramModal}
         onClose={() => setShowProgramModal(false)}
         backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
-        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4 max-h-[90vh] overflow-y-auto scrollbar-stable"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-4 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto scrollbar-stable"
       >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
-                {editingProgram ? 'Edit Academic / Language Program' : 'Add New Academic Program'}
+            <div className="flex items-start sm:items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2 min-w-0">
+                <BookOpen className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6] shrink-0" />
+                <span className="truncate sm:whitespace-normal">{editingProgram ? 'Edit Academic / Language Program' : 'Add New Academic Program'}</span>
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowProgramModal(false)}
-                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded shrink-0"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -1839,8 +1839,8 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               }}
               className="space-y-3 text-xs"
             >
-              <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
                   <label className="block font-medium mb-1">Program Name *</label>
                   <input
                     name="name"
@@ -1862,7 +1862,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Degree Level & Visa Category *</label>
                   <input type="hidden" name="degreeLevel" value={modalDegreeLevel} />
@@ -1894,7 +1894,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Tuition Fee (KRW) *</label>
                   <input
@@ -1925,7 +1925,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Language of Instruction</label>
                   <input type="hidden" name="languageOfInstruction" value={modalLanguage} />
@@ -1968,17 +1968,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowProgramModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
+                  className="w-full sm:w-auto px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2] text-center"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
+                  className="w-full sm:w-auto px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8] text-center"
                 >
                   {editingProgram ? 'Update Program' : 'Create Program'}
                 </MotionButton>
@@ -1991,17 +1991,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         isOpen={showEditRefundModal}
         onClose={() => setShowEditRefundModal(false)}
         backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
-        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4 max-h-[90vh] overflow-y-auto scrollbar-stable"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-4 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto scrollbar-stable"
       >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
-                <Percent className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
-                Configure University Refund Policy & Regulations
+            <div className="flex items-start sm:items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2 min-w-0">
+                <Percent className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6] shrink-0" />
+                <span className="truncate sm:whitespace-normal">Configure University Refund Policy & Regulations</span>
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowEditRefundModal(false)}
-                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded shrink-0"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2087,7 +2087,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Notice Deadlines *</label>
                   <input
@@ -2111,17 +2111,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowEditRefundModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
+                  className="w-full sm:w-auto px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2] text-center"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
+                  className="w-full sm:w-auto px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8] text-center"
                 >
                   Save Refund Policy
                 </MotionButton>
@@ -2134,17 +2134,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         isOpen={showEditBankModal}
         onClose={() => setShowEditBankModal(false)}
         backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
-        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4 max-h-[90vh] overflow-y-auto scrollbar-stable"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-4 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto scrollbar-stable"
       >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-emerald-600 dark:text-[#34C26B]" />
-                Configure Institutional Banking & Wire Instructions
+            <div className="flex items-start sm:items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2 min-w-0">
+                <CreditCard className="w-4 h-4 text-emerald-600 dark:text-[#34C26B] shrink-0" />
+                <span className="truncate sm:whitespace-normal">Configure Institutional Banking & Wire Instructions</span>
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowEditBankModal(false)}
-                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded shrink-0"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2184,7 +2184,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Bank Name *</label>
                   <input
@@ -2205,7 +2205,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Account / Virtual Account Format *</label>
                   <input
@@ -2226,7 +2226,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Remittance Currency</label>
                   <input type="hidden" name="currency" value={modalCurrency} />
@@ -2243,7 +2243,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                     </MorphSelectContent>
                   </MorphSelect>
                 </div>
-                <div className="flex items-center gap-2 pt-6">
+                <div className="flex items-center gap-2 pt-1 sm:pt-6">
                   <input
                     type="checkbox"
                     id="isVirtualAccountSupported"
@@ -2273,17 +2273,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowEditBankModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
+                  className="w-full sm:w-auto px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2] text-center"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
+                  className="w-full sm:w-auto px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8] text-center"
                 >
                   Save Banking Details
                 </MotionButton>
@@ -2296,17 +2296,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         isOpen={showIntakeModal}
         onClose={() => setShowIntakeModal(false)}
         backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
-        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4"
+        cardClassName="w-full max-w-lg rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-4 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto scrollbar-stable"
       >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
-                {editingIntake ? 'Edit Admission Intake Schedule' : 'Configure New University Admission Intake'}
+            <div className="flex items-start sm:items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2 min-w-0">
+                <Calendar className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6] shrink-0" />
+                <span className="truncate sm:whitespace-normal">{editingIntake ? 'Edit Admission Intake Schedule' : 'Configure New University Admission Intake'}</span>
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowIntakeModal(false)}
-                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded shrink-0"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2347,7 +2347,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
               }}
               className="space-y-3 text-xs"
             >
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Intake Term *</label>
                   <input
@@ -2369,7 +2369,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Application Open Date *</label>
                   <input
@@ -2392,7 +2392,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Document Deadline</label>
                   <input
@@ -2413,7 +2413,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Tuition Payment Deadline</label>
                   <input
@@ -2434,7 +2434,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Classes Start Date</label>
                   <input
@@ -2455,7 +2455,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Status</label>
                   <input type="hidden" name="status" value={modalIntakeStatus} />
@@ -2485,17 +2485,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowIntakeModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
+                  className="w-full sm:w-auto px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2] text-center"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
+                  className="w-full sm:w-auto px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8] text-center"
                 >
                   {editingIntake ? 'Save Changes' : 'Create Intake'}
                 </MotionButton>
@@ -2508,17 +2508,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
         isOpen={showAddDocModal}
         onClose={() => setShowAddDocModal(false)}
         backdropClassName="fixed inset-0 z-50 bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs"
-        cardClassName="w-full max-w-md rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-6 space-y-4"
+        cardClassName="w-full max-w-md rounded-xl bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-[#2E2E32] shadow-2xl dark:shadow-none p-4 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto scrollbar-stable"
       >
-            <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6]" />
-                Attach University Circular / Admission Guide
+            <div className="flex items-start sm:items-center justify-between border-b pb-3 border-slate-100 dark:border-[#2E2E32]">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#ECECEE] flex items-center gap-2 min-w-0">
+                <FileText className="w-4 h-4 text-blue-600 dark:text-[#4C8DF6] shrink-0" />
+                <span className="truncate sm:whitespace-normal">Attach University Circular / Admission Guide</span>
               </h3>
               <MotionButton
                 type="button"
                 onClick={() => setShowAddDocModal(false)}
-                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded"
+                className="p-1 text-slate-400 dark:text-[#9A9AA2] hover:text-slate-700 dark:hover:text-[#ECECEE] rounded shrink-0"
               >
                 <X className="w-4 h-4" />
               </MotionButton>
@@ -2555,7 +2555,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Document Category</label>
                   <input type="hidden" name="category" value={modalDocCategory} />
@@ -2586,7 +2586,7 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium mb-1">Download / Portal Link *</label>
                   <input
@@ -2607,17 +2607,17 @@ export const UniversityDetailsView: React.FC<UniversityDetailsViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2E2E32]">
                 <MotionButton
                   type="button"
                   onClick={() => setShowAddDocModal(false)}
-                  className="px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2]"
+                  className="w-full sm:w-auto px-3 py-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#252528] text-slate-600 dark:text-[#9A9AA2] text-center"
                 >
                   Cancel
                 </MotionButton>
                 <MotionButton
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8]"
+                  className="w-full sm:w-auto px-4 py-1.5 rounded bg-blue-600 dark:bg-[#4C8DF6] text-white font-semibold hover:bg-blue-700 dark:hover:bg-[#6BA1F8] text-center"
                 >
                   Attach Document
                 </MotionButton>
